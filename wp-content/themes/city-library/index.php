@@ -46,4 +46,6 @@
 
 <?php get_template_part('template-parts/section-afisha'); ?>
 
+<?php get_template_part('template-parts/section-important'); ?>
+
 <?php get_footer(); ?>
