@@ -20,6 +20,30 @@
         } );
     } );
 
+    // Header Colors
+    wp.customize( 'header_background_color', function( value ) {
+        value.bind( function( to ) {
+            $( '.site-header' ).css( 'background-color', to );
+        } );
+    } );
+
+    wp.customize( 'header_text_color', function( value ) {
+        value.bind( function( to ) {
+            $( '.site-header .text-sm.font-display.font-bold, .site-header .main-navigation a' ).css( 'color', to );
+        } );
+    } );
+
+    wp.customize( 'header_link_color', function( value ) {
+        value.bind( function( to ) {
+            // We need to inject a style tag to handle the hover state
+            var style = $( '#city-library-header-link-hover-color' );
+            if ( ! style.length ) {
+                style = $( '<style type="text/css" id="city-library-header-link-hover-color"></style>' ).appendTo( 'head' );
+            }
+            style.text( '.site-header .main-navigation a:hover { color: ' + to + ' !important; }' );
+        } );
+    } );
+
     // Hero Badge Text
     wp.customize( 'hero_badge_text', function( value ) {
         value.bind( function( to ) {

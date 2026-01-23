@@ -46,7 +46,7 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class( 'font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300' ); ?>>
-<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<header class="site-header fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="flex items-center space-x-3">
@@ -59,7 +59,7 @@
                 </div>
             </a>
 
-            <nav class="hidden lg:flex items-center space-x-8" aria-label="<?php esc_attr_e( 'Главное меню', 'city-library' ); ?>">
+            <nav class="main-navigation hidden lg:flex items-center space-x-8" aria-label="<?php esc_attr_e( 'Главное меню', 'city-library' ); ?>">
                 <?php
                 wp_nav_menu( array(
                     'theme_location' => 'primary',
@@ -76,7 +76,7 @@
                 <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <span class="material-symbols-outlined">search</span>
                 </button>
-                <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button id="accessibility-toggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
                 <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
