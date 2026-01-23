@@ -3,10 +3,14 @@ $bg_color = get_theme_mod('news_card_list_bg_color', '#FFFFFF');
 $title_color = get_theme_mod('news_card_list_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_list_text_color', '#334155');
 $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
-$thumbnail_url = has_post_thumbnail() ? get_the_post_thumbnail_url(null, 'large') : '';
+$thumbnail_style = '';
+if (has_post_thumbnail()) {
+    $thumbnail_url = get_the_post_thumbnail_url(null, 'large');
+    $thumbnail_style = "background-image: url('" . esc_url($thumbnail_url) . "');";
+}
 ?>
 <div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="md:w-1/3 relative overflow-hidden aspect-[16/10] md:aspect-auto bg-cover bg-center" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>')">
+    <div class="md:w-1/3 relative overflow-hidden aspect-[16/10] md:aspect-auto bg-cover bg-center" style="<?php echo $thumbnail_style; ?>">
          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-none"></div>
     </div>
     <div class="md:w-2/3 p-8 space-y-4 flex flex-col justify-center">

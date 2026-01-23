@@ -51,7 +51,7 @@
 </header>
 <main>
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
-<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>');">
+<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
@@ -69,12 +69,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <a class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
+            <a id="hero-primary-btn" class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
                 <span class="material-symbols-outlined text-xl">event</span>
                 <span><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>
                 <span class="material-symbols-outlined">arrow_forward</span>
             </a>
-            <a class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
+            <a id="hero-secondary-btn" class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
                 <span><?php echo esc_html(get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ')); ?></span>
             </a>
         </div>
