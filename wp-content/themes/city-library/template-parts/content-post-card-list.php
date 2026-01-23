@@ -3,15 +3,17 @@ $bg_color = get_theme_mod('news_card_list_bg_color', '#FFFFFF');
 $title_color = get_theme_mod('news_card_list_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_list_text_color', '#334155');
 $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
-$thumbnail_style = '';
-if (has_post_thumbnail()) {
-    $thumbnail_url = get_the_post_thumbnail_url(null, 'large');
-    $thumbnail_style = "background-image: url('" . esc_url($thumbnail_url) . "');";
-}
 ?>
 <div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="md:w-1/3 relative overflow-hidden aspect-[16/10] md:aspect-auto bg-cover bg-center" style="<?php echo $thumbnail_style; ?>">
-         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-none"></div>
+    <div class="md:w-1/3 relative overflow-hidden aspect-[16/10] md:aspect-auto">
+        <?php if (has_post_thumbnail()) : ?>
+            <?php the_post_thumbnail('large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
+        <?php else : ?>
+            <div class="absolute inset-0 bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-4xl text-slate-400">image</span>
+            </div>
+        <?php endif; ?>
+         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-none pointer-events-none"></div>
     </div>
     <div class="md:w-2/3 p-8 space-y-4 flex flex-col justify-center">
         <div class="flex items-center text-slate-400 dark:text-slate-500 text-xs font-semibold tracking-widest uppercase">
