@@ -31,19 +31,8 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                 <button id="search-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
                 <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <span class="material-symbols-outlined">visibility</span>
-                </button>
-                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
-                <button id="dark-mode-toggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                    <span class="material-symbols-outlined hidden dark:block">light_mode</span>
-                </button>
-                 <button id="sidebar-toggle" class="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>

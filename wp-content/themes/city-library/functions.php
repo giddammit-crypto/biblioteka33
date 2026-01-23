@@ -50,13 +50,18 @@ function city_library_scripts() {
     wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
 
     // Google Fonts
-    wp_enqueue_style('city-library-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700&display=swap', array(), null);
+    wp_enqueue_style('city-library-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Merriweather:wght@300;400;700&display=swap', array(), null);
 
     // Material Symbols
     wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0', array(), null);
 
     // Tailwind CSS
     wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,typography', array(), null, false);
+
+    // Swiper CSS & JS
+    wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', array(), '11.0.0');
+    wp_enqueue_script('swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', array(), '11.0.0', true);
+
 
     // Custom JS files
     wp_enqueue_script('city-library-dark-mode', get_template_directory_uri() . '/js/dark-mode.js', array(), wp_get_theme()->get('Version'), true);
@@ -264,6 +269,63 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'news_card_list_link_color', array(
         'label' => __('List: Link Color', 'city-library'), 'section' => 'news_card_section',
     )));
+
+    // Typography Settings
+    $wp_customize->add_section('typography_section', array(
+        'title' => __('Typography', 'city-library'),
+        'priority' => 20,
+    ));
+    $wp_customize->add_setting('heading_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('heading_font', array(
+        'label' => __('Heading Font', 'city-library'),
+        'section' => 'typography_section',
+        'type' => 'select',
+        'choices' => array(
+            'Inter' => 'Inter (Modern)',
+            'Playfair Display' => 'Playfair Display (Journal)',
+            'Montserrat' => 'Montserrat (Geometric)',
+            'Merriweather' => 'Merriweather (Serif)',
+        ),
+    ));
+    $wp_customize->add_setting('body_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('body_font', array(
+        'label' => __('Body Font', 'city-library'),
+        'section' => 'typography_section',
+        'type' => 'select',
+        'choices' => array(
+            'Montserrat' => 'Montserrat (Geometric)',
+            'Inter' => 'Inter (Modern)',
+            'Playfair Display' => 'Playfair Display (Journal)',
+            'Merriweather' => 'Merriweather (Serif)',
+        ),
+    ));
+
+    // Afisha (Events) Section
+    $wp_customize->add_section('afisha_section', array(
+        'title' => __('Afisha (Events)', 'city-library'),
+        'priority' => 105,
+    ));
+    $wp_customize->add_setting('show_afisha_section', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_afisha_section', array(
+        'label' => __('Show Afisha Section', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'checkbox',
+    ));
+    $wp_customize->add_setting('afisha_title', array('default' => 'Афиша Мероприятий', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_title', array('label' => __('Section Title', 'city-library'), 'section' => 'afisha_section', 'type' => 'text'));
+
+    for ($i = 1; $i <= 5; $i++) {
+        $wp_customize->add_setting("afisha_image_$i", array('sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "afisha_image_$i", array(
+            'label' => sprintf(__('Event Image %d', 'city-library'), $i),
+            'section' => 'afisha_section',
+        )));
+        $wp_customize->add_setting("afisha_title_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_title_$i", array('label' => sprintf(__('Event Title %d', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("afisha_link_$i", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control("afisha_link_$i", array('label' => sprintf(__('Event Link %d', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'url'));
+    }
 }
 add_action('customize_register', 'city_library_customize_register');
 
@@ -326,6 +388,8 @@ add_action('wp_ajax_nopriv_load_posts_by_view', 'load_posts_by_view');
 * Add custom script to head to configure TailwindCSS
 */
 function city_library_tailwind_config() {
+    $heading_font = get_theme_mod('heading_font', 'Inter');
+    $body_font = get_theme_mod('body_font', 'Montserrat');
     ?>
     <script>
         tailwind.config = {
@@ -339,8 +403,8 @@ function city_library_tailwind_config() {
                         "background-dark": "#102216"
                     },
                     fontFamily: {
-                        display: "Inter",
-                        sans: ["Montserrat", "sans-serif"]
+                        display: "<?php echo esc_js($heading_font); ?>",
+                        sans: ["<?php echo esc_js($body_font); ?>", "sans-serif"]
                     },
                 }
             }
