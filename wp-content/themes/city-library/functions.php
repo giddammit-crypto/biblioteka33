@@ -161,6 +161,13 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    // Header Content Settings (Title/Subtitle)
+    $wp_customize->add_setting('header_subtitle', array('default' => 'Центральная городская', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_subtitle', array('label' => __('Site Subtitle (Top Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('header_title', array('default' => 'Библиотека', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_title', array('label' => __('Site Title (Bottom Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+
     // Hero Section
     $wp_customize->add_section('hero_section', array(
         'title'    => __('Hero Section', 'city-library'),
