@@ -1,4 +1,4 @@
-<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700">
+<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden transition-all duration-500">
     <?php if ( has_post_thumbnail() ) : ?>
     <div class="relative overflow-hidden aspect-[16/10]">
         <?php the_post_thumbnail( 'large', array( 'class' => 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110' ) ); ?>
@@ -6,7 +6,7 @@
         $categories = get_the_category();
         if ( ! empty( $categories ) ) :
             ?>
-            <div class="absolute top-4 left-4 bg-primary text-slate-900 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <div class="absolute top-4 left-4 bg-primary/80 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                 <?php echo esc_html( $categories[0]->name ); ?>
             </div>
         <?php endif; ?>

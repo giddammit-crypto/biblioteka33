@@ -13,14 +13,18 @@
             <?php echo esc_html( get_theme_mod( 'hero_description', __( 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.', 'city-library' ) ) ); ?>
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <a class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="#events">
-                <span class="material-symbols-outlined text-xl">event</span>
-                <span><?php _e( 'АФИША МЕРОПРИЯТИЙ', 'city-library' ); ?></span>
-                <span class="material-symbols-outlined">arrow_forward</span>
-            </a>
-            <a class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center" href="#about">
-                <span><?php _e( 'УЗНАТЬ БОЛЬШЕ', 'city-library' ); ?></span>
-            </a>
+            <?php if ( get_theme_mod( 'hero_primary_button_show', true ) ) : ?>
+                <a id="hero-primary-button" class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="<?php echo esc_url( get_theme_mod( 'hero_primary_button_url', '#events' ) ); ?>">
+                    <span class="material-symbols-outlined text-xl">event</span>
+                    <span><?php echo esc_html( get_theme_mod( 'hero_primary_button_text', __( 'АФИША МЕРОПРИЯТИЙ', 'city-library' ) ) ); ?></span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            <?php endif; ?>
+            <?php if ( get_theme_mod( 'hero_secondary_button_show', true ) ) : ?>
+                <a id="hero-secondary-button" class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center" href="<?php echo esc_url( get_theme_mod( 'hero_secondary_button_url', '#about' ) ); ?>">
+                    <span><?php echo esc_html( get_theme_mod( 'hero_secondary_button_text', __( 'УЗНАТЬ БОЛЬШЕ', 'city-library' ) ) ); ?></span>
+                </a>
+            <?php endif; ?>
         </div>
     </div>
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -37,15 +41,15 @@
                 <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e( 'Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library' ); ?></p>
             </div>
             <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                <button class="p-2 bg-white dark:bg-slate-700 shadow-sm rounded-md">
+                <button id="grid-view-button" class="p-2">
                     <span class="material-symbols-outlined text-xl">grid_view</span>
                 </button>
-                <button class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                <button id="list-view-button" class="p-2">
                     <span class="material-symbols-outlined text-xl">view_list</span>
                 </button>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="posts-container" class="gap-8">
             <?php
             $latest_posts = new WP_Query( array(
                 'posts_per_page'      => 5,

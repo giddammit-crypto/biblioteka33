@@ -68,6 +68,9 @@ function city_library_scripts() {
 
     // Enqueue Accessibility script
     wp_enqueue_script( 'city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), '1.0', true );
+
+    // Enqueue View Toggle script
+    wp_enqueue_script( 'city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array(), '1.0', true );
 }
 add_action( 'wp_enqueue_scripts', 'city_library_scripts' );
 
@@ -189,6 +192,50 @@ function city_library_customize_register( $wp_customize ) {
         'type'     => 'textarea',
     ) );
 
+    // --- Primary Button Settings ---
+
+    // Show Primary Button
+    $wp_customize->add_setting( 'hero_primary_button_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean' ) );
+    $wp_customize->add_control( 'hero_primary_button_show', array( 'label' => __( 'Показывать главную кнопку', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'checkbox' ) );
+
+    // Primary Button Text
+    $wp_customize->add_setting( 'hero_primary_button_text', array( 'default' => __( 'АФИША МЕРОПРИЯТИЙ', 'city-library' ), 'sanitize_callback' => 'sanitize_text_field' ) );
+    $wp_customize->add_control( 'hero_primary_button_text', array( 'label' => __( 'Текст главной кнопки', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'text' ) );
+
+    // Primary Button URL
+    $wp_customize->add_setting( 'hero_primary_button_url', array( 'default' => '#events', 'sanitize_callback' => 'esc_url_raw' ) );
+    $wp_customize->add_control( 'hero_primary_button_url', array( 'label' => __( 'Ссылка главной кнопки', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'url' ) );
+
+    // Primary Button Background Color
+    $wp_customize->add_setting( 'hero_primary_button_bg_color', array( 'default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color' ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'hero_primary_button_bg_color', array( 'label' => __( 'Цвет фона главной кнопки', 'city-library' ), 'section' => 'city_library_hero_section' ) ) );
+
+    // Primary Button Text Color
+    $wp_customize->add_setting( 'hero_primary_button_text_color', array( 'default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color' ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'hero_primary_button_text_color', array( 'label' => __( 'Цвет текста главной кнопки', 'city-library' ), 'section' => 'city_library_hero_section' ) ) );
+
+    // --- Secondary Button Settings ---
+
+    // Show Secondary Button
+    $wp_customize->add_setting( 'hero_secondary_button_show', array( 'default' => true, 'sanitize_callback' => 'wp_validate_boolean' ) );
+    $wp_customize->add_control( 'hero_secondary_button_show', array( 'label' => __( 'Показывать вторую кнопку', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'checkbox' ) );
+
+    // Secondary Button Text
+    $wp_customize->add_setting( 'hero_secondary_button_text', array( 'default' => __( 'УЗНАТЬ БОЛЬШЕ', 'city-library' ), 'sanitize_callback' => 'sanitize_text_field' ) );
+    $wp_customize->add_control( 'hero_secondary_button_text', array( 'label' => __( 'Текст второй кнопки', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'text' ) );
+
+    // Secondary Button URL
+    $wp_customize->add_setting( 'hero_secondary_button_url', array( 'default' => '#about', 'sanitize_callback' => 'esc_url_raw' ) );
+    $wp_customize->add_control( 'hero_secondary_button_url', array( 'label' => __( 'Ссылка второй кнопки', 'city-library' ), 'section' => 'city_library_hero_section', 'type' => 'url' ) );
+
+    // Secondary Button Background Color
+    $wp_customize->add_setting( 'hero_secondary_button_bg_color', array( 'default' => 'rgba(255, 255, 255, 0.1)', 'sanitize_callback' => 'sanitize_text_field' ) ); // Using sanitize_text_field for rgba
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'hero_secondary_button_bg_color', array( 'label' => __( 'Цвет фона второй кнопки', 'city-library' ), 'section' => 'city_library_hero_section' ) ) );
+
+    // Secondary Button Text Color
+    $wp_customize->add_setting( 'hero_secondary_button_text_color', array( 'default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color' ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'hero_secondary_button_text_color', array( 'label' => __( 'Цвет текста второй кнопки', 'city-library' ), 'section' => 'city_library_hero_section' ) ) );
+
     // Hero Background Image Setting
     $wp_customize->add_setting( 'hero_background_image', array(
         'default'           => 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=2000&auto=format&fit=crop',
@@ -260,7 +307,72 @@ function city_library_dynamic_styles() {
              color: var(--accessibility-text-color) !important;
         }
 
+        /* Hero Button Colors */
+        #hero-primary-button {
+            background-color: <?php echo sanitize_hex_color( get_theme_mod( 'hero_primary_button_bg_color', '#0b7930' ) ); ?> !important;
+            color: <?php echo sanitize_hex_color( get_theme_mod( 'hero_primary_button_text_color', '#ffffff' ) ); ?> !important;
+        }
+        #hero-secondary-button {
+            background-color: <?php echo sanitize_text_field( get_theme_mod( 'hero_secondary_button_bg_color', 'rgba(255, 255, 255, 0.1)' ) ); ?> !important;
+            color: <?php echo sanitize_hex_color( get_theme_mod( 'hero_secondary_button_text_color', '#ffffff' ) ); ?> !important;
+        }
+
     </style>
     <?php
 }
 add_action( 'wp_head', 'city_library_dynamic_styles' );
+
+/**
+ * Adds custom CSS for the view switcher.
+ */
+function city_library_view_switcher_styles() {
+    ?>
+    <style type.css">
+        /* Initial state is grid, which is handled by Tailwind classes */
+        #posts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        /* List View styles */
+        #posts-container.list-view {
+            display: block; /* Override grid display */
+        }
+
+        #posts-container.list-view > div {
+           display: flex;
+           flex-direction: row;
+           align-items: center;
+           margin-bottom: 2rem; /* Add space between list items */
+           background-color: #fff; /* Ensure background color */
+           border-radius: 0.75rem; /* rounded-xl */
+           overflow: hidden;
+        }
+
+        #posts-container.list-view .aspect-\[16\/10\] {
+            flex-shrink: 0;
+            width: 300px; /* Fixed width for the image container */
+            height: 180px; /* Fixed height */
+        }
+
+        #posts-container.list-view .p-8 {
+            padding: 1.5rem; /* Adjust padding for list view */
+        }
+
+        .dark #posts-container.list-view > div {
+            background-color: #1e293b; /* Corresponds to dark:bg-slate-800 */
+        }
+
+        /* Button Active State */
+        #grid-view-button.active, #list-view-button.active {
+            background-color: #fff;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .dark #grid-view-button.active, .dark #list-view-button.active {
+             background-color: #334155; /* Corresponds to dark:bg-slate-700 */
+        }
+    </style>
+    <?php
+}
+add_action( 'wp_head', 'city_library_view_switcher_styles' );
