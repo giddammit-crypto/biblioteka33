@@ -92,7 +92,7 @@ add_action('wp_enqueue_scripts', 'city_library_scripts');
  */
 function city_library_homepage_query($query) {
     if ($query->is_home() && $query->is_main_query()) {
-        $query->set('posts_per_page', 8);
+        $query->set('posts_per_page', 10);
     }
 }
 add_action('pre_get_posts', 'city_library_homepage_query');

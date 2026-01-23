@@ -14,7 +14,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
             </div>
         <?php endif; ?>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
-        <div class="absolute top-3 left-3 bg-primary text-slate-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+        <div class="absolute top-4 left-0 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-r-lg shadow-md uppercase tracking-wider before:content-[''] before:absolute before:left-0 before:top-full before:border-t-[6px] before:border-t-red-800 before:border-l-[6px] before:border-l-transparent">
             <?php
             $categories = get_the_category();
             if (!empty($categories)) {
