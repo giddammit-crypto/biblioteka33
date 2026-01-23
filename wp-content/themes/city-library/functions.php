@@ -15,6 +15,14 @@ function city_library_setup() {
     // Enable support for Post Thumbnails on posts and pages.
     add_theme_support('post-thumbnails');
 
+    // Enable support for Custom Logo.
+    add_theme_support('custom-logo', array(
+        'height'      => 100,
+        'width'       => 400,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ));
+
     // Register navigation menus.
     register_nav_menus(
         array(
@@ -111,6 +119,35 @@ add_action('widgets_init', 'city_library_widgets_init');
  * Customizer additions.
  */
 function city_library_customize_register($wp_customize) {
+    // Header Section
+    $wp_customize->add_section('header_section', array(
+        'title'    => __('Header Settings', 'city-library'),
+        'priority' => 20,
+    ));
+
+    $wp_customize->add_setting('header_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bg_color', array(
+        'label' => __('Header Background Color', 'city-library'), 'section' => 'header_section',
+    )));
+
+    $wp_customize->add_setting('header_text_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_text_color', array(
+        'label' => __('Header Text Color', 'city-library'), 'section' => 'header_section',
+    )));
+
+     $wp_customize->add_setting('header_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_font_family', array(
+        'label' => __('Header Font Family', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'select',
+        'choices' => array(
+            'Inter' => 'Inter',
+            'Montserrat' => 'Montserrat',
+            'Playfair Display' => 'Playfair Display',
+            'Merriweather' => 'Merriweather',
+        ),
+    ));
+
     // Hero Section
     $wp_customize->add_section('hero_section', array(
         'title'    => __('Hero Section', 'city-library'),
@@ -335,7 +372,7 @@ add_action('customize_register', 'city_library_customize_register');
  */
 class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
     function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = 'text-sm font-semibold hover:text-primary transition-colors';
+        $classes = 'text-sm font-semibold hover:text-primary transition-colors whitespace-nowrap';
         $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">' . esc_html($item->title) . '</a>';
     }
     function end_el(&$output, $item, $depth = 0, $args = null) {
@@ -420,6 +457,17 @@ add_action('wp_head', 'city_library_tailwind_config', 1);
 function city_library_dynamic_styles() {
     ?>
     <style type="text/css">
+        /* Header Settings */
+        #masthead {
+            background-color: <?php echo esc_attr(get_theme_mod('header_bg_color', '#ffffff')); ?> !important;
+        }
+        #masthead nav a, #masthead .material-symbols-outlined, #masthead p {
+            color: <?php echo esc_attr(get_theme_mod('header_text_color', '#1A3C34')); ?> !important;
+        }
+        #masthead {
+             font-family: "<?php echo esc_js(get_theme_mod('header_font_family', 'Inter')); ?>", sans-serif !important;
+        }
+
         /* Hero Primary Button */
         #hero-primary-btn {
             background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_bg_color', '#0b7930')); ?> !important;

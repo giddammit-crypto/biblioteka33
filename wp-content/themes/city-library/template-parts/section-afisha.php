@@ -42,10 +42,10 @@ $section_title = get_theme_mod('afisha_title', 'Афиша Мероприяти�
                 </p>
                 <div class="flex space-x-2">
                     <button class="afisha-prev p-3 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
-                        <span class="material-symbols-outlined block">arrow_upward</span>
+                        <span class="material-symbols-outlined block">arrow_back</span>
                     </button>
                     <button class="afisha-next p-3 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
-                        <span class="material-symbols-outlined block">arrow_downward</span>
+                        <span class="material-symbols-outlined block">arrow_forward</span>
                     </button>
                 </div>
             </div>
@@ -91,7 +91,7 @@ $section_title = get_theme_mod('afisha_title', 'Афиша Мероприяти�
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     new Swiper('.afisha-slider', {
-        direction: 'vertical',
+        direction: 'horizontal',
         slidesPerView: 1.2,
         spaceBetween: 30,
         centeredSlides: true,
