@@ -65,6 +65,9 @@ function city_library_scripts() {
 
     // Enqueue Tailwind CSS script from CDN to be loaded in the header.
     wp_enqueue_script( 'tailwind-cdn', 'https://cdn.tailwindcss.com?plugins=forms,typography', array(), null, false );
+
+    // Enqueue Accessibility script
+    wp_enqueue_script( 'city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), '1.0', true );
 }
 add_action( 'wp_enqueue_scripts', 'city_library_scripts' );
 
@@ -75,6 +78,73 @@ add_action( 'wp_enqueue_scripts', 'city_library_scripts' );
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
 function city_library_customize_register( $wp_customize ) {
+    // Add Header Section
+    $wp_customize->add_section( 'city_library_header_section', array(
+        'title'      => __( 'Настройки хедера', 'city-library' ),
+        'priority'   => 25,
+        'description' => __( 'Настройки для хедера сайта.', 'city-library' ),
+    ) );
+
+    // Header Background Color
+    $wp_customize->add_setting( 'header_background_color', array(
+        'default'           => '#ffffff',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_background_color', array(
+        'label'    => __( 'Цвет фона хедера', 'city-library' ),
+        'section'  => 'city_library_header_section',
+    ) ) );
+
+    // Header Text Color
+    $wp_customize->add_setting( 'header_text_color', array(
+        'default'           => '#333333',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_text_color', array(
+        'label'    => __( 'Цвет текста хедера', 'city-library' ),
+        'section'  => 'city_library_header_section',
+    ) ) );
+
+    // Header Link Color
+    $wp_customize->add_setting( 'header_link_color', array(
+        'default'           => '#0b7930',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_link_color', array(
+        'label'    => __( 'Цвет ссылок в хедере', 'city-library' ),
+        'section'  => 'city_library_header_section',
+    ) ) );
+
+    // Accessibility Section
+    $wp_customize->add_section( 'city_library_accessibility_section', array(
+        'title'      => __( 'Версия для слабовидящих', 'city-library' ),
+        'priority'   => 35,
+        'description' => __( 'Настройки для версии сайта для слабовидящих.', 'city-library' ),
+    ) );
+
+    // Accessibility Background Color
+    $wp_customize->add_setting( 'accessibility_background_color', array(
+        'default'           => '#000000',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'accessibility_background_color', array(
+        'label'    => __( 'Цвет фона для слабовидящих', 'city-library' ),
+        'section'  => 'city_library_accessibility_section',
+    ) ) );
+
+    // Accessibility Text Color
+    $wp_customize->add_setting( 'accessibility_text_color', array(
+        'default'           => '#ffffff',
+        'sanitize_callback' => 'sanitize_hex_color',
+    ) );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'accessibility_text_color', array(
+        'label'    => __( 'Цвет текста для слабовидящих', 'city-library' ),
+        'section'  => 'city_library_accessibility_section',
+    ) ) );
+
     // Add Hero Section
     $wp_customize->add_section( 'city_library_hero_section', array(
         'title'      => __( 'Секция Hero', 'city-library' ),
@@ -139,3 +209,58 @@ function city_library_customize_preview_js() {
     wp_enqueue_script( 'city-library-customizer', get_template_directory_uri() . '/js/customizer.js', array( 'customize-preview' ), '1.0', true );
 }
 add_action( 'customize_preview_init', 'city_library_customize_preview_js' );
+
+/**
+ * Generate dynamic CSS for customizer options.
+ */
+function city_library_dynamic_styles() {
+    ?>
+    <style type="text/css">
+        :root {
+            --header-bg-color: <?php echo sanitize_hex_color( get_theme_mod( 'header_background_color', '#ffffff' ) ); ?>;
+            --header-text-color: <?php echo sanitize_hex_color( get_theme_mod( 'header_text_color', '#333333' ) ); ?>;
+            --header-link-color: <?php echo sanitize_hex_color( get_theme_mod( 'header_link_color', '#0b7930' ) ); ?>;
+        }
+
+        .site-header {
+            background-color: rgba(255, 255, 255, 0.8); /* Fallback */
+            background-color: var(--header-bg-color) !important;
+        }
+
+        .site-header .main-navigation a,
+        .site-header .text-sm.font-display.font-bold {
+            color: var(--header-text-color) !important;
+        }
+
+        .site-header .main-navigation a:hover {
+            color: var(--header-link-color) !important;
+        }
+
+        /* Accessibility Mode Styles */
+        .accessibility-mode {
+            --accessibility-bg-color: <?php echo sanitize_hex_color( get_theme_mod( 'accessibility_background_color', '#000000' ) ); ?>;
+            --accessibility-text-color: <?php echo sanitize_hex_color( get_theme_mod( 'accessibility_text_color', '#ffffff' ) ); ?>;
+        }
+
+        .accessibility-mode body,
+        .accessibility-mode .site-header {
+            background-color: var(--accessibility-bg-color) !important;
+            color: var(--accessibility-text-color) !important;
+            font-size: 1.25rem; /* Increased font size */
+        }
+
+        .accessibility-mode a,
+        .accessibility-mode h1,
+        .accessibility-mode h2,
+        .accessibility-mode h3,
+        .accessibility-mode button,
+        .accessibility-mode p,
+        .accessibility-mode span,
+        .accessibility-mode div {
+             color: var(--accessibility-text-color) !important;
+        }
+
+    </style>
+    <?php
+}
+add_action( 'wp_head', 'city_library_dynamic_styles' );
