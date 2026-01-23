@@ -159,6 +159,43 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('footer_sitemap_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_sitemap_link', array('label' => __('Sitemap Link', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
 
+    $wp_customize->add_setting('footer_bg_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'footer_bg_color', array(
+        'label' => __('Footer Background Color', 'city-library'), 'section' => 'footer_section',
+    )));
+    $wp_customize->add_setting('footer_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'footer_text_color', array(
+        'label' => __('Footer Text Color', 'city-library'), 'section' => 'footer_section',
+    )));
+
+    // Hero Button Colors
+    $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_primary_btn_bg_color', array(
+        'label' => __('Primary Button BG', 'city-library'), 'section' => 'hero_section',
+    )));
+    $wp_customize->add_setting('hero_primary_btn_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_primary_btn_text_color', array(
+        'label' => __('Primary Button Text', 'city-library'), 'section' => 'hero_section',
+    )));
+    $wp_customize->add_setting('hero_primary_btn_hover_bg_color', array('default' => '#d4af37', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_primary_btn_hover_bg_color', array(
+        'label' => __('Primary Button Hover BG', 'city-library'), 'section' => 'hero_section',
+    )));
+
+    $wp_customize->add_setting('hero_secondary_btn_bg_color', array('default' => 'rgba(255, 255, 255, 0.1)', 'sanitize_callback' => 'sanitize_text_field')); // RGBA support
+    $wp_customize->add_control('hero_secondary_btn_bg_color', array(
+        'label' => __('Secondary Button BG', 'city-library'), 'section' => 'hero_section', 'type' => 'text',
+    ));
+     $wp_customize->add_setting('hero_secondary_btn_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_secondary_btn_text_color', array(
+        'label' => __('Secondary Button Text', 'city-library'), 'section' => 'hero_section',
+    )));
+    $wp_customize->add_setting('hero_secondary_btn_hover_bg_color', array('default' => 'rgba(255, 255, 255, 0.2)', 'sanitize_callback' => 'sanitize_text_field')); // RGBA support
+    $wp_customize->add_control('hero_secondary_btn_hover_bg_color', array(
+        'label' => __('Secondary Button Hover BG', 'city-library'), 'section' => 'hero_section', 'type' => 'text',
+    ));
+
+
     // Partners Section
     $wp_customize->add_section('partners_section', array(
         'title'    => __('Our Partners', 'city-library'),
@@ -312,3 +349,31 @@ function city_library_tailwind_config() {
     <?php
 }
 add_action('wp_head', 'city_library_tailwind_config', 1);
+
+/**
+ * Generate custom CSS from Customizer settings.
+ */
+function city_library_dynamic_styles() {
+    ?>
+    <style type="text/css">
+        /* Hero Primary Button */
+        #hero-primary-btn {
+            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_bg_color', '#0b7930')); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_text_color', '#FFFFFF')); ?> !important;
+        }
+        #hero-primary-btn:hover {
+            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_hover_bg_color', '#d4af37')); ?> !important;
+        }
+
+        /* Hero Secondary Button */
+        #hero-secondary-btn {
+            background-color: <?php echo esc_attr(get_theme_mod('hero_secondary_btn_bg_color', 'rgba(255, 255, 255, 0.1)')); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('hero_secondary_btn_text_color', '#FFFFFF')); ?> !important;
+        }
+        #hero-secondary-btn:hover {
+            background-color: <?php echo esc_attr(get_theme_mod('hero_secondary_btn_hover_bg_color', 'rgba(255, 255, 255, 0.2)')); ?> !important;
+        }
+    </style>
+    <?php
+}
+add_action('wp_head', 'city_library_dynamic_styles');
