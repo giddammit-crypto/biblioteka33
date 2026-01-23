@@ -32,27 +32,28 @@ $section_title = get_theme_mod('afisha_title', 'Афиша Мероприяти�
 
 <section class="py-16 bg-white dark:bg-slate-900 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row gap-12 items-center">
+        <div class="bg-slate-50 dark:bg-slate-900/50 p-8 md:p-12 rounded-3xl" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%230b7930\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
 
-            <div class="md:w-1/3 space-y-6">
-                <div class="h-1 w-20 bg-primary"></div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white"><?php echo esc_html($section_title); ?></h2>
-                <p class="text-slate-500 dark:text-slate-400 text-lg">
-                    <?php _e('Не пропустите самые яркие события нашей библиотеки. Встречи, лекции, мастер-классы и многое другое.', 'city-library'); ?>
-                </p>
-                <div class="flex space-x-2">
-                    <button class="afisha-prev p-3 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
-                        <span class="material-symbols-outlined block">arrow_back</span>
-                    </button>
-                    <button class="afisha-next p-3 border border-slate-200 dark:border-slate-700 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
-                        <span class="material-symbols-outlined block">arrow_forward</span>
-                    </button>
+                <div class="md:w-1/3 space-y-6">
+                    <div class="h-1 w-20 bg-primary"></div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 dark:text-white"><?php echo esc_html($section_title); ?></h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg">
+                        <?php _e('Не пропустите самые яркие события нашей библиотеки. Встречи, лекции, мастер-классы и многое другое.', 'city-library'); ?>
+                    </p>
+                    <div class="flex space-x-2">
+                        <button class="afisha-prev p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
+                            <span class="material-symbols-outlined block">arrow_back</span>
+                        </button>
+                        <button class="afisha-next p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all">
+                            <span class="material-symbols-outlined block">arrow_forward</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="md:w-2/3 w-full h-[500px]">
-                <div class="swiper afisha-slider h-full w-full">
-                    <div class="swiper-wrapper">
+                <div class="md:w-2/3 w-full h-[500px]">
+                    <div class="swiper afisha-slider h-full w-full">
+                        <div class="swiper-wrapper">
                         <?php foreach ($events as $event) : ?>
                             <div class="swiper-slide h-full group cursor-pointer" <?php if ($event['link']) echo 'onclick="window.location.href=\'' . esc_url($event['link']) . '\'"'; ?>>
                                 <div class="relative h-full w-full rounded-2xl overflow-hidden shadow-lg">
@@ -80,10 +81,11 @@ $section_title = get_theme_mod('afisha_title', 'Афиша Мероприяти�
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 </section>
