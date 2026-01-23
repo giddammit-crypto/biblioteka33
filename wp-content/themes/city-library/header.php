@@ -10,9 +10,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white">menu_book</span>
-                </div>
+                <?php if (has_custom_logo()) : ?>
+                    <div class="custom-logo-wrapper w-auto h-12 flex items-center">
+                        <?php the_custom_logo(); ?>
+                    </div>
+                <?php else : ?>
+                    <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-white">menu_book</span>
+                    </div>
+                <?php endif; ?>
                 <div class="hidden md:block">
                     <p class="text-xs font-bold uppercase tracking-widest text-secondary dark:text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
                     <p class="text-sm font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
@@ -31,19 +37,8 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                 <button id="search-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
                 <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <span class="material-symbols-outlined">visibility</span>
-                </button>
-                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
-                <button id="dark-mode-toggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined dark:hidden">dark_mode</span>
-                    <span class="material-symbols-outlined hidden dark:block">light_mode</span>
-                </button>
-                 <button id="sidebar-toggle" class="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>

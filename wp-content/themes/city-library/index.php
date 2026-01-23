@@ -7,7 +7,7 @@
 
         <div id="primary" class="w-full lg:w-[70%] transition-all duration-300">
 
-            <button id="sidebar-toggle" class="mb-6 inline-flex items-center text-slate-500 hover:text-primary transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-lg shadow-sm border border-slate-100 dark:border-slate-700">
+             <button id="sidebar-toggle" class="mb-6 inline-flex items-center text-slate-500 hover:text-primary transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-lg shadow-sm border border-slate-100 dark:border-slate-700">
                 <span class="material-symbols-outlined text-xl">dock_to_left</span>
                 <span class="ml-2 font-bold text-xs uppercase tracking-wider"><?php _e('Меню', 'city-library'); ?></span>
             </button>
@@ -19,18 +19,11 @@
                         <h2 class="text-4xl md:text-5xl font-display font-bold"><?php _e('Последние новости', 'city-library'); ?></h2>
                         <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
                     </div>
-                    <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                        <button id="view-grid" class="p-2 bg-white dark:bg-slate-700 shadow-sm rounded-md">
-                            <span class="material-symbols-outlined text-xl">grid_view</span>
-                        </button>
-                        <button id="view-list" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
-                            <span class="material-symbols-outlined text-xl">view_list</span>
-                        </button>
-                    </div>
+
                 </div>
 
                 <?php if (have_posts()) : ?>
-                    <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <?php
                         while (have_posts()) :
                             the_post();
@@ -38,9 +31,17 @@
                         endwhile;
                         ?>
                     </div>
-                     <div class="mt-20 text-center">
+                     <div class="mt-12 text-center">
                         <?php the_posts_pagination(); ?>
                     </div>
+
+                    <div class="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-8">
+                        <a href="<?php echo get_post_type_archive_link('post'); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
+                            <?php _e('Архив новостей', 'city-library'); ?>
+                            <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                        </a>
+                    </div>
+
                 <?php else : ?>
                     <p><?php _e('К сожалению, по вашему запросу ничего не найдено.', 'city-library'); ?></p>
                 <?php endif; ?>
@@ -49,5 +50,7 @@
 
     </div>
 </div>
+
+<?php get_template_part('template-parts/section-afisha'); ?>
 
 <?php get_footer(); ?>
