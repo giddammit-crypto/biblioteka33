@@ -80,6 +80,7 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -413,6 +414,34 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_bg_color', array(
         'label' => __('Background Color', 'city-library'), 'section' => 'important_section',
     )));
+
+    // Modal Popup Section
+    $wp_customize->add_section('modal_section', array(
+        'title' => __('Popup Modal Settings', 'city-library'),
+        'priority' => 120,
+    ));
+
+    $wp_customize->add_setting('show_modal', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_modal', array(
+        'label' => __('Enable Popup Modal', 'city-library'),
+        'section' => 'modal_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('modal_image', array('sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'modal_image', array(
+        'label' => __('Modal Image', 'city-library'),
+        'section' => 'modal_section',
+    )));
+
+    $wp_customize->add_setting('modal_title', array('default' => 'Специальное предложение!', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('modal_title', array('label' => __('Title', 'city-library'), 'section' => 'modal_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('modal_text', array('default' => 'Подпишитесь на нашу рассылку новостей.', 'sanitize_callback' => 'wp_kses_post'));
+    $wp_customize->add_control('modal_text', array('label' => __('Text Content', 'city-library'), 'section' => 'modal_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('modal_delay', array('label' => __('Delay (ms)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
 }
 add_action('customize_register', 'city_library_customize_register');
 
