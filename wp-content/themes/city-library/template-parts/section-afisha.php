@@ -92,9 +92,9 @@ $section_title = get_theme_mod('afisha_title', 'Афиша Мероприяти�
 document.addEventListener('DOMContentLoaded', function() {
     new Swiper('.afisha-slider', {
         direction: 'horizontal',
-        slidesPerView: 1.2,
+        slidesPerView: 1,
         spaceBetween: 30,
-        centeredSlides: true,
+        centeredSlides: false,
         loop: true,
         autoplay: {
             delay: 4000,
@@ -103,12 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
         navigation: {
             nextEl: '.afisha-next',
             prevEl: '.afisha-prev',
-        },
-        breakpoints: {
-             768: {
-                slidesPerView: 1.5,
-                spaceBetween: 40,
-            }
         }
     });
 });
