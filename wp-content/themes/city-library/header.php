@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -66,8 +66,7 @@
                     'container'      => false,
                     'items_wrap'     => '<div class="flex space-x-8">%3$s</div>',
                     'fallback_cb'    => false,
-                    // Note: A custom walker would be needed to apply the specific Tailwind classes to each `<a>` tag.
-                    // This will be addressed in a future step if required.
+                    'walker'         => new City_Library_Nav_Walker(),
                 ) );
                 ?>
             </nav>

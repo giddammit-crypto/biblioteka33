@@ -86,4 +86,6 @@
     </div>
 </section>
 
+<?php get_template_part( 'template-parts/content-partners' ); ?>
+
 <?php get_footer(); ?>
