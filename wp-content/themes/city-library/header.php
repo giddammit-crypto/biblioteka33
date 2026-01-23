@@ -7,11 +7,11 @@
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-3 h-full py-2">
                 <?php if (has_custom_logo()) : ?>
-                    <div class="custom-logo-wrapper w-auto h-12 flex items-center">
+                    <div class="custom-logo-wrapper h-full w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                         <?php the_custom_logo(); ?>
                     </div>
                 <?php else : ?>

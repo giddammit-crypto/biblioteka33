@@ -4,7 +4,7 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_grid_text_color', '#334155');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<div class="group bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col scale-90 origin-top" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+<div class="group bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col" style="background-color: <?php echo esc_attr($bg_color); ?>;">
     <div class="relative overflow-hidden aspect-[16/10]" style="aspect-ratio: 16/10;">
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('medium_large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
@@ -14,7 +14,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
             </div>
         <?php endif; ?>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
-        <div class="absolute top-3 left-3 bg-primary text-slate-900 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+        <div class="absolute top-4 left-0 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-r-lg shadow-md uppercase tracking-wider before:content-[''] before:absolute before:left-0 before:top-full before:border-t-[6px] before:border-t-red-800 before:border-l-[6px] before:border-l-transparent">
             <?php
             $categories = get_the_category();
             if (!empty($categories)) {

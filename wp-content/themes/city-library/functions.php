@@ -70,6 +70,9 @@ function city_library_scripts() {
     wp_enqueue_style('swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css', array(), '11.0.0');
     wp_enqueue_script('swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', array(), '11.0.0', true);
 
+    // GLightbox CSS & JS
+    wp_enqueue_style('glightbox-css', 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css', array(), '3.3.0');
+    wp_enqueue_script('glightbox-js', 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js', array(), '3.3.0', true);
 
     // Custom JS files
     wp_enqueue_script('city-library-dark-mode', get_template_directory_uri() . '/js/dark-mode.js', array(), wp_get_theme()->get('Version'), true);
@@ -83,6 +86,16 @@ function city_library_scripts() {
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
+
+/**
+ * Modify main query for homepage to show 8 posts.
+ */
+function city_library_homepage_query($query) {
+    if ($query->is_home() && $query->is_main_query()) {
+        $query->set('posts_per_page', 10);
+    }
+}
+add_action('pre_get_posts', 'city_library_homepage_query');
 
 /**
  * Register widget areas.
