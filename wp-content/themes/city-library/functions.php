@@ -387,7 +387,7 @@ function city_library_customize_register($wp_customize) {
 
     // Important Section
     $wp_customize->add_section('important_section', array(
-        'title' => __('Important Info Block', 'city-library'),
+        'title' => __('Важная информация (Блок)', 'city-library'),
         'priority' => 106,
     ));
 
@@ -417,7 +417,7 @@ function city_library_customize_register($wp_customize) {
 
     // Modal Popup Section
     $wp_customize->add_section('modal_section', array(
-        'title' => __('Popup Modal Settings', 'city-library'),
+        'title' => __('Модальные окна', 'city-library'),
         'priority' => 120,
     ));
 
