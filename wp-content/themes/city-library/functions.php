@@ -246,6 +246,155 @@ function city_library_customize_register( $wp_customize ) {
         'section'  => 'city_library_hero_section',
         'settings' => 'hero_background_image',
     ) ) );
+
+    // F O O T E R   S E C T I O N
+    // =========================================================================
+    $wp_customize->add_section( 'city_library_footer_section', array(
+        'title'    => __( 'Настройки подвала', 'city-library' ),
+        'priority' => 140,
+    ) );
+
+    // Address
+    $wp_customize->add_setting( 'footer_address', array(
+        'default'           => __( 'ул. Центральная, д. 42<br>г. Владимир, 600000', 'city-library' ),
+        'sanitize_callback' => 'wp_kses_post',
+    ) );
+    $wp_customize->add_control( 'footer_address', array(
+        'label'   => __( 'Адрес', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'textarea',
+    ) );
+
+    // Phone
+    $wp_customize->add_setting( 'footer_phone', array(
+        'default'           => '+7 (4922) 32-00-00',
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_phone', array(
+        'label'   => __( 'Телефон', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // Work Hours Mon-Fri
+    $wp_customize->add_setting( 'footer_work_hours_weekdays', array(
+        'default'           => '10:00 – 20:00',
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_work_hours_weekdays', array(
+        'label'   => __( 'Режим работы (Пн-Пт)', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // Work Hours Sat
+    $wp_customize->add_setting( 'footer_work_hours_saturday', array(
+        'default'           => '10:00 – 18:00',
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_work_hours_saturday', array(
+        'label'   => __( 'Режим работы (Сб)', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // Work Hours Sun
+    $wp_customize->add_setting( 'footer_work_hours_sunday', array(
+        'default'           => __( 'Выходной', 'city-library' ),
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_work_hours_sunday', array(
+        'label'   => __( 'Режим работы (Вс)', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // Copyright Text
+    $wp_customize->add_setting( 'footer_copyright_text', array(
+        'default'           => sprintf( '© %s %s. %s', date('Y'), get_bloginfo('name'), __( 'Все права защищены.', 'city-library' ) ),
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_copyright_text', array(
+        'label'   => __( 'Текст копирайта', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // Privacy Policy URL
+    $wp_customize->add_setting( 'footer_privacy_policy_url', array(
+        'default'           => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ) );
+    $wp_customize->add_control( 'footer_privacy_policy_url', array(
+        'label'   => __( 'URL страницы Политики конфиденциальности', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'url',
+    ) );
+
+    // Sitemap URL
+    $wp_customize->add_setting( 'footer_sitemap_url', array(
+        'default'           => '#',
+        'sanitize_callback' => 'esc_url_raw',
+    ) );
+    $wp_customize->add_control( 'footer_sitemap_url', array(
+        'label'   => __( 'URL карты сайта', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'url',
+    ) );
+
+    // Subscription Form Placeholder
+    $wp_customize->add_setting( 'footer_subscription_placeholder', array(
+        'default'           => __( 'Email', 'city-library' ),
+        'sanitize_callback' => 'sanitize_text_field',
+    ) );
+    $wp_customize->add_control( 'footer_subscription_placeholder', array(
+        'label'   => __( 'Текст-заполнитель для формы подписки', 'city-library' ),
+        'section' => 'city_library_footer_section',
+        'type'    => 'text',
+    ) );
+
+    // P A R T N E R S   S E C T I O N
+    // =========================================================================
+    $wp_customize->add_section( 'city_library_partners_section', array(
+        'title'    => __( 'Наши партнёры', 'city-library' ),
+        'priority' => 150,
+    ) );
+
+    // Show Partners Section
+    $wp_customize->add_setting( 'partners_section_show', array(
+        'default'           => true,
+        'sanitize_callback' => 'wp_validate_boolean',
+    ) );
+    $wp_customize->add_control( 'partners_section_show', array(
+        'label'   => __( 'Показывать секцию "Наши партнёры"', 'city-library' ),
+        'section' => 'city_library_partners_section',
+        'type'    => 'checkbox',
+    ) );
+
+    // Loop to create settings for 8 partners
+    for ( $i = 1; $i <= 8; $i++ ) {
+        // Partner Logo
+        $wp_customize->add_setting( "partner_logo_$i", array(
+            'default'           => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ) );
+        $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, "partner_logo_$i", array(
+            'label'    => sprintf( __( 'Логотип партнёра %d', 'city-library' ), $i ),
+            'section'  => 'city_library_partners_section',
+            'settings' => "partner_logo_$i",
+        ) ) );
+
+        // Partner Link
+        $wp_customize->add_setting( "partner_link_$i", array(
+            'default'           => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ) );
+        $wp_customize->add_control( "partner_link_$i", array(
+            'label'   => sprintf( __( 'Ссылка партнёра %d', 'city-library' ), $i ),
+            'section' => 'city_library_partners_section',
+            'type'    => 'url',
+        ) );
+    }
 }
 add_action( 'customize_register', 'city_library_customize_register' );
 
@@ -327,7 +476,7 @@ add_action( 'wp_head', 'city_library_dynamic_styles' );
  */
 function city_library_view_switcher_styles() {
     ?>
-    <style type.css">
+    <style type="text/css">
         /* Initial state is grid, which is handled by Tailwind classes */
         #posts-container {
             display: grid;
@@ -376,3 +525,48 @@ function city_library_view_switcher_styles() {
     <?php
 }
 add_action( 'wp_head', 'city_library_view_switcher_styles' );
+
+/**
+ * Custom Walker class for styling the primary navigation menu.
+ */
+class City_Library_Nav_Walker extends Walker_Nav_Menu {
+    /**
+     * Starts the element output.
+     *
+     * @param string   $output            Used to append additional content (passed by reference).
+     * @param WP_Post  $item              Menu item data object.
+     * @param int      $depth             Depth of menu item. Used for padding.
+     * @param stdClass $args              An object of wp_nav_menu() arguments.
+     * @param int      $id                Current item ID.
+     */
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        $classes = 'text-sm font-semibold hover:text-primary transition-colors';
+        $output .= '<a href="' . esc_url( $item->url ) . '" class="' . esc_attr( $classes ) . '">';
+        $output .= esc_html( $item->title );
+        $output .= '</a>';
+    }
+
+    /**
+     * Ends the element output, if needed.
+     * We don't need to do anything here, but the method is required.
+     */
+    public function end_el( &$output, $item, $depth = 0, $args = null ) {
+        // We close the `<a>` tag in start_el, so nothing is needed here.
+    }
+
+     /**
+     * Starts the list before the elements are added.
+     * We override this to prevent WordPress from adding a `<ul>` wrapper.
+     */
+    public function start_lvl( &$output, $depth = 0, $args = null ) {
+        // Do nothing.
+    }
+
+    /**
+     * Ends the list of after the elements are added.
+     * We override this to prevent WordPress from adding a `</ul>` wrapper.
+     */
+    public function end_lvl( &$output, $depth = 0, $args = null ) {
+        // Do nothing.
+    }
+}
