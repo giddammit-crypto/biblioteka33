@@ -76,7 +76,6 @@ function city_library_scripts() {
 
     // Custom JS files
     wp_enqueue_script('city-library-dark-mode', get_template_directory_uri() . '/js/dark-mode.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
