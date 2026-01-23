@@ -161,6 +161,13 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    // Header Content Settings (Title/Subtitle)
+    $wp_customize->add_setting('header_subtitle', array('default' => 'Центральная городская', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_subtitle', array('label' => __('Site Subtitle (Top Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('header_title', array('default' => 'Библиотека', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_title', array('label' => __('Site Title (Bottom Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+
     // Hero Section
     $wp_customize->add_section('hero_section', array(
         'title'    => __('Hero Section', 'city-library'),
@@ -376,6 +383,36 @@ function city_library_customize_register($wp_customize) {
         $wp_customize->add_setting("afisha_link_$i", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
         $wp_customize->add_control("afisha_link_$i", array('label' => sprintf(__('Event Link %d', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'url'));
     }
+
+    // Important Section
+    $wp_customize->add_section('important_section', array(
+        'title' => __('Important Info Block', 'city-library'),
+        'priority' => 106,
+    ));
+
+    $wp_customize->add_setting('show_important_section', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_important_section', array(
+        'label' => __('Show Important Section', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('important_title', array('default' => 'Важная информация', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_title', array('label' => __('Title', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('important_text', array('default' => 'Внимание! В связи с санитарным днем библиотека работает по измененному графику.', 'sanitize_callback' => 'wp_kses_post'));
+    $wp_customize->add_control('important_text', array('label' => __('Text', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('important_btn_text', array('default' => 'Подробнее', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_btn_text', array('label' => __('Button Text', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('important_btn_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('important_btn_link', array('label' => __('Button Link', 'city-library'), 'section' => 'important_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('important_bg_color', array('default' => '#fef2f2', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_bg_color', array(
+        'label' => __('Background Color', 'city-library'), 'section' => 'important_section',
+    )));
 }
 add_action('customize_register', 'city_library_customize_register');
 

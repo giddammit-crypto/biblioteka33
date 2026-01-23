@@ -83,6 +83,22 @@
 
                     <script>
                         document.addEventListener('DOMContentLoaded', () => {
+                            // Select all links in content that point to images
+                            const contentImages = document.querySelectorAll('.entry-content a[href*=".jpg"], .entry-content a[href*=".jpeg"], .entry-content a[href*=".png"], .entry-content a[href*=".gif"], .entry-content a[href*=".webp"]');
+
+                            contentImages.forEach(link => {
+                                link.classList.add('glightbox');
+                                link.setAttribute('data-gallery', 'post-gallery');
+                            });
+
+                            // Also group the featured image and attached gallery
+                            const otherImages = document.querySelectorAll('.glightbox');
+                            otherImages.forEach(link => {
+                                if (!link.hasAttribute('data-gallery')) {
+                                    link.setAttribute('data-gallery', 'post-gallery');
+                                }
+                            });
+
                             const lightbox = GLightbox({
                                 selector: '.glightbox',
                                 touchNavigation: true,
