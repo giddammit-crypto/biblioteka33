@@ -6,6 +6,7 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-black" href="#content"><?php _e('Skip to content', 'city-library'); ?></a>
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -31,25 +32,25 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                 <button id="search-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                 <button id="search-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Toggle search', 'city-library'); ?>" title="<?php esc_attr_e('Toggle search', 'city-library'); ?>">
                     <span class="material-symbols-outlined">search</span>
                 </button>
-                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Accessibility settings', 'city-library'); ?>" title="<?php esc_attr_e('Accessibility settings', 'city-library'); ?>">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
                 <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
-                <button id="dark-mode-toggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button id="dark-mode-toggle" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Toggle dark mode', 'city-library'); ?>" title="<?php esc_attr_e('Toggle dark mode', 'city-library'); ?>">
                     <span class="material-symbols-outlined dark:hidden">dark_mode</span>
                     <span class="material-symbols-outlined hidden dark:block">light_mode</span>
                 </button>
-                 <button id="sidebar-toggle" class="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                 <button id="sidebar-toggle" class="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Open menu', 'city-library'); ?>" title="<?php esc_attr_e('Open menu', 'city-library'); ?>">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>
     </div>
 </header>
-<main>
+<main id="content">
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
