@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="w-full max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="flex flex-col gap-8 items-start">
 
         <div id="primary" class="w-full transition-all duration-300">
