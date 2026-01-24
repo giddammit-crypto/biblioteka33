@@ -76,16 +76,52 @@ function city_library_scripts() {
 
     // Custom JS files
     wp_enqueue_script('city-library-dark-mode', get_template_directory_uri() . '/js/dark-mode.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
+
+/**
+ * Disable comments globally.
+ */
+add_filter('comments_open', '__return_false', 20, 2);
+add_filter('pings_open', '__return_false', 20, 2);
+
+add_action('admin_init', function () {
+    // Redirect any user trying to access comments page
+    global $pagenow;
+    if ($pagenow === 'edit-comments.php') {
+        wp_redirect(admin_url());
+        exit;
+    }
+    // Remove comments metabox from dashboard
+    remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
+    // Disable support for comments and trackbacks in post types
+    foreach (get_post_types() as $post_type) {
+        if (post_type_supports($post_type, 'comments')) {
+            remove_post_type_support($post_type, 'comments');
+            remove_post_type_support($post_type, 'trackbacks');
+        }
+    }
+});
+
+// Remove comments page in menu
+add_action('admin_menu', function () {
+    remove_menu_page('edit-comments.php');
+});
+
+// Remove comments links from admin bar
+add_action('wp_before_admin_bar_render', function () {
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_menu('comments');
+});
 
 /**
  * Modify main query for homepage to show 8 posts.
@@ -134,23 +170,23 @@ add_action('widgets_init', 'city_library_widgets_init');
 function city_library_customize_register($wp_customize) {
     // Header Section
     $wp_customize->add_section('header_section', array(
-        'title'    => __('Header Settings', 'city-library'),
+        'title'    => __('Настройки шапки (Header)', 'city-library'),
         'priority' => 20,
     ));
 
     $wp_customize->add_setting('header_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bg_color', array(
-        'label' => __('Header Background Color', 'city-library'), 'section' => 'header_section',
+        'label' => __('Цвет фона шапки', 'city-library'), 'section' => 'header_section',
     )));
 
     $wp_customize->add_setting('header_text_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_text_color', array(
-        'label' => __('Header Text Color', 'city-library'), 'section' => 'header_section',
+        'label' => __('Цвет текста шапки', 'city-library'), 'section' => 'header_section',
     )));
 
      $wp_customize->add_setting('header_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('header_font_family', array(
-        'label' => __('Header Font Family', 'city-library'),
+        'label' => __('Шрифт шапки', 'city-library'),
         'section' => 'header_section',
         'type' => 'select',
         'choices' => array(
@@ -163,10 +199,10 @@ function city_library_customize_register($wp_customize) {
 
     // Header Content Settings (Title/Subtitle)
     $wp_customize->add_setting('header_subtitle', array('default' => 'Центральная городская', 'sanitize_callback' => 'sanitize_text_field'));
-    $wp_customize->add_control('header_subtitle', array('label' => __('Site Subtitle (Top Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+    $wp_customize->add_control('header_subtitle', array('label' => __('Подзаголовок (верхняя строка)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
 
     $wp_customize->add_setting('header_title', array('default' => 'Библиотека', 'sanitize_callback' => 'sanitize_text_field'));
-    $wp_customize->add_control('header_title', array('label' => __('Site Title (Bottom Line)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+    $wp_customize->add_control('header_title', array('label' => __('Название сайта (нижняя строка)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
 
     // Hero Section
     $wp_customize->add_section('hero_section', array(
@@ -386,33 +422,61 @@ function city_library_customize_register($wp_customize) {
 
     // Important Section
     $wp_customize->add_section('important_section', array(
-        'title' => __('Important Info Block', 'city-library'),
+        'title' => __('Важная информация (Блок)', 'city-library'),
         'priority' => 106,
     ));
 
     $wp_customize->add_setting('show_important_section', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('show_important_section', array(
-        'label' => __('Show Important Section', 'city-library'),
+        'label' => __('Показать блок "Важная информация"', 'city-library'),
         'section' => 'important_section',
         'type' => 'checkbox',
     ));
 
     $wp_customize->add_setting('important_title', array('default' => 'Важная информация', 'sanitize_callback' => 'sanitize_text_field'));
-    $wp_customize->add_control('important_title', array('label' => __('Title', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
+    $wp_customize->add_control('important_title', array('label' => __('Заголовок', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
 
     $wp_customize->add_setting('important_text', array('default' => 'Внимание! В связи с санитарным днем библиотека работает по измененному графику.', 'sanitize_callback' => 'wp_kses_post'));
-    $wp_customize->add_control('important_text', array('label' => __('Text', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
+    $wp_customize->add_control('important_text', array('label' => __('Текст', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
 
     $wp_customize->add_setting('important_btn_text', array('default' => 'Подробнее', 'sanitize_callback' => 'sanitize_text_field'));
-    $wp_customize->add_control('important_btn_text', array('label' => __('Button Text', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
+    $wp_customize->add_control('important_btn_text', array('label' => __('Текст кнопки', 'city-library'), 'section' => 'important_section', 'type' => 'text'));
 
     $wp_customize->add_setting('important_btn_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
-    $wp_customize->add_control('important_btn_link', array('label' => __('Button Link', 'city-library'), 'section' => 'important_section', 'type' => 'url'));
+    $wp_customize->add_control('important_btn_link', array('label' => __('Ссылка кнопки', 'city-library'), 'section' => 'important_section', 'type' => 'url'));
 
     $wp_customize->add_setting('important_bg_color', array('default' => '#fef2f2', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_bg_color', array(
-        'label' => __('Background Color', 'city-library'), 'section' => 'important_section',
+        'label' => __('Цвет фона', 'city-library'), 'section' => 'important_section',
     )));
+
+    // Modal Popup Section
+    $wp_customize->add_section('modal_section', array(
+        'title' => __('Модальные окна', 'city-library'),
+        'priority' => 120,
+    ));
+
+    $wp_customize->add_setting('show_modal', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_modal', array(
+        'label' => __('Включить всплывающее окно', 'city-library'),
+        'section' => 'modal_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('modal_image', array('sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'modal_image', array(
+        'label' => __('Изображение', 'city-library'),
+        'section' => 'modal_section',
+    )));
+
+    $wp_customize->add_setting('modal_title', array('default' => 'Специальное предложение!', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('modal_title', array('label' => __('Заголовок', 'city-library'), 'section' => 'modal_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('modal_text', array('default' => 'Подпишитесь на нашу рассылку новостей.', 'sanitize_callback' => 'wp_kses_post'));
+    $wp_customize->add_control('modal_text', array('label' => __('Текст', 'city-library'), 'section' => 'modal_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('modal_delay', array('label' => __('Задержка (мс)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
 }
 add_action('customize_register', 'city_library_customize_register');
 

@@ -5,7 +5,7 @@ $text_color = get_theme_mod('news_card_list_text_color', '#334155');
 $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 ?>
 <div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row md:min-h-[250px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="md:w-1/3 relative overflow-hidden aspect-[16/10] md:aspect-auto shrink-0">
+    <div class="md:w-1/3 relative overflow-hidden h-48 md:h-auto shrink-0">
         <?php if (has_post_thumbnail()) : ?>
             <?php the_post_thumbnail('large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
         <?php else : ?>

@@ -1,48 +1,80 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const toggleButton = document.getElementById('sidebar-toggle');
+document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('secondary');
     const content = document.getElementById('primary');
-    const icon = toggleButton ? toggleButton.querySelector('.material-symbols-outlined') : null;
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const closeBtn = document.getElementById('close-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
 
-    if (!toggleButton || !sidebar || !content) return;
+    if (!sidebar || !toggleBtn) return;
 
-    const storageKey = 'city_library_sidebar_state';
-
-    function updateIcon(isHidden) {
-        if (!icon) return;
-        // Assuming the button might have an icon.
-        // If hidden, we show 'chevron_right' (to expand), if visible 'chevron_left' (to collapse)
-        // or just a menu icon. Let's keep it simple or check what I put in HTML later.
-        // User didn't specify icon, so I'll leave icon logic generic or skip unless I defined it.
-        // I'll stick to class toggles.
-    }
-
-    function applyState(isHidden) {
-        if (isHidden) {
-            sidebar.classList.add('hidden');
-            content.classList.remove('lg:w-[70%]');
-            content.classList.add('w-full');
-            if (icon) icon.innerText = 'dock_to_right'; // Icon indicating "Show sidebar" or similar
+    // Mobile/Overlay toggle
+    function toggleMobileSidebar() {
+        const isClosed = sidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         } else {
-            sidebar.classList.remove('hidden');
-            content.classList.add('lg:w-[70%]');
-            content.classList.remove('w-full');
-             if (icon) icon.innerText = 'dock_to_left'; // Icon indicating "Hide sidebar"
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
         }
     }
 
-    // Load state
-    const savedState = localStorage.getItem(storageKey);
-    // Default is visible
-    if (savedState === 'hidden') {
-        applyState(true);
-    } else {
-        applyState(false);
+    // Desktop toggle
+    function toggleDesktopSidebar() {
+        // Check if sidebar is currently visible
+        const isHidden = sidebar.classList.contains('lg:hidden');
+
+        if (isHidden) {
+            // Show sidebar
+            sidebar.classList.remove('lg:hidden');
+            content.classList.remove('lg:w-full');
+            content.classList.add('lg:w-[70%]');
+        } else {
+            // Hide sidebar
+            sidebar.classList.add('lg:hidden');
+            content.classList.remove('lg:w-[70%]');
+            content.classList.add('lg:w-full');
+        }
     }
 
-    toggleButton.addEventListener('click', () => {
-        const isHidden = !sidebar.classList.contains('hidden');
-        applyState(isHidden);
-        localStorage.setItem(storageKey, isHidden ? 'hidden' : 'visible');
+    toggleBtn.addEventListener('click', function() {
+        if (window.innerWidth >= 1024) { // lg breakpoint
+            toggleDesktopSidebar();
+        } else {
+            toggleMobileSidebar();
+        }
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', toggleMobileSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', toggleMobileSidebar);
+    }
+
+    // Handle resize events to reset state if needed
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+            // Reset mobile state
+            sidebar.classList.remove('-translate-x-full'); // On desktop, it should be visible by default (translate-x-0)
+            // Wait, my HTML has -translate-x-full lg:translate-x-0.
+            // If I remove -translate-x-full, it becomes visible on mobile too?
+            // No, on mobile I toggle -translate-x-full.
+            // On desktop, the class lg:translate-x-0 overrides it.
+
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        } else {
+             // Reset desktop state
+             sidebar.classList.remove('lg:hidden');
+             content.classList.remove('lg:w-full');
+             content.classList.add('lg:w-[70%]');
+
+             // Ensure it's hidden on mobile initially
+             sidebar.classList.add('-translate-x-full');
+        }
     });
 });
