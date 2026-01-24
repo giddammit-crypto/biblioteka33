@@ -434,7 +434,24 @@ function city_library_customize_register($wp_customize) {
 
         $wp_customize->add_setting("afisha_link_$i", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
         $wp_customize->add_control("afisha_link_$i", array('label' => sprintf(__('Event Link %d', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'url'));
+
+        $wp_customize->add_setting("afisha_ribbon_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_ribbon_$i", array('label' => sprintf(__('Ribbon Text %d (e.g. NEW)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("afisha_badge_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_badge_$i", array('label' => sprintf(__('Badge Text %d (e.g. Featured)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
     }
+
+    $wp_customize->add_setting('afisha_bg_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_bg_style', array(
+        'label' => __('Background Style', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (SVG Pattern)',
+            'gradient' => 'Modern Gradient',
+        ),
+    ));
 
     // Important Section
     $wp_customize->add_section('important_section', array(
