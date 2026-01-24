@@ -15,7 +15,9 @@ $bg_color = get_theme_mod('important_bg_color', '#fef2f2'); // Default light red
 ?>
 
 <section class="py-12" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+
+        <!-- Main Alert Block -->
         <div class="flex flex-col md:flex-row items-center justify-between gap-8 p-8 border-l-4 border-red-500 bg-white shadow-sm rounded-r-xl">
             <div class="space-y-4 flex-grow">
                 <div class="flex items-center space-x-3 text-red-600">
@@ -36,5 +38,31 @@ $bg_color = get_theme_mod('important_bg_color', '#fef2f2'); // Default light red
                 </div>
             <?php endif; ?>
         </div>
+
+        <!-- Links Grid (8 items) -->
+        <?php
+        $links_present = false;
+        for ($i = 1; $i <= 8; $i++) {
+            if (get_theme_mod("important_link_image_$i")) {
+                $links_present = true;
+                break;
+            }
+        }
+
+        if ($links_present) : ?>
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
+                <?php for ($i = 1; $i <= 8; $i++) :
+                    $img = get_theme_mod("important_link_image_$i");
+                    $url = get_theme_mod("important_link_url_$i", '#');
+                    if (!$img) continue;
+                ?>
+                    <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all bg-white aspect-square flex items-center justify-center p-2">
+                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-150">
+                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
+                    </a>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+
     </div>
 </section>
