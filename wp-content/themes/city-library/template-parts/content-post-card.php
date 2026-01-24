@@ -5,9 +5,9 @@ $text_color = get_theme_mod('news_card_grid_text_color', '#334155');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
 <div class="group bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="relative overflow-hidden aspect-[16/10]" style="aspect-ratio: 16/10;">
+    <div class="relative overflow-hidden w-full h-48 sm:h-56 md:h-64">
         <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('medium_large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
+            <?php the_post_thumbnail('large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
         <?php else : ?>
             <div class="absolute inset-0 bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
                 <span class="material-symbols-outlined text-4xl text-slate-400">image</span>
