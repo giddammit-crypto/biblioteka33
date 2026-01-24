@@ -54,9 +54,9 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Footer / Link -->
         <div class="pt-4 mt-auto border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
-            <span class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10" style="color: <?php echo esc_attr($link_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline" style="color: <?php echo esc_attr($link_color); ?>;">
                 <?php _e('Читать полностью', 'city-library'); ?>
-            </span>
+            </a>
             <span class="material-symbols-outlined text-primary transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
         </div>
     </div>

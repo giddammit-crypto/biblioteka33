@@ -8,21 +8,68 @@ if (get_theme_mod('show_partners_section', true)) {
 
 <footer class="bg-secondary text-white py-16" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-        <?php if (is_active_sidebar('footer-1')) : ?>
-            <div class="footer-widget-area">
-                <?php dynamic_sidebar('footer-1'); ?>
-            </div>
-        <?php endif; ?>
-        <?php if (is_active_sidebar('footer-2')) : ?>
-            <div class="footer-widget-area">
-                <?php dynamic_sidebar('footer-2'); ?>
-            </div>
-        <?php endif; ?>
+
+        <!-- Custom Footer Content / Widget 1 -->
+        <div class="footer-column space-y-6">
+            <?php
+            $footer_desc = get_theme_mod('footer_description');
+            if ($footer_desc) : ?>
+                <div class="mb-6 opacity-90 leading-relaxed text-sm">
+                    <?php echo wpautop(esc_html($footer_desc)); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (is_active_sidebar('footer-1')) : ?>
+                 <?php dynamic_sidebar('footer-1'); ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- Contact Info / Widget 2 -->
+        <div class="footer-column space-y-4">
+             <?php
+            $phone = get_theme_mod('footer_phone');
+            $email = get_theme_mod('footer_email');
+            $address = get_theme_mod('footer_address');
+
+            if ($phone || $email || $address) : ?>
+                <h4 class="font-bold mb-6 text-primary uppercase text-xs tracking-widest"><?php _e('Контакты', 'city-library'); ?></h4>
+                <ul class="space-y-4 text-sm">
+                    <?php if ($address) : ?>
+                        <li class="flex items-start">
+                            <span class="material-symbols-outlined mr-3 text-primary shrink-0">location_on</span>
+                            <span><?php echo esc_html($address); ?></span>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($phone) : ?>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined mr-3 text-primary shrink-0">call</span>
+                            <a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/', '', $phone)); ?>" class="hover:text-primary transition-colors"><?php echo esc_html($phone); ?></a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($email) : ?>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined mr-3 text-primary shrink-0">mail</span>
+                            <a href="mailto:<?php echo esc_attr($email); ?>" class="hover:text-primary transition-colors"><?php echo esc_html($email); ?></a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            <?php endif; ?>
+
+            <?php if (is_active_sidebar('footer-2')) : ?>
+                <div class="mt-8">
+                    <?php dynamic_sidebar('footer-2'); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Widget 3 -->
         <?php if (is_active_sidebar('footer-3')) : ?>
             <div class="footer-widget-area">
                 <?php dynamic_sidebar('footer-3'); ?>
             </div>
         <?php endif; ?>
+
+        <!-- Widget 4 -->
         <?php if (is_active_sidebar('footer-4')) : ?>
             <div class="footer-widget-area">
                 <?php dynamic_sidebar('footer-4'); ?>

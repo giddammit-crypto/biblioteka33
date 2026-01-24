@@ -265,6 +265,19 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Footer Text Color', 'city-library'), 'section' => 'footer_section',
     )));
 
+    // New Footer Customizations
+    $wp_customize->add_setting('footer_description', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_control('footer_description', array('label' => __('Описание в футере', 'city-library'), 'section' => 'footer_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('footer_phone', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_phone', array('label' => __('Телефон', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('footer_email', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_email', array('label' => __('Email', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('footer_address', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_address', array('label' => __('Адрес', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
     // Hero Button Colors
     $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_primary_btn_bg_color', array(

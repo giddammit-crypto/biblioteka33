@@ -57,7 +57,7 @@ $bg_color = get_theme_mod('important_bg_color', '#fef2f2'); // Default light red
                     if (!$img) continue;
                 ?>
                     <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all bg-white aspect-square flex items-center justify-center p-2">
-                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110">
+                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-150">
                          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"></div>
                     </a>
                 <?php endfor; ?>
