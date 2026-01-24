@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Mode Sidebar Test</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0b7930",
+                        secondary: "#1A3C34",
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Marck+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <!-- Magic Mode CSS -->
+    <link rel="stylesheet" href="wp-content/themes/city-library/css/magic-mode.css">
+    <style>
+        /* Mock Base Styles */
+        body { font-family: sans-serif; }
+    </style>
+</head>
+<body class="magic-mode">
+
+<div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Promo Section Mock -->
+    <div class="mb-8 p-8 bg-white rounded-xl">
+        <h1 class="text-3xl font-bold">Promo Section (Hero)</h1>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="mb-6">
+         <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow transition-all">
+            <span class="material-symbols-outlined">menu_open</span>
+            <span class="text-sm font-bold uppercase">Скрыть/Показать сайдбар</span>
+        </button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8 items-start">
+
+        <!-- Sidebar Column (30%) -->
+        <div id="sidebar-column" class="w-full lg:w-[30%] shrink-0 transition-all duration-300">
+             <aside class="widget p-4 bg-white rounded shadow">
+                 <h2 class="text-xl font-bold mb-4">Sidebar Widget</h2>
+                 <p>Widget content...</p>
+             </aside>
+        </div>
+
+        <!-- Main Content (70%) -->
+        <div id="primary" class="w-full lg:w-[70%] transition-all duration-300">
+
+            <div class="content-area bg-white p-8 rounded-3xl">
+                <h2 class="text-3xl font-bold mb-6">Latest News</h2>
+
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- List Card Mock -->
+                    <article class="group relative flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden shadow-md isolate min-h-[220px]">
+                        <!-- Image Container -->
+                        <div class="md:w-[280px] shrink-0 relative overflow-hidden h-48 md:h-full md:min-h-full">
+                            <a href="#" class="block w-full h-full relative">
+                                <img src="https://via.placeholder.com/300x400" alt="Test Image" class="absolute inset-0 w-full h-full object-cover">
+                            </a>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex flex-col flex-grow p-6 md:p-8 relative justify-center">
+                            <div class="text-xs font-bold uppercase mb-3">Oct 24, 2023</div>
+                            <h3 class="text-2xl font-bold leading-tight mb-3">Test Article Title</h3>
+                            <div class="text-base leading-relaxed line-clamp-2 mb-6 flex-grow">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </div>
+                            <div class="mt-auto">
+                                <span class="text-sm font-bold uppercase text-primary">Read More</span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="wp-content/themes/city-library/js/sidebar.js"></script>
+
+</body>
+</html>
