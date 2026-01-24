@@ -522,6 +522,13 @@ function city_library_customize_register($wp_customize) {
         'section' => 'modal_section',
     )));
 
+    $wp_customize->add_setting('modal_video', array('sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'modal_video', array(
+        'label' => __('Видео файл (заменяет изображение)', 'city-library'),
+        'section' => 'modal_section',
+        'mime_type' => 'video',
+    )));
+
     $wp_customize->add_setting('modal_title', array('default' => 'Специальное предложение!', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('modal_title', array('label' => __('Заголовок', 'city-library'), 'section' => 'modal_section', 'type' => 'text'));
 

@@ -95,6 +95,7 @@ if (get_theme_mod('show_partners_section', true)) {
 // Modal Popup Logic
 if (get_theme_mod('show_modal', false)) :
     $modal_image = get_theme_mod('modal_image');
+    $modal_video = get_theme_mod('modal_video');
     $modal_title = get_theme_mod('modal_title', 'Специальное предложение!');
     $modal_text = get_theme_mod('modal_text', 'Подпишитесь на нашу рассылку новостей.');
     $modal_delay = get_theme_mod('modal_delay', 3000);
@@ -104,7 +105,11 @@ if (get_theme_mod('show_modal', false)) :
         <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm">
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
-        <?php if ($modal_image) : ?>
+        <?php if ($modal_video) : ?>
+            <div class="w-full">
+                <video src="<?php echo esc_url($modal_video); ?>" class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline></video>
+            </div>
+        <?php elseif ($modal_image) : ?>
             <div class="w-full">
                 <img src="<?php echo esc_url($modal_image); ?>" alt="<?php echo esc_attr($modal_title); ?>" class="w-full h-auto object-cover max-h-[40vh]">
             </div>
