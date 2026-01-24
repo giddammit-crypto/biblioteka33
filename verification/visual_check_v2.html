@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Check V2</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0b7930",
+                        secondary: "#1A3C34",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Montserrat", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-8 space-y-12">
+
+    <!-- SECTION 1: Single Post Layout -->
+    <section class="bg-white p-8 rounded-3xl shadow-xl max-w-6xl mx-auto">
+        <h2 class="text-2xl font-bold mb-4 border-b pb-2">1. Single Post Layout (300x200 Left)</h2>
+
+        <div class="flex flex-col md:flex-row gap-8 relative z-10">
+            <!-- Left Column: Image (300x200) -->
+            <div class="flex-shrink-0 mx-auto md:mx-0">
+                <div class="block rounded-2xl overflow-hidden shadow-lg relative group w-[300px] h-[200px] bg-gray-300">
+                    <img src="https://via.placeholder.com/600x400" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105">
+                </div>
+                <figcaption class="text-center text-slate-500 text-xs mt-2 italic w-[300px]">Caption here</figcaption>
+            </div>
+
+            <!-- Right Column: Content -->
+            <div class="flex-grow min-w-0">
+                <header class="entry-header mb-6">
+                    <div class="mb-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">News</span>
+                    </div>
+                    <h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 leading-tight">Full News Page Layout Check</h1>
+                    <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium border-b border-slate-100 pb-4 mb-6">
+                        <span>Date</span> <span>Author</span>
+                    </div>
+                </header>
+                <div class="entry-content prose max-w-none">
+                    <p>This is the content text. It should appear to the right of the image on desktop. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p>More content paragraph to check wrapping.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Homepage Grid (5 Cols) -->
+    <section class="max-w-[95%] mx-auto">
+        <h2 class="text-2xl font-bold mb-4">2. Homepage Grid (5 Columns)</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <!-- Card 1 -->
+            <article class="bg-white rounded-2xl overflow-hidden shadow-md">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-4">
+                    <h3 class="font-bold">News Item 1</h3>
+                    <p class="text-sm text-gray-500">Excerpt...</p>
+                </div>
+            </article>
+            <!-- Card 2 -->
+             <article class="bg-white rounded-2xl overflow-hidden shadow-md">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-4">
+                    <h3 class="font-bold">News Item 2</h3>
+                    <p class="text-sm text-gray-500">Excerpt...</p>
+                </div>
+            </article>
+             <!-- Card 3 -->
+             <article class="bg-white rounded-2xl overflow-hidden shadow-md">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-4">
+                    <h3 class="font-bold">News Item 3</h3>
+                    <p class="text-sm text-gray-500">Excerpt...</p>
+                </div>
+            </article>
+             <!-- Card 4 -->
+             <article class="bg-white rounded-2xl overflow-hidden shadow-md">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-4">
+                    <h3 class="font-bold">News Item 4</h3>
+                    <p class="text-sm text-gray-500">Excerpt...</p>
+                </div>
+            </article>
+             <!-- Card 5 -->
+             <article class="bg-white rounded-2xl overflow-hidden shadow-md">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-4">
+                    <h3 class="font-bold">News Item 5</h3>
+                    <p class="text-sm text-gray-500">Excerpt...</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECTION 3: Important Info Grid (8 items) -->
+    <section class="max-w-7xl mx-auto py-8">
+        <h2 class="text-2xl font-bold mb-4">3. Important Info Grid (8 Items)</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
+            <!-- 8 mock items -->
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">1</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">2</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">3</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">4</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">5</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">6</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">7</div>
+            <div class="bg-white aspect-square flex items-center justify-center border rounded-xl">8</div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: Modal (Visual Check) -->
+    <section class="relative h-[500px] border border-gray-400 bg-gray-100 flex items-center justify-center">
+        <h2 class="absolute top-0 left-0 p-4 font-bold">4. Modal Simulation</h2>
+        <div class="absolute inset-0 z-[100] flex items-center justify-center bg-black/80">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+                <div class="w-full">
+                    <img src="https://via.placeholder.com/800x400" class="w-full h-auto object-cover max-h-[40vh]">
+                </div>
+                <div class="p-8 text-center space-y-4">
+                    <h3 class="text-2xl font-bold font-display">Special Offer</h3>
+                    <div class="prose prose-sm mx-auto">
+                        <p>Text with <strong>HTML</strong> and <a href="#" class="text-blue-600 underline">links</a>.</p>
+                        <iframe width="300" height="200" src="about:blank" class="mx-auto border bg-gray-200"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

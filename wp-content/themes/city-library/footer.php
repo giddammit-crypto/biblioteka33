@@ -52,20 +52,25 @@ if (get_theme_mod('show_modal', false)) :
     $modal_text = get_theme_mod('modal_text', 'Подпишитесь на нашу рассылку новостей.');
     $modal_delay = get_theme_mod('modal_delay', 3000);
 ?>
-<div id="city-library-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden" data-delay="<?php echo esc_attr($modal_delay); ?>">
-    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-lg w-full mx-4 relative overflow-hidden animate-fade-in-up">
-        <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-10">
+<div id="city-library-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 hidden" data-delay="<?php echo esc_attr($modal_delay); ?>">
+    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 relative overflow-hidden animate-fade-in-up max-h-[90vh] overflow-y-auto">
+        <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm">
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
         <?php if ($modal_image) : ?>
-            <div class="h-48 w-full overflow-hidden">
-                <img src="<?php echo esc_url($modal_image); ?>" alt="<?php echo esc_attr($modal_title); ?>" class="w-full h-full object-cover">
+            <div class="w-full">
+                <img src="<?php echo esc_url($modal_image); ?>" alt="<?php echo esc_attr($modal_title); ?>" class="w-full h-auto object-cover max-h-[40vh]">
             </div>
         <?php endif; ?>
         <div class="p-8 text-center space-y-4">
-            <h3 class="text-2xl font-bold font-display text-slate-900 dark:text-white"><?php echo esc_html($modal_title); ?></h3>
-            <div class="prose prose-sm dark:prose-invert mx-auto text-slate-600 dark:text-slate-400">
-                <?php echo wp_kses_post(wpautop($modal_text)); ?>
+            <?php if ($modal_title) : ?>
+                <h3 class="text-2xl font-bold font-display text-slate-900 dark:text-white"><?php echo esc_html($modal_title); ?></h3>
+            <?php endif; ?>
+            <div class="prose prose-sm dark:prose-invert mx-auto text-slate-600 dark:text-slate-400 max-w-none">
+                <?php
+                // Allow HTML including iframes and buttons
+                echo city_library_sanitize_html(wpautop($modal_text));
+                ?>
             </div>
         </div>
     </div>
