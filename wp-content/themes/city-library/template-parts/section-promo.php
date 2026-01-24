@@ -44,7 +44,7 @@ $link = get_theme_mod('promo_link', '#');
 
             <?php if ($text) : ?>
                 <div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 mb-6">
-                    <?php echo wp_kses_post($text); ?>
+                    <?php echo wp_kses_post(wpautop($text)); ?>
                 </div>
             <?php endif; ?>
 
