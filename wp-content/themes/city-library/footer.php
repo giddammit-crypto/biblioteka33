@@ -86,7 +86,7 @@ if (get_theme_mod('show_partners_section', true)) {
 </footer>
 
 <?php if (get_theme_mod('show_back_to_top', true)) : ?>
-<button id="back-to-top" class="hidden fixed bottom-8 right-8 w-14 h-14 bg-primary hover:bg-yellow-600 text-secondary rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50">
+<button id="back-to-top" class="hidden fixed bottom-8 right-8 w-14 h-14 bg-primary hover:bg-yellow-600 text-secondary rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50" aria-label="<?php esc_attr_e('Вернуться наверх', 'city-library'); ?>">
     <span class="material-symbols-outlined text-2xl">arrow_upward</span>
 </button>
 <?php endif; ?>
@@ -113,7 +113,7 @@ if (get_theme_mod('show_modal', false)) :
 ?>
 <div id="city-library-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 hidden" data-delay="<?php echo esc_attr($modal_delay); ?>">
     <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 relative overflow-hidden animate-fade-in-up max-h-[90vh] overflow-y-auto">
-        <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm">
+        <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm" aria-label="<?php esc_attr_e('Закрыть модальное окно', 'city-library'); ?>">
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
         <?php if ($modal_video) :
