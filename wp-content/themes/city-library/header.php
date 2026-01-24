@@ -11,7 +11,7 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
@@ -42,7 +42,7 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
             </div>
@@ -55,7 +55,7 @@
     <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary dark:text-white"><?php _e('Меню', 'city-library'); ?></span>
-            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
