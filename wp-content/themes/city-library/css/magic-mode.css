@@ -1,0 +1,46 @@
+/* Magic Mode Styles */
+.magic-mode {
+    --primary-color: #d4af37 !important; /* Gold */
+    --secondary-color: #3e2723 !important; /* Dark Brown */
+    --text-color: #2c1810 !important;
+    --bg-overlay: rgba(255, 253, 240, 0.9);
+}
+
+.magic-mode body {
+    /* Background handled by JS */
+    color: var(--text-color);
+}
+
+.magic-mode h1, .magic-mode h2, .magic-mode h3, .magic-mode h4, .magic-mode h5, .magic-mode h6 {
+    font-family: var(--font-display) !important;
+    color: #4a0404 !important; /* Deep Red/Brown */
+    text-shadow: 1px 1px 0px rgba(255, 215, 0, 0.3);
+}
+
+.magic-mode p, .magic-mode a, .magic-mode li {
+    font-family: var(--font-body) !important;
+}
+
+.magic-mode .bg-white,
+.magic-mode .dark\:bg-slate-800,
+.magic-mode .bg-slate-50 {
+    background-color: transparent !important; /* Let parchment show through */
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.magic-mode article {
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    backdrop-filter: blur(2px);
+}
+
+/* Perspective for 3D transforms */
+.perspective-1000 {
+    perspective: 1500px;
+}
+.transform-style-3d {
+    transform-style: preserve-3d;
+}

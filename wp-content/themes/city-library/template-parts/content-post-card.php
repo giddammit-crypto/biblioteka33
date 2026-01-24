@@ -10,7 +10,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     <div class="relative overflow-hidden w-full h-56 shrink-0">
         <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
             <?php if (has_post_thumbnail()) : ?>
-                <img src="<?php echo esc_url(get_the_post_thumbnail_url(null, 'full')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
+                <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <?php else : ?>
                 <div class="absolute inset-0 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
                     <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
