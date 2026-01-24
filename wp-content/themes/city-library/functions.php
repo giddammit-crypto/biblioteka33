@@ -141,17 +141,15 @@ add_action('pre_get_posts', 'city_library_homepage_query');
  * Register widget areas.
  */
 function city_library_widgets_init() {
-    register_sidebar(
-        array(
-            'name'          => esc_html__('Main Sidebar', 'city-library'),
-            'id'            => 'sidebar-1',
-            'description'   => esc_html__('Add widgets here to appear in your sidebar.', 'city-library'),
-            'before_widget' => '<section id="%1$s" class="widget %2$s bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">',
-            'after_widget'  => '</section>',
-            'before_title'  => '<h2 class="widget-title text-xl font-bold font-display mb-4">',
-            'after_title'   => '</h2>',
-        )
-    );
+    register_sidebar(array(
+        'name'          => esc_html__('Main Sidebar', 'city-library'),
+        'id'            => 'sidebar-1',
+        'description'   => esc_html__('Add widgets here to appear in the sidebar.', 'city-library'),
+        'before_widget' => '<div id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h2 class="widget-title text-xl font-bold font-display mb-4 text-secondary dark:text-white border-b border-primary/20 pb-2">',
+        'after_title'   => '</h2>',
+    ));
 
     for ($i = 1; $i <= 4; $i++) {
         register_sidebar(array(
@@ -537,6 +535,38 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
     $wp_customize->add_control('modal_delay', array('label' => __('Задержка (мс)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
+
+    // Promo Section
+    $wp_customize->add_section('promo_section', array(
+        'title' => __('Промо Блок (Promo)', 'city-library'),
+        'priority' => 104,
+    ));
+
+    $wp_customize->add_setting('show_promo_section', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_promo_section', array(
+        'label' => __('Показать Промо Блок', 'city-library'),
+        'section' => 'promo_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('promo_image', array('sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'promo_image', array(
+        'label' => __('Изображение (400x300)', 'city-library'),
+        'section' => 'promo_section',
+    )));
+
+    $wp_customize->add_setting('promo_title', array('default' => 'Добро пожаловать', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_title', array('label' => __('Заголовок', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_text', array('default' => 'Узнайте больше о наших услугах и мероприятиях.', 'sanitize_callback' => 'city_library_sanitize_html'));
+    $wp_customize->add_control('promo_text', array('label' => __('Текст', 'city-library'), 'section' => 'promo_section', 'type' => 'textarea'));
+
+    // Promo Section Link Settings
+    $wp_customize->add_setting('promo_btn_text', array('default' => 'Подробнее', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_btn_text', array('label' => __('Текст кнопки', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('promo_link', array('label' => __('Ссылка', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
 }
 add_action('customize_register', 'city_library_customize_register');
 
@@ -688,3 +718,21 @@ function city_library_dynamic_styles() {
     <?php
 }
 add_action('wp_head', 'city_library_dynamic_styles');
+
+/**
+ * Add disableRemotePlayback to video tags to prevent local network scanning prompts.
+ */
+function city_library_disable_remote_playback() {
+    ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var videos = document.querySelectorAll('video');
+            videos.forEach(function(video) {
+                video.setAttribute('disableRemotePlayback', '');
+                video.setAttribute('controlsList', 'nodownload noremoteplayback');
+            });
+        });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'city_library_disable_remote_playback');
