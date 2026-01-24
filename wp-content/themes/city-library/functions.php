@@ -80,6 +80,7 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -519,6 +520,13 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'modal_image', array(
         'label' => __('Изображение', 'city-library'),
         'section' => 'modal_section',
+    )));
+
+    $wp_customize->add_setting('modal_video', array('sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'modal_video', array(
+        'label' => __('Видео файл (заменяет изображение)', 'city-library'),
+        'section' => 'modal_section',
+        'mime_type' => 'video',
     )));
 
     $wp_customize->add_setting('modal_title', array('default' => 'Специальное предложение!', 'sanitize_callback' => 'sanitize_text_field'));
