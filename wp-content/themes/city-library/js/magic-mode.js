@@ -6,7 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check localStorage
     if (localStorage.getItem('magicMode') === 'enabled') {
         body.classList.add('magic-mode');
-        updateIcon(true);
+        // Only update icon if button exists
+        if (magicToggle) {
+            updateIcon(true);
+        }
     }
 
     if (magicToggle) {
@@ -26,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
             body.classList.toggle('magic-mode');
             const newState = body.classList.contains('magic-mode');
             localStorage.setItem('magicMode', newState ? 'enabled' : 'disabled');
-            updateIcon(newState);
+            if (magicToggle) {
+                updateIcon(newState);
+            }
         }, 600); // Sync with CSS animation duration
     }
 
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!magicOverlay) return;
 
         const shockwave = magicOverlay.querySelector('.shockwave');
+        if (!shockwave) return;
 
         // Reset
         magicOverlay.classList.remove('opacity-0', 'pointer-events-none');
@@ -51,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateIcon(isMagic) {
+        if (!magicToggle) return;
         const icon = magicToggle.querySelector('.material-symbols-outlined');
         if (icon) {
             icon.textContent = isMagic ? 'auto_fix_off' : 'auto_fix';
