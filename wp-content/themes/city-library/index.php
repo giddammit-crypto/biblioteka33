@@ -2,66 +2,43 @@
 
 <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-    <!-- Toolbar for Sidebar Toggle -->
-    <div class="mb-6">
-         <button id="sidebar-toggle" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-md group" aria-expanded="true" aria-controls="main-sidebar">
-            <span class="material-symbols-outlined mr-2 group-hover:rotate-180 transition-transform duration-300">view_sidebar</span>
-            <span class="text-sm font-bold uppercase tracking-wider"><?php _e('Сайдбар', 'city-library'); ?></span>
-        </button>
-    </div>
+    <!-- Main Content (Full Width) -->
+    <div id="primary" class="w-full">
 
-    <!-- Flex Container -->
-    <div class="flex flex-col lg:flex-row gap-8 relative items-start">
+        <?php get_template_part('template-parts/section-promo'); ?>
 
-        <!-- Sidebar (30%) -->
-        <aside id="main-sidebar" class="w-full lg:w-[30%] shrink-0 transition-all duration-300 origin-top-left overflow-hidden">
-             <div class="sidebar-inner space-y-8">
-                <?php if (is_active_sidebar('sidebar-1')) : ?>
-                    <?php dynamic_sidebar('sidebar-1'); ?>
-                <?php else : ?>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
-                        <p class="text-slate-500 text-sm"><?php _e('Пожалуйста, добавьте виджеты в "Main Sidebar" через меню Внешний вид > Виджеты.', 'city-library'); ?></p>
-                    </div>
-                <?php endif; ?>
-             </div>
-        </aside>
+        <div class="content-area bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div class="space-y-4">
+                    <div class="h-1 w-20 bg-primary"></div>
+                    <h2 class="text-4xl md:text-5xl font-display font-bold"><?php _e('Последние новости', 'city-library'); ?></h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
+                </div>
+            </div>
 
-        <!-- Main Content (70%) -->
-        <div id="primary" class="w-full lg:w-[70%] flex-grow transition-all duration-300 min-w-0">
-
-            <div class="content-area bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                    <div class="space-y-4">
-                        <div class="h-1 w-20 bg-primary"></div>
-                        <h2 class="text-4xl md:text-5xl font-display font-bold"><?php _e('Последние новости', 'city-library'); ?></h2>
-                        <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
-                    </div>
+            <?php if (have_posts()) : ?>
+                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <?php
+                    while (have_posts()) :
+                        the_post();
+                        get_template_part('template-parts/content-post-card');
+                    endwhile;
+                    ?>
+                </div>
+                    <div class="mt-12 text-center">
+                    <?php the_posts_pagination(); ?>
                 </div>
 
-                <?php if (have_posts()) : ?>
-                    <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <?php
-                        while (have_posts()) :
-                            the_post();
-                            get_template_part('template-parts/content-post-card');
-                        endwhile;
-                        ?>
-                    </div>
-                        <div class="mt-12 text-center">
-                        <?php the_posts_pagination(); ?>
-                    </div>
+                <div class="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-8">
+                    <a href="<?php echo get_post_type_archive_link('post'); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
+                        <?php _e('Архив новостей', 'city-library'); ?>
+                        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                    </a>
+                </div>
 
-                    <div class="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-8">
-                        <a href="<?php echo get_post_type_archive_link('post'); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
-                            <?php _e('Архив новостей', 'city-library'); ?>
-                            <span class="material-symbols-outlined ml-2">arrow_forward</span>
-                        </a>
-                    </div>
-
-                <?php else : ?>
-                    <p><?php _e('К сожалению, по вашему запросу ничего не найдено.', 'city-library'); ?></p>
-                <?php endif; ?>
-            </div>
+            <?php else : ?>
+                <p><?php _e('К сожалению, по вашему запросу ничего не найдено.', 'city-library'); ?></p>
+            <?php endif; ?>
         </div>
     </div>
 </div>

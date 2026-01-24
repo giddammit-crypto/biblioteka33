@@ -80,7 +80,6 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -141,18 +140,6 @@ add_action('pre_get_posts', 'city_library_homepage_query');
  * Register widget areas.
  */
 function city_library_widgets_init() {
-    register_sidebar(
-        array(
-            'name'          => esc_html__('Main Sidebar', 'city-library'),
-            'id'            => 'sidebar-1',
-            'description'   => esc_html__('Add widgets here to appear in your sidebar.', 'city-library'),
-            'before_widget' => '<section id="%1$s" class="widget %2$s bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">',
-            'after_widget'  => '</section>',
-            'before_title'  => '<h2 class="widget-title text-xl font-bold font-display mb-4">',
-            'after_title'   => '</h2>',
-        )
-    );
-
     for ($i = 1; $i <= 4; $i++) {
         register_sidebar(array(
             'name'          => sprintf(esc_html__('Footer %d', 'city-library'), $i),
@@ -537,6 +524,13 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
     $wp_customize->add_control('modal_delay', array('label' => __('Задержка (мс)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
+
+    // Promo Section Link Settings
+    $wp_customize->add_setting('promo_btn_text', array('default' => 'Подробнее', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_btn_text', array('label' => __('Текст кнопки', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('promo_link', array('label' => __('Ссылка', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
 }
 add_action('customize_register', 'city_library_customize_register');
 
