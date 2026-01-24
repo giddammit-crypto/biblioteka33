@@ -7,8 +7,8 @@ $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 <article class="group relative flex flex-col md:flex-row bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 isolate min-h-[220px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
     <!-- Image Container -->
-    <div class="md:w-1/3 lg:w-[280px] shrink-0 relative overflow-hidden h-48 md:h-auto">
-        <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
+    <div class="md:w-[280px] shrink-0 relative overflow-hidden h-48 md:h-full md:min-h-full">
+        <a href="<?php the_permalink(); ?>" class="block w-full h-full relative" tabindex="-1" aria-hidden="true">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <?php else : ?>

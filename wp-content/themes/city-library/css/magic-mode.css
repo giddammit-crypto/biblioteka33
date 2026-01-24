@@ -1,141 +1,190 @@
-/* Magic Mode Styles */
-.magic-mode {
-    --primary-color: #4a0404 !important; /* Bordeaux/Dark Brown */
-    --secondary-color: #3e2723 !important; /* Dark Brown */
-    --text-color: #2c1810 !important;
-    --font-display: "Great Vibes", cursive !important;
-    --font-body: "Comforter", cursive !important;
+/*
+========================================
+MAGIC MODE - CINEMATIC AAA EXPERIENCE
+========================================
+*/
+
+:root {
+    --magic-font-heading: 'Cinzel', serif;
+    --magic-font-body: 'Marck Script', cursive; /* Russian-compatible script font */
+    --magic-color-bg: #1a0f0f;
+    --magic-color-primary: #4a0404; /* Dark Bordeaux */
+    --magic-color-secondary: #2c1810; /* Dark Brown */
+    --magic-color-accent: #d4af37; /* Gold */
+    --magic-color-text: #2c1810;
+    --magic-color-parchment: rgba(253, 251, 247, 0.95);
 }
 
-/* Hide Floating Buttons in Magic Mode (if necessary, though user asked to remove left one entirely) */
-/* .magic-mode #magic-toggle { display: none; } */
+body.magic-mode {
+    background-color: var(--magic-color-bg) !important;
+    background-image: url('../assets/images/magic-bg.png') !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-position: center !important;
+    font-family: var(--magic-font-body) !important;
+    color: var(--magic-color-text) !important;
+}
 
-/* Hide Hero Section */
-.magic-mode #hero-section {
+/* Hide Standard Hero */
+body.magic-mode section.hero-gradient,
+body.magic-mode .section-hero {
     display: none !important;
 }
 
-/* Header Styling */
-.magic-mode #masthead {
-    background-image: url('../assets/images/header-texture.jpg') !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: transparent !important;
-    border-bottom: 2px solid #4a0404;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.magic-mode #masthead h1,
-.magic-mode #masthead p,
-.magic-mode #masthead a,
-.magic-mode #masthead .material-symbols-outlined {
-    color: #4a0404 !important;
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
-}
-
 /* Typography Overrides */
-.magic-mode h1, .magic-mode h2, .magic-mode h3, .magic-mode h4, .magic-mode h5, .magic-mode h6 {
-    font-family: var(--font-display) !important;
-    color: #4a0404 !important;
-    font-weight: 400 !important; /* Calligraphy fonts often look better regular */
-    letter-spacing: 1px;
+body.magic-mode h1,
+body.magic-mode h2,
+body.magic-mode h3,
+body.magic-mode h4,
+body.magic-mode h5,
+body.magic-mode h6,
+body.magic-mode .font-display {
+    font-family: var(--magic-font-heading) !important;
+    color: var(--magic-color-primary) !important;
+    text-shadow: 1px 1px 0px rgba(212, 175, 55, 0.2);
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.magic-mode body, .magic-mode p, .magic-mode a, .magic-mode li, .magic-mode div {
-    font-family: var(--font-body) !important;
-    font-size: 1.1rem; /* Comforter might need a size bump */
+body.magic-mode p,
+body.magic-mode li,
+body.magic-mode span,
+body.magic-mode a,
+body.magic-mode div {
+    font-family: var(--magic-font-body) !important;
+    font-size: 1.15rem; /* Script fonts need to be slightly larger */
     line-height: 1.6;
 }
 
-/* Newspaper/Parchment Styling for Blocks */
-.magic-mode .bg-white,
-.magic-mode .dark\:bg-slate-800,
-.magic-mode .bg-slate-50 {
-    background-color: transparent !important;
-    background-image: none !important;
-    border: none !important;
-    box-shadow: none !important;
+/* Header/Nav */
+body.magic-mode #masthead {
+    background: transparent !important;
+    background-image: linear-gradient(to bottom, rgba(26, 15, 15, 0.95), rgba(26, 15, 15, 0.8)) !important;
+    border-bottom: 2px solid var(--magic-color-accent) !important;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
 }
 
-.magic-mode article,
-.magic-mode .widget,
-.magic-mode .content-area {
-    background-color: rgba(253, 251, 247, 0.8) !important; /* Light parchment tint */
-    border: 2px double #4a0404 !important; /* Double border for newspaper feel */
-    border-radius: 4px !important; /* Sharper corners */
-    padding: 20px !important;
-    position: relative;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+body.magic-mode #masthead nav a,
+body.magic-mode #masthead p,
+body.magic-mode #masthead .material-symbols-outlined {
+    color: var(--magic-color-accent) !important;
+    font-family: var(--magic-font-heading) !important;
+    text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
 }
 
-/* Decorative corners (pseudo-elements) */
-.magic-mode article::before,
-.magic-mode article::after {
-    content: "✦";
-    position: absolute;
-    color: #4a0404;
-    font-size: 1.2rem;
-    pointer-events: none;
+/* Cards & Content Areas (Newspaper Style) */
+body.magic-mode .bg-white,
+body.magic-mode .bg-slate-50,
+body.magic-mode .dark\:bg-slate-800,
+body.magic-mode .dark\:bg-slate-900,
+body.magic-mode .content-area,
+body.magic-mode article {
+    background-color: var(--magic-color-parchment) !important;
+    background-image: url('https://www.transparenttextures.com/patterns/aged-paper.png') !important; /* Subtle texture overlay */
+    border: 3px double var(--magic-color-primary) !important;
+    border-radius: 4px !important;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.4) !important;
+    color: var(--magic-color-text) !important;
 }
-.magic-mode article::before { top: 4px; left: 4px; }
-.magic-mode article::after { bottom: 4px; right: 4px; }
 
-/* Image Styling */
-.magic-mode img {
-    filter: sepia(0.6) contrast(1.1) !important; /* Old photo look */
-    border: 1px solid #4a0404 !important;
-    padding: 4px;
-    background-color: #fff;
+/* Remove modern rounded corners */
+body.magic-mode .rounded-2xl,
+body.magic-mode .rounded-3xl,
+body.magic-mode .rounded-xl {
+    border-radius: 2px !important;
+}
+
+/* Images (Vintage Look) */
+body.magic-mode img {
+    filter: sepia(0.4) contrast(1.1) brightness(0.9) !important;
+    border: 1px solid var(--magic-color-primary) !important;
+    padding: 6px;
+    background: #fff;
+    transition: filter 0.5s ease;
+}
+
+body.magic-mode img:hover {
+    filter: sepia(0) contrast(1.05) brightness(1) !important;
+}
+
+/* Buttons */
+body.magic-mode button,
+body.magic-mode .bg-primary,
+body.magic-mode .btn-primary {
+    background-color: var(--magic-color-primary) !important;
+    color: var(--magic-color-accent) !important;
+    border: 1px solid var(--magic-color-accent) !important;
+    font-family: var(--magic-font-heading) !important;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    border-radius: 2px !important;
+}
+
+body.magic-mode button:hover,
+body.magic-mode .bg-primary:hover {
+    background-color: #600000 !important;
+    box-shadow: 0 0 10px var(--magic-color-accent);
 }
 
 /* Sidebar Specifics */
-.magic-mode #sidebar-toggle-btn {
-    background-color: #4a0404 !important;
-    font-family: var(--font-display) !important;
-    border: 1px solid #d4af37;
+body.magic-mode #sidebar-column aside {
+    border-right: 1px solid var(--magic-color-primary);
+    padding-right: 20px;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .magic-mode article {
-        padding: 15px !important;
-    }
-}
-
-/* Sparkles Container */
-#magic-sparkles-container {
+/* Magic Toggle Button (Bottom Right) */
+#magic-toggle {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-}
-
-.sparkle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background-color: #ffd700;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: url('../assets/images/magic-book-cover.png') no-repeat center center; /* Fallback if image missing */
+    background-color: #4a0404;
+    background-size: contain;
+    border: 2px solid #d4af37;
     border-radius: 50%;
-    animation: sparkle-anim 1s linear forwards;
-    opacity: 0;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d4af37;
 }
 
-@keyframes sparkle-anim {
-    0% { transform: scale(0) rotate(0deg); opacity: 0; }
-    50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
-    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+#magic-toggle:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
 }
 
-/* Darkening Overlay for Transition */
-#magic-dark-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: #000;
-    z-index: 70; /* Above book (60) */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 2s ease-in-out;
+/* Animations */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+body.magic-mode .entry-title {
+    animation: flicker 4s infinite;
+}
+
+/* Sidebar Toggle Button in Magic Mode */
+body.magic-mode #sidebar-toggle-btn {
+    background-color: var(--magic-color-primary) !important;
+    color: var(--magic-color-accent) !important;
+    border: 1px solid var(--magic-color-accent) !important;
+}
+
+/* Custom Scrollbar */
+body.magic-mode ::-webkit-scrollbar {
+    width: 12px;
+}
+body.magic-mode ::-webkit-scrollbar-track {
+    background: #1a0f0f;
+}
+body.magic-mode ::-webkit-scrollbar-thumb {
+    background: #4a0404;
+    border: 1px solid #d4af37;
 }
