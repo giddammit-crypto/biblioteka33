@@ -462,6 +462,9 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет фона', 'city-library'), 'section' => 'important_section',
     )));
 
+    $wp_customize->add_setting('important_inter_block_text', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_control('important_inter_block_text', array('label' => __('Текст между блоками', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
+
     // Important Section Links (8 items)
     for ($i = 1; $i <= 8; $i++) {
         $wp_customize->add_setting("important_link_image_$i", array('sanitize_callback' => 'esc_url_raw'));
