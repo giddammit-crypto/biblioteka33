@@ -80,7 +80,6 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -141,16 +140,6 @@ add_action('pre_get_posts', 'city_library_homepage_query');
  * Register widget areas.
  */
 function city_library_widgets_init() {
-    register_sidebar(array(
-        'name'          => esc_html__('Main Sidebar', 'city-library'),
-        'id'            => 'sidebar-1',
-        'description'   => esc_html__('Add widgets here to appear in the sidebar.', 'city-library'),
-        'before_widget' => '<div id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
-        'after_widget'  => '</div>',
-        'before_title'  => '<h2 class="widget-title text-xl font-bold font-display mb-4 text-secondary dark:text-white border-b border-primary/20 pb-2">',
-        'after_title'   => '</h2>',
-    ));
-
     for ($i = 1; $i <= 4; $i++) {
         register_sidebar(array(
             'name'          => sprintf(esc_html__('Footer %d', 'city-library'), $i),
