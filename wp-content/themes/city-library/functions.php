@@ -92,6 +92,7 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-sidebar-toggle', get_template_directory_uri() . '/js/sidebar-toggle.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -152,6 +153,16 @@ add_action('pre_get_posts', 'city_library_homepage_query');
  * Register widget areas.
  */
 function city_library_widgets_init() {
+    register_sidebar( array(
+        'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
+        'id'            => 'sidebar-1',
+        'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
+        'after_title'   => '</h2>',
+    ) );
+
     for ($i = 1; $i <= 4; $i++) {
         register_sidebar(array(
             'name'          => sprintf(esc_html__('Footer %d', 'city-library'), $i),
@@ -570,6 +581,45 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control('promo_link', array('label' => __('Ссылка', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
 }
 add_action('customize_register', 'city_library_customize_register');
+
+
+/**
+ * Disable comments.
+ */
+function city_library_disable_comments_post_types_support() {
+    $post_types = get_post_types();
+    foreach ($post_types as $post_type) {
+        if (post_type_supports($post_type, 'comments')) {
+            remove_post_type_support($post_type, 'comments');
+            remove_post_type_support($post_type, 'trackbacks');
+        }
+    }
+}
+add_action('admin_init', 'city_library_disable_comments_post_types_support');
+
+function city_library_disable_comments_status() {
+    return false;
+}
+add_filter('comments_open', 'city_library_disable_comments_status', 20, 2);
+add_filter('pings_open', 'city_library_disable_comments_status', 20, 2);
+
+function city_library_disable_comments_hide_existing_comments($comments) {
+    $comments = array();
+    return $comments;
+}
+add_filter('comments_array', 'city_library_disable_comments_hide_existing_comments', 10, 2);
+
+function city_library_disable_comments_admin_menu() {
+    remove_menu_page('edit-comments.php');
+}
+add_action('admin_menu', 'city_library_disable_comments_admin_menu');
+
+function city_library_disable_comments_admin_bar() {
+    if (is_admin_bar_showing()) {
+        remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
+    }
+}
+add_action('init', 'city_library_disable_comments_admin_bar');
 
 
 /**
