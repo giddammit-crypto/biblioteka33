@@ -12,10 +12,11 @@ $text = get_theme_mod('important_text', __('Внимание! В связи с �
 $btn_text = get_theme_mod('important_btn_text', __('Подробнее', 'city-library'));
 $btn_link = get_theme_mod('important_btn_link', '#');
 $bg_color = get_theme_mod('important_bg_color', '#fef2f2'); // Default light red/pink
+$inter_block_text = get_theme_mod('important_inter_block_text', '');
 ?>
 
 <section class="py-16" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Main Alert Block -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>
@@ -50,6 +51,15 @@ $bg_color = get_theme_mod('important_bg_color', '#fef2f2'); // Default light red
             <?php endif; ?>
         </div>
         <?php endif; ?>
+
+        <!-- Spacer / Inter-block text -->
+        <div class="py-12 flex items-center justify-center">
+             <?php if ($inter_block_text) : ?>
+                <div class="w-full bg-slate-900/50 text-white text-center py-4 px-6 rounded-lg backdrop-blur-sm">
+                    <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
+                </div>
+             <?php endif; ?>
+        </div>
 
         <!-- Links Grid (8 items) -->
         <?php
