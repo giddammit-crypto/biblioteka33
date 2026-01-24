@@ -182,6 +182,19 @@ add_action('widgets_init', 'city_library_widgets_init');
  * Customizer additions.
  */
 function city_library_customize_register($wp_customize) {
+    // Layout Settings
+    $wp_customize->add_section('layout_section', array(
+        'title'    => __('Настройки макета (Layout)', 'city-library'),
+        'priority' => 19,
+    ));
+
+    $wp_customize->add_setting('show_sidebar', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_sidebar', array(
+        'label' => __('Показать сайдбар', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'checkbox',
+    ));
+
     // Header Section
     $wp_customize->add_section('header_section', array(
         'title'    => __('Настройки шапки (Header)', 'city-library'),

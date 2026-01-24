@@ -2,23 +2,29 @@
 
 <div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
+    <?php $show_sidebar = get_theme_mod('show_sidebar', false); ?>
+
     <!-- Toggle Button -->
+    <?php if ($show_sidebar) : ?>
     <div class="mb-6">
          <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
             <span class="material-symbols-outlined">menu_open</span>
             <span class="text-sm font-bold uppercase"><?php _e('Скрыть/Показать сайдбар', 'city-library'); ?></span>
         </button>
     </div>
+    <?php endif; ?>
 
     <div class="flex flex-col lg:flex-row gap-8 items-start">
 
         <!-- Sidebar Column (30%) -->
+        <?php if ($show_sidebar) : ?>
         <div id="sidebar-column" class="w-full lg:w-[30%] shrink-0 transition-all duration-300">
              <?php get_sidebar(); ?>
         </div>
+        <?php endif; ?>
 
         <!-- Main Content (70%) -->
-        <div id="primary" class="w-full lg:w-[70%] transition-all duration-300">
+        <div id="primary" class="w-full <?php echo $show_sidebar ? 'lg:w-[70%]' : ''; ?> transition-all duration-300">
 
             <?php get_template_part('template-parts/section-promo'); ?>
 
