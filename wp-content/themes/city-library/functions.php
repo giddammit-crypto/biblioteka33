@@ -123,11 +123,15 @@ add_action('wp_before_admin_bar_render', function () {
 });
 
 /**
- * Modify main query for homepage to show 8 posts.
+ * Modify main query for homepage and archives.
  */
 function city_library_homepage_query($query) {
-    if ($query->is_home() && $query->is_main_query()) {
-        $query->set('posts_per_page', 10);
+    if (!is_admin() && $query->is_main_query()) {
+        if ($query->is_home()) {
+            $query->set('posts_per_page', 10);
+        } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
+            $query->set('posts_per_page', 16);
+        }
     }
 }
 add_action('pre_get_posts', 'city_library_homepage_query');

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Check V6</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0b7930",
+                        secondary: "#1A3C34",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Montserrat", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-8 space-y-12">
+
+    <!-- SECTION 1: Archive Page Layout (4 Columns x 4 Rows = 16) -->
+    <section class="max-w-[80%] mx-auto bg-gray-50 p-4 border rounded-xl">
+        <h2 class="text-2xl font-bold mb-4">1. Archive Page (16 Posts per Page)</h2>
+        <h1 class="text-4xl font-bold font-display mb-8">Архив новостей</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- 16 Cards Mockup -->
+            <article class="bg-white rounded-2xl h-48 shadow-md">1</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">2</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">3</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">4</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">5</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">6</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">7</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">8</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">9</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">10</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">11</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">12</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">13</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">14</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">15</article>
+            <article class="bg-white rounded-2xl h-48 shadow-md">16</article>
+        </div>
+        <div class="mt-8 text-center bg-gray-200 p-2">Pagination</div>
+    </section>
+
+</body>
+</html>
