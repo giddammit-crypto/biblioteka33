@@ -1,46 +1,141 @@
 /* Magic Mode Styles */
 .magic-mode {
-    --primary-color: #d4af37 !important; /* Gold */
+    --primary-color: #4a0404 !important; /* Bordeaux/Dark Brown */
     --secondary-color: #3e2723 !important; /* Dark Brown */
     --text-color: #2c1810 !important;
-    --bg-overlay: rgba(255, 253, 240, 0.9);
+    --font-display: "Great Vibes", cursive !important;
+    --font-body: "Comforter", cursive !important;
 }
 
-.magic-mode body {
-    /* Background handled by JS */
-    color: var(--text-color);
+/* Hide Floating Buttons in Magic Mode (if necessary, though user asked to remove left one entirely) */
+/* .magic-mode #magic-toggle { display: none; } */
+
+/* Hide Hero Section */
+.magic-mode #hero-section {
+    display: none !important;
 }
 
+/* Header Styling */
+.magic-mode #masthead {
+    background-image: url('../assets/images/header-texture.jpg') !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: transparent !important;
+    border-bottom: 2px solid #4a0404;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.magic-mode #masthead h1,
+.magic-mode #masthead p,
+.magic-mode #masthead a,
+.magic-mode #masthead .material-symbols-outlined {
+    color: #4a0404 !important;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+/* Typography Overrides */
 .magic-mode h1, .magic-mode h2, .magic-mode h3, .magic-mode h4, .magic-mode h5, .magic-mode h6 {
     font-family: var(--font-display) !important;
-    color: #4a0404 !important; /* Deep Red/Brown */
-    text-shadow: 1px 1px 0px rgba(255, 215, 0, 0.3);
+    color: #4a0404 !important;
+    font-weight: 400 !important; /* Calligraphy fonts often look better regular */
+    letter-spacing: 1px;
 }
 
-.magic-mode p, .magic-mode a, .magic-mode li {
+.magic-mode body, .magic-mode p, .magic-mode a, .magic-mode li, .magic-mode div {
     font-family: var(--font-body) !important;
+    font-size: 1.1rem; /* Comforter might need a size bump */
+    line-height: 1.6;
 }
 
+/* Newspaper/Parchment Styling for Blocks */
 .magic-mode .bg-white,
 .magic-mode .dark\:bg-slate-800,
 .magic-mode .bg-slate-50 {
-    background-color: transparent !important; /* Let parchment show through */
+    background-color: transparent !important;
     background-image: none !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-.magic-mode article {
-    background-color: rgba(255, 255, 255, 0.6) !important;
-    border: 1px solid #d4af37 !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-    backdrop-filter: blur(2px);
+.magic-mode article,
+.magic-mode .widget,
+.magic-mode .content-area {
+    background-color: rgba(253, 251, 247, 0.8) !important; /* Light parchment tint */
+    border: 2px double #4a0404 !important; /* Double border for newspaper feel */
+    border-radius: 4px !important; /* Sharper corners */
+    padding: 20px !important;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Perspective for 3D transforms */
-.perspective-1000 {
-    perspective: 1500px;
+/* Decorative corners (pseudo-elements) */
+.magic-mode article::before,
+.magic-mode article::after {
+    content: "✦";
+    position: absolute;
+    color: #4a0404;
+    font-size: 1.2rem;
+    pointer-events: none;
 }
-.transform-style-3d {
-    transform-style: preserve-3d;
+.magic-mode article::before { top: 4px; left: 4px; }
+.magic-mode article::after { bottom: 4px; right: 4px; }
+
+/* Image Styling */
+.magic-mode img {
+    filter: sepia(0.6) contrast(1.1) !important; /* Old photo look */
+    border: 1px solid #4a0404 !important;
+    padding: 4px;
+    background-color: #fff;
+}
+
+/* Sidebar Specifics */
+.magic-mode #sidebar-toggle-btn {
+    background-color: #4a0404 !important;
+    font-family: var(--font-display) !important;
+    border: 1px solid #d4af37;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .magic-mode article {
+        padding: 15px !important;
+    }
+}
+
+/* Sparkles Container */
+#magic-sparkles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: #ffd700;
+    border-radius: 50%;
+    animation: sparkle-anim 1s linear forwards;
+    opacity: 0;
+}
+
+@keyframes sparkle-anim {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* Darkening Overlay for Transition */
+#magic-dark-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #000;
+    z-index: 70; /* Above book (60) */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease-in-out;
 }

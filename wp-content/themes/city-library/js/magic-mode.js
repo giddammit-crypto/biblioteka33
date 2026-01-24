@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const magicParams = window.magic_mode_params || {};
 
-    // Create Toggle Button (Wand Icon)
+    // Create Toggle Button (Wand Icon) - BOTTOM RIGHT
     const toggleBtn = document.createElement('button');
     toggleBtn.id = 'magic-mode-toggle';
     toggleBtn.innerHTML = '<span class="material-symbols-outlined">auto_fix_high</span>';
@@ -21,23 +21,34 @@ document.addEventListener('DOMContentLoaded', function() {
     overlay.id = 'magic-book-overlay';
     overlay.className = 'fixed inset-0 z-[60] pointer-events-none perspective-1000 hidden';
 
+    // Darkening Overlay (New Requirement)
+    const darkOverlay = document.createElement('div');
+    darkOverlay.id = 'magic-dark-overlay';
+    document.body.appendChild(darkOverlay);
+
+    // Sparkles Container (New Requirement)
+    const sparklesContainer = document.createElement('div');
+    sparklesContainer.id = 'magic-sparkles-container';
+    document.body.appendChild(sparklesContainer);
+
     // Left and Right Covers
+    // Slower animation (duration-[3000ms])
     const leftCover = document.createElement('div');
-    leftCover.className = 'absolute inset-y-0 left-0 w-1/2 bg-cover bg-right shadow-2xl origin-left transition-transform duration-[1500ms] ease-in-out transform-style-3d';
+    leftCover.className = 'absolute inset-y-0 left-0 w-1/2 bg-cover bg-right shadow-2xl origin-left transition-transform duration-[3000ms] ease-in-out transform-style-3d';
     leftCover.style.backgroundImage = `url('${magicParams.book_cover}')`;
     leftCover.style.backfaceVisibility = 'hidden';
 
     const rightCover = document.createElement('div');
-    rightCover.className = 'absolute inset-y-0 right-0 w-1/2 bg-cover bg-left shadow-2xl origin-right transition-transform duration-[1500ms] ease-in-out transform-style-3d';
+    rightCover.className = 'absolute inset-y-0 right-0 w-1/2 bg-cover bg-left shadow-2xl origin-right transition-transform duration-[3000ms] ease-in-out transform-style-3d';
     rightCover.style.backgroundImage = `url('${magicParams.book_cover}')`;
     rightCover.style.backfaceVisibility = 'hidden';
 
     // Inner pages (for effect)
     const leftPage = document.createElement('div');
-    leftPage.className = 'absolute inset-y-0 left-0 w-1/2 bg-[#fdfbf7] origin-left transition-transform duration-[1500ms] ease-in-out delay-100';
+    leftPage.className = 'absolute inset-y-0 left-0 w-1/2 bg-[#fdfbf7] origin-left transition-transform duration-[3000ms] ease-in-out delay-100';
 
     const rightPage = document.createElement('div');
-    rightPage.className = 'absolute inset-y-0 right-0 w-1/2 bg-[#fdfbf7] origin-right transition-transform duration-[1500ms] ease-in-out delay-100';
+    rightPage.className = 'absolute inset-y-0 right-0 w-1/2 bg-[#fdfbf7] origin-right transition-transform duration-[3000ms] ease-in-out delay-100';
 
     overlay.appendChild(leftPage);
     overlay.appendChild(rightPage);
@@ -64,10 +75,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    function createSparkle() {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        // Randomize size slightly
+        const scale = 0.5 + Math.random();
+        sparkle.style.transform = `scale(${scale})`;
+        sparklesContainer.appendChild(sparkle);
+
+        // Remove after animation
+        setTimeout(() => {
+            sparkle.remove();
+        }, 1000);
+    }
+
     function animateBookOpening() {
-        // Show Overlay
+        // 1. Show Overlay (Book Closed) & Dark Overlay
         overlay.classList.remove('hidden');
-        overlay.style.pointerEvents = 'auto'; // Block clicks during anim
+        overlay.style.pointerEvents = 'auto';
+
+        darkOverlay.style.opacity = '1'; // Start dark
 
         // Reset transforms
         leftCover.style.transform = 'rotateY(0deg)';
@@ -76,44 +105,48 @@ document.addEventListener('DOMContentLoaded', function() {
         // Force reflow
         void overlay.offsetWidth;
 
-        // Start Animation (Close book first if needed, then open)
-        // Actually, let's just do an "Open" effect revealing the magic world
-
-        // 1. Initial State: Closed Book covering screen
-        // (Already set by default styles above if we ensure they start at 0)
-
-        // 2. Wait a beat, then apply Magic Styles behind the scenes
+        // 2. Start Animation sequence
         setTimeout(() => {
+            // Apply Magic Styles behind the scenes
             enableMagicMode(true);
 
-            // 3. Open the book to reveal
+            // 3. Open the book to reveal (Slowly)
             leftCover.style.transform = 'rotateY(-110deg)';
             rightCover.style.transform = 'rotateY(110deg)';
 
+            // 4. Fade out Dark Overlay slowly as book opens
+            darkOverlay.style.opacity = '0';
+
+            // 5. Generate Sparkles
+            let sparkleInterval = setInterval(createSparkle, 50);
+
+            // Stop sparkles after a bit
+            setTimeout(() => {
+                clearInterval(sparkleInterval);
+            }, 2500);
+
             // Fade out overlay after animation
             setTimeout(() => {
-                overlay.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                overlay.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
                 setTimeout(() => {
                     overlay.classList.add('hidden');
-                    overlay.classList.remove('opacity-0', 'transition-opacity', 'duration-500');
+                    overlay.classList.remove('opacity-0', 'transition-opacity', 'duration-1000');
                     overlay.style.pointerEvents = 'none';
-                    // Reset for next time
+                    // Reset
                     leftCover.style.transform = 'rotateY(0deg)';
                     rightCover.style.transform = 'rotateY(0deg)';
-                }, 500);
-            }, 1200);
+                }, 1000);
+            }, 3000); // Wait for book to fully open (3s)
         }, 500);
     }
 
     function enableMagicMode(animate) {
         document.documentElement.classList.add('magic-mode');
-        document.body.style.backgroundImage = `url('${magicParams.bg_image}')`;
-        document.body.classList.add('bg-fixed', 'bg-cover');
 
-        // Change fonts if needed (using MedievalSharp or similar if loaded)
-        // This is handled by CSS classes usually, but we inject specific font overrides here
-        document.documentElement.style.setProperty('--font-display', '"MedievalSharp", cursive');
-        document.documentElement.style.setProperty('--font-body', '"Crimson Text", serif');
+        // Background texture is now handled by CSS on #masthead and body classes,
+        // but we might want a global background for the body too if not just the header.
+        // User asked for "Background of header (menu) should be texture".
+        // Let's assume body gets the parchment color via CSS.
 
         toggleBtn.querySelector('span').textContent = 'auto_fix_off';
         tooltip.textContent = "Вернуться в реальность";
@@ -121,11 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function disableMagicMode() {
         document.documentElement.classList.remove('magic-mode');
-        document.body.style.backgroundImage = '';
-        document.body.classList.remove('bg-fixed', 'bg-cover');
-
-        document.documentElement.style.removeProperty('--font-display');
-        document.documentElement.style.removeProperty('--font-body');
 
         toggleBtn.querySelector('span').textContent = 'auto_fix_high';
         tooltip.textContent = "Войти в мир магии";
