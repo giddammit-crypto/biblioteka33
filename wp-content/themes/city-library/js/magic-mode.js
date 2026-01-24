@@ -1,66 +1,133 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const magicToggle = document.getElementById('magic-toggle');
-    const magicOverlay = document.getElementById('magic-overlay');
-    const body = document.body;
+    const magicParams = window.magic_mode_params || {};
 
-    // Check localStorage
-    if (localStorage.getItem('magicMode') === 'enabled') {
-        body.classList.add('magic-mode');
-        // Only update icon if button exists
-        if (magicToggle) {
-            updateIcon(true);
+    // Create Toggle Button (Wand Icon)
+    const toggleBtn = document.createElement('button');
+    toggleBtn.id = 'magic-mode-toggle';
+    toggleBtn.innerHTML = '<span class="material-symbols-outlined">auto_fix_high</span>';
+    toggleBtn.title = "Волшебный режим";
+    toggleBtn.className = "fixed bottom-6 right-6 z-50 p-4 rounded-full bg-purple-700 text-white shadow-lg hover:bg-purple-600 transition-all duration-300 hover:scale-110 group";
+
+    // Tooltip
+    const tooltip = document.createElement('span');
+    tooltip.className = "absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity pointer-events-none";
+    tooltip.textContent = "Войти в мир магии";
+    toggleBtn.appendChild(tooltip);
+
+    document.body.appendChild(toggleBtn);
+
+    // Book Overlay Elements
+    const overlay = document.createElement('div');
+    overlay.id = 'magic-book-overlay';
+    overlay.className = 'fixed inset-0 z-[60] pointer-events-none perspective-1000 hidden';
+
+    // Left and Right Covers
+    const leftCover = document.createElement('div');
+    leftCover.className = 'absolute inset-y-0 left-0 w-1/2 bg-cover bg-right shadow-2xl origin-left transition-transform duration-[1500ms] ease-in-out transform-style-3d';
+    leftCover.style.backgroundImage = `url('${magicParams.book_cover}')`;
+    leftCover.style.backfaceVisibility = 'hidden';
+
+    const rightCover = document.createElement('div');
+    rightCover.className = 'absolute inset-y-0 right-0 w-1/2 bg-cover bg-left shadow-2xl origin-right transition-transform duration-[1500ms] ease-in-out transform-style-3d';
+    rightCover.style.backgroundImage = `url('${magicParams.book_cover}')`;
+    rightCover.style.backfaceVisibility = 'hidden';
+
+    // Inner pages (for effect)
+    const leftPage = document.createElement('div');
+    leftPage.className = 'absolute inset-y-0 left-0 w-1/2 bg-[#fdfbf7] origin-left transition-transform duration-[1500ms] ease-in-out delay-100';
+
+    const rightPage = document.createElement('div');
+    rightPage.className = 'absolute inset-y-0 right-0 w-1/2 bg-[#fdfbf7] origin-right transition-transform duration-[1500ms] ease-in-out delay-100';
+
+    overlay.appendChild(leftPage);
+    overlay.appendChild(rightPage);
+    overlay.appendChild(leftCover);
+    overlay.appendChild(rightCover);
+    document.body.appendChild(overlay);
+
+    // State Management
+    let isMagicMode = localStorage.getItem('city_library_magic_mode') === 'true';
+
+    // Apply initial state
+    if (isMagicMode) {
+        enableMagicMode(false); // No animation on load
+    }
+
+    toggleBtn.addEventListener('click', function() {
+        isMagicMode = !isMagicMode;
+        localStorage.setItem('city_library_magic_mode', isMagicMode);
+
+        if (isMagicMode) {
+            animateBookOpening();
+        } else {
+            disableMagicMode();
         }
-    }
+    });
 
-    if (magicToggle) {
-        magicToggle.addEventListener('click', function() {
-            toggleMagicMode();
-        });
-    }
+    function animateBookOpening() {
+        // Show Overlay
+        overlay.classList.remove('hidden');
+        overlay.style.pointerEvents = 'auto'; // Block clicks during anim
 
-    function toggleMagicMode() {
-        const isEnabled = body.classList.contains('magic-mode');
+        // Reset transforms
+        leftCover.style.transform = 'rotateY(0deg)';
+        rightCover.style.transform = 'rotateY(0deg)';
 
-        // Trigger Animation
-        animateTransition(!isEnabled);
+        // Force reflow
+        void overlay.offsetWidth;
 
-        // Toggle State after delay for animation to cover screen
+        // Start Animation (Close book first if needed, then open)
+        // Actually, let's just do an "Open" effect revealing the magic world
+
+        // 1. Initial State: Closed Book covering screen
+        // (Already set by default styles above if we ensure they start at 0)
+
+        // 2. Wait a beat, then apply Magic Styles behind the scenes
         setTimeout(() => {
-            body.classList.toggle('magic-mode');
-            const newState = body.classList.contains('magic-mode');
-            localStorage.setItem('magicMode', newState ? 'enabled' : 'disabled');
-            if (magicToggle) {
-                updateIcon(newState);
-            }
-        }, 600); // Sync with CSS animation duration
+            enableMagicMode(true);
+
+            // 3. Open the book to reveal
+            leftCover.style.transform = 'rotateY(-110deg)';
+            rightCover.style.transform = 'rotateY(110deg)';
+
+            // Fade out overlay after animation
+            setTimeout(() => {
+                overlay.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('opacity-0', 'transition-opacity', 'duration-500');
+                    overlay.style.pointerEvents = 'none';
+                    // Reset for next time
+                    leftCover.style.transform = 'rotateY(0deg)';
+                    rightCover.style.transform = 'rotateY(0deg)';
+                }, 500);
+            }, 1200);
+        }, 500);
     }
 
-    function animateTransition(enabling) {
-        if (!magicOverlay) return;
+    function enableMagicMode(animate) {
+        document.documentElement.classList.add('magic-mode');
+        document.body.style.backgroundImage = `url('${magicParams.bg_image}')`;
+        document.body.classList.add('bg-fixed', 'bg-cover');
 
-        const shockwave = magicOverlay.querySelector('.shockwave');
-        if (!shockwave) return;
+        // Change fonts if needed (using MedievalSharp or similar if loaded)
+        // This is handled by CSS classes usually, but we inject specific font overrides here
+        document.documentElement.style.setProperty('--font-display', '"MedievalSharp", cursive');
+        document.documentElement.style.setProperty('--font-body', '"Crimson Text", serif');
 
-        // Reset
-        magicOverlay.classList.remove('opacity-0', 'pointer-events-none');
-        shockwave.classList.remove('animate-shockwave-expand');
-        void shockwave.offsetWidth; // Trigger reflow
-
-        // Play Animation
-        shockwave.classList.add('animate-shockwave-expand');
-
-        // Cleanup
-        setTimeout(() => {
-            magicOverlay.classList.add('opacity-0', 'pointer-events-none');
-            shockwave.classList.remove('animate-shockwave-expand');
-        }, 1500);
+        toggleBtn.querySelector('span').textContent = 'auto_fix_off';
+        tooltip.textContent = "Вернуться в реальность";
     }
 
-    function updateIcon(isMagic) {
-        if (!magicToggle) return;
-        const icon = magicToggle.querySelector('.material-symbols-outlined');
-        if (icon) {
-            icon.textContent = isMagic ? 'auto_fix_off' : 'auto_fix';
-        }
+    function disableMagicMode() {
+        document.documentElement.classList.remove('magic-mode');
+        document.body.style.backgroundImage = '';
+        document.body.classList.remove('bg-fixed', 'bg-cover');
+
+        document.documentElement.style.removeProperty('--font-display');
+        document.documentElement.style.removeProperty('--font-body');
+
+        toggleBtn.querySelector('span').textContent = 'auto_fix_high';
+        tooltip.textContent = "Войти в мир магии";
     }
 });

@@ -73,6 +73,9 @@ function city_library_scripts() {
     // Material Symbols
     wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0', array(), null);
 
+    // Magic Mode CSS
+    wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
+
     // Tailwind CSS
     wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,typography', array(), null, false);
 
@@ -96,6 +99,11 @@ function city_library_scripts() {
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
+    ));
+
+    wp_localize_script('city-library-magic-mode', 'magic_mode_params', array(
+        'bg_image' => get_theme_mod('magic_mode_bg', get_template_directory_uri() . '/assets/images/magic-bg.png'),
+        'book_cover' => get_theme_mod('magic_book_cover', get_template_directory_uri() . '/assets/images/magic-book-cover.png'),
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
@@ -194,6 +202,24 @@ function city_library_customize_register($wp_customize) {
         'section' => 'layout_section',
         'type' => 'checkbox',
     ));
+
+    // Magic Mode Settings
+    $wp_customize->add_section('magic_mode_section', array(
+        'title' => __('Настройки "Волшебного режима"', 'city-library'),
+        'priority' => 130,
+    ));
+
+    $wp_customize->add_setting('magic_mode_bg', array('default' => get_template_directory_uri() . '/assets/images/magic-bg.png', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'magic_mode_bg', array(
+        'label' => __('Фон режима (Парчмент/Магия)', 'city-library'),
+        'section' => 'magic_mode_section',
+    )));
+
+    $wp_customize->add_setting('magic_book_cover', array('default' => get_template_directory_uri() . '/assets/images/magic-book-cover.png', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'magic_book_cover', array(
+        'label' => __('Обложка книги (для анимации)', 'city-library'),
+        'section' => 'magic_mode_section',
+    )));
 
     // Header Section
     $wp_customize->add_section('header_section', array(
