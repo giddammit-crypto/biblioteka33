@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
     <!-- Main Content (Full Width) -->
     <div id="primary" class="w-full">
