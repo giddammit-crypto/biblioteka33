@@ -4,31 +4,60 @@ $title_color = get_theme_mod('news_card_list_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_list_text_color', '#334155');
 $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 ?>
-<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row md:min-h-[250px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
-    <div class="md:w-1/3 relative overflow-hidden h-48 md:h-auto shrink-0">
-        <?php if (has_post_thumbnail()) : ?>
-            <?php the_post_thumbnail('large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105')); ?>
-        <?php else : ?>
-            <div class="absolute inset-0 bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-                <span class="material-symbols-outlined text-4xl text-slate-400">image</span>
+<article class="group relative flex flex-col md:flex-row bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 isolate min-h-[220px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+
+    <!-- Image Container -->
+    <div class="md:w-1/3 lg:w-[280px] shrink-0 relative overflow-hidden h-48 md:h-auto">
+        <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
+            <?php if (has_post_thumbnail()) : ?>
+                <?php the_post_thumbnail('large', array('class' => 'absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105')); ?>
+            <?php else : ?>
+                <div class="absolute inset-0 bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600">image</span>
+                </div>
+            <?php endif; ?>
+            <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
+        </a>
+
+        <!-- Category Badge (Top Left) -->
+        <?php
+        $categories = get_the_category();
+        if (!empty($categories)) : ?>
+            <div class="absolute top-4 left-4 z-10">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-primary shadow-sm border border-white/20">
+                    <?php echo esc_html($categories[0]->name); ?>
+                </span>
             </div>
         <?php endif; ?>
-         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-none pointer-events-none"></div>
     </div>
-    <div class="md:w-2/3 p-8 space-y-4 flex flex-col justify-center">
-        <div class="flex items-center text-slate-400 dark:text-slate-500 text-xs font-semibold tracking-widest uppercase">
-            <span class="material-symbols-outlined text-sm mr-2">calendar_today</span>
+
+    <!-- Content -->
+    <div class="flex flex-col flex-grow p-6 md:p-8 relative justify-center">
+        <!-- Date -->
+        <div class="flex items-center text-slate-400 dark:text-slate-500 text-[11px] font-bold tracking-widest uppercase mb-3">
+            <span class="material-symbols-outlined text-sm mr-1.5">calendar_month</span>
             <?php echo get_the_date(); ?>
         </div>
-        <h3 class="text-xl font-bold font-display group-hover:text-primary transition-colors leading-tight" style="color: <?php echo esc_attr($title_color); ?>;">
-            <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+
+        <!-- Title -->
+        <h3 class="text-2xl font-bold font-display leading-tight mb-3">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline" style="color: <?php echo esc_attr($title_color); ?>;">
+                <?php the_title(); ?>
+                <span class="absolute inset-0 md:hidden" aria-hidden="true"></span>
+            </a>
         </h3>
-        <div class="text-slate-600 dark:text-slate-400 text-sm line-clamp-3 leading-relaxed" style="color: <?php echo esc_attr($text_color); ?>;">
+
+        <!-- Excerpt -->
+        <div class="text-base leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 flex-grow" style="color: <?php echo esc_attr($text_color); ?>;">
             <?php the_excerpt(); ?>
         </div>
-        <a class="inline-flex items-center text-secondary dark:text-primary font-bold text-sm group/link mt-auto" href="<?php the_permalink(); ?>" style="color: <?php echo esc_attr($link_color); ?>;">
-            <?php _e('Читать полностью', 'city-library'); ?>
-            <span class="material-symbols-outlined ml-1 text-lg transition-transform group-hover/link:translate-x-1">arrow_right_alt</span>
-        </a>
+
+        <!-- Link -->
+        <div class="mt-auto">
+             <span class="inline-flex items-center text-sm font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10" style="color: <?php echo esc_attr($link_color); ?>;">
+                <?php _e('Читать полностью', 'city-library'); ?>
+                <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
+            </span>
+        </div>
     </div>
-</div>
+</article>
