@@ -107,7 +107,7 @@ if (get_theme_mod('show_modal', false)) :
         </button>
         <?php if ($modal_video) : ?>
             <div class="w-full">
-                <video src="<?php echo esc_url($modal_video); ?>" class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline></video>
+                <video src="<?php echo esc_url($modal_video); ?>" class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback"></video>
             </div>
         <?php elseif ($modal_image) : ?>
             <div class="w-full">
