@@ -91,6 +91,17 @@ if (get_theme_mod('show_partners_section', true)) {
 </button>
 <?php endif; ?>
 
+<!-- Magic Mode Toggle -->
+<button id="magic-toggle" class="fixed bottom-8 left-8 w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-full shadow-[0_0_20px_rgba(124,58,237,0.5)] flex items-center justify-center transition-all hover:scale-110 z-50 group border-2 border-white/20 overflow-hidden" aria-label="Toggle Magic Mode">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-50 animate-spin-slow"></div>
+    <span class="material-symbols-outlined text-3xl relative z-10 group-hover:animate-pulse">auto_fix</span>
+    <span class="absolute inset-0 rounded-full ring-4 ring-white/30 animate-ping opacity-20"></span>
+</button>
+<!-- Magic Transition Element -->
+<div id="magic-overlay" class="fixed inset-0 pointer-events-none z-[9999] opacity-0 transition-opacity duration-1000 flex items-center justify-center overflow-hidden">
+    <div class="shockwave absolute w-0 h-0 rounded-full bg-[#2a0a18] ring-[100px] ring-[#D4AF37] opacity-0"></div>
+</div>
+
 <?php
 // Modal Popup Logic
 if (get_theme_mod('show_modal', false)) :
@@ -105,9 +116,16 @@ if (get_theme_mod('show_modal', false)) :
         <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm">
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
-        <?php if ($modal_video) : ?>
+        <?php if ($modal_video) :
+            $file_ext = pathinfo($modal_video, PATHINFO_EXTENSION);
+            $mime_type = 'video/' . $file_ext;
+            if ($file_ext === 'mov') $mime_type = 'video/quicktime';
+        ?>
             <div class="w-full">
-                <video src="<?php echo esc_url($modal_video); ?>" class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline></video>
+                <video class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">
+                    <source src="<?php echo esc_url($modal_video); ?>" type="<?php echo esc_attr($mime_type); ?>">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         <?php elseif ($modal_image) : ?>
             <div class="w-full">

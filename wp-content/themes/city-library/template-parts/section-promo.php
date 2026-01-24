@@ -3,7 +3,7 @@
  * Template part for displaying the Promo section.
  */
 
-$show_promo = get_theme_mod('show_promo', false);
+$show_promo = get_theme_mod('show_promo_section', true);
 
 if (!$show_promo) {
     return;
@@ -16,26 +16,26 @@ $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-libra
 $link = get_theme_mod('promo_link', '#');
 ?>
 
-<section class="mb-8 bg-white dark:bg-slate-900/50 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate">
-    <!-- Decorative Glow -->
-    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none z-0"></div>
+<section class="mb-12 content-area bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
+    <!-- Decorative Glow (optional, keeping it subtle) -->
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 
-    <div class="flex flex-col md:flex-row relative z-10">
+    <div class="flex flex-col md:flex-row relative z-10 gap-8">
         <!-- Image Column -->
         <?php if ($image) : ?>
-            <div class="shrink-0 md:w-[400px] h-[300px] relative overflow-hidden group">
+            <div class="shrink-0 md:w-[400px] h-[300px] relative overflow-hidden group rounded-2xl">
                 <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
-             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 dark:bg-slate-700 flex items-center justify-center relative overflow-hidden">
+             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 dark:bg-slate-700 flex items-center justify-center relative overflow-hidden rounded-2xl">
                 <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
              </div>
         <?php endif; ?>
 
         <!-- Content Column -->
-        <div class="flex-grow p-8 md:p-10 flex flex-col justify-center">
+        <div class="flex-grow flex flex-col justify-center">
             <?php if ($title) : ?>
                 <h2 class="text-3xl font-display font-bold mb-4 text-slate-900 dark:text-white leading-tight">
                     <?php echo esc_html($title); ?>
@@ -44,7 +44,7 @@ $link = get_theme_mod('promo_link', '#');
 
             <?php if ($text) : ?>
                 <div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 mb-6">
-                    <?php echo wp_kses_post($text); ?>
+                    <?php echo wp_kses_post(wpautop($text)); ?>
                 </div>
             <?php endif; ?>
 

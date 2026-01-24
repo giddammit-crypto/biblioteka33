@@ -10,6 +10,11 @@
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
+                <!-- Mobile Hamburger Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-3xl">menu</span>
+                </button>
+
                 <?php if (has_custom_logo()) : ?>
                     <div class="custom-logo-wrapper h-full w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                         <?php the_custom_logo(); ?>
@@ -44,6 +49,34 @@
         </div>
     </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 lg:hidden">
+    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+            <span class="text-lg font-bold font-display text-secondary dark:text-white"><?php _e('Меню', 'city-library'); ?></span>
+            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <nav class="flex-grow space-y-4 flex flex-col">
+            <?php
+            wp_nav_menu(array(
+                'theme_location' => 'primary',
+                'container'      => false,
+                'items_wrap'     => '%3$s',
+                // Use a simpler walker or default to ensure vertical stacking
+                'walker'         => new City_Library_Walker_Nav_Menu(),
+            ));
+            ?>
+        </nav>
+        <!-- Mobile Footer/Contact -->
+        <div class="mt-auto border-t border-slate-200 dark:border-slate-800 pt-6">
+             <p class="text-xs text-slate-500 text-center"><?php echo esc_html(get_theme_mod('footer_copyright')); ?></p>
+        </div>
+    </div>
+</div>
+
 <main>
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
