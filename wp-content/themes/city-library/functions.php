@@ -123,11 +123,15 @@ add_action('wp_before_admin_bar_render', function () {
 });
 
 /**
- * Modify main query for homepage to show 8 posts.
+ * Modify main query for homepage and archives.
  */
 function city_library_homepage_query($query) {
-    if ($query->is_home() && $query->is_main_query()) {
-        $query->set('posts_per_page', 10);
+    if (!is_admin() && $query->is_main_query()) {
+        if ($query->is_home()) {
+            $query->set('posts_per_page', 10);
+        } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
+            $query->set('posts_per_page', 16);
+        }
     }
 }
 add_action('pre_get_posts', 'city_library_homepage_query');
@@ -430,7 +434,24 @@ function city_library_customize_register($wp_customize) {
 
         $wp_customize->add_setting("afisha_link_$i", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
         $wp_customize->add_control("afisha_link_$i", array('label' => sprintf(__('Event Link %d', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'url'));
+
+        $wp_customize->add_setting("afisha_ribbon_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_ribbon_$i", array('label' => sprintf(__('Ribbon Text %d (e.g. NEW)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("afisha_badge_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_badge_$i", array('label' => sprintf(__('Badge Text %d (e.g. Featured)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
     }
+
+    $wp_customize->add_setting('afisha_bg_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_bg_style', array(
+        'label' => __('Background Style', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (SVG Pattern)',
+            'gradient' => 'Modern Gradient',
+        ),
+    ));
 
     // Important Section
     $wp_customize->add_section('important_section', array(
