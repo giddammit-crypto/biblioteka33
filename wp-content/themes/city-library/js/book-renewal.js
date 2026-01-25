@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Create Floating Button
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    renewBtn.className = 'fixed bottom-6 right-6 z-50 px-6 py-4 rounded-full bg-primary text-white font-bold shadow-lg hover:bg-yellow-600 transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
+    renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-green-600 text-white font-bold shadow-lg hover:bg-green-700 transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl">auto_stories</span>
         <span class="hidden group-hover:inline-block transition-all">Продление книг онлайн</span>
@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalOverlay.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
+        <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
             <!-- Header -->
             <div class="bg-primary p-6 text-white flex justify-between items-center shrink-0">
-                <h3 class="text-xl font-bold font-display uppercase tracking-wider">Продление книг</h3>
+                <h3 class="text-xl font-bold font-display uppercase tracking-wider">Продление книг онлайн</h3>
                 <button type="button" class="modal-close hover:bg-white/20 p-2 rounded-full transition-colors">
                     <span class="material-symbols-outlined">close</span>
                 </button>
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center"></div>
 
-                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-primary hover:bg-yellow-600 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
+                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
                         <span>Отправить заявку</span>
                         <span class="material-symbols-outlined">send</span>
                     </button>
