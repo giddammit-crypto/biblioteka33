@@ -73,8 +73,8 @@ function city_library_scripts() {
     // Material Symbols
     wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0', array(), null);
 
-    // Magic Mode CSS
-    wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
+    // Magic Mode CSS (Removed)
+    // wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
 
     // Tailwind CSS
     wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,typography', array(), null, false);
@@ -95,18 +95,100 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
+    // Magic Mode removed/replaced by Renewal
+    // wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
+
+    // Book Renewal & Cookies
+    wp_enqueue_script('city-library-book-renewal', get_template_directory_uri() . '/js/book-renewal.js', array('jquery'), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-cookie-consent', get_template_directory_uri() . '/js/cookie-consent.js', array(), wp_get_theme()->get('Version'), true);
+
+    // Scroll Animations
+    wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
     ));
 
-    wp_localize_script('city-library-magic-mode', 'magic_mode_params', array(
-        'bg_image' => get_theme_mod('magic_mode_bg', get_template_directory_uri() . '/assets/images/magic-bg.png'),
-        'book_cover' => get_theme_mod('magic_book_cover', get_template_directory_uri() . '/assets/images/magic-book-cover.png'),
+    wp_localize_script('city-library-book-renewal', 'renewal_params', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('book_renewal_nonce'),
+        'branches' => city_library_get_branches_list() // Helper to pass branch list if needed JS side, though we just need IDs
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
+
+/**
+ * Helper: Get Branches List
+ */
+function city_library_get_branches_list() {
+    $branches = array(
+        'cgb' => 'Центральная городская библиотека (ЦГБ)',
+        'cdb' => 'Центральная детская библиотека (ЦДБ)',
+    );
+    for ($i = 1; $i <= 16; $i++) {
+        $branches[$i] = "Филиал №$i";
+    }
+    return $branches;
+}
+
+/**
+ * AJAX Handler for Book Renewal
+ */
+function city_library_send_book_renewal() {
+    check_ajax_referer('book_renewal_nonce', 'nonce');
+
+    $fio = sanitize_text_field($_POST['fio']);
+    $card_number = sanitize_text_field($_POST['card_number']);
+    $branch_id = sanitize_text_field($_POST['branch']);
+    $email = sanitize_email($_POST['email']);
+    $books = sanitize_textarea_field($_POST['books']);
+
+    if (empty($fio) || empty($card_number) || empty($branch_id) || empty($email) || empty($books)) {
+        wp_send_json_error(['message' => 'Пожалуйста, заполните все поля.']);
+    }
+
+    // Get branch email
+    $branch_email = get_theme_mod("branch_email_$branch_id");
+
+    // Fallback to admin email if not set
+    if (!$branch_email) {
+        $branch_email = get_option('admin_email');
+    }
+
+    $subject = 'Заявка на продление книг: ' . $fio;
+
+    $message = "
+    <html>
+    <head>
+        <title>Заявка на продление книг</title>
+    </head>
+    <body style='font-family: sans-serif; color: #333;'>
+        <h2 style='color: #0b7930;'>Новая заявка на продление</h2>
+        <p><strong>ФИО:</strong> $fio</p>
+        <p><strong>№ Читательского билета:</strong> $card_number</p>
+        <p><strong>Email читателя:</strong> $email</p>
+        <p><strong>Выбранный филиал:</strong> $branch_id</p>
+        <hr>
+        <h3>Список книг:</h3>
+        <p style='white-space: pre-wrap; background: #f6f8f6; padding: 15px; border-radius: 5px;'>$books</p>
+    </body>
+    </html>
+    ";
+
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    $headers[] = 'From: City Library Site <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
+    $headers[] = 'Reply-To: ' . $fio . ' <' . $email . '>';
+
+    $sent = wp_mail($branch_email, $subject, $message, $headers);
+
+    if ($sent) {
+        wp_send_json_success(['message' => 'Ваша заявка успешно отправлена!']);
+    } else {
+        wp_send_json_error(['message' => 'Ошибка отправки письма. Попробуйте позже.']);
+    }
+}
+add_action('wp_ajax_city_library_send_book_renewal', 'city_library_send_book_renewal');
+add_action('wp_ajax_nopriv_city_library_send_book_renewal', 'city_library_send_book_renewal');
 
 /**
  * Disable comments globally.
@@ -219,23 +301,22 @@ function city_library_customize_register($wp_customize) {
         'type' => 'checkbox',
     ));
 
-    // Magic Mode Settings
-    $wp_customize->add_section('magic_mode_section', array(
-        'title' => __('Настройки "Волшебного режима"', 'city-library'),
-        'priority' => 130,
+    // Branch Emails Section
+    $wp_customize->add_section('branches_email_section', array(
+        'title' => __('Email адреса филиалов', 'city-library'),
+        'priority' => 140,
+        'description' => __('Введите Email для каждого филиала для получения заявок на продление книг.', 'city-library'),
     ));
 
-    $wp_customize->add_setting('magic_mode_bg', array('default' => get_template_directory_uri() . '/assets/images/magic-bg.png', 'sanitize_callback' => 'esc_url_raw'));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'magic_mode_bg', array(
-        'label' => __('Фон режима (Парчмент/Магия)', 'city-library'),
-        'section' => 'magic_mode_section',
-    )));
-
-    $wp_customize->add_setting('magic_book_cover', array('default' => get_template_directory_uri() . '/assets/images/magic-book-cover.png', 'sanitize_callback' => 'esc_url_raw'));
-    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'magic_book_cover', array(
-        'label' => __('Обложка книги (для анимации)', 'city-library'),
-        'section' => 'magic_mode_section',
-    )));
+    $branches = city_library_get_branches_list();
+    foreach ($branches as $id => $name) {
+        $wp_customize->add_setting("branch_email_$id", array('sanitize_callback' => 'sanitize_email'));
+        $wp_customize->add_control("branch_email_$id", array(
+            'label' => $name,
+            'section' => 'branches_email_section',
+            'type' => 'email',
+        ));
+    }
 
     // Header Section
     $wp_customize->add_section('header_section', array(
@@ -311,6 +392,12 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('hero_background_image', array('default' => get_template_directory_uri() . '/images/hero-bg.jpg', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'hero_background_image', array(
         'label' => __('Background Image', 'city-library'),
+        'section' => 'hero_section',
+    )));
+
+    $wp_customize->add_setting('hero_overlay_color', array('default' => '#1a3c34', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_overlay_color', array(
+        'label' => __('Цвет наложения (Overlay Color)', 'city-library'),
         'section' => 'hero_section',
     )));
 
@@ -544,9 +631,19 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('important_btn_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('important_btn_link', array('label' => __('Ссылка кнопки', 'city-library'), 'section' => 'important_section', 'type' => 'url'));
 
+    // Important Button Colors
+    $wp_customize->add_setting('important_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'important_section',
+    )));
+    $wp_customize->add_setting('important_btn_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_btn_text_color', array(
+        'label' => __('Цвет текста кнопки', 'city-library'), 'section' => 'important_section',
+    )));
+
     $wp_customize->add_setting('important_bg_color', array('default' => '#fef2f2', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_bg_color', array(
-        'label' => __('Цвет фона', 'city-library'), 'section' => 'important_section',
+        'label' => __('Цвет фона блока', 'city-library'), 'section' => 'important_section',
     )));
 
     $wp_customize->add_setting('important_inter_block_text', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
@@ -634,6 +731,21 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('promo_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('promo_link', array('label' => __('Ссылка', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
+
+    // Promo Button Colors
+    $wp_customize->add_setting('promo_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'promo_section',
+    )));
+    $wp_customize->add_setting('promo_btn_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_text_color', array(
+        'label' => __('Цвет текста кнопки', 'city-library'), 'section' => 'promo_section',
+    )));
+
+    $wp_customize->add_setting('promo_btn_hover_bg_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_hover_bg_color', array(
+        'label' => __('Цвет фона кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
+    )));
 }
 add_action('customize_register', 'city_library_customize_register');
 
@@ -725,6 +837,30 @@ function city_library_sanitize_html($html) {
     );
     $allowed_html['a']['class'] = true;
     $allowed_html['a']['target'] = true;
+
+    // Allow Media
+    $allowed_html['img'] = array(
+        'src' => true,
+        'alt' => true,
+        'class' => true,
+        'width' => true,
+        'height' => true,
+    );
+    $allowed_html['video'] = array(
+        'src' => true,
+        'class' => true,
+        'width' => true,
+        'height' => true,
+        'controls' => true,
+        'autoplay' => true,
+        'muted' => true,
+        'loop' => true,
+        'playsinline' => true,
+    );
+    $allowed_html['source'] = array(
+        'src' => true,
+        'type' => true,
+    );
 
     return wp_kses($html, $allowed_html);
 }
@@ -819,6 +955,24 @@ function city_library_dynamic_styles() {
         }
         #hero-secondary-btn:hover {
             background-color: <?php echo esc_attr(get_theme_mod('hero_secondary_btn_hover_bg_color', 'rgba(255, 255, 255, 0.2)')); ?> !important;
+        }
+
+        /* Promo Button */
+        .promo-btn {
+            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_bg_color', '#0b7930')); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('promo_btn_text_color', '#FFFFFF')); ?> !important;
+        }
+        .promo-btn:hover {
+            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_bg_color', '#096328')); ?> !important;
+        }
+
+        /* Important Button */
+        .important-btn {
+            background-color: <?php echo esc_attr(get_theme_mod('important_btn_bg_color', '#0b7930')); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('important_btn_text_color', '#FFFFFF')); ?> !important;
+        }
+        .important-btn:hover {
+            opacity: 0.9;
         }
     </style>
     <?php
