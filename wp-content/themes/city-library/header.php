@@ -52,7 +52,7 @@
 
 <!-- Mobile Menu Overlay -->
 <div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 lg:hidden">
-    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col">
+    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white dark:bg-slate-900 shadow-2xl p-6 flex flex-col bg-pattern-slate">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary dark:text-white"><?php _e('Меню', 'city-library'); ?></span>
             <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
@@ -87,21 +87,21 @@
 <section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
-        <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+        <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
             <span class="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse"></span>
             <span class="text-xs font-bold text-white uppercase tracking-widest"><?php echo esc_html(get_theme_mod('hero_badge_text', 'Добро пожаловать в мир знаний')); ?></span>
         </div>
         <?php endif; ?>
 
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
             <?php echo wp_kses_post(get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека')); ?>
         </h1>
 
-        <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed">
+        <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
             <?php echo esc_html(get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.')); ?>
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 reveal-on-scroll">
             <a id="hero-primary-btn" class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
                 <span class="material-symbols-outlined text-xl">event</span>
                 <span><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>

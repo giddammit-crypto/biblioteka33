@@ -6,7 +6,7 @@ if (get_theme_mod('show_partners_section', true)) {
 }
 ?>
 
-<footer class="bg-secondary text-white py-16" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
+<footer class="bg-secondary text-white py-16 reveal-on-scroll bg-pattern-white" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
         <!-- Custom Footer Content / Widget 1 -->

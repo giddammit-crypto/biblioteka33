@@ -45,14 +45,10 @@ if ($bg_style === 'gradient') {
 }
 ?>
 
-<section class="py-20 bg-white dark:bg-slate-900 overflow-hidden">
+<section class="py-20 bg-white dark:bg-slate-900 overflow-hidden reveal-on-scroll">
     <!-- Width Correction: 80% to match other blocks -->
     <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="<?php echo esc_attr($container_classes); ?>"
-             <?php if ($bg_style === 'default') : ?>
-             style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%230b7930\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"
-             <?php endif; ?>
-        >
+        <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?>">
             <?php echo $bg_overlay; ?>
 
             <div class="flex flex-col xl:flex-row gap-12 xl:gap-16 items-center relative z-10">
