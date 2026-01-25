@@ -6,7 +6,7 @@ if (get_theme_mod('show_partners_section', true)) {
 }
 ?>
 
-<footer class="bg-secondary text-white py-16 reveal-on-scroll bg-pattern-white" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
+<footer class="bg-secondary text-white py-16 bg-pattern-white <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
         <!-- Custom Footer Content / Widget 1 -->
@@ -111,8 +111,8 @@ if (get_theme_mod('show_modal', false)) :
             $mime_type = 'video/' . $file_ext;
             if ($file_ext === 'mov') $mime_type = 'video/quicktime';
         ?>
-            <div class="w-full">
-                <video class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">
+            <div class="w-full aspect-video">
+                <video class="w-full h-full object-cover rounded-t-2xl" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">
                     <source src="<?php echo esc_url($modal_video); ?>" type="<?php echo esc_attr($mime_type); ?>">
                     Your browser does not support the video tag.
                 </video>

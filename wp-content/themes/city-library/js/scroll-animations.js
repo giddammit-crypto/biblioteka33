@@ -8,12 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('reveal-visible');
+            entry.target.classList.add('aos-animate');
                 observer.unobserve(entry.target); // Only animate once
             }
         });
     }, observerOptions);
 
-    const elements = document.querySelectorAll('.reveal-on-scroll');
+const elements = document.querySelectorAll('.animate-on-scroll');
     elements.forEach(el => observer.observe(el));
 });

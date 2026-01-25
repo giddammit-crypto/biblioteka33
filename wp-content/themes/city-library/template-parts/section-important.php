@@ -15,7 +15,7 @@ $btn_link = get_theme_mod('important_btn_link', '#');
 $inter_block_text = get_theme_mod('important_inter_block_text', '');
 ?>
 
-<section class="py-16 bg-white dark:bg-slate-900 reveal-on-scroll">
+<section class="py-16 bg-white dark:bg-slate-900 <?php echo city_library_get_animation_class(); ?>">
     <!-- Width Correction: 80% to match other blocks -->
     <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
 

@@ -11,18 +11,54 @@ Text Domain: city-library
  * Magic Mode styles are located in css/magic-mode.css
  */
 
-/* Scroll Animations */
-.reveal-on-scroll {
+/* Scroll Animations Base */
+.animate-on-scroll {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    will-change: opacity, transform;
+    will-change: opacity, transform, filter;
+    transition-duration: 0.8s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-property: opacity, transform, filter;
 }
 
-.reveal-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
+/* 1. Fade Up */
+.aos-fade-up { transform: translate3d(0, 40px, 0); }
+.aos-fade-up.aos-animate { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* 2. Fade Down */
+.aos-fade-down { transform: translate3d(0, -40px, 0); }
+.aos-fade-down.aos-animate { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* 3. Fade Left */
+.aos-fade-left { transform: translate3d(40px, 0, 0); }
+.aos-fade-left.aos-animate { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* 4. Fade Right */
+.aos-fade-right { transform: translate3d(-40px, 0, 0); }
+.aos-fade-right.aos-animate { opacity: 1; transform: translate3d(0, 0, 0); }
+
+/* 5. Zoom In */
+.aos-zoom-in { transform: scale(0.9); }
+.aos-zoom-in.aos-animate { opacity: 1; transform: scale(1); }
+
+/* 6. Zoom Out */
+.aos-zoom-out { transform: scale(1.1); }
+.aos-zoom-out.aos-animate { opacity: 1; transform: scale(1); }
+
+/* 7. Flip Up */
+.aos-flip-up { transform: perspective(2500px) rotateX(100deg); }
+.aos-flip-up.aos-animate { opacity: 1; transform: perspective(2500px) rotateX(0); }
+
+/* 8. Slide Up (Bounce) */
+.aos-slide-up { transform: translate3d(0, 100%, 0); }
+.aos-slide-up.aos-animate { opacity: 1; transform: translate3d(0, 0, 0); transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+/* 9. Blur In */
+.aos-blur-in { filter: blur(20px); transform: scale(1.2); }
+.aos-blur-in.aos-animate { opacity: 1; filter: blur(0); transform: scale(1); }
+
+/* 10. Rotate In */
+.aos-rotate-in { transform: rotate(-15deg) scale(0.8); transform-origin: center; }
+.aos-rotate-in.aos-animate { opacity: 1; transform: rotate(0) scale(1); }
 
 /* Load Animations */
 @keyframes fadeInUp {
@@ -53,4 +89,21 @@ Text Domain: city-library
 
 .bg-pattern-white {
     background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+}
+
+/* Block Editor Button Consistency (Frontend) */
+.wp-block-button__link {
+    background-color: #0b7930 !important;
+    color: #ffffff !important;
+    border-radius: 9999px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.wp-block-button__link:hover {
+    background-color: #096328 !important;
+    transform: scale(1.05);
 }

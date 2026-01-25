@@ -46,6 +46,12 @@ function city_library_setup() {
 
     // Add theme support for selective refresh for widgets.
     add_theme_support('customize-selective-refresh-widgets');
+
+    // Add support for editor styles.
+    add_theme_support('editor-styles');
+
+    // Enqueue editor styles.
+    add_editor_style('css/editor-style.css');
 }
 add_action('after_setup_theme', 'city_library_setup');
 
@@ -606,6 +612,25 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    $wp_customize->add_setting('afisha_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_font_family', array(
+        'label' => __('Шрифт заголовка афиши', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'select',
+        'choices' => array(
+            'Inter' => 'Inter',
+            'Montserrat' => 'Montserrat',
+            'Playfair Display' => 'Playfair Display',
+            'Merriweather' => 'Merriweather',
+            'Cinzel' => 'Cinzel',
+            'MedievalSharp' => 'MedievalSharp',
+            'Crimson Text' => 'Crimson Text',
+            'Great Vibes' => 'Great Vibes',
+            'Comforter' => 'Comforter',
+            'Marck Script' => 'Marck Script',
+        ),
+    ));
+
     // Important Section
     $wp_customize->add_section('important_section', array(
         'title' => __('Важная информация (Блок)', 'city-library'),
@@ -746,8 +771,51 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_hover_bg_color', array(
         'label' => __('Цвет фона кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
     )));
+
+    // Animation Settings
+    $wp_customize->add_section('animation_section', array(
+        'title' => __('Настройки анимаций', 'city-library'),
+        'priority' => 150,
+    ));
+
+    $wp_customize->add_setting('enable_animations', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('enable_animations', array(
+        'label' => __('Включить анимации при прокрутке', 'city-library'),
+        'section' => 'animation_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('animation_type', array('default' => 'fade-up', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('animation_type', array(
+        'label' => __('Тип анимации', 'city-library'),
+        'section' => 'animation_section',
+        'type' => 'select',
+        'choices' => array(
+            'fade-up' => 'Fade Up (Default)',
+            'fade-down' => 'Fade Down',
+            'fade-left' => 'Fade Left',
+            'fade-right' => 'Fade Right',
+            'zoom-in' => 'Zoom In',
+            'zoom-out' => 'Zoom Out',
+            'flip-up' => 'Flip Up',
+            'slide-up' => 'Slide Up (Bounce)',
+            'blur-in' => 'Blur In',
+            'rotate-in' => 'Rotate In',
+        ),
+    ));
 }
 add_action('customize_register', 'city_library_customize_register');
+
+/**
+ * Helper to get animation classes.
+ */
+function city_library_get_animation_class() {
+    if (get_theme_mod('enable_animations', true)) {
+        $type = get_theme_mod('animation_type', 'fade-up');
+        return 'animate-on-scroll aos-' . esc_attr($type);
+    }
+    return '';
+}
 
 
 /**
@@ -794,7 +862,7 @@ add_action('init', 'city_library_disable_comments_admin_bar');
  */
 class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
     function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = 'text-sm font-semibold hover:text-primary transition-colors whitespace-nowrap';
+        $classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4';
         $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">' . esc_html($item->title) . '</a>';
     }
     function end_el(&$output, $item, $depth = 0, $args = null) {
@@ -860,6 +928,16 @@ function city_library_sanitize_html($html) {
     $allowed_html['source'] = array(
         'src' => true,
         'type' => true,
+    );
+    $allowed_html['iframe'] = array(
+        'src' => true,
+        'width' => true,
+        'height' => true,
+        'frameborder' => true,
+        'allow' => true,
+        'allowfullscreen' => true,
+        'style' => true,
+        'class' => true,
     );
 
     return wp_kses($html, $allowed_html);
@@ -973,6 +1051,11 @@ function city_library_dynamic_styles() {
         }
         .important-btn:hover {
             opacity: 0.9;
+        }
+
+        /* Afisha Font */
+        .afisha-custom-title {
+            font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Inter')); ?>", sans-serif !important;
         }
     </style>
     <?php
