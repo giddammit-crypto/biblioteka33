@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <?php get_template_part('template-parts/section-promo'); ?>
 
