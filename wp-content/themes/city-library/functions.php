@@ -111,6 +111,10 @@ function city_library_scripts() {
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
 
+    // Magic Mode
+    wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
+    wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
+
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
     ));
@@ -294,6 +298,32 @@ add_action('widgets_init', 'city_library_widgets_init');
  * Customizer additions.
  */
 function city_library_customize_register($wp_customize) {
+    // Global Button Settings
+    $wp_customize->add_section('global_buttons_section', array(
+        'title'    => __('Глобальные настройки кнопок', 'city-library'),
+        'priority' => 18,
+    ));
+
+    $wp_customize->add_setting('global_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_bg_color', array(
+        'label' => __('Основной цвет фона', 'city-library'), 'section' => 'global_buttons_section',
+    )));
+
+    $wp_customize->add_setting('global_btn_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_text_color', array(
+        'label' => __('Основной цвет текста', 'city-library'), 'section' => 'global_buttons_section',
+    )));
+
+    $wp_customize->add_setting('global_btn_hover_bg_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_hover_bg_color', array(
+        'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'global_buttons_section',
+    )));
+
+    $wp_customize->add_setting('global_btn_hover_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_hover_text_color', array(
+        'label' => __('Цвет текста при наведении', 'city-library'), 'section' => 'global_buttons_section',
+    )));
+
     // Layout Settings
     $wp_customize->add_section('layout_section', array(
         'title'    => __('Настройки макета (Layout)', 'city-library'),
@@ -1004,8 +1034,29 @@ add_action('wp_head', 'city_library_tailwind_config', 1);
  * Generate custom CSS from Customizer settings.
  */
 function city_library_dynamic_styles() {
+    $btn_bg = get_theme_mod('global_btn_bg_color', '#0b7930');
+    $btn_text = get_theme_mod('global_btn_text_color', '#FFFFFF');
+    $btn_hover_bg = get_theme_mod('global_btn_hover_bg_color', '#096328');
+    $btn_hover_text = get_theme_mod('global_btn_hover_text_color', '#FFFFFF');
     ?>
     <style type="text/css">
+        :root {
+            --btn-bg: <?php echo esc_attr($btn_bg); ?>;
+            --btn-text: <?php echo esc_attr($btn_text); ?>;
+            --btn-hover-bg: <?php echo esc_attr($btn_hover_bg); ?>;
+            --btn-hover-text: <?php echo esc_attr($btn_hover_text); ?>;
+        }
+
+        /* Global Buttons */
+        button, .button, input[type="button"], input[type="reset"], input[type="submit"], .wp-block-button__link {
+            background-color: var(--btn-bg) !important;
+            color: var(--btn-text) !important;
+        }
+        button:hover, .button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .wp-block-button__link:hover {
+            background-color: var(--btn-hover-bg) !important;
+            color: var(--btn-hover-text) !important;
+        }
+
         /* Header Settings */
         #masthead {
             background-color: <?php echo esc_attr(get_theme_mod('header_bg_color', '#ffffff')); ?> !important;
@@ -1019,11 +1070,11 @@ function city_library_dynamic_styles() {
 
         /* Hero Primary Button */
         #hero-primary-btn {
-            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_bg_color', '#0b7930')); ?> !important;
-            color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_text_color', '#FFFFFF')); ?> !important;
+            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_bg_color', $btn_bg)); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_text_color', $btn_text)); ?> !important;
         }
         #hero-primary-btn:hover {
-            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_hover_bg_color', '#d4af37')); ?> !important;
+            background-color: <?php echo esc_attr(get_theme_mod('hero_primary_btn_hover_bg_color', $btn_hover_bg)); ?> !important;
         }
 
         /* Hero Secondary Button */
@@ -1037,19 +1088,20 @@ function city_library_dynamic_styles() {
 
         /* Promo Button */
         .promo-btn {
-            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_bg_color', '#0b7930')); ?> !important;
-            color: <?php echo esc_attr(get_theme_mod('promo_btn_text_color', '#FFFFFF')); ?> !important;
+            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_bg_color', $btn_bg)); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('promo_btn_text_color', $btn_text)); ?> !important;
         }
         .promo-btn:hover {
-            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_bg_color', '#096328')); ?> !important;
+            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_bg_color', $btn_hover_bg)); ?> !important;
         }
 
         /* Important Button */
         .important-btn {
-            background-color: <?php echo esc_attr(get_theme_mod('important_btn_bg_color', '#0b7930')); ?> !important;
-            color: <?php echo esc_attr(get_theme_mod('important_btn_text_color', '#FFFFFF')); ?> !important;
+            background-color: <?php echo esc_attr(get_theme_mod('important_btn_bg_color', $btn_bg)); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('important_btn_text_color', $btn_text)); ?> !important;
         }
         .important-btn:hover {
+            background-color: <?php echo esc_attr($btn_hover_bg); ?> !important; /* Fallback/Global Hover */
             opacity: 0.9;
         }
 

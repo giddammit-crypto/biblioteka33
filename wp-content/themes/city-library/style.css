@@ -93,8 +93,8 @@ Text Domain: city-library
 
 /* Block Editor Button Consistency (Frontend) */
 .wp-block-button__link {
-    background-color: #0b7930 !important;
-    color: #ffffff !important;
+    background-color: var(--btn-bg, #0b7930) !important;
+    color: var(--btn-text, #ffffff) !important;
     border-radius: 9999px;
     padding: 0.75rem 1.5rem;
     font-weight: 700;
@@ -104,6 +104,7 @@ Text Domain: city-library
 }
 
 .wp-block-button__link:hover {
-    background-color: #096328 !important;
+    background-color: var(--btn-hover-bg, #096328) !important;
+    color: var(--btn-hover-text, #ffffff) !important;
     transform: scale(1.05);
 }

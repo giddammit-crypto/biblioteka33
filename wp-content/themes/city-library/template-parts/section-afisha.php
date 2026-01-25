@@ -109,6 +109,14 @@ if ($bg_style === 'gradient') {
                                     <!-- Stylish Gradient Overlay -->
                                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90"></div>
 
+                                    <!-- Hover Tooltip (Centered) -->
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
+                                        <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold uppercase tracking-widest py-3 px-6 rounded-full flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                                            <span><?php _e('Подробнее', 'city-library'); ?></span>
+                                            <span class="material-symbols-outlined">arrow_forward</span>
+                                        </div>
+                                    </div>
+
                                     <!-- Content Container -->
                                     <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
 
