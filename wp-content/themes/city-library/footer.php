@@ -129,7 +129,7 @@ if (get_theme_mod('show_modal', false)) :
             <div class="prose prose-sm dark:prose-invert mx-auto text-slate-600 dark:text-slate-400 max-w-none">
                 <?php
                 // Allow HTML including iframes and buttons
-                echo city_library_sanitize_html(wpautop($modal_text));
+                echo city_library_sanitize_html(do_shortcode(wpautop($modal_text)));
                 ?>
             </div>
         </div>

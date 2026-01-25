@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Create Floating Button
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-green-600 text-white font-bold shadow-lg hover:bg-green-700 transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
+    renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-[var(--btn-bg)] text-white font-bold shadow-lg hover:bg-[var(--btn-hover-bg)] transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl">auto_stories</span>
         <span class="hidden group-hover:inline-block transition-all">Продление книг онлайн</span>
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="bg-slate-50 dark:bg-slate-900 bg-pattern-slate rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
             <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
-                <h3 class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
+                <h3 class="text-xl font-bold font-display tracking-wider text-[var(--btn-bg)] text-center">Продление книг онлайн</h3>
                 <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2">
                     <span class="material-symbols-outlined text-2xl">close</span>
                 </button>
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center"></div>
 
-                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
+                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-[var(--btn-bg)] hover:bg-[var(--btn-hover-bg)] text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
                         <span>Отправить заявку</span>
                         <span class="material-symbols-outlined">send</span>
                     </button>

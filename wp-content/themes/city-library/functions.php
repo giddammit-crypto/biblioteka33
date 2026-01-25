@@ -802,6 +802,11 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет фона кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
     )));
 
+    $wp_customize->add_setting('promo_btn_hover_text_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_hover_text_color', array(
+        'label' => __('Цвет текста кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
+    )));
+
     // Animation Settings
     $wp_customize->add_section('animation_section', array(
         'title' => __('Настройки анимаций', 'city-library'),
@@ -954,6 +959,8 @@ function city_library_sanitize_html($html) {
         'muted' => true,
         'loop' => true,
         'playsinline' => true,
+        'disableRemotePlayback' => true,
+        'controlsList' => true,
     );
     $allowed_html['source'] = array(
         'src' => true,
@@ -1093,6 +1100,7 @@ function city_library_dynamic_styles() {
         }
         .promo-btn:hover {
             background-color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_bg_color', $btn_hover_bg)); ?> !important;
+            color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_text_color', $btn_hover_text)); ?> !important;
         }
 
         /* Important Button */
