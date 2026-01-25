@@ -58,7 +58,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
         <!-- Spacer / Inter-block text -->
         <div class="py-12 flex items-center justify-center">
              <?php if ($inter_block_text) : ?>
-                <div class="w-full bg-slate-900/50 text-white text-center py-4 px-6 rounded-lg backdrop-blur-sm">
+                <div class="w-full bg-slate-50 dark:bg-slate-900/50 text-slate-800 dark:text-white text-center py-4 px-6 rounded-3xl border border-slate-100 dark:border-slate-800" style="background-image: url('data:image/svg+xml,%3Csvg width=\'52\' height=\'26\' viewBox=\'0 0 52 26\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z\' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E');">
                     <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
                 </div>
              <?php endif; ?>
@@ -81,9 +81,9 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
                     $url = get_theme_mod("important_link_url_$i", '#');
                     if (!$img) continue;
                 ?>
-                    <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white dark:bg-slate-800 aspect-square flex items-center justify-center p-4 border border-slate-100 dark:border-slate-700">
-                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-150">
-                         <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 aspect-square">
+                         <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                     </a>
                 <?php endfor; ?>
             </div>

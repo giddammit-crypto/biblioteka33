@@ -149,7 +149,7 @@ add_action('wp_before_admin_bar_render', function () {
 function city_library_homepage_query($query) {
     if (!is_admin() && $query->is_main_query()) {
         if (isset($_GET['news_archive'])) {
-            $query->set('posts_per_page', 16);
+            $query->set('posts_per_page', 8);
         } elseif ($query->is_home()) {
             $query->set('posts_per_page', 10);
         } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
