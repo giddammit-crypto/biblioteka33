@@ -148,7 +148,9 @@ add_action('wp_before_admin_bar_render', function () {
  */
 function city_library_homepage_query($query) {
     if (!is_admin() && $query->is_main_query()) {
-        if ($query->is_home()) {
+        if (isset($_GET['news_archive'])) {
+            $query->set('posts_per_page', 8);
+        } elseif ($query->is_home()) {
             $query->set('posts_per_page', 10);
         } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
             $query->set('posts_per_page', 16);
@@ -156,6 +158,20 @@ function city_library_homepage_query($query) {
     }
 }
 add_action('pre_get_posts', 'city_library_homepage_query');
+
+/**
+ * Force load archive template for news archive view.
+ */
+function city_library_news_archive_template($template) {
+    if (isset($_GET['news_archive'])) {
+        $archive_template = locate_template('archive.php');
+        if ($archive_template) {
+            return $archive_template;
+        }
+    }
+    return $template;
+}
+add_filter('template_include', 'city_library_news_archive_template');
 
 /**
  * Register widget areas.

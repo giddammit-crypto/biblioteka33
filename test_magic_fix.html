@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Magic Mode Fix Test</title>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Marck+Script&display=swap">
+    <!-- Magic CSS -->
+    <link rel="stylesheet" href="wp-content/themes/city-library/css/magic-mode.css">
+    <style>
+        body { transition: background 0.3s; }
+    </style>
+</head>
+<body class="bg-white text-slate-900">
+    <header id="masthead" class="p-4 bg-white shadow">
+        <h1 class="text-2xl font-bold">City Library</h1>
+    </header>
+
+    <main class="p-8">
+        <article class="prose max-w-none">
+            <h2>Welcome to the Library</h2>
+            <p>This is a standard paragraph of text.</p>
+        </article>
+    </main>
+
+    <!-- Mock Params -->
+    <script>
+        window.magic_mode_params = {
+            bg_image: 'assets/images/magic-bg.png',
+            book_cover: 'assets/images/magic-book-cover.png'
+        };
+    </script>
+
+    <!-- Magic JS -->
+    <script src="wp-content/themes/city-library/js/magic-mode.js"></script>
+</body>
+</html>

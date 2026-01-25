@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function enableMagicMode(animate) {
-        document.documentElement.classList.add('magic-mode');
+        document.body.classList.add('magic-mode');
 
         // Background texture is now handled by CSS on #masthead and body classes,
         // but we might want a global background for the body too if not just the header.
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function disableMagicMode() {
-        document.documentElement.classList.remove('magic-mode');
+        document.body.classList.remove('magic-mode');
 
         toggleBtn.querySelector('span').textContent = 'auto_fix_high';
         tooltip.textContent = "Войти в мир магии";
