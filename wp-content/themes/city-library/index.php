@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-8">
-                    <a href="<?php echo get_post_type_archive_link('post'); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
+                    <a href="<?php echo esc_url(add_query_arg('news_archive', 'true', home_url('/'))); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
                         <?php _e('Архив новостей', 'city-library'); ?>
                         <span class="material-symbols-outlined ml-2">arrow_forward</span>
                     </a>
