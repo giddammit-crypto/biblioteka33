@@ -60,7 +60,7 @@ if ($bg_style === 'gradient') {
                     <div class="relative">
                         <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-yellow-400 rounded-full mb-6"></div>
                         <!-- Responsive Font Sizes -->
-                        <h2 class="text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900 dark:text-white'; ?>">
+                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900 dark:text-white'; ?>">
                             <?php echo esc_html($section_title); ?>
                         </h2>
                     </div>
@@ -90,7 +90,7 @@ if ($bg_style === 'gradient') {
                         <div class="swiper-wrapper">
                         <?php foreach ($events as $event) : ?>
                             <div class="swiper-slide h-full group cursor-pointer perspective-1000" <?php if ($event['link']) echo 'onclick="window.location.href=\'' . esc_url($event['link']) . '\'"'; ?>>
-                                <div class="relative h-full w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-slate-900 select-none border border-white/10 ring-1 ring-black/5">
+                                <div class="relative h-full w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-slate-900 select-none border border-white/10 ring-1 ring-black/5 group-hover:scale-[1.02] transform">
 
                                     <!-- Image High Quality rendering -->
                                     <?php if ($event['image']) : ?>

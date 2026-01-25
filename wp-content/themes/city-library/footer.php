@@ -111,8 +111,8 @@ if (get_theme_mod('show_modal', false)) :
             $mime_type = 'video/' . $file_ext;
             if ($file_ext === 'mov') $mime_type = 'video/quicktime';
         ?>
-            <div class="w-full">
-                <video class="w-full h-auto max-h-[40vh] object-cover" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">
+            <div class="w-full aspect-video">
+                <video class="w-full h-full object-cover rounded-t-2xl" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">
                     <source src="<?php echo esc_url($modal_video); ?>" type="<?php echo esc_attr($mime_type); ?>">
                     Your browser does not support the video tag.
                 </video>
