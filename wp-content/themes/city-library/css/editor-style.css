@@ -1,0 +1,28 @@
+/* Editor Styles for City Library Theme */
+
+/* Buttons */
+.wp-block-button__link {
+    background-color: #0b7930 !important; /* Primary Green */
+    color: #ffffff !important;
+    border-radius: 9999px; /* Rounded Full */
+    padding: 0.75rem 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.wp-block-button__link:hover {
+    background-color: #096328 !important; /* Darker Green */
+    transform: scale(1.05);
+}
+
+/* Typography (Optional match) */
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    color: #1A3C34;
+}
