@@ -102,6 +102,9 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-book-renewal', get_template_directory_uri() . '/js/book-renewal.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-cookie-consent', get_template_directory_uri() . '/js/cookie-consent.js', array(), wp_get_theme()->get('Version'), true);
 
+    // Scroll Animations
+    wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
+
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
     ));
@@ -738,6 +741,11 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_text_color', array(
         'label' => __('Цвет текста кнопки', 'city-library'), 'section' => 'promo_section',
     )));
+
+    $wp_customize->add_setting('promo_btn_hover_bg_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_hover_bg_color', array(
+        'label' => __('Цвет фона кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
+    )));
 }
 add_action('customize_register', 'city_library_customize_register');
 
@@ -829,6 +837,30 @@ function city_library_sanitize_html($html) {
     );
     $allowed_html['a']['class'] = true;
     $allowed_html['a']['target'] = true;
+
+    // Allow Media
+    $allowed_html['img'] = array(
+        'src' => true,
+        'alt' => true,
+        'class' => true,
+        'width' => true,
+        'height' => true,
+    );
+    $allowed_html['video'] = array(
+        'src' => true,
+        'class' => true,
+        'width' => true,
+        'height' => true,
+        'controls' => true,
+        'autoplay' => true,
+        'muted' => true,
+        'loop' => true,
+        'playsinline' => true,
+    );
+    $allowed_html['source'] = array(
+        'src' => true,
+        'type' => true,
+    );
 
     return wp_kses($html, $allowed_html);
 }
@@ -931,7 +963,7 @@ function city_library_dynamic_styles() {
             color: <?php echo esc_attr(get_theme_mod('promo_btn_text_color', '#FFFFFF')); ?> !important;
         }
         .promo-btn:hover {
-            opacity: 0.9;
+            background-color: <?php echo esc_attr(get_theme_mod('promo_btn_hover_bg_color', '#096328')); ?> !important;
         }
 
         /* Important Button */
