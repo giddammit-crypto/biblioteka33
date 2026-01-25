@@ -79,7 +79,12 @@
 
 <main>
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
-<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
+<?php
+    $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
+    list($r, $g, $b) = sscanf($hero_color, "#%02x%02x%02x");
+    $hero_gradient = "linear-gradient(rgba($r, $g, $b, 0.7), rgba($r, $g, $b, 0.85))";
+?>
+<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">

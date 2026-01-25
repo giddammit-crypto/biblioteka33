@@ -46,7 +46,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 
             <?php if ($btn_link) : ?>
                 <div class="relative z-10 shrink-0 mt-6 md:mt-0">
-                    <a href="<?php echo esc_url($btn_link); ?>" class="inline-flex items-center justify-center px-10 py-4 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                    <a href="<?php echo esc_url($btn_link); ?>" class="important-btn inline-flex items-center justify-center px-10 py-4 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
                         <?php echo esc_html($btn_text); ?>
                         <span class="material-symbols-outlined ml-2">arrow_forward</span>
                     </a>

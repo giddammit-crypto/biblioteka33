@@ -50,7 +50,7 @@ $link = get_theme_mod('promo_link', '#');
 
             <?php if ($link && $btn_text) : ?>
                 <div>
-                    <a href="<?php echo esc_url($link); ?>" class="inline-flex items-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group">
+                    <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group">
                         <?php echo esc_html($btn_text); ?>
                         <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
