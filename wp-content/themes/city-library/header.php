@@ -6,6 +6,9 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
+<a class="sr-only focus:not-sr-only focus:absolute focus:top-5 focus:left-5 focus:z-[100] focus:bg-white focus:text-slate-900 focus:px-6 focus:py-3 focus:rounded-lg focus:shadow-2xl focus:font-bold focus:ring-4 focus:ring-primary transition-all" href="#content">
+    <?php _e('Перейти к основному содержимому', 'city-library'); ?>
+</a>
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -77,7 +80,7 @@
     </div>
 </div>
 
-<main>
+<main id="content">
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
