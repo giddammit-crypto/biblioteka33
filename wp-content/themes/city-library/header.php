@@ -101,7 +101,7 @@
             <?php echo esc_html(get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.')); ?>
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 reveal-on-scroll">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
             <a id="hero-primary-btn" class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
                 <span class="material-symbols-outlined text-xl">event</span>
                 <span><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>

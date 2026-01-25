@@ -28,10 +28,10 @@ document.addEventListener('DOMContentLoaded', function() {
     modalOverlay.innerHTML = `
         <div class="bg-slate-50 dark:bg-slate-900 bg-pattern-slate rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
-            <div class="bg-primary p-6 text-white flex justify-between items-center shrink-0">
-                <h3 class="text-xl font-bold font-display uppercase tracking-wider">Продление книг онлайн</h3>
-                <button type="button" class="modal-close hover:bg-white/20 p-2 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">close</span>
+            <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
+                <h3 class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
+                <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2">
+                    <span class="material-symbols-outlined text-2xl">close</span>
                 </button>
             </div>
 

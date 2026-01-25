@@ -746,8 +746,51 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_btn_hover_bg_color', array(
         'label' => __('Цвет фона кнопки (Hover)', 'city-library'), 'section' => 'promo_section',
     )));
+
+    // Animation Settings
+    $wp_customize->add_section('animation_section', array(
+        'title' => __('Настройки анимаций', 'city-library'),
+        'priority' => 150,
+    ));
+
+    $wp_customize->add_setting('enable_animations', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('enable_animations', array(
+        'label' => __('Включить анимации при прокрутке', 'city-library'),
+        'section' => 'animation_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('animation_type', array('default' => 'fade-up', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('animation_type', array(
+        'label' => __('Тип анимации', 'city-library'),
+        'section' => 'animation_section',
+        'type' => 'select',
+        'choices' => array(
+            'fade-up' => 'Fade Up (Default)',
+            'fade-down' => 'Fade Down',
+            'fade-left' => 'Fade Left',
+            'fade-right' => 'Fade Right',
+            'zoom-in' => 'Zoom In',
+            'zoom-out' => 'Zoom Out',
+            'flip-up' => 'Flip Up',
+            'slide-up' => 'Slide Up (Bounce)',
+            'blur-in' => 'Blur In',
+            'rotate-in' => 'Rotate In',
+        ),
+    ));
 }
 add_action('customize_register', 'city_library_customize_register');
+
+/**
+ * Helper to get animation classes.
+ */
+function city_library_get_animation_class() {
+    if (get_theme_mod('enable_animations', true)) {
+        $type = get_theme_mod('animation_type', 'fade-up');
+        return 'animate-on-scroll aos-' . esc_attr($type);
+    }
+    return '';
+}
 
 
 /**
