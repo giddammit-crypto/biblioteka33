@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="w-full max-w-[95%] lg:max-w-[90%] xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
     <!-- Main Content (Full Width) -->
     <div id="primary" class="w-full">
@@ -15,7 +15,7 @@
             </div>
 
             <?php if (have_posts()) : ?>
-                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <?php
                     while (have_posts()) :
                         the_post();
