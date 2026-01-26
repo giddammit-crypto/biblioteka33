@@ -696,7 +696,7 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет текста кнопки', 'city-library'), 'section' => 'important_section',
     )));
 
-    $wp_customize->add_setting('important_bg_color', array('default' => '#fef2f2', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('important_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'important_bg_color', array(
         'label' => __('Цвет фона блока', 'city-library'), 'section' => 'important_section',
     )));
