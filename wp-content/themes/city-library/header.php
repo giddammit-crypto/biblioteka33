@@ -11,7 +11,7 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+                <button id="mobile-menu-btn" class="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
@@ -84,7 +84,7 @@
     list($r, $g, $b) = sscanf($hero_color, "#%02x%02x%02x");
     $hero_gradient = "linear-gradient(rgba($r, $g, $b, 0.7), rgba($r, $g, $b, 0.85))";
 ?>
-<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
+<section class="relative min-h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
