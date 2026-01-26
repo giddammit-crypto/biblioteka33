@@ -57,7 +57,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
         <!-- Spacer / Inter-block text -->
         <div class="py-12 flex items-center justify-center">
              <?php if ($inter_block_text) : ?>
-                <div class="w-full bg-white dark:bg-slate-900/50 text-slate-800 dark:text-white text-center py-4 px-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+                <div class="w-full bg-white dark:bg-slate-800/50 text-slate-800 dark:text-white text-center py-4 px-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate" style="background-color: <?php echo esc_attr($bg_color); ?>;">
                     <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
                 </div>
              <?php endif; ?>

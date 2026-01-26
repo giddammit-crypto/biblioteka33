@@ -10,8 +10,8 @@
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
-                <!-- Mobile Hamburger Button (Hidden in favor of bottom nav) -->
-                <button id="mobile-menu-btn" class="hidden min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors mobile-menu-trigger">
+                <!-- Mobile Hamburger Button (Hidden in favor of bottom nav, but accessible if needed) -->
+                <button id="mobile-menu-btn" class="hidden min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors mobile-menu-trigger" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
@@ -42,7 +42,7 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
             </div>
@@ -55,7 +55,7 @@
     <div class="absolute right-0 top-0 h-full w-full sm:w-[350px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl p-6 flex flex-col bg-pattern-slate border-l border-white/20">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary dark:text-white"><?php _e('Меню', 'city-library'); ?></span>
-            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>

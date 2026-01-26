@@ -273,7 +273,7 @@ function city_library_widgets_init() {
         'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
         'id'            => 'sidebar-1',
         'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 bg-pattern-slate">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-100 dark:border-slate-700 bg-pattern-slate">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
         'after_title'   => '</h2>',
@@ -304,7 +304,7 @@ function city_library_customize_register($wp_customize) {
         'priority' => 18,
     ));
 
-    $wp_customize->add_setting('global_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('global_btn_bg_color', array('default' => '#075e24', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_bg_color', array(
         'label' => __('Основной цвет фона', 'city-library'), 'section' => 'global_buttons_section',
     )));
@@ -478,7 +478,7 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control('footer_address', array('label' => __('Адрес', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
 
     // Hero Button Colors
-    $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#075e24', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'hero_primary_btn_bg_color', array(
         'label' => __('Primary Button BG', 'city-library'), 'section' => 'hero_section',
     )));
@@ -1031,7 +1031,7 @@ function city_library_tailwind_config() {
             theme: {
                 extend: {
                     colors: {
-                        primary: "#0b7930",
+                        primary: "#075e24", /* Darkened from #0b7930 for AAA contrast */
                         secondary: "#1A3C34",
                         "background-light": "#f6f8f6",
                         "background-dark": "#102216"
@@ -1052,7 +1052,7 @@ add_action('wp_head', 'city_library_tailwind_config', 1);
  * Generate custom CSS from Customizer settings.
  */
 function city_library_dynamic_styles() {
-    $btn_bg = get_theme_mod('global_btn_bg_color', '#0b7930');
+    $btn_bg = get_theme_mod('global_btn_bg_color', '#075e24');
     $btn_text = get_theme_mod('global_btn_text_color', '#FFFFFF');
     $btn_hover_bg = get_theme_mod('global_btn_hover_bg_color', '#096328');
     $btn_hover_text = get_theme_mod('global_btn_hover_text_color', '#FFFFFF');
