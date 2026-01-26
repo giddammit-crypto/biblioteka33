@@ -28,7 +28,7 @@
         <!-- Main Content (70%) -->
         <div id="primary" class="w-full <?php echo $show_sidebar ? 'lg:w-[70%]' : ''; ?> transition-all duration-300">
 
-            <div class="content-area bg-white dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+            <div class="content-area bg-white dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr(get_theme_mod('content_bg_color', '#ffffff')); ?>;">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div class="space-y-4">
                     <div class="h-1 w-20 bg-primary"></div>

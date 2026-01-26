@@ -14,9 +14,10 @@ $title = get_theme_mod('promo_title', __('Специальное предлож�
 $text = get_theme_mod('promo_text', __('Описание вашего специального предложения или важной новости.', 'city-library'));
 $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-library'));
 $link = get_theme_mod('promo_link', '#');
+$bg_color = get_theme_mod('promo_bg_color', '#ffffff');
 ?>
 
-<section class="mb-12 content-area bg-white dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+<section class="mb-12 content-area bg-white dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr($bg_color); ?>;">
     <!-- Decorative Glow (optional, keeping it subtle) -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 

@@ -273,7 +273,7 @@ function city_library_widgets_init() {
         'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
         'id'            => 'sidebar-1',
         'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 bg-pattern-slate">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
         'after_title'   => '</h2>',
@@ -336,6 +336,12 @@ function city_library_customize_register($wp_customize) {
         'section' => 'layout_section',
         'type' => 'checkbox',
     ));
+
+    $wp_customize->add_setting('content_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'content_bg_color', array(
+        'label' => __('Цвет фона контента (Index/Archive)', 'city-library'),
+        'section' => 'layout_section',
+    )));
 
     // Branch Emails Section
     $wp_customize->add_section('branches_email_section', array(
@@ -779,6 +785,11 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('promo_text', array('default' => 'Узнайте больше о наших услугах и мероприятиях.', 'sanitize_callback' => 'city_library_sanitize_html'));
     $wp_customize->add_control('promo_text', array('label' => __('Текст', 'city-library'), 'section' => 'promo_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('promo_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'promo_bg_color', array(
+        'label' => __('Цвет фона блока', 'city-library'), 'section' => 'promo_section',
+    )));
 
     // Promo Section Link Settings
     $wp_customize->add_setting('promo_btn_text', array('default' => 'Подробнее', 'sanitize_callback' => 'sanitize_text_field'));
