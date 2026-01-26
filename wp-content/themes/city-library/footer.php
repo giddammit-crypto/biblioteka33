@@ -86,10 +86,12 @@ if (get_theme_mod('show_partners_section', true)) {
 </footer>
 
 <?php if (get_theme_mod('show_back_to_top', true)) : ?>
-<button id="back-to-top" class="hidden fixed bottom-8 right-8 w-14 h-14 bg-primary hover:bg-yellow-600 text-secondary rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50">
+<button id="back-to-top" class="hidden fixed bottom-24 lg:bottom-8 right-8 w-14 h-14 bg-primary hover:bg-yellow-600 text-secondary rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50">
     <span class="material-symbols-outlined text-2xl">arrow_upward</span>
 </button>
 <?php endif; ?>
+
+<?php get_template_part('template-parts/mobile-bottom-nav'); ?>
 
 
 <?php
