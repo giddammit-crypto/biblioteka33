@@ -79,9 +79,6 @@ function city_library_scripts() {
     // Material Symbols
     wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0', array(), null);
 
-    // Magic Mode CSS (Removed)
-    // wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
-
     // Tailwind CSS
     wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,typography', array(), null, false);
 
@@ -101,8 +98,6 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
-    // Magic Mode removed/replaced by Renewal
-    // wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
 
     // Book Renewal & Cookies
     wp_enqueue_script('city-library-book-renewal', get_template_directory_uri() . '/js/book-renewal.js', array('jquery'), wp_get_theme()->get('Version'), true);
@@ -110,10 +105,6 @@ function city_library_scripts() {
 
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
-
-    // Magic Mode
-    wp_enqueue_style('city-library-magic-mode-css', get_template_directory_uri() . '/css/magic-mode.css', array(), wp_get_theme()->get('Version'));
-    wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
