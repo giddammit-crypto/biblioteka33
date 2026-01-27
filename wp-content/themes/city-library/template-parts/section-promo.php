@@ -16,21 +16,21 @@ $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-libra
 $link = get_theme_mod('promo_link', '#');
 ?>
 
-<section class="mb-12 content-area bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+<section class="mb-12 content-area bg-white dark:bg-slate-900/50 p-8 md:p-10 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate shadow-xl <?php echo city_library_get_animation_class(); ?>">
     <!-- Decorative Glow (optional, keeping it subtle) -->
-    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 
-    <div class="flex flex-col md:flex-row relative z-10 gap-8">
+    <div class="flex flex-col md:flex-row relative z-10 gap-10 items-center">
         <!-- Image Column -->
         <?php if ($image) : ?>
-            <div class="shrink-0 md:w-[400px] h-[300px] relative overflow-hidden group rounded-2xl">
-                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            <div class="shrink-0 w-full md:w-[400px] h-[300px] relative overflow-hidden group rounded-2xl shadow-lg ring-1 ring-slate-900/5">
+                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60"></div>
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
-             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 dark:bg-slate-700 flex items-center justify-center relative overflow-hidden rounded-2xl">
-                <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
+             <div class="shrink-0 w-full md:w-[400px] h-[300px] bg-slate-100 dark:bg-slate-700 flex items-center justify-center relative overflow-hidden rounded-2xl shadow-inner">
+                <span class="material-symbols-outlined text-6xl text-slate-300">image</span>
              </div>
         <?php endif; ?>
 

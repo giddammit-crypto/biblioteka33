@@ -21,16 +21,16 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 
         <!-- Main Alert Block - Standardized Style -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>
-        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-white dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden group transition-all duration-300 bg-pattern-slate shadow-lg hover:shadow-xl">
 
             <!-- Decorative Background Element (Subtle, not red) -->
-            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-            <div class="relative z-10 flex flex-col md:flex-row gap-6 items-start md:items-center flex-grow">
+            <div class="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center flex-grow">
                 <!-- Icon (Changed from Red to Primary/Standard) -->
                 <div class="shrink-0">
-                    <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700">
-                        <span class="material-symbols-outlined text-4xl text-primary animate-pulse">warning</span>
+                    <div class="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-inner border border-slate-100 dark:border-slate-700">
+                        <span class="material-symbols-outlined text-5xl text-primary animate-pulse">priority_high</span>
                     </div>
                 </div>
 
@@ -57,8 +57,8 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
         <!-- Spacer / Inter-block text -->
         <div class="py-12 flex items-center justify-center">
              <?php if ($inter_block_text) : ?>
-                <div class="w-full bg-slate-50 dark:bg-slate-900/50 text-slate-800 dark:text-white text-center py-4 px-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate">
-                    <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
+                <div class="w-full bg-white dark:bg-slate-900/50 text-slate-800 dark:text-white text-center py-6 px-8 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate shadow-md">
+                    <p class="text-xl font-bold uppercase tracking-widest text-primary/80"><?php echo esc_html($inter_block_text); ?></p>
                 </div>
              <?php endif; ?>
         </div>
