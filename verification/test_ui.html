@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Verification</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* Mock generated CSS */
+        :root {
+            --btn-bg: #0b7930;
+            --btn-text: #FFFFFF;
+            --btn-hover-bg: #096328;
+            --btn-hover-text: #FFFFFF;
+        }
+        .bg-pattern-slate {
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        .font-display {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans antialiased text-slate-900">
+    <div class="p-10">
+        <h1 class="text-3xl font-display font-bold mb-4">UI Verification Page</h1>
+        <p>Testing Cookie Banner and Book Renewal Modal.</p>
+    </div>
+
+    <script>
+        // Mock variables
+        window.renewal_params = {
+            ajax_url: 'mock_ajax_url',
+            nonce: 'mock_nonce',
+            branches: {
+                'cgb': 'Центральная городская библиотека',
+                '1': 'Филиал №1'
+            }
+        };
+        // Clear local storage for cookie banner
+        localStorage.removeItem('city_library_cookie_consent');
+    </script>
+
+    <!-- Load Scripts -->
+    <script src="../wp-content/themes/city-library/js/cookie-consent.js"></script>
+    <script src="../wp-content/themes/city-library/js/book-renewal.js"></script>
+
+</body>
+</html>

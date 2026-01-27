@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] lg:max-w-[90%] xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <?php get_template_part('template-parts/section-promo'); ?>
 
@@ -8,7 +8,7 @@
 
     <!-- Toggle Button -->
     <?php if ($show_sidebar) : ?>
-    <div class="mb-6 hidden lg:flex">
+    <div class="mb-6">
          <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
             <span class="material-symbols-outlined">menu_open</span>
             <span class="text-sm font-bold uppercase"><?php _e('Скрыть/Показать сайдбар', 'city-library'); ?></span>
@@ -38,7 +38,7 @@
             </div>
 
             <?php if (have_posts()) : ?>
-                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <?php
                     while (have_posts()) :
                         the_post();

@@ -1,22 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuTriggers = document.querySelectorAll('.mobile-menu-trigger');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
     const closeBtn = document.getElementById('mobile-menu-close');
 
-    if (mobileMenu) {
-        const openMenu = () => {
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function() {
             mobileMenu.classList.remove('translate-x-full');
             document.body.style.overflow = 'hidden';
-        };
+        });
 
         const closeMenu = () => {
             mobileMenu.classList.add('translate-x-full');
             document.body.style.overflow = '';
         };
-
-        mobileMenuTriggers.forEach(btn => {
-            btn.addEventListener('click', openMenu);
-        });
 
         if (closeBtn) {
             closeBtn.addEventListener('click', closeMenu);

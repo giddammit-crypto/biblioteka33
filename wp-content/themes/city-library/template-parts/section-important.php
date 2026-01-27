@@ -16,8 +16,8 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 ?>
 
 <section class="py-16 bg-white dark:bg-slate-900 <?php echo city_library_get_animation_class(); ?>">
-    <!-- Width Correction: 80% to match other blocks -->
-    <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Standardized Container Width -->
+    <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Main Alert Block - Standardized Style -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>

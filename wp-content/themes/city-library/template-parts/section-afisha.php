@@ -46,8 +46,8 @@ if ($bg_style === 'gradient') {
 ?>
 
 <section class="py-20 bg-white dark:bg-slate-900 overflow-hidden <?php echo city_library_get_animation_class(); ?>">
-    <!-- Width Correction: 80% to match other blocks -->
-    <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Standardized Container Width -->
+    <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?>">
             <?php echo $bg_overlay; ?>
 

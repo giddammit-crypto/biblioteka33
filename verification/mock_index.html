@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Verification</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0b7930",
+                        secondary: "#1A3C34",
+                        "background-light": "#f6f8f6",
+                    },
+                    fontFamily: {
+                        display: "Playfair Display",
+                        sans: "Inter"
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-pattern-slate { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="bg-background-light font-sans">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 bg-white/80 border-b border-slate-200">
+        <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-secondary rounded-lg"></div>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-widest text-secondary">City Library</p>
+                        <p class="text-sm font-display font-bold">Main Branch</p>
+                    </div>
+                </div>
+                <nav class="hidden lg:flex space-x-8">
+                    <a href="#" class="text-sm font-semibold hover:text-primary">Home</a>
+                    <a href="#" class="text-sm font-semibold hover:text-primary">Catalog</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="pt-24"></div>
+
+    <!-- Main Content Wrapper (Index) -->
+    <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8 border border-red-500/30 dashed">
+
+        <!-- Promo Section (Inside Wrapper) -->
+        <section class="mb-12 bg-slate-50 p-8 rounded-3xl border border-slate-100 relative overflow-hidden">
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full h-48 bg-slate-200 rounded-2xl"></div>
+                <div class="flex-grow">
+                    <h2 class="text-3xl font-display font-bold mb-4">Promo Title</h2>
+                    <p class="mb-6 text-slate-600">Promo text description inside the container.</p>
+                    <button class="px-6 py-3 rounded-full bg-primary text-white font-bold">Details</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+            <div class="w-full lg:w-[30%] bg-white p-6 rounded-2xl shadow-sm h-64">Sidebar</div>
+            <div class="w-full lg:w-[70%] bg-white p-8 rounded-3xl shadow-sm h-96">Main Content</div>
+        </div>
+    </div>
+
+    <!-- Afisha Section (Separate Wrapper) -->
+    <section class="py-20 bg-white border-t border-slate-100">
+        <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 border border-blue-500/30 dashed">
+            <div class="bg-slate-50 p-12 rounded-[2.5rem]">
+                <h2 class="text-4xl font-display font-bold mb-8">Afisha Events</h2>
+                <div class="h-64 bg-slate-200 rounded-2xl">Slider Placeholder</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-16">
+        <div class="w-full max-w-[95%] sm:max-w-[90%] xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 border border-yellow-500/30 dashed">
+            <div>Column 1</div>
+            <div>Column 2</div>
+            <div>Column 3</div>
+            <div>Column 4</div>
+        </div>
+    </footer>
+
+</body>
+</html>
