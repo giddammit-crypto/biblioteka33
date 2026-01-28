@@ -41,14 +41,22 @@
                 ?>
             </nav>
 
-            <div class="flex items-center space-x-2">
-                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <!-- Eye Icon (Moved to far right) -->
+            <div class="flex items-center space-x-2 ml-auto lg:ml-0">
+                <button id="accessibility-button" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-600 dark:text-slate-300">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
             </div>
         </div>
     </div>
 </header>
+
+<!-- Global Breadcrumbs -->
+<?php
+if (!is_front_page()) {
+    get_template_part('template-parts/breadcrumbs');
+}
+?>
 
 <!-- Mobile Menu Overlay -->
 <div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 lg:hidden">

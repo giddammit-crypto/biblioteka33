@@ -70,6 +70,22 @@
                             ));
                             ?>
                         </div>
+
+                        <!-- Hashtags (Single Line, 5px gap) -->
+                        <?php
+                        $tags = get_the_tags();
+                        if ($tags) : ?>
+                            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                                <div class="flex flex-wrap gap-[5px] items-center">
+                                    <span class="material-symbols-outlined text-slate-400 text-sm mr-1">tag</span>
+                                    <?php foreach ($tags as $tag) : ?>
+                                        <a href="<?php echo esc_url(get_tag_link($tag->term_id)); ?>" class="text-sm font-medium text-slate-500 hover:text-primary transition-colors">
+                                            #<?php echo esc_html($tag->name); ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                 </div>

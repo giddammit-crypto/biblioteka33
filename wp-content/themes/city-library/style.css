@@ -6,6 +6,94 @@ Version: 1.0
 Text Domain: city-library
 */
 
+/* Reset & Normalize (Browser Compatibility including Yandex) */
+html, body {
+    background-color: #ffffff; /* Force white background */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Button Override for Consistency */
+button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Breadcrumb Styles (Chevron/Arrow) */
+.breadcrumb-container {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border-radius: 9999px; /* Fallback */
+    overflow: hidden;
+}
+
+.breadcrumb-item {
+    position: relative;
+    padding: 0.75rem 2rem 0.75rem 2.5rem;
+    background-color: #f3f4f6; /* Gray-100 equivalent */
+    color: #4b5563; /* Gray-600 */
+    font-weight: 700;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%);
+    margin-right: -18px; /* Overlap */
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.breadcrumb-item:first-child {
+    padding-left: 1.5rem;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%);
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+    z-index: 10;
+}
+
+.breadcrumb-item:last-child {
+    padding-right: 1.5rem;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); /* Flat right edge */
+    margin-right: 0;
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+    z-index: 1;
+}
+
+/* Active State (Green) */
+.breadcrumb-item.active {
+    background-color: var(--btn-bg, #0b7930);
+    color: #ffffff;
+    z-index: 5;
+}
+
+.breadcrumb-item:hover:not(.active) {
+    background-color: #e5e7eb; /* Gray-200 */
+}
+
+/* Separator Hack (White line between items) */
+.breadcrumb-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: rgba(255,255,255,0.5);
+    z-index: 20;
+    transform: skew(-20deg); /* Adjust based on polygon angle if needed, or rely on margin gap */
+    display: none; /* Relying on margin overlap and polygon for visual separation */
+}
+
+
 /*
  * Main styles are handled via Tailwind CSS (CDN in development).
  * Magic Mode styles are located in css/magic-mode.css
