@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Create Floating Button
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-[var(--btn-bg)] text-white font-bold shadow-lg hover:bg-[var(--btn-hover-bg)] transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
+    renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-green-700 text-white font-bold shadow-lg hover:bg-green-800 transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl">auto_stories</span>
         <span class="hidden group-hover:inline-block transition-all">Продление книг онлайн</span>
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center"></div>
 
-                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-[var(--btn-bg)] hover:bg-[var(--btn-hover-bg)] text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
+                    <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-green-700 hover:bg-green-800 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
                         <span>Отправить заявку</span>
                         <span class="material-symbols-outlined">send</span>
                     </button>

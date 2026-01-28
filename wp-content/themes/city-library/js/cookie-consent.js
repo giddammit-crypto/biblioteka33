@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </p>
             </div>
         </div>
-        <button id="cookie-accept-btn" class="shrink-0 px-8 py-3 bg-[var(--btn-bg)] hover:bg-[var(--btn-hover-bg)] text-white font-bold rounded-full transition-all shadow-md hover:shadow-lg whitespace-nowrap">
+        <button id="cookie-accept-btn" class="shrink-0 px-8 py-3 bg-green-700 hover:bg-green-800 text-white font-bold rounded-full transition-all shadow-md hover:shadow-lg whitespace-nowrap">
             Хорошо, понятно
         </button>
     `;

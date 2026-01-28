@@ -107,9 +107,11 @@ if (get_theme_mod('show_modal', false)) :
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
         <?php if ($modal_video) :
-            $file_ext = pathinfo($modal_video, PATHINFO_EXTENSION);
+            $file_ext = strtolower(pathinfo($modal_video, PATHINFO_EXTENSION));
             $mime_type = 'video/' . $file_ext;
-            if ($file_ext === 'mov') $mime_type = 'video/quicktime';
+            if ($file_ext === 'mov' || $file_ext === 'qt') $mime_type = 'video/quicktime';
+            if ($file_ext === 'avi') $mime_type = 'video/x-msvideo';
+            if ($file_ext === 'mkv') $mime_type = 'video/x-matroska';
         ?>
             <div class="w-full aspect-video">
                 <video class="w-full h-full object-cover rounded-t-2xl" controls autoplay muted loop playsinline disableRemotePlayback controlsList="nodownload noremoteplayback">

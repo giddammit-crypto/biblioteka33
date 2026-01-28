@@ -765,10 +765,13 @@ function city_library_customize_register($wp_customize) {
         'section' => 'promo_section',
     )));
 
-    $wp_customize->add_setting('promo_title', array('default' => 'Добро пожаловать', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('promo_subtitle', array('default' => 'THE MODERN LIBRARY EXPERIENCE', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_subtitle', array('label' => __('Надзаголовок (Subtitle)', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_title', array('default' => 'Discover New Worlds', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('promo_title', array('label' => __('Заголовок', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
 
-    $wp_customize->add_setting('promo_text', array('default' => 'Узнайте больше о наших услугах и мероприятиях.', 'sanitize_callback' => 'city_library_sanitize_html'));
+    $wp_customize->add_setting('promo_text', array('default' => 'Escape the ordinary with our meticulously curated collection of rare e-books, immersive audiobooks, and bespoke digital learning resources.', 'sanitize_callback' => 'city_library_sanitize_html'));
     $wp_customize->add_control('promo_text', array('label' => __('Текст', 'city-library'), 'section' => 'promo_section', 'type' => 'textarea'));
 
     // Promo Section Link Settings
@@ -777,6 +780,20 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('promo_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('promo_link', array('label' => __('Ссылка', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
+
+    // Button 2
+    $wp_customize->add_setting('promo_btn2_text', array('default' => 'Watch Trailer', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_btn2_text', array('label' => __('Текст кнопки 2', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_btn2_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('promo_btn2_link', array('label' => __('Ссылка кнопки 2', 'city-library'), 'section' => 'promo_section', 'type' => 'url'));
+
+    // Badge
+    $wp_customize->add_setting('promo_badge_text', array('default' => 'Active Readers', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_badge_text', array('label' => __('Текст бейджа', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('promo_badge_number', array('default' => '12.4k+', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('promo_badge_number', array('label' => __('Цифра бейджа', 'city-library'), 'section' => 'promo_section', 'type' => 'text'));
 
     // Promo Button Colors
     $wp_customize->add_setting('promo_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
@@ -967,6 +984,11 @@ function city_library_sanitize_html($html) {
         'style' => true,
         'class' => true,
     );
+    // Ensure source is allowed in case it was missed or overwritten
+    $allowed_html['source'] = array(
+        'src' => true,
+        'type' => true,
+    );
 
     return wp_kses($html, $allowed_html);
 }
@@ -1020,6 +1042,18 @@ function city_library_tailwind_config() {
                         display: "<?php echo esc_js($heading_font); ?>",
                         sans: ["<?php echo esc_js($body_font); ?>", "sans-serif"]
                     },
+                    animation: {
+                        blob: "blob 7s infinite",
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" }
+                        }
+                    }
                 }
             }
         }
