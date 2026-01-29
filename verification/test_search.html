@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#075e24',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body class="p-10 bg-white">
+<form role="search" method="get" class="relative group max-w-md mx-auto" action="/">
+    <div class="relative flex items-center">
+        <span class="absolute left-4 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined" aria-hidden="true">search</span>
+        <input type="search"
+               class="w-full pl-12 pr-4 py-3 bg-slate-100 border-2 border-transparent focus:border-primary rounded-full text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
+               placeholder="Поиск..."
+               value=""
+               name="s"
+               aria-label="Search for:"
+               title="Search for:" />
+        <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md" aria-label="Найти">
+            <span class="material-symbols-outlined text-sm font-bold" aria-hidden="true">arrow_forward</span>
+        </button>
+    </div>
+</form>
+</body>
+</html>
