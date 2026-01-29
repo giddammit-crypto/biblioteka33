@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>AAA Verification</title>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#103F35",
+                        secondary: "#D4AF37",
+                        accent: "#C0A062",
+                        "background-light": "#F9F9F7",
+                        "background-dark": "#111827",
+                        "surface-light": "rgba(255, 255, 255, 0.8)",
+                        "surface-dark": "rgba(17, 24, 39, 0.8)",
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        sans: ["Inter", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'glow': '0 0 15px rgba(212, 175, 55, 0.3)',
+                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    animation: {
+                        blob: "blob 10s infinite",
+                        'bounce-slow': 'bounce 3s infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-background-light text-slate-900">
+
+<!-- Header -->
+<header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-glass transition-all duration-300">
+    <div class="w-full max-w-[85%] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-24">
+            <div class="flex items-center space-x-4 h-full py-2">
+                 <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">menu_book</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-0.5">Центральная городская</p>
+                    <p class="text-xl font-display font-bold leading-none text-slate-800">Библиотека</p>
+                </div>
+            </div>
+
+            <nav class="hidden lg:flex items-center space-x-10">
+                <a href="#" class="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-600 hover:text-primary transition-colors duration-300 whitespace-nowrap flex items-center h-full relative group">
+                    <span class="relative z-10">Главная</span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                </a>
+                <a href="#" class="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-600 hover:text-primary transition-colors duration-300 whitespace-nowrap flex items-center h-full relative group">
+                    <span class="relative z-10">Новости</span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                </a>
+            </nav>
+
+            <div class="flex items-center space-x-2 ml-auto">
+                <button class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">visibility</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Mock -->
+<section class="relative min-h-[90vh] flex items-center justify-center pt-24 pb-12" style="background: radial-gradient(circle at 50% 50%, rgba(26,60,52, 0.4) 0%, rgba(26,60,52, 0.85) 100%), linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(26,60,52, 0.9)), url('https://images.unsplash.com/photo-1507842217121-9e93ca0a1e6a?q=80&w=2070&auto=format&fit=crop'); background-size: cover;">
+    <div class="max-w-5xl mx-auto text-center px-4 space-y-10 relative z-10">
+        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-bold text-white leading-tight drop-shadow-2xl">
+            Твой мир, <span class="text-secondary italic">Твоя</span> <br/>библиотека
+        </h1>
+        <a href="#" class="inline-flex px-10 py-5 bg-primary hover:bg-secondary text-white font-bold rounded-full transition-all duration-300 items-center justify-center space-x-3 shadow-lg hover:shadow-glow hover:-translate-y-1">
+            <span class="material-symbols-outlined text-xl">event</span>
+            <span class="tracking-widest text-sm">АФИША МЕРОПРИЯТИЙ</span>
+        </a>
+    </div>
+</section>
+
+<!-- Card Grid Mock -->
+<section class="py-20 bg-background-light">
+    <div class="max-w-[85%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Card 1 -->
+        <article class="group relative flex flex-col h-full bg-white rounded-[2.5rem] overflow-hidden shadow-lg hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-slate-100 isolate">
+            <div class="relative overflow-hidden w-full h-72 shrink-0">
+                <div class="absolute inset-0 bg-slate-300"></div> <!-- Placeholder Image -->
+                <div class="absolute top-5 left-5 z-10">
+                    <span class="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.1em] bg-white/95 backdrop-blur-md text-slate-800 shadow-lg ring-1 ring-white/20 transition-transform group-hover:scale-105">
+                        Новости
+                    </span>
+                </div>
+                <div class="absolute bottom-5 left-5 z-10 flex items-center text-white/90 text-[10px] font-bold tracking-[0.15em] uppercase">
+                    <span class="material-symbols-outlined text-sm mr-2">calendar_month</span>
+                    Oct 24, 2024
+                </div>
+            </div>
+            <div class="flex flex-col flex-grow p-8 relative bg-white/50 backdrop-blur-sm">
+                <h3 class="text-2xl font-display font-bold leading-tight mb-4 line-clamp-2 text-primary">
+                    Заголовок новости в стиле AAA
+                </h3>
+                <div class="text-sm leading-relaxed line-clamp-3 mb-6 flex-grow font-light text-slate-600">
+                    Краткое описание новости, которое привлекает внимание читателя своим элегантным шрифтом и отступами.
+                </div>
+                <div class="pt-5 mt-auto border-t border-slate-100 flex items-center justify-between">
+                    <span class="inline-flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary group-hover:text-secondary transition-colors relative z-10">
+                        Читать далее
+                    </span>
+                    <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-sm group-hover:shadow-glow">
+                        <span class="material-symbols-outlined text-sm transform group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- Footer Mock -->
+<footer class="bg-background-dark text-slate-300 py-20 relative overflow-hidden">
+     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+     <div class="max-w-[85%] mx-auto relative z-10 grid grid-cols-4 gap-16">
+        <div class="space-y-8">
+            <span class="font-display font-bold text-xl text-white tracking-wide">Библиотека</span>
+            <div class="opacity-80 leading-relaxed text-sm font-light">Футер теперь выглядит дорого и стильно.</div>
+        </div>
+        <div class="space-y-6">
+            <h4 class="font-bold text-white uppercase text-xs tracking-[0.2em] mb-8 relative inline-block after:content-[''] after:absolute after:-bottom-3 after:left-0 after:w-8 after:h-0.5 after:bg-secondary">Контакты</h4>
+            <ul class="space-y-6 text-sm">
+                <li class="flex items-center group">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center mr-4 shrink-0 border border-slate-800 group-hover:border-primary transition-colors">
+                        <span class="material-symbols-outlined text-sm text-primary">call</span>
+                    </div>
+                    <span>+7 (999) 000-00-00</span>
+                </li>
+            </ul>
+        </div>
+     </div>
+</footer>
+
+</body>
+</html>

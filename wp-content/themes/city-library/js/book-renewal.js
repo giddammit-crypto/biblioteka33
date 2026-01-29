@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
             <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
-                <h2 class="text-xl font-bold font-display tracking-wider text-center text-green-700">Продление книг онлайн</h2>
+                <h2 class="text-xl font-bold font-display tracking-wider text-center text-green-900">Продление книг онлайн</h2>
                 <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2">
                     <span class="material-symbols-outlined text-2xl">close</span>
                 </button>

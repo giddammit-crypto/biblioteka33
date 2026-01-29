@@ -295,7 +295,7 @@ function city_library_customize_register($wp_customize) {
         'priority' => 18,
     ));
 
-    $wp_customize->add_setting('global_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('global_btn_bg_color', array('default' => '#103F35', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_bg_color', array(
         'label' => __('Основной цвет фона', 'city-library'), 'section' => 'global_buttons_section',
     )));
@@ -305,7 +305,7 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Основной цвет текста', 'city-library'), 'section' => 'global_buttons_section',
     )));
 
-    $wp_customize->add_setting('global_btn_hover_bg_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('global_btn_hover_bg_color', array('default' => '#D4AF37', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_btn_hover_bg_color', array(
         'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'global_buttons_section',
     )));
@@ -351,17 +351,17 @@ function city_library_customize_register($wp_customize) {
         'priority' => 20,
     ));
 
-    $wp_customize->add_setting('header_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('header_bg_color', array('default' => '#F9F9F7', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bg_color', array(
         'label' => __('Цвет фона шапки', 'city-library'), 'section' => 'header_section',
     )));
 
-    $wp_customize->add_setting('header_text_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_setting('header_text_color', array('default' => '#103F35', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_text_color', array(
         'label' => __('Цвет текста шапки', 'city-library'), 'section' => 'header_section',
     )));
 
-     $wp_customize->add_setting('header_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+     $wp_customize->add_setting('header_font_family', array('default' => 'Playfair Display', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('header_font_family', array(
         'label' => __('Шрифт шапки', 'city-library'),
         'section' => 'header_section',
@@ -564,7 +564,7 @@ function city_library_customize_register($wp_customize) {
         'title' => __('Typography', 'city-library'),
         'priority' => 20,
     ));
-    $wp_customize->add_setting('heading_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('heading_font', array('default' => 'Playfair Display', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('heading_font', array(
         'label' => __('Heading Font', 'city-library'),
         'section' => 'typography_section',
@@ -576,7 +576,7 @@ function city_library_customize_register($wp_customize) {
             'Merriweather' => 'Merriweather (Serif)',
         ),
     ));
-    $wp_customize->add_setting('body_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('body_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('body_font', array(
         'label' => __('Body Font', 'city-library'),
         'section' => 'typography_section',
@@ -932,8 +932,13 @@ add_action('init', 'city_library_disable_comments_admin_bar');
  */
 class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
     function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4';
-        $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">' . esc_html($item->title) . '</a>';
+        $classes = 'text-[11px] font-bold uppercase tracking-[0.15em] text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors duration-300 whitespace-nowrap flex items-center h-full relative group';
+        $item_output = '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">';
+        $item_output .= '<span class="relative z-10">' . esc_html($item->title) . '</span>';
+        // Add subtle hover line
+        $item_output .= '<span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary origin-left transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>';
+        $item_output .= '</a>';
+        $output .= $item_output;
     }
     function end_el(&$output, $item, $depth = 0, $args = null) {
         $output .= "";
@@ -1060,8 +1065,9 @@ add_action('wp_ajax_nopriv_load_posts_by_view', 'load_posts_by_view');
 * Add custom script to head to configure TailwindCSS
 */
 function city_library_tailwind_config() {
-    $heading_font = get_theme_mod('heading_font', 'Inter');
-    $body_font = get_theme_mod('body_font', 'Montserrat');
+    // "AAA" Quality Defaults: Playfair for elegance, Inter for readability
+    $heading_font = get_theme_mod('heading_font', 'Playfair Display');
+    $body_font = get_theme_mod('body_font', 'Inter');
     ?>
     <script>
         tailwind.config = {
@@ -1069,18 +1075,32 @@ function city_library_tailwind_config() {
             theme: {
                 extend: {
                     colors: {
-                        primary: "#0b7930",
-                        secondary: "#1A3C34",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#102216"
+                        // AAA Palette: Deep Emerald, Antique Gold, Cream Paper, Rich Slate
+                        primary: "#103F35", // Deep Forest Green
+                        secondary: "#D4AF37", // Antique Gold
+                        accent: "#C0A062", // Muted Gold
+                        "background-light": "#F9F9F7", // Cream/Paper
+                        "background-dark": "#111827", // Slate 900
+                        "surface-light": "rgba(255, 255, 255, 0.8)",
+                        "surface-dark": "rgba(17, 24, 39, 0.8)",
                     },
                     fontFamily: {
-                        display: "<?php echo esc_js($heading_font); ?>",
+                        display: ["<?php echo esc_js($heading_font); ?>", "serif"],
                         sans: ["<?php echo esc_js($body_font); ?>", "sans-serif"]
                     },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'glow': '0 0 15px rgba(212, 175, 55, 0.3)',
+                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
                     animation: {
-                        blob: "blob 7s infinite",
+                        blob: "blob 10s infinite",
                         'bounce-slow': 'bounce 3s infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'scale-in': 'scaleIn 0.5s ease-out forwards',
                     },
                     keyframes: {
                         blob: {
@@ -1088,6 +1108,14 @@ function city_library_tailwind_config() {
                             "33%": { transform: "translate(30px, -50px) scale(1.1)" },
                             "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
                             "100%": { transform: "translate(0px, 0px) scale(1)" }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     }
                 }
