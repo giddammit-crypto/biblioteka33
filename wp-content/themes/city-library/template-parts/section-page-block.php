@@ -26,10 +26,17 @@ $content = apply_filters('the_content', $post->post_content);
          <!-- Decorative Blur -->
          <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-         <div class="relative z-10">
-            <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-800 dark:text-white mb-8 border-b border-slate-100 dark:border-slate-700 pb-4">
+         <div class="relative z-10 flex flex-col gap-8">
+            <h2 class="text-3xl md:text-5xl font-display font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-4">
                 <?php echo esc_html($title); ?>
             </h2>
+
+            <!-- Featured Image -->
+            <?php if (has_post_thumbnail($page_id)) : ?>
+                <div class="w-full h-64 md:h-96 rounded-2xl overflow-hidden shadow-lg relative">
+                    <?php echo get_the_post_thumbnail($page_id, 'full', ['class' => 'w-full h-full object-cover']); ?>
+                </div>
+            <?php endif; ?>
 
             <div class="prose prose-lg prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
                 <?php echo $content; ?>
