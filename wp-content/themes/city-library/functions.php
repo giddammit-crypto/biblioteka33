@@ -983,6 +983,12 @@ function city_library_sanitize_html($html) {
         'class' => true,
         'width' => true,
         'height' => true,
+        'style' => true,
+        'title' => true,
+        'loading' => true,
+        'decoding' => true,
+        'srcset' => true,
+        'sizes' => true,
     );
     $allowed_html['video'] = array(
         'src' => true,
@@ -996,6 +1002,9 @@ function city_library_sanitize_html($html) {
         'playsinline' => true,
         'disableRemotePlayback' => true,
         'controlsList' => true,
+        'poster' => true,
+        'preload' => true,
+        'style' => true,
     );
     $allowed_html['source'] = array(
         'src' => true,
