@@ -32,7 +32,7 @@ $badge_number = get_theme_mod('promo_badge_number', '12.4k+');
              <?php endif; ?>
 
              <?php if ($title) : ?>
-                <h2 class="text-5xl md:text-7xl font-display font-bold text-slate-800 dark:text-white mb-8 leading-[1.1]">
+                <h2 class="text-4xl sm:text-5xl lg:text-7xl font-display font-bold text-slate-800 dark:text-white mb-8 leading-[1.1]">
                     <?php
                     // Allow simple styling in title if user adds span tags, but mostly rely on font
                     echo wp_kses_post($title);

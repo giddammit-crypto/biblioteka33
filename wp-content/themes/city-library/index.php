@@ -69,4 +69,6 @@
 
 <?php get_template_part('template-parts/section-important'); ?>
 
+<?php get_template_part('template-parts/section-page-block'); ?>
+
 <?php get_footer(); ?>

@@ -846,6 +846,33 @@ function city_library_customize_register($wp_customize) {
             'rotate-in' => 'Rotate In',
         ),
     ));
+
+    // Page Content Block Section
+    $wp_customize->add_section('page_block_section', array(
+        'title' => __('Блок контента страницы', 'city-library'),
+        'priority' => 107,
+    ));
+
+    $wp_customize->add_setting('show_page_block', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_page_block', array(
+        'label' => __('Показать блок страницы', 'city-library'),
+        'section' => 'page_block_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('page_block_id', array('default' => 0, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('page_block_id', array(
+        'label' => __('Выберите страницу', 'city-library'),
+        'section' => 'page_block_section',
+        'type' => 'dropdown-pages',
+    ));
+
+    $wp_customize->add_setting('page_block_title', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('page_block_title', array(
+        'label' => __('Заголовок блока (если пусто, используется заголовок страницы)', 'city-library'),
+        'section' => 'page_block_section',
+        'type' => 'text',
+    ));
 }
 add_action('customize_register', 'city_library_customize_register');
 
