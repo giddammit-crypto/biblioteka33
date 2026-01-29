@@ -1065,7 +1065,6 @@ add_action('wp_ajax_nopriv_load_posts_by_view', 'load_posts_by_view');
 * Add custom script to head to configure TailwindCSS
 */
 function city_library_tailwind_config() {
-    // "AAA" Quality Defaults: Playfair for elegance, Inter for readability
     $heading_font = get_theme_mod('heading_font', 'Playfair Display');
     $body_font = get_theme_mod('body_font', 'Inter');
     ?>
@@ -1075,47 +1074,20 @@ function city_library_tailwind_config() {
             theme: {
                 extend: {
                     colors: {
-                        // AAA Palette: Deep Emerald, Antique Gold, Cream Paper, Rich Slate
-                        primary: "#103F35", // Deep Forest Green
-                        secondary: "#D4AF37", // Antique Gold
-                        accent: "#C0A062", // Muted Gold
-                        "background-light": "#F9F9F7", // Cream/Paper
-                        "background-dark": "#111827", // Slate 900
-                        "surface-light": "rgba(255, 255, 255, 0.8)",
-                        "surface-dark": "rgba(17, 24, 39, 0.8)",
+                        primary: "#0b7930", // Standard Green
+                        secondary: "#fbbf24", // Amber 400
                     },
                     fontFamily: {
                         display: ["<?php echo esc_js($heading_font); ?>", "serif"],
                         sans: ["<?php echo esc_js($body_font); ?>", "sans-serif"]
                     },
-                    boxShadow: {
-                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-                        'glow': '0 0 15px rgba(212, 175, 55, 0.3)',
-                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                    },
-                    backdropBlur: {
-                        'xs': '2px',
-                    },
                     animation: {
-                        blob: "blob 10s infinite",
-                        'bounce-slow': 'bounce 3s infinite',
                         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                        'scale-in': 'scaleIn 0.5s ease-out forwards',
                     },
                     keyframes: {
-                        blob: {
-                            "0%": { transform: "translate(0px, 0px) scale(1)" },
-                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                            "100%": { transform: "translate(0px, 0px) scale(1)" }
-                        },
                         fadeInUp: {
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        scaleIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.95)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     }
                 }
