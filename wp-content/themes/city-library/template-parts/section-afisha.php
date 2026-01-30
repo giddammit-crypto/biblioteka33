@@ -69,14 +69,14 @@ if ($bg_style === 'gradient') {
                         <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
                     </p>
 
-                    <div class="flex items-center gap-4 pt-4">
+                    <div class="flex items-center gap-4 pt-4 relative z-30">
                         <!-- Navigation Buttons -->
-                        <div class="afisha-prev cursor-pointer group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_back</span>
-                        </div>
-                        <div class="afisha-next cursor-pointer group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_forward</span>
-                        </div>
+                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center bg-white cursor-pointer shadow-sm">
+                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors text-slate-700">arrow_back</span>
+                        </button>
+                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center bg-white cursor-pointer shadow-sm">
+                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors text-slate-700">arrow_forward</span>
+                        </button>
                         <span class="text-xs md:text-sm font-medium uppercase tracking-widest text-primary ml-4 animate-pulse hidden sm:inline-block">Листайте афишу</span>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ if ($bg_style === 'gradient') {
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
 
                     <!-- Slider Container -->
-                    <div class="swiper afisha-slider h-full w-full !py-10 !px-4 overflow-hidden">
+                    <div class="swiper afisha-slider h-full w-full !py-10 !px-4 overflow-visible">
                         <div class="swiper-wrapper">
                         <?php foreach ($events as $event) : ?>
                             <div class="swiper-slide h-full group cursor-pointer perspective-1000 afisha-slide-item"
@@ -168,20 +168,20 @@ if ($bg_style === 'gradient') {
 <!-- Full Screen Modal for Afisha -->
 <div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
     <!-- Close Button -->
-    <button id="afisha-modal-close" class="absolute top-6 right-6 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-        <span class="material-symbols-outlined text-4xl">close</span>
+    <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white cursor-pointer group">
+        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300">close</span>
         <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
     </button>
 
     <!-- Modal Content -->
     <div class="relative w-full h-full flex flex-col items-center justify-center p-4 sm:p-8 md:p-12">
         <!-- Image Container -->
-        <div class="relative max-w-5xl max-h-[80vh] w-full flex items-center justify-center mb-8">
-            <img id="afisha-modal-image" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl">
+        <div class="relative max-w-7xl w-full flex-grow flex items-center justify-center mb-8 overflow-hidden">
+            <img id="afisha-modal-image" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
         </div>
 
         <!-- Action Button -->
-        <div class="mt-4">
+        <div class="mt-auto mb-4">
             <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50">
                 <?php _e('Перейти к полной записи', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-2xl">arrow_forward</span>
