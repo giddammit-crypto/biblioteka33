@@ -4,7 +4,7 @@ $title_color = get_theme_mod('news_card_list_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_list_text_color', '#334155');
 $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col md:flex-row bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 isolate min-h-[220px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+<article class="group relative flex flex-col md:flex-row bg-white dark:bg-slate-800 rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 isolate min-h-[220px]" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
     <!-- Image Container -->
     <div class="md:w-[280px] shrink-0 relative overflow-hidden h-48 md:h-full md:min-h-full">
