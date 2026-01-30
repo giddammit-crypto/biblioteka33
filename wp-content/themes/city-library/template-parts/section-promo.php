@@ -16,7 +16,7 @@ $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-libra
 $link = get_theme_mod('promo_link', '#');
 ?>
 
-<section class="mb-12 content-area bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+<section class="mb-12 content-area bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
     <!-- Decorative Glow (optional, keeping it subtle) -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 
@@ -50,9 +50,9 @@ $link = get_theme_mod('promo_link', '#');
 
             <?php if ($link && $btn_text) : ?>
                 <div>
-                    <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group">
-                        <?php echo esc_html($btn_text); ?>
-                        <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group text-center max-w-full">
+                        <span class="whitespace-normal"><?php echo esc_html($btn_text); ?></span>
+                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>

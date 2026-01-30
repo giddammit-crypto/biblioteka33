@@ -36,7 +36,7 @@ if (empty($events)) {
 $section_title = get_theme_mod('afisha_title', 'Афиша Мероприятий');
 $bg_style = get_theme_mod('afisha_bg_style', 'default');
 
-$container_classes = "bg-white dark:bg-slate-900 p-6 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden";
+$container_classes = "bg-slate-50 dark:bg-slate-900/50 p-6 md:p-12 rounded-[2.5rem] relative overflow-hidden";
 $bg_overlay = "";
 
 if ($bg_style === 'gradient') {
