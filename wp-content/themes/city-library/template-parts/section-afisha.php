@@ -36,7 +36,7 @@ if (empty($events)) {
 $section_title = get_theme_mod('afisha_title', 'Афиша Мероприятий');
 $bg_style = get_theme_mod('afisha_bg_style', 'default');
 
-$container_classes = "bg-white dark:bg-slate-900 p-6 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden";
+$container_classes = "bg-white p-6 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden";
 $bg_overlay = "";
 
 if ($bg_style === 'gradient') {
@@ -45,7 +45,7 @@ if ($bg_style === 'gradient') {
 }
 ?>
 
-<section class="py-20 bg-white dark:bg-slate-900 overflow-hidden <?php echo city_library_get_animation_class(); ?>">
+<section class="py-20 bg-white overflow-hidden <?php echo city_library_get_animation_class(); ?>">
     <!-- Width Correction: 80% to match other blocks -->
     <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?>">
@@ -60,21 +60,21 @@ if ($bg_style === 'gradient') {
                     <div class="relative">
                         <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-yellow-400 rounded-full mb-6"></div>
                         <!-- Responsive Font Sizes -->
-                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900 dark:text-white'; ?>">
+                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
                             <?php echo esc_html($section_title); ?>
                         </h2>
                     </div>
 
-                    <p class="<?php echo ($bg_style === 'gradient') ? 'text-slate-200' : 'text-slate-600 dark:text-slate-300'; ?> text-lg md:text-xl leading-relaxed font-light">
+                    <p class="<?php echo ($bg_style === 'gradient') ? 'text-slate-200' : 'text-slate-600'; ?> text-lg md:text-xl leading-relaxed font-light">
                         <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
                     </p>
 
                     <div class="flex items-center gap-4 pt-4">
-                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 dark:border-slate-600 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700 dark:text-white'; ?>">arrow_back</span>
+                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
+                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_back</span>
                         </button>
-                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 dark:border-slate-600 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700 dark:text-white'; ?>">arrow_forward</span>
+                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
+                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_forward</span>
                         </button>
                         <span class="text-xs md:text-sm font-medium uppercase tracking-widest text-primary ml-4 animate-pulse hidden sm:inline-block">Листайте афишу</span>
                     </div>
