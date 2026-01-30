@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileMenuBtn.addEventListener('click', function() {
             mobileMenu.classList.remove('translate-x-full');
             document.body.style.overflow = 'hidden';
+            mobileMenuBtn.setAttribute('aria-expanded', 'true');
         });
 
         const closeMenu = () => {
             mobileMenu.classList.add('translate-x-full');
             document.body.style.overflow = '';
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
         };
 
         if (closeBtn) {

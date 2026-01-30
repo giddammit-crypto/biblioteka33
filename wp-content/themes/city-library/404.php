@@ -3,7 +3,7 @@
 <div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
     <div id="primary" class="w-full flex items-center justify-center min-h-[60vh]">
 
-        <div class="text-center max-w-2xl mx-auto space-y-8 p-12 bg-white dark:bg-slate-900/50 rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
+        <div class="text-center max-w-2xl mx-auto space-y-8 p-12 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden">
 
             <!-- Decorative Blobs -->
             <div class="absolute -top-20 -left-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>

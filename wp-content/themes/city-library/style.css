@@ -6,6 +6,12 @@ Version: 1.0
 Text Domain: city-library
 */
 
+/* Global Reset for Horizontal Overflow */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
 /*
  * Main styles are handled via Tailwind CSS (CDN in development).
  * Magic Mode styles are located in css/magic-mode.css
@@ -101,6 +107,12 @@ Text Domain: city-library
     text-decoration: none;
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Adaptivity */
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    text-align: center;
+    line-height: 1.25;
 }
 
 .wp-block-button__link:hover {

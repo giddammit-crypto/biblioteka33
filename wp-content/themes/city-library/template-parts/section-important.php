@@ -15,13 +15,13 @@ $btn_link = get_theme_mod('important_btn_link', '#');
 $inter_block_text = get_theme_mod('important_inter_block_text', '');
 ?>
 
-<section class="py-16 <?php echo city_library_get_animation_class(); ?>">
+<section class="py-16 bg-white <?php echo city_library_get_animation_class(); ?>">
     <!-- Width Correction: 80% to match other blocks -->
     <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
 
         <!-- Main Alert Block - Standardized Style -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>
-        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
 
             <!-- Decorative Background Element (Subtle, not red) -->
             <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
@@ -29,15 +29,15 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
             <div class="relative z-10 flex flex-col md:flex-row gap-6 items-start md:items-center flex-grow">
                 <!-- Icon (Changed from Red to Primary/Standard) -->
                 <div class="shrink-0">
-                    <div class="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
                         <span class="material-symbols-outlined text-4xl text-primary animate-pulse">warning</span>
                     </div>
                 </div>
 
                 <!-- Content -->
                 <div class="space-y-3">
-                    <h2 class="text-3xl font-bold font-display uppercase tracking-wider text-slate-800 dark:text-white"><?php echo esc_html($title); ?></h2>
-                    <div class="prose prose-lg prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <h2 class="text-3xl font-bold font-display uppercase tracking-wider text-slate-800"><?php echo esc_html($title); ?></h2>
+                    <div class="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed">
                         <?php echo wp_kses_post(wpautop($text)); ?>
                     </div>
                 </div>
@@ -57,7 +57,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
         <!-- Spacer / Inter-block text -->
         <div class="py-12 flex items-center justify-center">
              <?php if ($inter_block_text) : ?>
-                <div class="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-white text-center py-4 px-6 rounded-[2rem] shadow-lg border border-slate-100 dark:border-slate-800 bg-pattern-slate">
+                <div class="w-full bg-white text-slate-800 text-center py-4 px-6 rounded-[2rem] shadow-lg border border-slate-100 bg-pattern-slate">
                     <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
                 </div>
              <?php endif; ?>

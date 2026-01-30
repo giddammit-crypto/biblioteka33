@@ -28,12 +28,12 @@
         <!-- Main Content (70%) -->
         <div id="primary" class="w-full <?php echo $show_sidebar ? 'lg:w-[70%]' : ''; ?> transition-all duration-300">
 
-            <div class="content-area bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+            <div class="content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div class="space-y-4">
                     <div class="h-1 w-20 bg-primary"></div>
                     <h2 class="text-3xl md:text-5xl font-display font-bold"><?php _e('Последние новости', 'city-library'); ?></h2>
-                    <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
+                    <p class="text-slate-500 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
                 </div>
             </div>
 
@@ -50,8 +50,8 @@
                     <?php the_posts_pagination(); ?>
                 </div>
 
-                <div class="mt-16 text-center border-t border-slate-200 dark:border-slate-800 pt-8">
-                    <a href="<?php echo esc_url(add_query_arg('news_archive', 'true', home_url('/'))); ?>" class="inline-flex items-center text-secondary dark:text-primary font-bold text-lg hover:underline decoration-2 underline-offset-4">
+                <div class="mt-16 text-center border-t border-slate-200 pt-8">
+                    <a href="<?php echo esc_url(add_query_arg('news_archive', 'true', home_url('/'))); ?>" class="inline-flex items-center text-slate-900 font-bold text-lg hover:underline decoration-2 underline-offset-4">
                         <?php _e('Архив новостей', 'city-library'); ?>
                         <span class="material-symbols-outlined ml-2">arrow_forward</span>
                     </a>

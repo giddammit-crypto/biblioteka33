@@ -16,7 +16,7 @@ $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-libra
 $link = get_theme_mod('promo_link', '#');
 ?>
 
-<section class="mb-12 content-area bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+<section class="mb-12 content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
     <!-- Decorative Glow (optional, keeping it subtle) -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 
@@ -29,7 +29,7 @@ $link = get_theme_mod('promo_link', '#');
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
-             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 dark:bg-slate-700 flex items-center justify-center relative overflow-hidden rounded-2xl">
+             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
                 <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
              </div>
         <?php endif; ?>
@@ -37,22 +37,22 @@ $link = get_theme_mod('promo_link', '#');
         <!-- Content Column -->
         <div class="flex-grow flex flex-col justify-center">
             <?php if ($title) : ?>
-                <h2 class="text-3xl font-display font-bold mb-4 text-slate-900 dark:text-white leading-tight">
+                <h2 class="text-3xl font-display font-bold mb-4 text-slate-900 leading-tight">
                     <?php echo esc_html($title); ?>
                 </h2>
             <?php endif; ?>
 
             <?php if ($text) : ?>
-                <div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 mb-6">
+                <div class="prose prose-slate max-w-none text-slate-600 mb-6">
                     <?php echo wp_kses_post(wpautop($text)); ?>
                 </div>
             <?php endif; ?>
 
             <?php if ($link && $btn_text) : ?>
                 <div>
-                    <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group">
-                        <?php echo esc_html($btn_text); ?>
-                        <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                    <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group text-center max-w-full">
+                        <span class="whitespace-normal"><?php echo esc_html($btn_text); ?></span>
+                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>

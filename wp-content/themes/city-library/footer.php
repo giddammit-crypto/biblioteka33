@@ -1,4 +1,3 @@
-</main>
 
 <?php
 if (get_theme_mod('show_partners_section', true)) {
@@ -6,8 +5,10 @@ if (get_theme_mod('show_partners_section', true)) {
 }
 ?>
 
-<footer class="bg-secondary text-white py-16 bg-pattern-white <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#1A3C34')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#FFFFFF')); ?>;">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+<footer class="bg-slate-100 text-slate-900 py-16 bg-pattern-white <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#F1F5F9')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#0F172A')); ?>;">
+
+    <!-- Width Correction: 80% to match other blocks -->
+    <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
         <!-- Custom Footer Content / Widget 1 -->
         <div class="footer-column space-y-6">
@@ -76,7 +77,8 @@ if (get_theme_mod('show_partners_section', true)) {
             </div>
         <?php endif; ?>
     </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+
+    <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
         <p><?php echo esc_html(get_theme_mod('footer_copyright', '© 2024 Центральная городская библиотека. Все права защищены.')); ?></p>
         <div class="flex space-x-6 mt-4 md:mt-0">
             <a href="<?php echo esc_url(get_theme_mod('footer_privacy_link', '#')); ?>" class="hover:text-white transition-colors"><?php _e('Политика конфиденциальности', 'city-library'); ?></a>
@@ -91,6 +93,7 @@ if (get_theme_mod('show_partners_section', true)) {
 </button>
 <?php endif; ?>
 
+<?php get_template_part('template-parts/mobile-bottom-nav'); ?>
 
 <?php
 // Modal Popup Logic
