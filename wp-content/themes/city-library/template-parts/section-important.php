@@ -21,7 +21,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 
         <!-- Main Alert Block - Standardized Style -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>
-        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
 
             <!-- Decorative Background Element (Subtle, not red) -->
             <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
@@ -57,7 +57,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
         <!-- Spacer / Inter-block text -->
         <div class="py-12 flex items-center justify-center">
              <?php if ($inter_block_text) : ?>
-                <div class="w-full bg-slate-50 dark:bg-slate-900/50 text-slate-800 dark:text-white text-center py-4 px-6 rounded-3xl border border-slate-100 dark:border-slate-800 bg-pattern-slate">
+                <div class="w-full bg-white dark:bg-slate-900 text-slate-800 dark:text-white text-center py-4 px-6 rounded-[2rem] shadow-lg border border-slate-100 dark:border-slate-800 bg-pattern-slate">
                     <p class="text-xl font-bold uppercase tracking-widest"><?php echo esc_html($inter_block_text); ?></p>
                 </div>
              <?php endif; ?>

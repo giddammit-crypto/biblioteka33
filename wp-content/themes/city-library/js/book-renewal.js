@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalOverlay.innerHTML = `
-        <div class="bg-slate-50 dark:bg-slate-900 bg-pattern-slate rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
+        <div class="bg-white dark:bg-slate-900 bg-pattern-slate rounded-[2rem] w-full max-w-lg shadow-xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
             <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
                 <h3 class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
