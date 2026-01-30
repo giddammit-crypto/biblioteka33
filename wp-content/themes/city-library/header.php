@@ -113,8 +113,9 @@
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+    <a href="#start-of-content" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce p-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 transition-colors hover:bg-white/10" aria-label="<?php esc_attr_e('Прокрутить к содержимому', 'city-library'); ?>">
         <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    </a>
 </section>
 <?php endif; ?>
+<div id="start-of-content" class="scroll-mt-24"></div>
