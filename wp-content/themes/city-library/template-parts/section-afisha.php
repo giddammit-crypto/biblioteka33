@@ -60,7 +60,7 @@ if ($bg_style === 'gradient') {
                     <div class="relative">
                         <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6"></div>
                         <!-- Responsive Font Sizes -->
-                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
+                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-snug pb-2 break-words <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
                             <?php echo esc_html($section_title); ?>
                         </h2>
                     </div>
@@ -71,11 +71,11 @@ if ($bg_style === 'gradient') {
 
                     <div class="flex items-center gap-4 pt-4 relative z-30">
                         <!-- Navigation Buttons -->
-                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center bg-white cursor-pointer shadow-sm">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors text-slate-700">arrow_back</span>
+                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_back</span>
                         </button>
-                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center bg-white cursor-pointer shadow-sm">
-                            <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors text-slate-700">arrow_forward</span>
+                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_forward</span>
                         </button>
                         <span class="text-xs md:text-sm font-medium uppercase tracking-widest text-primary ml-4 animate-pulse hidden sm:inline-block">Листайте афишу</span>
                     </div>
