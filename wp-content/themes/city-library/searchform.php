@@ -11,8 +11,9 @@
                placeholder="<?php echo esc_attr_x('Поиск...', 'placeholder', 'city-library'); ?>"
                value="<?php echo get_search_query(); ?>"
                name="s"
-               title="<?php echo esc_attr_x('Search for:', 'label', 'city-library'); ?>" />
-        <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md">
+               title="<?php echo esc_attr_x('Search for:', 'label', 'city-library'); ?>"
+               aria-label="<?php echo esc_attr_x('Поиск', 'label', 'city-library'); ?>" />
+        <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md" aria-label="<?php echo esc_attr_x('Найти', 'submit button', 'city-library'); ?>">
             <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
         </button>
     </div>
