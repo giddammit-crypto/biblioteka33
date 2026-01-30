@@ -58,7 +58,7 @@ if ($bg_style === 'gradient') {
                     <div class="absolute -top-10 -left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div class="relative">
-                        <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-yellow-400 rounded-full mb-6"></div>
+                        <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6"></div>
                         <!-- Responsive Font Sizes -->
                         <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-tight <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
                             <?php echo esc_html($section_title); ?>
@@ -85,11 +85,16 @@ if ($bg_style === 'gradient') {
                     <!-- Blur effect behind slider for depth -->
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
 
-                    <!-- Removed !overflow-visible to fix overlapping issue -->
+                    <!-- Slider Container -->
                     <div class="swiper afisha-slider h-full w-full !py-10 !px-4 overflow-hidden">
                         <div class="swiper-wrapper">
                         <?php foreach ($events as $event) : ?>
-                            <div class="swiper-slide h-full group cursor-pointer perspective-1000" <?php if ($event['link']) echo 'onclick="window.location.href=\'' . esc_url($event['link']) . '\'"'; ?>>
+                            <div class="swiper-slide h-full group cursor-pointer perspective-1000 afisha-slide-item"
+                                 data-afisha-image="<?php echo esc_url($event['image']); ?>"
+                                 data-afisha-link="<?php echo esc_url($event['link']); ?>"
+                                 data-afisha-title="<?php echo esc_attr($event['title']); ?>"
+                                 role="button"
+                                 tabindex="0">
                                 <div class="relative h-full w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-slate-900 select-none border border-white/10 ring-1 ring-black/5 group-hover:scale-[1.02] transform">
 
                                     <!-- Image High Quality rendering -->
@@ -112,16 +117,16 @@ if ($bg_style === 'gradient') {
                                     <!-- Hover Tooltip (Centered) -->
                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
                                         <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold uppercase tracking-widest py-3 px-6 rounded-full flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
-                                            <span><?php _e('Подробнее', 'city-library'); ?></span>
-                                            <span class="material-symbols-outlined">arrow_forward</span>
+                                            <span><?php _e('Увеличить', 'city-library'); ?></span>
+                                            <span class="material-symbols-outlined">zoom_in</span>
                                         </div>
                                     </div>
 
                                     <!-- Content Container -->
-                                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+                                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end pointer-events-none">
 
                                         <!-- Top Badges Area -->
-                                        <div class="absolute top-6 left-6 flex flex-col gap-3 items-start">
+                                        <div class="absolute top-6 left-6 flex flex-col gap-3 items-start pointer-events-auto">
                                             <?php if (!empty($event['badge'])) : ?>
                                                 <div class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:bg-white/20">
                                                     <?php echo esc_html($event['badge']); ?>
@@ -131,7 +136,7 @@ if ($bg_style === 'gradient') {
 
                                         <!-- Ribbon -->
                                         <?php if (!empty($event['ribbon'])) : ?>
-                                            <div class="absolute top-6 right-6">
+                                            <div class="absolute top-6 right-6 pointer-events-auto">
                                                 <div class="bg-red-600 text-white font-bold text-xs uppercase py-2 px-4 rounded-lg shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
                                                     <?php echo esc_html($event['ribbon']); ?>
                                                 </div>
@@ -139,21 +144,12 @@ if ($bg_style === 'gradient') {
                                         <?php endif; ?>
 
                                         <!-- Text Content -->
-                                        <div class="transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0">
+                                        <div class="transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0 pointer-events-auto">
                                             <h3 class="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white mb-3 drop-shadow-md leading-tight">
                                                 <?php echo esc_html($event['title']); ?>
                                             </h3>
 
                                             <div class="h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full mb-4"></div>
-
-                                            <?php if ($event['link']) : ?>
-                                            <div class="opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 transform translate-y-4 group-hover:translate-y-0">
-                                                <span class="inline-flex items-center gap-2 text-white font-semibold uppercase tracking-wider text-sm hover:text-primary transition-colors">
-                                                    <?php _e('Подробнее', 'city-library'); ?>
-                                                    <span class="material-symbols-outlined text-lg">arrow_right_alt</span>
-                                                </span>
-                                            </div>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -167,6 +163,31 @@ if ($bg_style === 'gradient') {
         </div>
     </div>
 </section>
+
+<!-- Full Screen Modal for Afisha -->
+<div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
+    <!-- Close Button -->
+    <button id="afisha-modal-close" class="absolute top-6 right-6 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+        <span class="material-symbols-outlined text-4xl">close</span>
+        <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
+    </button>
+
+    <!-- Modal Content -->
+    <div class="relative w-full h-full flex flex-col items-center justify-center p-4 sm:p-8 md:p-12">
+        <!-- Image Container -->
+        <div class="relative max-w-5xl max-h-[80vh] w-full flex items-center justify-center mb-8">
+            <img id="afisha-modal-image" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl">
+        </div>
+
+        <!-- Action Button -->
+        <div class="mt-4">
+            <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50">
+                <?php _e('Перейти к полной записи', 'city-library'); ?>
+                <span class="material-symbols-outlined ml-2 text-2xl">arrow_forward</span>
+            </a>
+        </div>
+    </div>
+</div>
 
 <style>
 /* Custom Swiper Styles for AAA feel */
@@ -191,6 +212,12 @@ if ($bg_style === 'gradient') {
 .swiper-slide img {
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+}
+
+/* Modal Transitions */
+#afisha-modal.open {
+    display: flex;
+    opacity: 1;
 }
 </style>
 
@@ -245,5 +272,88 @@ document.addEventListener('DOMContentLoaded', function() {
             slideShadows: false, // Custom shadows via CSS are better
         },
     });
+
+    // Modal Logic
+    const modal = document.getElementById('afisha-modal');
+    const modalImg = document.getElementById('afisha-modal-image');
+    const modalLink = document.getElementById('afisha-modal-link');
+    const closeBtn = document.getElementById('afisha-modal-close');
+    const slides = document.querySelectorAll('.afisha-slide-item');
+
+    function openModal(imageSrc, linkUrl, title) {
+        if (!modal || !modalImg || !modalLink) return;
+
+        modalImg.src = imageSrc;
+        modalImg.alt = title;
+
+        if (linkUrl && linkUrl !== '#') {
+            modalLink.href = linkUrl;
+            modalLink.classList.remove('hidden');
+            modalLink.classList.add('inline-flex');
+        } else {
+            modalLink.classList.add('hidden');
+            modalLink.classList.remove('inline-flex');
+        }
+
+        modal.classList.remove('hidden');
+        // Small delay to trigger transition
+        requestAnimationFrame(() => {
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+        });
+
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
+
+    function closeModal() {
+        if (!modal) return;
+
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+        }, 300);
+    }
+
+    // Attach listeners
+    slides.forEach(slide => {
+        slide.addEventListener('click', function() {
+            const img = this.dataset.afishaImage;
+            const link = this.dataset.afishaLink;
+            const title = this.dataset.afishaTitle;
+            openModal(img, link, title);
+        });
+
+        slide.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const img = this.dataset.afishaImage;
+                const link = this.dataset.afishaLink;
+                const title = this.dataset.afishaTitle;
+                openModal(img, link, title);
+            }
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Close on click outside image
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
 });
 </script>

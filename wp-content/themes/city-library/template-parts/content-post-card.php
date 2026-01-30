@@ -24,7 +24,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         $categories = get_the_category();
         if (!empty($categories)) : ?>
             <div class="absolute top-4 left-4 z-10">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-sm text-primary shadow-sm border border-white/20">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-sm text-slate-900 shadow-sm border border-white/20">
                     <?php echo esc_html($categories[0]->name); ?>
                 </span>
             </div>

@@ -26,7 +26,7 @@
                 <?php endif; ?>
                 <div class="hidden md:block">
                     <p class="text-xs font-bold uppercase tracking-widest text-secondary dark:text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                    <p class="text-sm font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                    <p class="text-xs font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                 </div>
             </div>
 
