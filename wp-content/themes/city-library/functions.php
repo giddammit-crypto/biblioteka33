@@ -518,6 +518,11 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('partners_subtitle', array('default' => 'Мы гордимся сотрудничеством с ведущими организациями', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('partners_subtitle', array('label' => __('Subtitle', 'city-library'), 'section' => 'partners_section', 'type' => 'text'));
 
+    $wp_customize->add_setting('partners_bg_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'partners_bg_color', array(
+        'label' => __('Цвет фона блока', 'city-library'), 'section' => 'partners_section',
+    )));
+
     for ($i = 1; $i <= 8; $i++) {
         $wp_customize->add_setting("partner_logo_$i", array('sanitize_callback' => 'esc_url_raw'));
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "partner_logo_$i", array(
