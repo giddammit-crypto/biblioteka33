@@ -70,12 +70,13 @@ if ($bg_style === 'gradient') {
                     </p>
 
                     <div class="flex items-center gap-4 pt-4">
-                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
+                        <!-- Navigation Buttons -->
+                        <div class="afisha-prev cursor-pointer group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center">
                             <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_back</span>
-                        </button>
-                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden">
+                        </div>
+                        <div class="afisha-next cursor-pointer group p-3 md:p-4 rounded-full border border-slate-300 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center">
                             <span class="material-symbols-outlined relative z-10 group-hover:text-white transition-colors <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-700'; ?>">arrow_forward</span>
-                        </button>
+                        </div>
                         <span class="text-xs md:text-sm font-medium uppercase tracking-widest text-primary ml-4 animate-pulse hidden sm:inline-block">Листайте афишу</span>
                     </div>
                 </div>

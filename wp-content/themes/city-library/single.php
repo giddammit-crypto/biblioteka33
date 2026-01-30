@@ -7,7 +7,7 @@
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white dark:bg-slate-900 p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -46,9 +46,9 @@
                                 </div>
                             <?php endif; ?>
 
-                            <?php the_title('<h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 dark:text-white leading-tight">', '</h1>'); ?>
+                            <?php the_title('<h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
 
-                            <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 dark:text-slate-400 text-xs font-medium border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
+                            <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium border-b border-slate-100 pb-4 mb-6">
                                 <span class="flex items-center">
                                     <span class="material-symbols-outlined text-base mr-1 text-primary">calendar_today</span>
                                     <?php echo esc_html(get_the_date()); ?>
@@ -60,7 +60,7 @@
                             </div>
                         </header>
 
-                        <div class="entry-content prose prose-slate dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
+                        <div class="entry-content prose prose-slate max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
                             <?php
                             the_content();
 
@@ -88,14 +88,14 @@
                 ));
 
                 if ($attachments) : ?>
-                    <div class="mt-12 border-t border-slate-200 dark:border-slate-700 pt-8">
-                        <h3 class="text-2xl font-bold font-display mb-6 text-slate-900 dark:text-white"><?php _e('Галерея', 'city-library'); ?></h3>
+                    <div class="mt-12 border-t border-slate-200 pt-8">
+                        <h3 class="text-2xl font-bold font-display mb-6 text-slate-900"><?php _e('Галерея', 'city-library'); ?></h3>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <?php foreach ($attachments as $attachment) :
                                 $img_url = wp_get_attachment_image_src($attachment->ID, 'full');
                                 $thumb_url = wp_get_attachment_image_src($attachment->ID, 'medium');
                             ?>
-                                <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 dark:border-slate-700 cursor-zoom-in">
+                                <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
                                     <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                                         <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-75 group-hover:scale-100">zoom_in</span>
