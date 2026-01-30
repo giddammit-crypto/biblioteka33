@@ -51,14 +51,14 @@ if ($bg_style === 'gradient') {
         <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?>">
             <?php echo $bg_overlay; ?>
 
-            <div class="flex flex-col xl:flex-row gap-12 xl:gap-16 items-center relative z-10">
+            <div class="flex flex-col gap-12 items-center relative z-10">
 
                 <!-- Text Content -->
-                <div class="w-full xl:w-1/3 space-y-6 relative z-20">
+                <div class="w-full max-w-4xl mx-auto text-center space-y-6 relative z-20">
                     <div class="absolute -top-10 -left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
 
                     <div class="relative">
-                        <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6"></div>
+                        <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6 mx-auto"></div>
                         <!-- Responsive Font Sizes -->
                         <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-snug pb-2 break-words <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
                             <?php echo esc_html($section_title); ?>
@@ -69,7 +69,7 @@ if ($bg_style === 'gradient') {
                         <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
                     </p>
 
-                    <div class="flex items-center gap-4 pt-4 relative z-30">
+                    <div class="flex items-center justify-center gap-4 pt-4 relative z-30">
                         <!-- Navigation Buttons -->
                         <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
                             <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_back</span>
@@ -77,12 +77,11 @@ if ($bg_style === 'gradient') {
                         <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
                             <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_forward</span>
                         </button>
-                        <span class="text-xs md:text-sm font-medium uppercase tracking-widest text-primary ml-4 animate-pulse hidden sm:inline-block">Листайте афишу</span>
                     </div>
                 </div>
 
                 <!-- Slider Content -->
-                <div class="w-full xl:w-2/3 h-[500px] md:h-[600px] relative z-10">
+                <div class="w-full h-[500px] md:h-[600px] relative z-10">
                     <!-- Blur effect behind slider for depth -->
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
 
