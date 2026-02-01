@@ -5,6 +5,7 @@ if (get_theme_mod('show_partners_section', true)) {
 }
 ?>
 
+</main>
 <footer class="bg-slate-100 text-slate-900 py-16 bg-pattern-white <?php echo city_library_get_animation_class(); ?>" style="background-color: <?php echo esc_attr(get_theme_mod('footer_bg_color', '#F1F5F9')); ?>; color: <?php echo esc_attr(get_theme_mod('footer_text_color', '#0F172A')); ?>;">
 
     <!-- Width Correction: 80% to match other blocks -->
