@@ -6,6 +6,9 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
+<a class="absolute -top-full focus:top-0 left-0 z-[100] bg-primary text-white p-3 transition-all" href="#main-content">
+    <?php _e('Перейти к содержимому', 'city-library'); ?>
+</a>
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -77,7 +80,7 @@
     </div>
 </div>
 
-<main>
+<main id="main-content">
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
