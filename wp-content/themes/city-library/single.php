@@ -16,11 +16,11 @@
 
                     <!-- Left Column: Image (300x200) -->
                     <?php if (has_post_thumbnail()) : ?>
-                        <div class="flex-shrink-0 mx-auto md:mx-0">
+                        <div class="flex-shrink-0 w-full md:w-auto flex justify-center md:block">
                             <?php
                             $full_image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
                             ?>
-                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-[300px] h-[200px]">
+                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-full md:w-[300px] h-[200px] max-w-[300px]">
                                 <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105']); ?>
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                                      <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">zoom_in</span>
