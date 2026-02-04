@@ -332,6 +332,34 @@ function city_library_customize_register($wp_customize) {
         'type' => 'checkbox',
     ));
 
+    $wp_customize->add_setting('global_border_radius', array('default' => '2rem', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('global_border_radius', array(
+        'label' => __('Скругление углов (Border Radius)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => '0 (None)',
+            '0.5rem' => 'Small',
+            '1rem' => 'Medium',
+            '2rem' => 'Large (Default)',
+            '3rem' => 'Extra Large',
+        ),
+    ));
+
+    $wp_customize->add_setting('container_max_width', array('default' => '80%', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('container_max_width', array(
+        'label' => __('Ширина контента (Desktop)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '95%' => '95% (Full)',
+            '90%' => '90% (Wide)',
+            '85%' => '85%',
+            '80%' => '80% (Default)',
+            '75%' => '75% (Narrow)',
+        ),
+    ));
+
     // Branch Emails Section
     $wp_customize->add_section('branches_email_section', array(
         'title' => __('Email адреса филиалов', 'city-library'),
@@ -384,6 +412,22 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('header_title', array('default' => 'Библиотека', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('header_title', array('label' => __('Название сайта (нижняя строка)', 'city-library'), 'section' => 'header_section', 'type' => 'text'));
+
+    // Header Advanced
+    $wp_customize->add_setting('header_sticky', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('header_sticky', array(
+        'label' => __('Прилипающая шапка (Sticky)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('header_logo_width', array('default' => 150, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('header_logo_width', array(
+        'label' => __('Ширина логотипа (px)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'number',
+        'input_attrs' => array('min' => 50, 'max' => 400, 'step' => 5),
+    ));
 
     // Hero Section
     $wp_customize->add_section('hero_section', array(
@@ -465,6 +509,17 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('footer_address', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_address', array('label' => __('Адрес', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
+    // Social Media Links (Footer)
+    $social_networks = array('vk' => 'VKontakte', 'telegram' => 'Telegram', 'youtube' => 'YouTube', 'odnoklassniki' => 'Odnoklassniki');
+    foreach ($social_networks as $slug => $label) {
+        $wp_customize->add_setting("social_link_$slug", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control("social_link_$slug", array(
+            'label' => $label,
+            'section' => 'footer_section',
+            'type' => 'url',
+        ));
+    }
 
     // Hero Button Colors
     $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
