@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     modalOverlay.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 bg-pattern-slate rounded-[2rem] w-full max-w-lg shadow-xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
+        <div class="bg-white bg-pattern-slate rounded-[2rem] w-full max-w-lg shadow-xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
-            <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
+            <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200">
                 <h3 class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
-                <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2">
+                <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 hover:text-red-500 transition-colors p-2">
                     <span class="material-symbols-outlined text-2xl">close</span>
                 </button>
             </div>
@@ -39,30 +39,30 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="p-8 overflow-y-auto custom-scrollbar">
                 <form id="renewal-form" class="space-y-6">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Ф.И.О. читателя *</label>
-                        <input type="text" name="fio" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Ф.И.О. читателя *</label>
+                        <input type="text" name="fio" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Номер читательского билета *</label>
-                        <input type="text" name="card_number" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Номер читательского билета *</label>
+                        <input type="text" name="card_number" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Филиал *</label>
-                        <select name="branch" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Филиал *</label>
+                        <select name="branch" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
                             ${branchOptions}
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email для связи *</label>
-                        <input type="email" name="email" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Email для связи *</label>
+                        <input type="email" name="email" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Список книг (автор, название) *</label>
-                        <textarea name="books" rows="4" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary" placeholder="Пример: Пушкин А.С. - Евгений Онегин..."></textarea>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Список книг (автор, название) *</label>
+                        <textarea name="books" rows="4" required class="w-full rounded-lg border-slate-300 focus:border-primary focus:ring-primary" placeholder="Пример: Пушкин А.С. - Евгений Онегин..."></textarea>
                     </div>
 
                     <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center"></div>
