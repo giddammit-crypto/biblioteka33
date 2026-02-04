@@ -42,7 +42,7 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>">
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
             </div>
