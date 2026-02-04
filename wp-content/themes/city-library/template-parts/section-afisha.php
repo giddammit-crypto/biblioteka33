@@ -60,12 +60,12 @@ if ($bg_style === 'gradient') {
                     <div class="relative">
                         <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6 mx-auto"></div>
                         <!-- Responsive Font Sizes -->
-                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-snug pb-2 break-words <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
+                        <h2 class="afisha-custom-title text-2xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-snug pb-2 break-words <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
                             <?php echo esc_html($section_title); ?>
                         </h2>
                     </div>
 
-                    <p class="<?php echo ($bg_style === 'gradient') ? 'text-slate-200' : 'text-slate-600'; ?> text-lg md:text-xl leading-relaxed font-light">
+                    <p class="<?php echo ($bg_style === 'gradient') ? 'text-slate-200' : 'text-slate-600'; ?> text-base md:text-xl leading-relaxed font-light">
                         <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
                     </p>
 
@@ -81,7 +81,7 @@ if ($bg_style === 'gradient') {
                 </div>
 
                 <!-- Slider Content -->
-                <div class="w-full h-[500px] md:h-[600px] relative z-10">
+                <div class="w-full h-[450px] md:h-[600px] relative z-10">
                     <!-- Blur effect behind slider for depth -->
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
 

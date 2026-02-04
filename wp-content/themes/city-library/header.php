@@ -93,7 +93,7 @@
         </div>
         <?php endif; ?>
 
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
+        <h1 class="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
             <?php echo wp_kses_post(get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека')); ?>
         </h1>
 
