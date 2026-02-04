@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     toggleBtn.addEventListener('click', function() {
         // Toggle Sidebar visibility
-        if (sidebar.classList.contains('lg:w-[30%]')) {
+        const isExpanded = sidebar.classList.contains('lg:w-[30%]');
+
+        if (isExpanded) {
             // Hide Sidebar
             sidebar.classList.remove('lg:w-[30%]');
             sidebar.classList.add('lg:w-0', 'lg:overflow-hidden', 'lg:opacity-0', 'lg:p-0');
@@ -16,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
             primary.classList.remove('lg:w-[70%]');
             primary.classList.add('lg:w-full');
 
-            // Update Icon
+            // Update State & Icon
+            toggleBtn.setAttribute('aria-expanded', 'false');
             const icon = toggleBtn.querySelector('.material-symbols-outlined');
             if (icon) icon.textContent = 'menu';
         } else {
@@ -28,7 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
             primary.classList.add('lg:w-[70%]');
             primary.classList.remove('lg:w-full');
 
-            // Update Icon
+            // Update State & Icon
+            toggleBtn.setAttribute('aria-expanded', 'true');
             const icon = toggleBtn.querySelector('.material-symbols-outlined');
             if (icon) icon.textContent = 'menu_open';
         }

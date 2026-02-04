@@ -1,4 +1,5 @@
-from playwright.sync_api import sync_playwright
+
+from playwright.sync_api import sync_playwright, expect
 import os
 
 def run():
@@ -6,30 +7,37 @@ def run():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        # Construct file URL
-        cwd = os.getcwd()
-        file_path = f"file://{cwd}/test_sidebar_magic.html"
+        # Load local HTML file
+        file_path = os.path.abspath("test_sidebar_access.html")
+        page.goto(f"file://{file_path}")
 
-        print(f"Navigating to {file_path}")
-        page.goto(file_path)
+        # Locate elements
+        btn = page.locator("#sidebar-toggle-btn")
 
-        # Wait for fonts and content
-        page.wait_for_load_state("networkidle")
+        # 1. Initial State Check
+        # Expect aria-expanded to be "true"
+        expect(btn).to_have_attribute("aria-expanded", "true")
+        print("Initial state confirmed: aria-expanded='true'")
 
-        # Screenshot 1: Initial State (Magic Mode + Sidebar)
-        page.screenshot(path="verification/1_magic_sidebar_visible.png", full_page=True)
-        print("Screenshot 1 taken.")
+        # Take screenshot of initial state
+        page.screenshot(path="verification/sidebar_initial.png")
 
-        # Test Sidebar Toggle
-        # Click the button
-        page.click("#sidebar-toggle-btn")
+        # 2. Click to Collapse
+        btn.click()
 
-        # Wait for transition (300ms in CSS)
-        page.wait_for_timeout(500)
+        # Expect aria-expanded to be "false"
+        expect(btn).to_have_attribute("aria-expanded", "false")
+        print("Collapsed state confirmed: aria-expanded='false'")
 
-        # Screenshot 2: Sidebar Hidden
-        page.screenshot(path="verification/2_magic_sidebar_hidden.png", full_page=True)
-        print("Screenshot 2 taken.")
+        # Take screenshot of collapsed state
+        page.screenshot(path="verification/sidebar_collapsed.png")
+
+        # 3. Click to Expand
+        btn.click()
+
+        # Expect aria-expanded to be "true" again
+        expect(btn).to_have_attribute("aria-expanded", "true")
+        print("Expanded state confirmed: aria-expanded='true'")
 
         browser.close()
 
