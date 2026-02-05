@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div id="primary" class="w-full">
 
-        <div class="content-area bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 bg-pattern-slate">
+        <div class="content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate">
 
             <header class="mb-12 text-center max-w-2xl mx-auto">
                 <p class="text-primary font-bold uppercase tracking-widest mb-2"><?php _e('Результаты поиска', 'city-library'); ?></p>
-                <h1 class="text-3xl md:text-5xl font-display font-bold text-slate-900 dark:text-white mb-6">
+                <h1 class="text-3xl md:text-5xl font-display font-bold text-slate-900 mb-6">
                     <?php printf(esc_html__('"%s"', 'city-library'), '<span>' . get_search_query() . '</span>'); ?>
                 </h1>
                 <div class="max-w-md mx-auto">
@@ -16,7 +16,7 @@
             </header>
 
             <?php if (have_posts()) : ?>
-                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                     <?php
                     while (have_posts()) :
                         the_post();
@@ -37,7 +37,7 @@
             <?php else : ?>
                 <div class="text-center py-12">
                     <span class="material-symbols-outlined text-6xl text-slate-300 mb-4">sentiment_dissatisfied</span>
-                    <h2 class="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-2"><?php _e('Ничего не найдено', 'city-library'); ?></h2>
+                    <h2 class="text-2xl font-bold text-slate-700 mb-2"><?php _e('Ничего не найдено', 'city-library'); ?></h2>
                     <p class="text-slate-500 mb-8"><?php _e('Попробуйте изменить запрос или вернитесь на главную.', 'city-library'); ?></p>
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-flex items-center px-8 py-3 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors">
                         <?php _e('На главную', 'city-library'); ?>

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const banner = document.createElement('div');
     banner.id = 'cookie-consent-banner';
     // Initial state: hidden (translate-y-full)
-    banner.className = 'fixed bottom-0 left-0 w-full z-[90] bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-500 ease-out flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6';
+    banner.className = 'fixed bottom-0 left-0 w-full z-[90] bg-white border-t border-slate-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-500 ease-out flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6';
 
     // Height constraint roughly 20% of viewport if needed, but auto is better for responsiveness.
     // User asked "20% height". We can set min-height or max-height constraints.
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span class="material-symbols-outlined text-3xl text-primary">cookie</span>
             </div>
             <div>
-                <h4 class="text-lg font-bold font-display text-slate-900 dark:text-white mb-2">Мы используем файлы cookie</h4>
-                <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <h4 class="text-lg font-bold font-display text-slate-900 mb-2">Мы используем файлы cookie</h4>
+                <p class="text-sm text-slate-600 leading-relaxed">
                     Этот сайт использует файлы cookie для хранения данных. Продолжая использовать сайт, вы даете свое согласие на работу с этими файлами.
                 </p>
             </div>

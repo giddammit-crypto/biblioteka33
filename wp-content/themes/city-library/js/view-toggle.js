@@ -5,13 +5,13 @@ jQuery(document).ready(function($) {
 
     function setView(view) {
         if (view === 'list') {
-            listButton.addClass('bg-white dark:bg-slate-700 shadow-sm').removeClass('text-slate-400');
-            gridButton.removeClass('bg-white dark:bg-slate-700 shadow-sm').addClass('text-slate-400');
+            listButton.addClass('bg-white shadow-sm').removeClass('text-slate-400');
+            gridButton.removeClass('bg-white shadow-sm').addClass('text-slate-400');
             container.removeClass('md:grid-cols-2').addClass('flex flex-col');
             localStorage.setItem('post_view', 'list');
         } else {
-            gridButton.addClass('bg-white dark:bg-slate-700 shadow-sm').removeClass('text-slate-400');
-            listButton.removeClass('bg-white dark:bg-slate-700 shadow-sm').addClass('text-slate-400');
+            gridButton.addClass('bg-white shadow-sm').removeClass('text-slate-400');
+            listButton.removeClass('bg-white shadow-sm').addClass('text-slate-400');
             container.addClass('md:grid-cols-2').removeClass('flex flex-col');
             localStorage.setItem('post_view', 'grid');
         }

@@ -268,9 +268,9 @@ function city_library_widgets_init() {
         'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
         'id'            => 'sidebar-1',
         'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-100">',
         'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
+        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 pb-2">',
         'after_title'   => '</h2>',
     ) );
 
@@ -1009,14 +1009,12 @@ function city_library_tailwind_config() {
     ?>
     <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         primary: "#0b7930",
                         secondary: "#1A3C34",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#102216"
+                        "background-light": "#f6f8f6"
                     },
                     fontFamily: {
                         display: "<?php echo esc_js($heading_font); ?>",
