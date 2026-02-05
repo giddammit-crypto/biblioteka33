@@ -6,6 +6,9 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
+<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] px-4 py-2 bg-white text-primary font-bold rounded shadow-lg">
+    <?php esc_html_e('Перейти к основному контенту', 'city-library'); ?>
+</a>
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -77,7 +80,7 @@
     </div>
 </div>
 
-<main>
+<main id="main-content">
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
@@ -113,8 +116,9 @@
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+    <a href="#content-start" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-white/50" aria-label="<?php esc_attr_e('Прокрутить вниз', 'city-library'); ?>">
         <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    </a>
 </section>
+<div id="content-start"></div>
 <?php endif; ?>
