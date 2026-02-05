@@ -22,15 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         activateMagicMode();
     }
 
-    document.body.appendChild(triggerBtn);
-
-    triggerBtn.addEventListener('click', function() {
-        if (document.body.classList.contains('hp-magic-active')) {
-            deactivateMagicMode();
-        } else {
-            activateMagicMode();
-        }
-    });
 
     function activateMagicMode() {
         document.body.classList.add('hp-magic-active');

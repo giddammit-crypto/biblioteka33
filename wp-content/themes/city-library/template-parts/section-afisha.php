@@ -221,17 +221,17 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             768: {
                  slidesPerView: 2,
-                 centeredSlides: false,
+                 centeredSlides: true,
                  spaceBetween: 20,
             },
             1024: {
                 slidesPerView: 2,
-                centeredSlides: false,
+                centeredSlides: true,
                 spaceBetween: 30,
             },
             1280: {
                 slidesPerView: 2.2,
-                centeredSlides: false,
+                centeredSlides: true,
                 spaceBetween: 40,
             }
         },
