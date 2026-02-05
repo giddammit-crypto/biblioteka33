@@ -16,20 +16,20 @@ $btn_text = get_theme_mod('promo_btn_text', __('Подробнее', 'city-libra
 $link = get_theme_mod('promo_link', '#');
 ?>
 
-<section class="mb-12 content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+<section class="mb-12 content-area bg-white p-6 md:p-10 rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden relative isolate bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
     <!-- Decorative Glow (optional, keeping it subtle) -->
     <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none z-0"></div>
 
     <div class="flex flex-col md:flex-row relative z-10 gap-8">
         <!-- Image Column -->
         <?php if ($image) : ?>
-            <div class="shrink-0 md:w-[400px] h-[300px] relative overflow-hidden group rounded-2xl">
+            <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] relative overflow-hidden group rounded-2xl">
                 <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
-             <div class="shrink-0 md:w-[400px] h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
+             <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
                 <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
              </div>
         <?php endif; ?>

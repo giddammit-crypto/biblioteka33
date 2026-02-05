@@ -5,7 +5,7 @@
         $bg_color = get_theme_mod('partners_bg_color', '#FFFFFF');
         ?>
 
-        <div class="relative p-12 md:p-16 rounded-[2.5rem] shadow-xl border border-slate-100 bg-pattern-slate overflow-hidden" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+        <div class="relative p-6 md:p-16 rounded-[2.5rem] shadow-xl border border-slate-100 bg-pattern-slate overflow-hidden" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
             <!-- Decorative Elements -->
             <div class="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-br-[4rem] pointer-events-none"></div>
@@ -21,7 +21,7 @@
                 </p>
             </div>
 
-            <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-12 md:gap-x-20">
+            <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-12 md:gap-x-20">
                 <?php for ($i = 1; $i <= 8; $i++) : ?>
                     <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
                         <div class="group relative">

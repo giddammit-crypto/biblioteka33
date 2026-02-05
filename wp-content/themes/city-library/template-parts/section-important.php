@@ -21,7 +21,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 
         <!-- Main Alert Block - Standardized Style -->
         <?php if (!empty(trim(strip_tags($text)))) : ?>
-        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
+        <div class="relative flex flex-col md:flex-row items-center justify-between gap-8 p-6 md:p-12 bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden group transition-shadow duration-300 bg-pattern-slate">
 
             <!-- Decorative Background Element (Subtle, not red) -->
             <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
