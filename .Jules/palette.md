@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2024-05-23 - Localization Consistency
+**Learning:** This codebase uses Russian source strings directly in PHP files (e.g., `_e('Русский текст', 'domain')`) instead of English. Mixing English source strings creates inconsistency.
+**Action:** Always check the existing string language in the file before adding new strings. Maintain consistency with the established locale, even if it contradicts standard WordPress English-first practices.
