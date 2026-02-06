@@ -7,7 +7,7 @@
     <div class="relative flex items-center">
         <span class="absolute left-4 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined">search</span>
         <input type="search"
-               class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border-2 border-transparent focus:border-primary rounded-full text-slate-800 dark:text-white placeholder-slate-400 outline-none transition-all shadow-inner"
+               class="w-full pl-12 pr-4 py-3 bg-slate-100 border-2 border-transparent focus:border-primary rounded-full text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
                placeholder="<?php echo esc_attr_x('Поиск...', 'placeholder', 'city-library'); ?>"
                value="<?php echo get_search_query(); ?>"
                name="s"

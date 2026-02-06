@@ -7,27 +7,27 @@
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-6 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div class="flex flex-col md:flex-row gap-8 relative z-10">
+                <div class="flex flex-col md:flex-row gap-8 lg:gap-12 relative z-10">
 
-                    <!-- Left Column: Image (300x200) -->
+                    <!-- Left Column: Image (Responsive) -->
                     <?php if (has_post_thumbnail()) : ?>
-                        <div class="flex-shrink-0 mx-auto md:mx-0">
+                        <div class="flex-shrink-0 mx-auto md:mx-0 w-full md:w-[350px]">
                             <?php
                             $full_image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
                             ?>
-                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-[300px] h-[200px]">
-                                <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105']); ?>
+                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-full aspect-[4/3]">
+                                <?php the_post_thumbnail('medium_large', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105']); ?>
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                                      <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">zoom_in</span>
                                 </div>
                             </a>
                             <?php if (get_the_post_thumbnail_caption()) : ?>
-                                <figcaption class="text-center text-slate-500 text-xs mt-2 italic w-[300px]">
+                                <figcaption class="text-center text-slate-500 text-xs mt-2 italic">
                                     <?php the_post_thumbnail_caption(); ?>
                                 </figcaption>
                             <?php endif; ?>
@@ -46,7 +46,7 @@
                                 </div>
                             <?php endif; ?>
 
-                            <?php the_title('<h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
+                            <?php the_title('<h1 class="entry-title text-2xl md:text-4xl lg:text-5xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
 
                             <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium border-b border-slate-100 pb-4 mb-6">
                                 <span class="flex items-center">

@@ -6,14 +6,17 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, index) => {
             if (entry.isIntersecting) {
-            entry.target.classList.add('aos-animate');
+                // Add a small stagger delay based on the index of the entry in this batch
+                setTimeout(() => {
+                    entry.target.classList.add('aos-animate');
+                }, index * 100); // 100ms stagger
                 observer.unobserve(entry.target); // Only animate once
             }
         });
     }, observerOptions);
 
-const elements = document.querySelectorAll('.animate-on-scroll');
+    const elements = document.querySelectorAll('.animate-on-scroll');
     elements.forEach(el => observer.observe(el));
 });

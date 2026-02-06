@@ -73,8 +73,8 @@ function city_library_scripts() {
     // Main stylesheet.
     wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
 
-    // Google Fonts (Including Magic Mode fonts)
-    wp_enqueue_style('city-library-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Merriweather:wght@300;400;700&family=Cinzel:wght@400;700;900&family=MedievalSharp&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Comforter&family=Marck+Script&display=swap', array(), null);
+    // Google Fonts (High quality selection with Cyrillic support)
+    wp_enqueue_style('city-library-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@400;600;700&display=swap&subset=cyrillic,cyrillic-ext', array(), null);
 
     // Material Symbols
     wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0', array(), null);
@@ -268,9 +268,9 @@ function city_library_widgets_init() {
         'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
         'id'            => 'sidebar-1',
         'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-100">',
         'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
+        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 pb-2">',
         'after_title'   => '</h2>',
     ) );
 
@@ -573,28 +573,30 @@ function city_library_customize_register($wp_customize) {
         'title' => __('Typography', 'city-library'),
         'priority' => 20,
     ));
-    $wp_customize->add_setting('heading_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('heading_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('heading_font', array(
         'label' => __('Heading Font', 'city-library'),
         'section' => 'typography_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter (Modern)',
-            'Playfair Display' => 'Playfair Display (Journal)',
-            'Montserrat' => 'Montserrat (Geometric)',
-            'Merriweather' => 'Merriweather (Serif)',
+            'Montserrat' => 'Montserrat (Geometric Sans)',
+            'Playfair Display' => 'Playfair Display (Elegant Serif)',
+            'Inter' => 'Inter (Clean Sans)',
+            'Merriweather' => 'Merriweather (Readable Serif)',
+            'Lora' => 'Lora (Contemporary Serif)',
+            'Cormorant Garamond' => 'Cormorant Garamond (Classic)',
         ),
     ));
-    $wp_customize->add_setting('body_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('body_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('body_font', array(
         'label' => __('Body Font', 'city-library'),
         'section' => 'typography_section',
         'type' => 'select',
         'choices' => array(
-            'Montserrat' => 'Montserrat (Geometric)',
-            'Inter' => 'Inter (Modern)',
-            'Playfair Display' => 'Playfair Display (Journal)',
-            'Merriweather' => 'Merriweather (Serif)',
+            'Inter' => 'Inter (Clean Sans)',
+            'Montserrat' => 'Montserrat (Geometric Sans)',
+            'Merriweather' => 'Merriweather (Readable Serif)',
+            'Lora' => 'Lora (Contemporary Serif)',
         ),
     ));
 
@@ -1009,14 +1011,12 @@ function city_library_tailwind_config() {
     ?>
     <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
                         primary: "#0b7930",
                         secondary: "#1A3C34",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#102216"
+                        "background-light": "#f6f8f6"
                     },
                     fontFamily: {
                         display: "<?php echo esc_js($heading_font); ?>",
