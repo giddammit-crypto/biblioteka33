@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#facc15', // Mocking yellow-400
+                        secondary: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Mocking some theme styles */
+        body { font-family: sans-serif; }
+    </style>
+    <title>Skip Link Verification</title>
+</head>
+<body class="font-sans antialiased bg-slate-50 relative">
+
+    <!-- THE CHANGE -->
+    <a href="#main-content" class="absolute top-0 left-0 z-[100] bg-primary text-white p-3 transition-transform -translate-y-full focus:translate-y-0 rounded-br-lg shadow-md font-bold">
+        Перейти к основному контенту
+    </a>
+
+    <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 h-20 flex items-center px-8">
+        <div class="font-bold text-xl">Logo</div>
+        <nav class="ml-auto space-x-4">
+            <a href="#" class="text-slate-600 hover:text-blue-600">Home</a>
+            <a href="#" class="text-slate-600 hover:text-blue-600">About</a>
+        </nav>
+    </header>
+
+    <!-- THE TARGET -->
+    <main id="main-content" tabindex="-1" class="pt-24 px-8">
+        <h1 class="text-4xl font-bold mb-4">Main Content Title</h1>
+        <p>This is the main content area. Clicking the skip link should bring focus here.</p>
+        <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Interactive Element</button>
+    </main>
+
+</body>
+</html>
