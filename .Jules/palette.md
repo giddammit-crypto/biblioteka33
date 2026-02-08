@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2024-05-24 - Dynamic Modal Accessibility Pattern
+**Learning:** Dynamically created modals need explicit focus management (trap focus + return focus) and ARIA roles (`dialog`, `aria-modal`) to be accessible, as they are not part of the initial DOM.
+**Action:** Always store `document.activeElement` before opening, trap `Tab` within the modal, handle `Escape` key, and return focus on close.
