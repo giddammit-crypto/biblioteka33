@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
     renewBtn.className = 'fixed bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-green-600 text-white font-bold shadow-lg hover:bg-green-700 transition-all duration-300 hover:scale-105 flex items-center gap-2 group';
+    // Accessibility: Added aria-label
+    renewBtn.setAttribute('aria-label', 'Продление книг онлайн');
     renewBtn.innerHTML = `
-        <span class="material-symbols-outlined text-2xl">auto_stories</span>
+        <span class="material-symbols-outlined text-2xl" aria-hidden="true">auto_stories</span>
         <span class="hidden group-hover:inline-block transition-all">Продление книг онлайн</span>
     `;
     renewBtn.title = "Продление книг онлайн";
@@ -15,6 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 2. Create Modal Structure
     const modalOverlay = document.createElement('div');
     modalOverlay.id = 'renewal-modal-overlay';
+    // Accessibility: Added role="dialog", aria-modal="true", aria-labelledby
+    modalOverlay.setAttribute('role', 'dialog');
+    modalOverlay.setAttribute('aria-modal', 'true');
+    modalOverlay.setAttribute('aria-labelledby', 'renewal-modal-title');
     modalOverlay.className = 'fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
 
     // Build Branch Options
@@ -29,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="bg-white dark:bg-slate-900 bg-pattern-slate rounded-[2rem] w-full max-w-lg shadow-xl overflow-hidden transform scale-95 transition-transform duration-300 relative max-h-[90vh] flex flex-col">
             <!-- Header -->
             <div class="p-6 relative flex justify-center items-center shrink-0 border-b border-slate-200 dark:border-slate-700">
-                <h3 class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
-                <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2">
-                    <span class="material-symbols-outlined text-2xl">close</span>
+                <h3 id="renewal-modal-title" class="text-xl font-bold font-display uppercase tracking-wider text-green-600 text-center">Продление книг онлайн</h3>
+                <button type="button" class="modal-close absolute right-4 top-1/2 -translate-y-1/2 text-slate-900 dark:text-white hover:text-red-500 transition-colors p-2" aria-label="Закрыть модальное окно">
+                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
                 </button>
             </div>
 
@@ -39,37 +45,37 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="p-8 overflow-y-auto custom-scrollbar">
                 <form id="renewal-form" class="space-y-6">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Ф.И.О. читателя *</label>
-                        <input type="text" name="fio" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label for="renewal-fio" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Ф.И.О. читателя *</label>
+                        <input type="text" id="renewal-fio" name="fio" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Номер читательского билета *</label>
-                        <input type="text" name="card_number" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label for="renewal-card-number" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Номер читательского билета *</label>
+                        <input type="text" id="renewal-card-number" name="card_number" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Филиал *</label>
-                        <select name="branch" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label for="renewal-branch" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Филиал *</label>
+                        <select id="renewal-branch" name="branch" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
                             ${branchOptions}
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email для связи *</label>
-                        <input type="email" name="email" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
+                        <label for="renewal-email" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Email для связи *</label>
+                        <input type="email" id="renewal-email" name="email" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Список книг (автор, название) *</label>
-                        <textarea name="books" rows="4" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary" placeholder="Пример: Пушкин А.С. - Евгений Онегин..."></textarea>
+                        <label for="renewal-books" class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Список книг (автор, название) *</label>
+                        <textarea id="renewal-books" name="books" rows="4" required class="w-full rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:border-primary focus:ring-primary" placeholder="Пример: Пушкин А.С. - Евгений Онегин..."></textarea>
                     </div>
 
-                    <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center"></div>
+                    <div id="renewal-message" class="hidden p-4 rounded-lg text-sm font-bold text-center" aria-live="polite"></div>
 
                     <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
                         <span>Отправить заявку</span>
-                        <span class="material-symbols-outlined">send</span>
+                        <span class="material-symbols-outlined" aria-hidden="true">send</span>
                     </button>
 
                     <p class="text-[10px] text-slate-400 text-center leading-tight">
@@ -86,15 +92,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const msgBox = document.getElementById('renewal-message');
     const submitBtn = document.getElementById('renewal-submit-btn');
     const modalContent = modalOverlay.querySelector('div');
+    const closeBtn = modalOverlay.querySelector('.modal-close');
+    let lastFocusedElement;
 
     function openModal() {
+        lastFocusedElement = document.activeElement;
         modalOverlay.classList.remove('hidden');
         // Small delay for CSS transition
         setTimeout(() => {
             modalOverlay.classList.remove('opacity-0');
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
+            // Focus Management: Move focus to the first input
+            const firstInput = document.getElementById('renewal-fio');
+            if (firstInput) firstInput.focus();
         }, 10);
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
     }
 
     function closeModal() {
@@ -103,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function() {
         modalContent.classList.add('scale-95');
         setTimeout(() => {
             modalOverlay.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+            // Focus Management: Return focus
+            if (lastFocusedElement) lastFocusedElement.focus();
         }, 300);
     }
 
@@ -114,6 +130,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Accessibility: Handle Escape Key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
+            closeModal();
+        }
+    });
+
+    // Accessibility: Trap Focus
+    modalOverlay.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab' || e.keyCode === 9) {
+            const focusableElements = modalOverlay.querySelectorAll('a[href], button, textarea, input, select');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (e.shiftKey) { // Shift + Tab
+                if (document.activeElement === firstElement) {
+                    lastElement.focus();
+                    e.preventDefault();
+                }
+            } else { // Tab
+                if (document.activeElement === lastElement) {
+                    firstElement.focus();
+                    e.preventDefault();
+                }
+            }
+        }
+    });
+
     // 4. AJAX Submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -121,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Disable button
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Отправка...';
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin" aria-hidden="true">refresh</span> Отправка...';
         msgBox.classList.add('hidden');
 
         const formData = new FormData(form);
@@ -154,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .finally(() => {
             submitBtn.disabled = false;
             submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
-            submitBtn.innerHTML = '<span>Отправить заявку</span><span class="material-symbols-outlined">send</span>';
+            submitBtn.innerHTML = '<span>Отправить заявку</span><span class="material-symbols-outlined" aria-hidden="true">send</span>';
         });
     });
 });
