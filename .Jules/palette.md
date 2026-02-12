@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2026-02-12 - Missing Landmark IDs
+**Learning:** Theme templates often lack critical IDs on semantic landmarks like <main>, breaking skip links.
+**Action:** Always verify and add id="main-content" (or similar) to the <main> tag when implementing skip navigation.
