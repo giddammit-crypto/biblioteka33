@@ -3,7 +3,7 @@
  * Mobile Bottom Navigation Bar
  */
 ?>
-<nav class="lg:landscape:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 border-t border-slate-200 safe-area-bottom">
+<nav class="lg:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 border-t border-slate-200 safe-area-bottom">
     <div class="grid grid-cols-4 items-center h-20">
         <!-- Home -->
         <a href="<?php echo esc_url(home_url('/')); ?>" class="group flex flex-col items-center justify-center h-full text-slate-500 hover:text-primary active:text-primary transition-all">
