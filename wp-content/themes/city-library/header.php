@@ -6,6 +6,9 @@
     <?php wp_head(); ?>
 </head>
 <body <?php body_class('font-sans antialiased bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 transition-colors duration-300'); ?>>
+<?php wp_body_open(); ?>
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-primary transition-all" href="#primary"><?php esc_html_e( 'Перейти к основному содержимому', 'city-library' ); ?></a>
+
 <header id="masthead" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
     <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -42,6 +45,9 @@
             </nav>
 
             <div class="flex items-center space-x-2">
+                <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
                 <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>

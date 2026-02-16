@@ -1,0 +1,13 @@
+<div id="search-modal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="w-full max-w-3xl bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl p-8 relative transform scale-95 transition-all duration-300" id="search-modal-content">
+            <button id="search-modal-close" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-500 transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-700" aria-label="<?php esc_attr_e('Закрыть поиск', 'city-library'); ?>">
+                <span class="material-symbols-outlined text-3xl">close</span>
+            </button>
+            <h2 class="text-2xl font-bold font-display text-center mb-8 text-slate-900 dark:text-white"><?php _e('Поиск по сайту', 'city-library'); ?></h2>
+            <div class="search-form-wrapper">
+                <?php get_search_form(); ?>
+            </div>
+        </div>
+    </div>
+</div>

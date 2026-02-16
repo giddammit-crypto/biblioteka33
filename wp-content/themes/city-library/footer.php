@@ -140,6 +140,8 @@ if (get_theme_mod('show_modal', false)) :
 </div>
 <?php endif; ?>
 
+<?php get_template_part('template-parts/search-modal'); ?>
+
 <?php wp_footer(); ?>
 </body>
 </html>

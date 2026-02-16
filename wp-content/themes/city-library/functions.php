@@ -106,9 +106,14 @@ function city_library_scripts() {
     // Book Renewal & Cookies
     wp_enqueue_script('city-library-book-renewal', get_template_directory_uri() . '/js/book-renewal.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-cookie-consent', get_template_directory_uri() . '/js/cookie-consent.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-search-modal', get_template_directory_uri() . '/js/search-modal.js', array(), wp_get_theme()->get('Version'), true);
 
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
+
+    if (is_single()) {
+        wp_enqueue_script('city-library-reading-progress', get_template_directory_uri() . '/js/reading-progress.js', array(), wp_get_theme()->get('Version'), true);
+    }
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
         'ajax_url' => admin_url('admin-ajax.php')
@@ -1131,3 +1136,64 @@ function city_library_disable_remote_playback() {
     <?php
 }
 add_action('wp_footer', 'city_library_disable_remote_playback');
+
+/**
+ * Output Schema.org JSON-LD structured data.
+ */
+function city_library_schema_json_ld() {
+    $schema = [];
+
+    if (is_front_page()) {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Library',
+            'name' => get_bloginfo('name'),
+            'description' => get_bloginfo('description'),
+            'url' => home_url(),
+            'logo' => get_theme_mod('custom_logo') ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : '',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => get_theme_mod('footer_address', ''),
+                'addressLocality' => 'City', // Ideally dynamic
+                'addressCountry' => 'RU'
+            ],
+            'contactPoint' => [
+                '@type' => 'ContactPoint',
+                'telephone' => get_theme_mod('footer_phone', ''),
+                'contactType' => 'customer service'
+            ]
+        ];
+    } elseif (is_single()) {
+        global $post;
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'NewsArticle',
+            'headline' => get_the_title(),
+            'datePublished' => get_the_date('c'),
+            'dateModified' => get_the_modified_date('c'),
+            'author' => [
+                '@type' => 'Person',
+                'name' => get_the_author()
+            ],
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => get_bloginfo('name'),
+                'logo' => [
+                    '@type' => 'ImageObject',
+                    'url' => get_theme_mod('custom_logo') ? wp_get_attachment_image_url(get_theme_mod('custom_logo'), 'full') : ''
+                ]
+            ],
+            'description' => get_the_excerpt()
+        ];
+        if (has_post_thumbnail()) {
+            $schema['image'] = [
+                get_the_post_thumbnail_url($post->ID, 'full')
+            ];
+        }
+    }
+
+    if (!empty($schema)) {
+        echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . '</script>';
+    }
+}
+add_action('wp_head', 'city_library_schema_json_ld');
