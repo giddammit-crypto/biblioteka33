@@ -29,10 +29,11 @@
         <div id="primary" class="w-full <?php echo $show_sidebar ? 'lg:w-[70%]' : ''; ?> transition-all duration-300">
 
             <div class="content-area bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                <div class="space-y-4">
-                    <div class="h-1 w-20 bg-primary"></div>
-                    <h2 class="text-3xl md:text-5xl font-display font-bold"><?php _e('Последние новости', 'city-library'); ?></h2>
+                <div class="flex flex-col items-center justify-center mb-12 gap-6 text-center">
+                <div class="space-y-4 max-w-2xl mx-auto">
+                    <div class="h-1 w-20 bg-primary mx-auto"></div>
+                    <!-- Increased size by approx 2px from text-3xl (30px) -> 32px and text-5xl (48px) -> 50px -->
+                    <h2 class="text-[32px] md:text-[50px] font-display font-bold leading-tight"><?php _e('Последние новости', 'city-library'); ?></h2>
                     <p class="text-slate-500 text-lg"><?php _e('Узнайте о самых интересных событиях и мероприятиях нашей библиотеки', 'city-library'); ?></p>
                 </div>
             </div>

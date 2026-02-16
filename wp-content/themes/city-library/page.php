@@ -7,7 +7,7 @@
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white dark:bg-slate-900 p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -15,7 +15,7 @@
                 <div class="flex flex-col gap-8 relative z-10">
 
                     <header class="entry-header mb-6 text-center">
-                        <?php the_title('<h1 class="entry-title text-3xl md:text-5xl font-bold font-display mb-4 text-slate-900 dark:text-white leading-tight">', '</h1>'); ?>
+                        <?php the_title('<h1 class="entry-title text-3xl md:text-5xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
                     </header>
 
                     <!-- Featured Image (Full Width for Pages if exists) -->
@@ -26,7 +26,7 @@
                     <?php endif; ?>
 
                     <!-- Content -->
-                    <div class="entry-content prose prose-slate dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
+                    <div class="entry-content prose prose-slate max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
                         <?php
                         the_content();
 

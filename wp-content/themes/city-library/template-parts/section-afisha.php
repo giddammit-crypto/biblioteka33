@@ -223,7 +223,7 @@ if ($bg_style === 'gradient') {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new Swiper('.afisha-slider', {
+    const swiper = new Swiper('.afisha-slider', {
         direction: 'horizontal',
         speed: 800, // Slower, smoother speed
         slidesPerView: 1.1, // Adjusted for better mobile view without overlap
@@ -271,6 +271,16 @@ document.addEventListener('DOMContentLoaded', function() {
             modifier: 1,
             slideShadows: false, // Custom shadows via CSS are better
         },
+        on: {
+            click: function (swiper, event) {
+                // When a slide is clicked, move to it
+                // Using slideToLoop because loop: true creates duplicate slides
+                const clickedIndex = swiper.clickedIndex;
+                if (clickedIndex !== undefined) {
+                    swiper.slideTo(clickedIndex);
+                }
+            }
+        }
     });
 
     // Modal Logic

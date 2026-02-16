@@ -73,6 +73,9 @@ function city_library_scripts() {
     // Main stylesheet.
     wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
 
+    // Scrollbar Fix
+    wp_enqueue_style('city-library-scrollbar-fix', get_template_directory_uri() . '/css/scrollbar-fix.css', array(), wp_get_theme()->get('Version'));
+
     // Google Fonts (Including Magic Mode fonts)
     wp_enqueue_style('city-library-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Merriweather:wght@300;400;700&family=Cinzel:wght@400;700;900&family=MedievalSharp&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Comforter&family=Marck+Script&display=swap', array(), null);
 
@@ -273,9 +276,9 @@ function city_library_widgets_init() {
         'name'          => esc_html__( 'Main Sidebar', 'city-library' ),
         'id'            => 'sidebar-1',
         'description'   => esc_html__( 'Add widgets here.', 'city-library' ),
-        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">',
+        'before_widget' => '<section id="%1$s" class="widget %2$s mb-8 p-6 bg-white rounded-2xl shadow-sm border border-slate-100">',
         'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 dark:border-slate-700 pb-2">',
+        'before_title'  => '<h2 class="widget-title text-lg font-bold font-display mb-4 text-primary border-b border-slate-100 pb-2">',
         'after_title'   => '</h2>',
     ) );
 
@@ -1021,7 +1024,6 @@ function city_library_tailwind_config() {
                         primary: "#0b7930",
                         secondary: "#1A3C34",
                         "background-light": "#f6f8f6",
-                        "background-dark": "#102216"
                     },
                     fontFamily: {
                         display: "<?php echo esc_js($heading_font); ?>",

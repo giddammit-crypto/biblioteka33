@@ -5,12 +5,12 @@
     <!-- Main Content (Full Width) -->
     <div id="primary" class="w-full">
 
-        <div class="content-area bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-xl border border-slate-100 dark:border-slate-800 bg-pattern-slate">
+        <div class="content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div class="space-y-4">
                     <div class="h-1 w-20 bg-primary"></div>
                     <h1 class="text-3xl md:text-5xl font-display font-bold"><?php _e('Архив новостей', 'city-library'); ?></h1>
-                    <p class="text-slate-500 dark:text-slate-400 text-lg"><?php _e('Все новости и события библиотеки', 'city-library'); ?></p>
+                    <p class="text-slate-500 text-lg"><?php _e('Все новости и события библиотеки', 'city-library'); ?></p>
                 </div>
             </div>
 
