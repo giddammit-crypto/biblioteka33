@@ -39,7 +39,8 @@
             </div>
 
             <?php if (have_posts()) : ?>
-                <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Responsive Layout: Flex Slider for Mobile (< lg), Grid for Kiosk/Desktop (>= lg) -->
+                <div id="posts-container" class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 lg:mx-0 lg:px-0 lg:overflow-visible lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 hide-scrollbar">
                     <?php
                     while (have_posts()) :
                         the_post();
