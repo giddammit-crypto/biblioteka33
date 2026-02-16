@@ -4,10 +4,10 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_grid_text_color', '#334155');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 isolate shrink-0 w-[85vw] sm:w-[350px] lg:w-auto snap-center" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 isolate shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
     <!-- Image Container -->
-    <div class="relative overflow-hidden w-full h-56 shrink-0">
+    <div class="relative overflow-hidden w-full h-48 sm:h-56 shrink-0">
         <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">

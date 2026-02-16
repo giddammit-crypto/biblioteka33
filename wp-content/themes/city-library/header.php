@@ -14,7 +14,7 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:landscape:hidden p-3 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-md rounded-full border border-slate-100" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
+                <button id="mobile-menu-btn" class="lg:landscape:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
