@@ -14,7 +14,7 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 text-slate-600 hover:text-primary transition-colors" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
+                <button id="mobile-menu-btn" class="xl:hidden p-2 -ml-2 text-slate-600 hover:text-primary transition-colors" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            <nav class="hidden lg:flex items-center space-x-8">
+            <nav class="hidden xl:flex items-center space-x-8">
                  <?php
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
@@ -57,7 +57,7 @@
 </header>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 lg:hidden">
+<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden">
     <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>
