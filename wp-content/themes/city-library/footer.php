@@ -105,7 +105,7 @@ if (get_theme_mod('show_modal', false)) :
     $modal_delay = get_theme_mod('modal_delay', 3000);
 ?>
 <div id="city-library-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 hidden" data-delay="<?php echo esc_attr($modal_delay); ?>">
-    <div class="modal-content bg-white dark:bg-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 relative overflow-hidden animate-fade-in-up max-h-[90vh] overflow-y-auto">
+    <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 relative overflow-hidden animate-fade-in-up max-h-[90vh] overflow-y-auto">
         <button class="modal-close absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-20 bg-white/80 rounded-full p-1 shadow-sm" aria-label="<?php esc_attr_e('Закрыть модальное окно', 'city-library'); ?>">
             <span class="material-symbols-outlined text-2xl">close</span>
         </button>
@@ -127,9 +127,9 @@ if (get_theme_mod('show_modal', false)) :
         <?php endif; ?>
         <div class="p-8 text-center space-y-4">
             <?php if ($modal_title) : ?>
-                <h3 class="text-2xl font-bold font-display text-slate-900 dark:text-white"><?php echo esc_html($modal_title); ?></h3>
+                <h3 class="text-2xl font-bold font-display text-slate-900"><?php echo esc_html($modal_title); ?></h3>
             <?php endif; ?>
-            <div class="prose prose-sm dark:prose-invert mx-auto text-slate-600 dark:text-slate-400 max-w-none">
+            <div class="prose prose-sm mx-auto text-slate-600 max-w-none">
                 <?php
                 // Allow HTML including iframes and buttons
                 echo city_library_sanitize_html(wpautop($modal_text));
@@ -139,6 +139,8 @@ if (get_theme_mod('show_modal', false)) :
     </div>
 </div>
 <?php endif; ?>
+
+<?php get_template_part('template-parts/search-modal'); ?>
 
 <?php wp_footer(); ?>
 </body>
