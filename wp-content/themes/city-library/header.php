@@ -119,8 +119,9 @@
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    <a href="#content-start" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer text-white hover:text-primary transition-colors duration-300" aria-label="<?php esc_attr_e('Scroll to content', 'city-library'); ?>">
+        <span class="material-symbols-outlined text-3xl">expand_more</span>
+    </a>
 </section>
+<div id="content-start" class="scroll-mt-24"></div>
 <?php endif; ?>
