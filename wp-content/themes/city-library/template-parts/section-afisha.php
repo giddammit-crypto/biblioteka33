@@ -47,8 +47,8 @@ if ($bg_style === 'gradient') {
 
 <section id="afisha" class="py-20 bg-white overflow-hidden <?php echo city_library_get_animation_class(); ?>">
     <!-- Width Correction: 80% to match other blocks -->
-    <div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?>">
+    <div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8">
+        <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?> rounded-none lg:rounded-[2.5rem] border-0 lg:border shadow-none lg:shadow-xl">
             <?php echo $bg_overlay; ?>
 
             <div class="flex flex-col gap-12 items-center relative z-10">
@@ -86,7 +86,7 @@ if ($bg_style === 'gradient') {
                     <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
 
                     <!-- Slider Container -->
-                    <div class="swiper afisha-slider h-full w-full !py-10 !px-4 overflow-visible">
+                    <div class="swiper afisha-slider h-full w-full !py-10 px-0 lg:!px-4 overflow-visible">
                         <div class="swiper-wrapper">
                         <?php foreach ($events as $event) : ?>
                             <div class="swiper-slide h-full group cursor-pointer perspective-1000 afisha-slide-item"
@@ -241,10 +241,15 @@ document.addEventListener('DOMContentLoaded', function() {
             prevEl: '.afisha-prev',
         },
         breakpoints: {
-            640: {
-                slidesPerView: 1.5,
+            320: {
+                slidesPerView: 1,
                 centeredSlides: true,
-                spaceBetween: 20,
+                spaceBetween: 0,
+            },
+            640: {
+                slidesPerView: 1,
+                centeredSlides: true,
+                spaceBetween: 0,
             },
             768: {
                  slidesPerView: 2,

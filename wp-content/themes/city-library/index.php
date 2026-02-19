@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-8">
 
     <?php get_template_part('template-parts/section-promo'); ?>
 
@@ -8,7 +8,7 @@
 
     <!-- Toggle Button -->
     <?php if ($show_sidebar) : ?>
-    <div class="mb-6">
+    <div class="mb-6 px-4 lg:px-0">
          <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
             <span class="material-symbols-outlined">menu_open</span>
             <span class="text-sm font-bold uppercase"><?php _e('Скрыть/Показать сайдбар', 'city-library'); ?></span>
@@ -20,7 +20,7 @@
 
         <!-- Sidebar Column (30%) -->
         <?php if ($show_sidebar) : ?>
-        <div id="sidebar-column" class="w-full lg:w-[30%] shrink-0 transition-all duration-300">
+        <div id="sidebar-column" class="w-full lg:w-[30%] shrink-0 transition-all duration-300 px-4 lg:px-0">
              <?php get_sidebar(); ?>
         </div>
         <?php endif; ?>
@@ -28,7 +28,7 @@
         <!-- Main Content (70%) -->
         <div id="primary" class="w-full <?php echo $show_sidebar ? 'lg:w-[70%]' : ''; ?> transition-all duration-300">
 
-            <div class="content-area bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
+            <div class="content-area bg-white p-6 md:p-8 rounded-none border-0 shadow-none lg:rounded-[2rem] lg:shadow-xl lg:border border-slate-100 bg-pattern-slate <?php echo city_library_get_animation_class(); ?>">
                 <div class="flex flex-col items-center justify-center mb-12 gap-6 text-center">
                 <div class="space-y-4 max-w-2xl mx-auto">
                     <div class="h-1 w-20 bg-primary mx-auto"></div>
@@ -39,14 +39,19 @@
             </div>
 
             <?php if (have_posts()) : ?>
-                <!-- Responsive Layout: Flex Slider for Mobile (< lg), Grid for Kiosk/Desktop (>= lg) -->
-                <div id="posts-container" class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 lg:mx-0 lg:px-0 lg:overflow-visible lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6 hide-scrollbar">
-                    <?php
-                    while (have_posts()) :
-                        the_post();
-                        get_template_part('template-parts/content-post-card');
-                    endwhile;
-                    ?>
+                <!-- Responsive Layout: Swiper for Mobile (< lg), Grid for Kiosk/Desktop (>= lg) -->
+                <div id="posts-container" class="swiper news-slider w-full">
+                    <div class="swiper-wrapper lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6">
+                        <?php
+                        while (have_posts()) :
+                            the_post();
+                            echo '<div class="swiper-slide h-auto">';
+                            get_template_part('template-parts/content-post-card');
+                            echo '</div>';
+                        endwhile;
+                        ?>
+                    </div>
+                    <div class="swiper-pagination lg:hidden !bottom-0 !relative mt-6"></div>
                 </div>
                     <div class="mt-12 text-center">
                     <?php the_posts_pagination(); ?>
