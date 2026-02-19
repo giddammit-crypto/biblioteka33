@@ -22,12 +22,12 @@
             </div>
 
             <div class="swiper partners-slider w-full px-4 lg:px-0 pb-12 lg:pb-0">
-                <div class="swiper-wrapper flex flex-nowrap md:gap-x-20 lg:grid lg:grid-cols-4 lg:justify-items-center items-center lg:gap-12">
+                <div class="swiper-wrapper flex flex-nowrap md:gap-x-20 lg:!grid lg:grid-cols-4 lg:justify-items-center items-center lg:gap-12 !h-auto">
                     <?php for ($i = 1; $i <= 8; $i++) : ?>
                         <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
                             <div class="swiper-slide group relative !h-auto flex justify-center items-center">
                                 <a href="<?php echo esc_url(get_theme_mod('partner_link_' . $i, '#')); ?>" target="_blank" rel="noopener noreferrer" class="block p-4 transition-all duration-300 transform group-hover:-translate-y-2">
-                                    <img class="h-12 md:h-16 w-auto object-contain transition-all duration-500 filter"
+                                    <img class="h-12 md:h-16 w-auto object-contain transition-all duration-500"
                                         src="<?php echo esc_url(get_theme_mod('partner_logo_' . $i)); ?>"
                                         alt="<?php printf(esc_attr__('Partner %d Logo', 'city-library'), $i); ?>">
                                 </a>

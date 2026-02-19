@@ -84,7 +84,6 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
                         <div class="swiper-slide h-auto">
                             <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 aspect-square">
                                 <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                             </a>
                         </div>
                     <?php endfor; ?>
