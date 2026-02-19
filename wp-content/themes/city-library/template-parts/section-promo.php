@@ -25,7 +25,6 @@ $link = get_theme_mod('promo_link', '#');
         <?php if ($image) : ?>
             <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] relative overflow-hidden group rounded-2xl">
                 <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
