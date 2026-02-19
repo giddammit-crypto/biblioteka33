@@ -111,9 +111,6 @@ if ($bg_style === 'gradient') {
                                         </div>
                                     <?php endif; ?>
 
-                                    <!-- Stylish Gradient Overlay -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-20 transition-opacity duration-500 group-hover:opacity-30"></div>
-
                                     <!-- Hover Tooltip (Centered) -->
                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
                                         <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold uppercase tracking-widest py-3 px-6 rounded-full flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
@@ -198,13 +195,11 @@ if ($bg_style === 'gradient') {
 /* Smooth Slide Transition */
 .swiper-slide {
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
-    opacity: 0.4; /* Inactive slides are faded */
-    transform: scale(0.9); /* Inactive slides are smaller */
+    opacity: 1;
+    transform: scale(1);
 }
 
 .swiper-slide-active {
-    opacity: 1;
-    transform: scale(1);
     z-index: 10;
 }
 

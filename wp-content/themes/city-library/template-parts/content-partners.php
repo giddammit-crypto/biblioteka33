@@ -25,14 +25,12 @@
                 <div class="swiper-wrapper flex flex-nowrap md:gap-x-20 lg:!grid lg:grid-cols-4 lg:justify-items-center items-center lg:gap-12 !h-auto">
                     <?php for ($i = 1; $i <= 8; $i++) : ?>
                         <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
-                            <div class="swiper-slide group relative !h-auto flex justify-center items-center">
+                            <div class="swiper-slide group relative !h-auto flex justify-center items-center w-full">
                                 <a href="<?php echo esc_url(get_theme_mod('partner_link_' . $i, '#')); ?>" target="_blank" rel="noopener noreferrer" class="block p-4 transition-all duration-300 transform group-hover:-translate-y-2">
                                     <img class="h-12 md:h-16 w-auto object-contain transition-all duration-500"
                                         src="<?php echo esc_url(get_theme_mod('partner_logo_' . $i)); ?>"
                                         alt="<?php printf(esc_attr__('Partner %d Logo', 'city-library'), $i); ?>">
                                 </a>
-                                <!-- Subtle Glow on Hover -->
-                                <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 rounded-xl blur-xl transition-all duration-300 -z-10"></div>
                             </div>
                         <?php endif; ?>
                     <?php endfor; ?>
