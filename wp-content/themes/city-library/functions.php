@@ -103,6 +103,7 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-mobile-sliders', get_template_directory_uri() . '/js/mobile-sliders.js', array('swiper-js'), wp_get_theme()->get('Version'), true);
     // Magic Mode removed/replaced by Renewal
     // wp_enqueue_script('city-library-magic-mode', get_template_directory_uri() . '/js/magic-mode.js', array(), wp_get_theme()->get('Version'), true);
 
