@@ -21,8 +21,8 @@
                 </p>
             </div>
 
-            <div class="swiper partners-slider w-full px-4 lg:px-0 pb-12 lg:pb-0">
-                <div class="swiper-wrapper flex flex-nowrap lg:flex-wrap justify-center items-center lg:gap-x-12 lg:gap-y-12 md:gap-x-20">
+            <div class="swiper partners-slider w-full px-4 lg:px-0 pb-12 lg:pb-0 lg:overflow-visible !overflow-visible">
+                <div class="swiper-wrapper lg:flex lg:flex-wrap justify-center items-center lg:gap-x-12 lg:gap-y-12 lg:md:gap-x-20">
                     <?php for ($i = 1; $i <= 8; $i++) : ?>
                         <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
                             <div class="swiper-slide group relative !h-auto flex justify-center items-center">

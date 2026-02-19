@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function initMobileSliders() {
         if (window.innerWidth < 1024) {
-            // News Slider
+            // News Slider (1 slide per view)
             if (!newsSwiper && document.querySelector('.news-slider')) {
                 newsSwiper = new Swiper('.news-slider', {
                     slidesPerView: 1,
@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Partners Slider
+            // Partners Slider (2 slides per view)
             if (!partnersSwiper && document.querySelector('.partners-slider')) {
                 partnersSwiper = new Swiper('.partners-slider', {
-                    slidesPerView: 1, // Full width slide
+                    slidesPerView: 2,
                     spaceBetween: 20,
                     pagination: {
                         el: '.partners-slider .swiper-pagination',
@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // Important Links Slider
+            // Important Links Slider (2 slides per view)
             if (!importantLinksSwiper && document.querySelector('.important-links-slider')) {
                 importantLinksSwiper = new Swiper('.important-links-slider', {
-                    slidesPerView: 1, // Full width slide
+                    slidesPerView: 2,
                     spaceBetween: 20,
                     pagination: {
                         el: '.important-links-slider .swiper-pagination',
