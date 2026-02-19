@@ -16,7 +16,6 @@ $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
                     <span class="material-symbols-outlined text-4xl text-slate-300">image</span>
                 </div>
             <?php endif; ?>
-            <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
         </a>
 
         <!-- Category Badge (Top Left) -->

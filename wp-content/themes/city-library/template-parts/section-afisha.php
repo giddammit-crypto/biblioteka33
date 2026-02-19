@@ -103,7 +103,7 @@ if ($bg_style === 'gradient') {
                                             <img src="<?php echo esc_url($event['image']); ?>"
                                                  alt="<?php echo esc_attr($event['title']); ?>"
                                                  loading="lazy"
-                                                 class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-95 group-hover:opacity-100 will-change-transform">
+                                                 class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-100 will-change-transform">
                                         </div>
                                     <?php else : ?>
                                         <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
@@ -112,7 +112,7 @@ if ($bg_style === 'gradient') {
                                     <?php endif; ?>
 
                                     <!-- Stylish Gradient Overlay -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-20 transition-opacity duration-500 group-hover:opacity-30"></div>
 
                                     <!-- Hover Tooltip (Centered) -->
                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
