@@ -83,7 +83,26 @@
     </div>
 </div>
 
-<main>
+<!-- Mobile Header -->
+<header id="mobile-header" class="lg:hidden fixed top-0 left-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all duration-300 safe-area-top">
+    <div class="flex items-center justify-between px-4 h-16">
+         <!-- Logo -->
+        <div class="flex items-center h-full py-2">
+             <?php if (has_custom_logo()) : ?>
+                <div class="custom-logo-wrapper h-full w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
+                    <?php the_custom_logo(); ?>
+                </div>
+            <?php else : ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 text-primary font-bold font-display uppercase tracking-widest">
+                    <span class="material-symbols-outlined text-3xl">menu_book</span>
+                    <span class="text-sm"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></span>
+                </a>
+            <?php endif; ?>
+        </div>
+    </div>
+</header>
+
+<main class="pt-16 lg:pt-0">
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
