@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // News Slider
             if (!newsSwiper && document.querySelector('.news-slider')) {
                 newsSwiper = new Swiper('.news-slider', {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
+                    slidesPerView: 'auto',
+                    centeredSlides: true,
+                    spaceBetween: 16,
+                    grabCursor: true,
                     pagination: {
                         el: '.news-slider .swiper-pagination',
                         clickable: true,
@@ -20,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Partners Slider
             if (!partnersSwiper && document.querySelector('.partners-slider')) {
                 partnersSwiper = new Swiper('.partners-slider', {
-                    slidesPerView: 1, // Full width slide
-                    spaceBetween: 20,
+                    slidesPerView: 'auto',
+                    centeredSlides: true,
+                    spaceBetween: 16,
+                    grabCursor: true,
                     pagination: {
                         el: '.partners-slider .swiper-pagination',
                         clickable: true,
@@ -32,8 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Important Links Slider
             if (!importantLinksSwiper && document.querySelector('.important-links-slider')) {
                 importantLinksSwiper = new Swiper('.important-links-slider', {
-                    slidesPerView: 1, // Full width slide
-                    spaceBetween: 20,
+                    slidesPerView: 'auto',
+                    centeredSlides: true,
+                    spaceBetween: 16,
+                    grabCursor: true,
                     pagination: {
                         el: '.important-links-slider .swiper-pagination',
                         clickable: true,
