@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div id="content-start" class="w-full max-w-[95%] xl:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-mt-24 focus:outline-none" tabindex="-1">
     <div id="primary" class="w-full">
 
         <div class="content-area bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 bg-pattern-slate">

@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-8">
+<div id="content-start" class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-8 scroll-mt-24 focus:outline-none" tabindex="-1">
 
     <?php get_template_part('template-parts/section-promo'); ?>
 

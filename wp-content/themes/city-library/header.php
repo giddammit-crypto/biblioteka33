@@ -119,8 +119,8 @@
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    <a href="#content-start" aria-label="<?php esc_attr_e('Прокрутить вниз', 'city-library'); ?>" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-white rounded-full p-2">
+        <span class="material-symbols-outlined text-white text-3xl" aria-hidden="true">expand_more</span>
+    </a>
 </section>
 <?php endif; ?>
