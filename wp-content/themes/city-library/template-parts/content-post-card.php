@@ -4,10 +4,10 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#1A3C34');
 $text_color = get_theme_mod('news_card_grid_text_color', '#334155');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 isolate shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center !opacity-100 aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
 
     <!-- Image Container -->
-    <div class="relative overflow-hidden w-full h-48 sm:h-56 shrink-0">
+    <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
         <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
@@ -17,6 +17,9 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
                 </div>
             <?php endif; ?>
         </a>
+
+        <!-- Mobile Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:hidden pointer-events-none"></div>
 
         <!-- Floating Category Badge -->
         <?php
@@ -31,29 +34,32 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     </div>
 
     <!-- Content -->
-    <div class="flex flex-col flex-grow p-6 relative">
+    <div class="relative z-10 flex flex-col h-full p-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
+        <!-- Make links clickable on mobile (overlay) -->
+        <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
+
         <!-- Date -->
-        <div class="flex items-center text-slate-400 text-[11px] font-bold tracking-widest uppercase mb-3">
+        <div class="flex items-center text-slate-300 lg:text-slate-400 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
             <span class="material-symbols-outlined text-sm mr-1.5">calendar_month</span>
             <?php echo get_the_date(); ?>
         </div>
 
         <!-- Title -->
-        <h3 class="text-xl font-bold font-display leading-tight mb-3 line-clamp-2">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline" style="color: <?php echo esc_attr($title_color); ?>;">
+        <h3 class="text-xl font-bold font-display leading-tight mb-3 line-clamp-2 pointer-events-auto relative">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-[var(--card-title)]">
                 <?php the_title(); ?>
-                <span class="absolute inset-0" aria-hidden="true"></span>
+                <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow" style="color: <?php echo esc_attr($text_color); ?>;">
+        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow lg:flex-grow-0 text-slate-200 lg:text-[var(--card-text)] pointer-events-auto">
             <?php the_excerpt(); ?>
         </div>
 
         <!-- Footer / Link -->
-        <div class="pt-4 mt-auto border-t border-slate-100 flex items-center justify-between">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline" style="color: <?php echo esc_attr($link_color); ?>;">
+        <div class="pt-4 mt-auto border-t border-white/20 lg:border-slate-100 flex items-center justify-between pointer-events-auto">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline text-white lg:text-[var(--card-link)]">
                 <?php _e('Читать полностью', 'city-library'); ?>
             </a>
             <span class="material-symbols-outlined text-primary transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
