@@ -32,8 +32,9 @@ switch ($bar_style) {
         $nav_classes .= ' bottom-0 left-0 backdrop-blur-xl border-t border-white/20';
         break;
     case 'material-pill':
-        $nav_classes .= ' bottom-4 left-4 right-4 w-[calc(100%-2rem)] rounded-full shadow-2xl border border-slate-100';
-        $grid_classes = 'grid grid-cols-4 items-center h-16 rounded-full overflow-hidden';
+        $nav_classes .= ' bottom-4 left-4 right-4 w-[calc(100%-2rem)] rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 backdrop-blur-md bg-white/90';
+        $grid_classes = 'grid grid-cols-4 items-center h-16 rounded-full overflow-hidden px-1';
+        $item_base_classes = 'group flex flex-col items-center justify-center h-full transition-all relative overflow-hidden rounded-full mx-1 hover:bg-slate-100/50';
         break;
     case 'neon-glow':
         $nav_classes .= ' bottom-0 left-0 border-t border-slate-800 shadow-[0_-4px_20px_rgba(0,255,0,0.2)]';

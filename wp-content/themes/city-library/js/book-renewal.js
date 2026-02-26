@@ -63,9 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function checkVisibility() {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        const scrollBottom = currentScroll + windowHeight;
 
-        // Hide if in Hero Zone (Top of page)
-        if (currentScroll < heroHeight) {
+        // Hide if in Hero Zone (Top of page) OR at Bottom of page
+        if (currentScroll < heroHeight || scrollBottom >= docHeight - 50) {
             renewBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full'); // Hide off-screen
         } else {
             renewBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');
