@@ -1,10 +1,10 @@
 <?php
 $bg_color = get_theme_mod('news_card_grid_bg_color', '#FFFFFF');
-$title_color = get_theme_mod('news_card_grid_title_color', '#1A3C34');
-$text_color = get_theme_mod('news_card_grid_text_color', '#334155');
+$title_color = get_theme_mod('news_card_grid_title_color', '#0f172a');
+$text_color = get_theme_mod('news_card_grid_text_color', '#1e293b');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center !opacity-100 aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-300 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center opacity-100 aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
 
     <!-- Image Container -->
     <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
@@ -19,7 +19,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </a>
 
         <!-- Mobile Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:hidden pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent lg:hidden pointer-events-none"></div>
 
         <!-- Floating Category Badge -->
         <?php
@@ -42,12 +42,12 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 flex flex-col h-full p-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
+    <div class="relative z-10 flex flex-col h-full p-6 pt-16 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
         <!-- Make links clickable on mobile (overlay) -->
         <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
 
         <!-- Desktop Date -->
-        <div class="hidden lg:flex items-center text-slate-500 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
+        <div class="hidden lg:flex items-center text-slate-600 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
             <span class="material-symbols-outlined text-sm mr-1.5">calendar_month</span>
             <?php echo get_the_date(); ?>
         </div>

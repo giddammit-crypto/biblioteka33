@@ -17,6 +17,7 @@ for ($i = 1; $i <= 5; $i++) {
     $link = get_theme_mod("afisha_link_$i");
     $ribbon = get_theme_mod("afisha_ribbon_$i");
     $badge = get_theme_mod("afisha_badge_$i");
+    $date = get_theme_mod("afisha_date_$i"); // Assuming this might exist or we use badge as date
 
     if ($image || $title) {
         $events[] = [
@@ -25,6 +26,7 @@ for ($i = 1; $i <= 5; $i++) {
             'link' => $link,
             'ribbon' => $ribbon,
             'badge' => $badge,
+            'date' => $date,
         ];
     }
 }
@@ -36,126 +38,132 @@ if (empty($events)) {
 $section_title = get_theme_mod('afisha_title', 'Афиша Мероприятий');
 $bg_style = get_theme_mod('afisha_bg_style', 'default');
 
-$container_classes = "bg-white p-6 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 relative overflow-hidden";
+// Container Styles - Adaptive: Full width on mobile but with internal padding, rounded on desktop
+$container_classes = "bg-white relative overflow-hidden transition-all duration-500";
 $bg_overlay = "";
 
 if ($bg_style === 'gradient') {
-    $container_classes = "bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white p-6 md:p-12 rounded-[2.5rem] relative overflow-hidden shadow-2xl border border-white/10";
+    $container_classes = "bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white relative overflow-hidden shadow-2xl border border-white/10";
     $bg_overlay = '<div class="absolute inset-0 bg-[url(\'https://www.transparenttextures.com/patterns/cubes.png\')] opacity-10 pointer-events-none mix-blend-overlay"></div>';
 }
 ?>
 
-<section id="afisha" class="py-20 bg-white overflow-hidden <?php echo city_library_get_animation_class(); ?>">
+<section id="afisha" class="py-12 lg:py-24 bg-white overflow-hidden <?php echo city_library_get_animation_class(); ?>">
     <!-- Width Correction: 80% to match other blocks -->
-    <div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8">
-        <div class="<?php echo esc_attr($container_classes); ?> <?php if ($bg_style === 'default') echo 'bg-pattern-slate'; ?> rounded-none lg:rounded-[2.5rem] border-0 lg:border shadow-none lg:shadow-xl">
+    <div class="w-full lg:max-w-[80%] lg:mx-auto px-4 lg:px-8">
+
+        <div class="<?php echo esc_attr($container_classes); ?> rounded-[2.5rem] shadow-xl border border-slate-100 p-6 md:p-12">
             <?php echo $bg_overlay; ?>
 
-            <div class="flex flex-col gap-12 items-center relative z-10">
+            <!-- Background Decorative Elements -->
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
-                <!-- Text Content -->
-                <div class="w-full max-w-4xl mx-auto text-center space-y-6 relative z-20">
-                    <div class="absolute -top-10 -left-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col xl:flex-row gap-12 items-center relative z-10">
+
+                <!-- Left Column: Text Content & Navigation -->
+                <div class="w-full xl:w-1/3 text-center xl:text-left space-y-8 relative z-20 flex flex-col items-center xl:items-start">
 
                     <div class="relative">
-                        <div class="h-1.5 w-24 bg-gradient-to-r from-primary to-green-300 rounded-full mb-6 mx-auto"></div>
-                        <!-- Responsive Font Sizes -->
-                        <h2 class="afisha-custom-title text-3xl md:text-5xl xl:text-6xl font-display font-extrabold tracking-tight leading-snug pb-2 break-words <?php echo ($bg_style === 'gradient') ? 'text-white' : 'text-slate-900'; ?>">
+                        <div class="h-2 w-24 bg-gradient-to-r from-primary to-green-400 rounded-full mb-6 mx-auto xl:mx-0 shadow-sm"></div>
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight pb-2 break-words text-slate-900 drop-shadow-sm">
                             <?php echo esc_html($section_title); ?>
                         </h2>
                     </div>
 
-                    <p class="<?php echo ($bg_style === 'gradient') ? 'text-slate-200' : 'text-slate-600'; ?> text-lg md:text-xl leading-relaxed font-light">
+                    <p class="text-slate-600 text-lg md:text-xl leading-relaxed font-light max-w-2xl mx-auto xl:mx-0">
                         <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
                     </p>
 
-                    <div class="flex items-center justify-center gap-4 pt-4 relative z-30">
-                        <!-- Navigation Buttons -->
-                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_back</span>
+                    <!-- Enhanced Navigation Buttons -->
+                    <div class="flex items-center justify-center xl:justify-start gap-6 pt-4">
+                        <button class="afisha-prev group w-14 h-14 rounded-full bg-white border border-slate-200 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
+                            <span class="material-symbols-outlined text-2xl text-slate-700 group-hover:text-white transition-colors duration-300">arrow_back</span>
                         </button>
-                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_forward</span>
+                        <button class="afisha-next group w-14 h-14 rounded-full bg-white border border-slate-200 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Следующий слайд', 'city-library'); ?>">
+                            <span class="material-symbols-outlined text-2xl text-slate-700 group-hover:text-white transition-colors duration-300">arrow_forward</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Slider Content -->
-                <div class="w-full h-[500px] md:h-[600px] relative z-10">
-                    <!-- Blur effect behind slider for depth -->
-                    <div class="absolute inset-0 bg-primary/5 rounded-full blur-[100px] pointer-events-none transform translate-x-1/2"></div>
+                <!-- Right Column: Cinematic Slider -->
+                <div class="w-full xl:w-2/3 relative z-10">
 
-                    <!-- Slider Container -->
-                    <div class="swiper afisha-slider h-full w-full !py-10 px-0 lg:!px-4 overflow-visible">
-                        <div class="swiper-wrapper">
-                        <?php foreach ($events as $event) : ?>
-                            <div class="swiper-slide h-full group cursor-pointer perspective-1000 afisha-slide-item"
+                    <!-- Slider Container with overflow-visible for depth effect -->
+                    <div class="swiper afisha-slider w-full !pb-12 !px-4 md:!px-0 overflow-visible">
+                        <div class="swiper-wrapper items-stretch">
+                        <?php foreach ($events as $index => $event) : ?>
+                            <div class="swiper-slide h-auto group cursor-pointer perspective-1000 afisha-slide-item transition-all duration-500"
                                  data-afisha-image="<?php echo esc_url($event['image']); ?>"
                                  data-afisha-link="<?php echo esc_url($event['link']); ?>"
                                  data-afisha-title="<?php echo esc_attr($event['title']); ?>"
                                  role="button"
-                                 tabindex="0">
-                                <div class="relative h-full w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-slate-900 select-none border border-white/10 ring-1 ring-black/5 group-hover:scale-[1.02] transform">
+                                 tabindex="0"
+                                 aria-label="<?php echo esc_attr($event['title']); ?>">
 
-                                    <!-- Image High Quality rendering -->
+                                <div class="relative h-[400px] md:h-[500px] w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-slate-900/20 transition-all duration-500 bg-slate-100 select-none border border-slate-200 group-hover:scale-[1.02] transform-gpu">
+
+                                    <!-- Image -->
                                     <?php if ($event['image']) : ?>
-                                        <div class="absolute inset-0 bg-slate-900">
+                                        <div class="absolute inset-0 bg-slate-200">
                                             <img src="<?php echo esc_url($event['image']); ?>"
                                                  alt="<?php echo esc_attr($event['title']); ?>"
                                                  loading="lazy"
                                                  class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-100 will-change-transform">
                                         </div>
                                     <?php else : ?>
-                                        <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-8xl text-slate-700">event</span>
+                                        <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-8xl text-slate-300">event</span>
                                         </div>
                                     <?php endif; ?>
 
-                                    <!-- Stylish Gradient Overlay -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-20 transition-opacity duration-500 group-hover:opacity-30"></div>
+                                    <!-- Gradient Overlay (Dark at bottom for text readability) -->
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90"></div>
 
-                                    <!-- Hover Tooltip (Centered) -->
-                                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
-                                        <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold uppercase tracking-widest py-3 px-6 rounded-full flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
-                                            <span><?php _e('Увеличить', 'city-library'); ?></span>
-                                            <span class="material-symbols-outlined">zoom_in</span>
+                                    <!-- Hover Action (Zoom Icon) -->
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 pointer-events-none transform scale-75 group-hover:scale-100">
+                                        <div class="bg-white/20 backdrop-blur-md border border-white/40 text-white rounded-full p-4 shadow-2xl">
+                                            <span class="material-symbols-outlined text-4xl drop-shadow-md">visibility</span>
                                         </div>
                                     </div>
 
                                     <!-- Content Container -->
-                                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-end pointer-events-none">
+                                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none">
 
-                                        <!-- Top Badges Area -->
-                                        <div class="absolute top-6 left-6 flex flex-col gap-3 items-start pointer-events-auto">
+                                        <!-- Top Area: Badges & Ribbons -->
+                                        <div class="flex justify-between items-start pointer-events-auto">
+                                            <!-- Date/Category Badge -->
                                             <?php if (!empty($event['badge'])) : ?>
-                                                <div class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-105 group-hover:bg-white/20">
+                                                <div class="bg-white/90 backdrop-blur-md text-slate-900 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-105 border border-white/50">
                                                     <?php echo esc_html($event['badge']); ?>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <!-- Ribbon -->
+                                            <?php if (!empty($event['ribbon'])) : ?>
+                                                <div class="bg-red-600 text-white font-bold text-[10px] uppercase py-1.5 px-3 rounded-lg shadow-md transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                                                    <?php echo esc_html($event['ribbon']); ?>
                                                 </div>
                                             <?php endif; ?>
                                         </div>
 
-                                        <!-- Ribbon -->
-                                        <?php if (!empty($event['ribbon'])) : ?>
-                                            <div class="absolute top-6 right-6 pointer-events-auto">
-                                                <div class="bg-red-600 text-white font-bold text-xs uppercase py-2 px-4 rounded-lg shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                                                    <?php echo esc_html($event['ribbon']); ?>
-                                                </div>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <!-- Text Content -->
-                                        <div class="transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0 pointer-events-auto">
-                                            <h3 class="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white mb-3 drop-shadow-md leading-tight">
+                                        <!-- Bottom Area: Title & Line -->
+                                        <div class="transform transition-transform duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-auto">
+                                            <h3 class="text-2xl md:text-3xl font-display font-bold text-white mb-4 drop-shadow-md leading-tight line-clamp-3">
                                                 <?php echo esc_html($event['title']); ?>
                                             </h3>
 
-                                            <div class="h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full mb-4"></div>
+                                            <!-- Animated Line -->
+                                            <div class="h-1 w-12 bg-primary rounded-full transition-all duration-500 group-hover:w-full group-hover:bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)]"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                         </div>
+
+                        <!-- Pagination (Dots) -->
+                        <div class="swiper-pagination !bottom-0"></div>
                     </div>
                 </div>
 
@@ -165,25 +173,30 @@ if ($bg_style === 'gradient') {
 </section>
 
 <!-- Full Screen Modal for Afisha -->
-<div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
+<div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-lg transition-all duration-500 opacity-0" aria-hidden="true" role="dialog" aria-modal="true">
+
+    <!-- Background Blur Click Area -->
+    <div class="absolute inset-0" id="afisha-modal-bg"></div>
+
     <!-- Close Button -->
-    <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white cursor-pointer group">
-        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300">close</span>
+    <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer group rotate-0 hover:rotate-90">
+        <span class="material-symbols-outlined text-4xl drop-shadow-md">close</span>
         <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
     </button>
 
     <!-- Modal Content -->
-    <div class="relative w-full h-full flex flex-col items-center justify-center p-4 sm:p-8 md:p-12">
+    <div class="relative w-full h-full max-w-7xl mx-auto flex flex-col items-center justify-center p-4 md:p-8 pointer-events-none">
+
         <!-- Image Container -->
-        <div class="relative max-w-7xl w-full flex-grow flex items-center justify-center mb-8 overflow-hidden">
-            <img id="afisha-modal-image" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl">
+        <div class="relative w-full flex-grow flex items-center justify-center mb-8 pointer-events-auto transform scale-95 opacity-0 transition-all duration-500 delay-100" id="afisha-modal-content-wrapper">
+            <img id="afisha-modal-image" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl ring-1 ring-white/10">
         </div>
 
         <!-- Action Button -->
-        <div class="mt-auto mb-4">
-            <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50">
-                <?php _e('Перейти к полной записи', 'city-library'); ?>
-                <span class="material-symbols-outlined ml-2 text-2xl">arrow_forward</span>
+        <div class="mt-auto mb-4 pointer-events-auto transform translate-y-4 opacity-0 transition-all duration-500 delay-200" id="afisha-modal-action-wrapper">
+            <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-10 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-green-600 transition-all shadow-lg hover:shadow-green-500/30 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50 group">
+                <?php _e('Подробнее', 'city-library'); ?>
+                <span class="material-symbols-outlined ml-2 text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </a>
         </div>
     </div>
@@ -192,116 +205,146 @@ if ($bg_style === 'gradient') {
 <style>
 /* Custom Swiper Styles for AAA feel */
 .afisha-slider {
-    padding-bottom: 3rem; /* Space for shadows/hover effects */
+    padding-bottom: 3rem;
 }
 
-/* Smooth Slide Transition */
-.swiper-slide {
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
-    opacity: 0.4; /* Inactive slides are faded */
-    transform: scale(0.9); /* Inactive slides are smaller */
+/* Inactive slides styling */
+.afisha-slider .swiper-slide:not(.swiper-slide-active) {
+    opacity: 0.5;
+    transform: scale(0.95);
+    filter: grayscale(30%);
 }
 
-.swiper-slide-active {
+.afisha-slider .swiper-slide-active {
     opacity: 1;
     transform: scale(1);
     z-index: 10;
+    filter: grayscale(0%);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Fix for dark mode flicker */
-.swiper-slide img {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+/* Pagination Dots */
+.swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #cbd5e1;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+.swiper-pagination-bullet-active {
+    width: 30px;
+    border-radius: 5px;
+    background: var(--primary-color, #0b7930);
 }
 
-/* Modal Transitions */
+/* Modal Open State */
 #afisha-modal.open {
     display: flex;
+    opacity: 1;
+}
+#afisha-modal.open #afisha-modal-content-wrapper {
+    transform: scale(1);
+    opacity: 1;
+}
+#afisha-modal.open #afisha-modal-action-wrapper {
+    transform: translate-y(0);
     opacity: 1;
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Swiper with optimized settings for all devices
     const swiper = new Swiper('.afisha-slider', {
-        direction: 'horizontal',
-        speed: 800, // Slower, smoother speed
-        slidesPerView: 1.1, // Adjusted for better mobile view without overlap
-        spaceBetween: 15,
-        centeredSlides: true,
+        // Core
         loop: true,
+        speed: 800,
+        spaceBetween: 24,
         grabCursor: true,
+        centeredSlides: false, // Default grid-like behavior on desktop
+
+        // Autoplay
         autoplay: {
             delay: 5000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
         },
+
+        // Navigation
         navigation: {
             nextEl: '.afisha-next',
             prevEl: '.afisha-prev',
         },
+
+        // Pagination
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+
+        // Responsive Breakpoints (Mobile First)
         breakpoints: {
+            // Mobile: Single slide, peek effect
             320: {
-                slidesPerView: 1,
+                slidesPerView: 1.15,
+                spaceBetween: 16,
                 centeredSlides: true,
-                spaceBetween: 0,
             },
+            // Tablet: 2 slides
             640: {
-                slidesPerView: 1,
-                centeredSlides: true,
-                spaceBetween: 0,
+                slidesPerView: 2,
+                spaceBetween: 20,
+                centeredSlides: false,
             },
-            768: {
-                 slidesPerView: 2,
-                 centeredSlides: false,
-                 spaceBetween: 20,
-            },
+            // Desktop: 2 slides comfortable
             1024: {
                 slidesPerView: 2,
-                centeredSlides: false,
                 spaceBetween: 30,
-            },
-            1280: {
-                slidesPerView: 2.2,
                 centeredSlides: false,
-                spaceBetween: 40,
+            },
+            // Large Desktop: almost 3 or 2 large ones
+            1280: {
+                slidesPerView: 2.5,
+                spaceBetween: 32,
+                centeredSlides: false,
             }
         },
-        // Using Coverflow effect for 3D depth
-        effect: 'coverflow',
-        coverflowEffect: {
-            rotate: 0, // No rotation, keeping it flat modern
-            stretch: 0,
-            depth: 100, // Reduced depth to prevent overlap visuals
-            modifier: 1,
-            slideShadows: false, // Custom shadows via CSS are better
+
+        // Accessibility
+        a11y: {
+            prevSlideMessage: 'Предыдущий слайд',
+            nextSlideMessage: 'Следующий слайд',
         },
-        on: {
-            click: function (swiper, event) {
-                // When a slide is clicked, move to it
-                // Using slideToLoop because loop: true creates duplicate slides
-                const clickedIndex = swiper.clickedIndex;
-                if (clickedIndex !== undefined) {
-                    swiper.slideTo(clickedIndex);
-                }
-            }
-        }
     });
 
-    // Modal Logic
+    // --- Modal Logic ---
     const modal = document.getElementById('afisha-modal');
     const modalImg = document.getElementById('afisha-modal-image');
     const modalLink = document.getElementById('afisha-modal-link');
     const closeBtn = document.getElementById('afisha-modal-close');
-    const slides = document.querySelectorAll('.afisha-slide-item');
+    const bgOverlay = document.getElementById('afisha-modal-bg');
+
+    // Delegation for dynamic/cloned slides (loop mode)
+    document.querySelector('.afisha-slider').addEventListener('click', function(e) {
+        const slide = e.target.closest('.afisha-slide-item');
+        if (slide) {
+            e.preventDefault();
+            const img = slide.dataset.afishaImage;
+            const link = slide.dataset.afishaLink;
+            const title = slide.dataset.afishaTitle;
+            openModal(img, link, title);
+        }
+    });
 
     function openModal(imageSrc, linkUrl, title) {
         if (!modal || !modalImg || !modalLink) return;
 
+        // Set Content
         modalImg.src = imageSrc;
-        modalImg.alt = title;
+        modalImg.alt = title || 'Афиша';
 
-        if (linkUrl && linkUrl !== '#') {
+        // Set Link
+        if (linkUrl && linkUrl !== '#' && linkUrl !== '') {
             modalLink.href = linkUrl;
             modalLink.classList.remove('hidden');
             modalLink.classList.add('inline-flex');
@@ -310,14 +353,18 @@ document.addEventListener('DOMContentLoaded', function() {
             modalLink.classList.remove('inline-flex');
         }
 
+        // Show Modal
         modal.classList.remove('hidden');
-        // Small delay to trigger transition
+
+        // Trigger Animation Frame
         requestAnimationFrame(() => {
             modal.classList.add('open');
             modal.setAttribute('aria-hidden', 'false');
+            // Focus trap could be added here
+            closeBtn.focus();
         });
 
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        document.body.style.overflow = 'hidden'; // Lock Scroll
     }
 
     function closeModal() {
@@ -326,49 +373,22 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
 
+        // Wait for transition
         setTimeout(() => {
             modal.classList.add('hidden');
-            document.body.style.overflow = ''; // Restore scrolling
-        }, 300);
+            document.body.style.overflow = ''; // Unlock Scroll
+        }, 500);
     }
 
-    // Attach listeners
-    slides.forEach(slide => {
-        slide.addEventListener('click', function() {
-            const img = this.dataset.afishaImage;
-            const link = this.dataset.afishaLink;
-            const title = this.dataset.afishaTitle;
-            openModal(img, link, title);
-        });
+    // Close Triggers
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (bgOverlay) bgOverlay.addEventListener('click', closeModal);
 
-        slide.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const img = this.dataset.afishaImage;
-                const link = this.dataset.afishaLink;
-                const title = this.dataset.afishaTitle;
-                openModal(img, link, title);
-            }
-        });
-    });
-
-    if (closeBtn) {
-        closeBtn.addEventListener('click', closeModal);
-    }
-
-    // Close on Escape key
+    // Keyboard Access
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && modal.classList.contains('open')) {
             closeModal();
         }
     });
-
-    // Close on click outside image
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
 });
 </script>

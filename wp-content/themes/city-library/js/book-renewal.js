@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Create Floating Button (Stylish & Accessible)
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    // Positioned at bottom-[131px] on mobile (20px lower than previous 151px), standard bottom-6 on landscape desktop
-    renewBtn.className = 'fixed bottom-[131px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
+    // Positioned at bottom-[121px] on mobile (131px - 10px), standard bottom-6 on landscape desktop
+    renewBtn.className = 'fixed bottom-[121px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
     renewBtn.setAttribute('aria-label', 'Открыть форму продления книг');
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>

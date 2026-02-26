@@ -302,6 +302,27 @@ add_action('widgets_init', 'city_library_widgets_init');
  * Customizer additions.
  */
 function city_library_customize_register($wp_customize) {
+    // Global Colors (AAA WYSIWYG)
+    $wp_customize->add_section('global_colors_section', array(
+        'title'    => __('Глобальные цвета (Theme)', 'city-library'),
+        'priority' => 10,
+    ));
+
+    $wp_customize->add_setting('primary_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color', array(
+        'label' => __('Основной цвет (Primary)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('secondary_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color', array(
+        'label' => __('Вторичный цвет (Secondary)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('bg_body_color', array('default' => '#f6f8f6', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'bg_body_color', array(
+        'label' => __('Цвет фона страницы', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
     // Global Button Settings
     $wp_customize->add_section('global_buttons_section', array(
         'title'    => __('Глобальные настройки кнопок', 'city-library'),
@@ -339,6 +360,32 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Показать сайдбар', 'city-library'),
         'section' => 'layout_section',
         'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('global_border_radius', array('default' => '2rem', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('global_border_radius', array(
+        'label' => __('Скругление углов (Global Border Radius)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => '0 (Sharp)',
+            '0.5rem' => 'Small (0.5rem)',
+            '1rem' => 'Medium (1rem)',
+            '2rem' => 'Large (2rem - Default)',
+        ),
+    ));
+
+    $wp_customize->add_setting('global_container_width', array('default' => '80%', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('global_container_width', array(
+        'label' => __('Ширина контента (Desktop)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '100%' => 'Full Width (100%)',
+            '90%' => 'Wide (90%)',
+            '80%' => 'Standard (80%)',
+            '1280px' => 'Fixed (1280px)',
+        ),
     ));
 
     // Branch Emails Section
@@ -638,6 +685,9 @@ function city_library_customize_register($wp_customize) {
 
         $wp_customize->add_setting("afisha_badge_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
         $wp_customize->add_control("afisha_badge_$i", array('label' => sprintf(__('Badge Text %d (e.g. Featured)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("afisha_date_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_date_$i", array('label' => sprintf(__('Event Date %d (e.g. 12 OCT)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
     }
 
     $wp_customize->add_setting('afisha_bg_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
@@ -1046,13 +1096,46 @@ function city_library_dynamic_styles() {
     $btn_text = get_theme_mod('global_btn_text_color', '#FFFFFF');
     $btn_hover_bg = get_theme_mod('global_btn_hover_bg_color', '#096328');
     $btn_hover_text = get_theme_mod('global_btn_hover_text_color', '#FFFFFF');
+
+    $primary_color = get_theme_mod('primary_color', '#0b7930');
+    $secondary_color = get_theme_mod('secondary_color', '#1A3C34');
+    $bg_body = get_theme_mod('bg_body_color', '#f6f8f6');
+    $radius = get_theme_mod('global_border_radius', '2rem');
+    $width = get_theme_mod('global_container_width', '80%');
     ?>
     <style type="text/css">
         :root {
+            --primary-color: <?php echo esc_attr($primary_color); ?>;
+            --secondary-color: <?php echo esc_attr($secondary_color); ?>;
+            --bg-body: <?php echo esc_attr($bg_body); ?>;
             --btn-bg: <?php echo esc_attr($btn_bg); ?>;
             --btn-text: <?php echo esc_attr($btn_text); ?>;
             --btn-hover-bg: <?php echo esc_attr($btn_hover_bg); ?>;
             --btn-hover-text: <?php echo esc_attr($btn_hover_text); ?>;
+            --global-radius: <?php echo esc_attr($radius); ?>;
+        }
+
+        /* Global Color Override for Tailwind Config (via CSS Var) */
+        .text-primary { color: var(--primary-color) !important; }
+        .bg-primary { background-color: var(--primary-color) !important; }
+        .border-primary { border-color: var(--primary-color) !important; }
+        .hover\:bg-primary:hover { background-color: var(--primary-color) !important; }
+        .focus\:ring-primary:focus { --tw-ring-color: var(--primary-color) !important; }
+
+        body {
+            background-color: var(--bg-body) !important;
+        }
+
+        /* Global Radius Apply */
+        .rounded-\[2rem\], .rounded-\[2\.5rem\], .rounded-2xl {
+            border-radius: var(--global-radius) !important;
+        }
+
+        /* Container Width Apply */
+        @media (min-width: 1024px) {
+            .lg\:max-w-\[80\%\] {
+                max-width: <?php echo esc_attr($width); ?> !important;
+            }
         }
 
         /* Global Buttons */
