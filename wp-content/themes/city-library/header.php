@@ -133,9 +133,16 @@ $menu_item_classes = 'menu-style-' . $menu_style;
     $hero_mx_class = ($hero_align === 'left' || $hero_align === 'right') ? 'mx-0' : 'mx-auto';
 
     $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
+    $hero_image_url = get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg');
 ?>
-<section class="relative h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
-    <div class="max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
+<section class="relative min-h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20 overflow-hidden">
+    <!-- Adaptive Image -->
+    <img src="<?php echo esc_url($hero_image_url); ?>" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover -z-20">
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 -z-10" style="background: <?php echo $hero_gradient; ?>;"></div>
+
+    <div class="relative z-10 max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
             <span class="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse"></span>
