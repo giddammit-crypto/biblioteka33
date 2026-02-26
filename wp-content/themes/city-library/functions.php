@@ -642,6 +642,25 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    $wp_customize->add_setting('mobile_menu_btn_style', array('default' => 'classic', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_btn_style', array(
+        'label' => __('Стиль кнопок меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'classic' => 'Classic (Icon + Text)',
+            'minimal' => 'Minimal (Icon Only)',
+            'bold' => 'Bold (Thick Icons)',
+            'soft' => 'Soft (Pastel Colors)',
+            'bubble' => 'Bubble (Circle BG)',
+            'square' => 'Square (Rounded-md BG)',
+            'underline' => 'Underline (Active State)',
+            'glow' => 'Glow (Text Shadow)',
+            'floating' => 'Floating (Lift on Hover)',
+            'glass-btn' => 'Glass Button (Blur)',
+        ),
+    ));
+
     // Header Section
     $wp_customize->add_section('header_section', array(
         'title'    => __('Настройки шапки (Header)', 'city-library'),

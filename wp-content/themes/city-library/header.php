@@ -81,15 +81,10 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             <?php endif; ?>
 
             <div class="flex items-center space-x-2">
-                <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
+                <!-- Search Button Removed as per request -->
+                <!-- Mobile Menu Button Removed as per request -->
                 <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
                     <span class="material-symbols-outlined">visibility</span>
-                </button>
-                <!-- Mobile Menu Button (Visible when nav is hidden, i.e. below XL breakpoint) -->
-                <button id="mobile-menu-btn" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 ml-2 <?php echo ($header_style === 'minimal') ? '' : 'xl:hidden'; ?>" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" onclick="document.getElementById('mobile-menu').classList.remove('translate-x-full')">
-                    <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>
