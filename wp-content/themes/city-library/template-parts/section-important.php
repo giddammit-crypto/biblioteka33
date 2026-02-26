@@ -13,6 +13,22 @@ $btn_text = get_theme_mod('important_btn_text', __('Подробнее', 'city-l
 $btn_link = get_theme_mod('important_btn_link', '#');
 // $bg_color is unused now as we enforce standardized style
 $inter_block_text = get_theme_mod('important_inter_block_text', '');
+
+$link_radius = get_theme_mod('important_link_radius', 'medium');
+$link_style = get_theme_mod('important_link_style', 'default');
+
+// Link Image Styles
+$link_radius_class = 'rounded-2xl'; // medium
+if ($link_radius === 'none') $link_radius_class = 'rounded-none';
+if ($link_radius === 'small') $link_radius_class = 'rounded-lg';
+if ($link_radius === 'full') $link_radius_class = 'rounded-full';
+
+$link_style_class = 'shadow-md hover:shadow-xl'; // default
+if ($link_style === 'shadow') $link_style_class = 'shadow-xl hover:shadow-2xl hover:-translate-y-1';
+if ($link_style === 'border') $link_style_class = 'border-2 border-slate-200 hover:border-primary shadow-sm';
+if ($link_style === 'grayscale') $link_style_class = 'grayscale hover:grayscale-0 shadow-md';
+
+$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 aspect-square $link_radius_class $link_style_class";
 ?>
 
 <section class="py-16 bg-white <?php echo city_library_get_animation_class(); ?>">
@@ -82,7 +98,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
                         if (!$img) continue;
                     ?>
                         <div class="swiper-slide h-auto">
-                            <a href="<?php echo esc_url($url); ?>" class="block group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 aspect-square">
+                            <a href="<?php echo esc_url($url); ?>" class="<?php echo esc_attr($link_wrapper_class); ?>">
                                 <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </a>
                         </div>

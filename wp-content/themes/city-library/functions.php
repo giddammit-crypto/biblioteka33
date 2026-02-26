@@ -498,6 +498,36 @@ function city_library_customize_register($wp_customize) {
         'priority' => 20,
     ));
 
+    // Header Style
+    $wp_customize->add_setting('header_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_style', array(
+        'label' => __('Стиль шапки (Header Style)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Left Logo, Right Menu)',
+            'centered' => 'Centered (Logo Top, Menu Bottom)',
+            'minimal' => 'Minimal (Logo Left, Menu Hidden/Hamburger)',
+            'full-width' => 'Full Width (No Container)',
+            'transparent-overlay' => 'Transparent Overlay (Absolute)',
+        ),
+    ));
+
+    // Menu Style
+    $wp_customize->add_setting('menu_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('menu_style', array(
+        'label' => __('Стиль меню (Menu Style)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Simple Hover)',
+            'underline' => 'Underline Animation',
+            'pill' => 'Pill Background',
+            'bracket' => 'Brackets [ Link ]',
+            'bold' => 'Bold on Hover',
+        ),
+    ));
+
     $wp_customize->add_setting('header_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'header_bg_color', array(
         'label' => __('Цвет фона шапки', 'city-library'), 'section' => 'header_section',
@@ -575,8 +605,50 @@ function city_library_customize_register($wp_customize) {
         'section' => 'hero_section',
     )));
 
+    $wp_customize->add_setting('hero_bg_opacity', array('default' => '0.5', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_bg_opacity', array(
+        'label' => __('Прозрачность наложения (Overlay Opacity)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'range',
+        'input_attrs' => array('min' => 0, 'max' => 1, 'step' => 0.1),
+    ));
+
+    $wp_customize->add_setting('hero_align', array('default' => 'center', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_align', array(
+        'label' => __('Выравнивание текста (Alignment)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'select',
+        'choices' => array('left' => 'Left', 'center' => 'Center', 'right' => 'Right'),
+    ));
+
+    $wp_customize->add_setting('hero_title_size', array('default' => 'text-5xl md:text-7xl lg:text-8xl', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_title_size', array(
+        'label' => __('Размер заголовка (Title Size)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'select',
+        'choices' => array(
+            'text-4xl md:text-6xl lg:text-7xl' => 'Small',
+            'text-5xl md:text-7xl lg:text-8xl' => 'Medium (Default)',
+            'text-6xl md:text-8xl lg:text-9xl' => 'Large',
+        ),
+    ));
+
     // Footer Section
     $wp_customize->add_section('footer_section', array('title' => __('Footer', 'city-library'), 'priority' => 120));
+
+    $wp_customize->add_setting('footer_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_style', array(
+        'label' => __('Стиль футера (Footer Style)', 'city-library'),
+        'section' => 'footer_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Dark Simple)',
+            'light-clean' => 'Light Clean (White BG)',
+            'centered' => 'Centered Layout',
+            'multi-column' => 'Multi-Column (Grid)',
+            'minimal' => 'Minimal (Copyright Only)',
+        ),
+    ));
 
     $wp_customize->add_setting('footer_copyright', array('default' => '© 2024 Центральная городская библиотека. Все права защищены.', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_copyright', array('label' => __('Copyright Text', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
@@ -788,6 +860,20 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    $wp_customize->add_setting('afisha_card_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_card_style', array(
+        'label' => __('Стиль карточек слайдера (Card Style)', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Rounded, Shadow)',
+            'card' => 'Classic Card (White Border)',
+            'clean' => 'Clean (No Shadow, Minimal)',
+            'overlay' => 'Full Overlay (Text on Image)',
+            'glass' => 'Glassmorphism (Blur)',
+        ),
+    ));
+
     $wp_customize->add_setting('afisha_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('afisha_font_family', array(
         'label' => __('Шрифт заголовка афиши', 'city-library'),
@@ -849,6 +935,32 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('important_inter_block_text', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('important_inter_block_text', array('label' => __('Текст между блоками', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
+
+    $wp_customize->add_setting('important_link_radius', array('default' => 'medium', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_link_radius', array(
+        'label' => __('Скругление изображений ссылок', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'none' => 'Square (None)',
+            'small' => 'Small',
+            'medium' => 'Medium (Default)',
+            'full' => 'Circle (Full)',
+        ),
+    ));
+
+    $wp_customize->add_setting('important_link_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_link_style', array(
+        'label' => __('Стиль изображений ссылок', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Simple)',
+            'shadow' => 'Drop Shadow',
+            'border' => 'Bordered',
+            'grayscale' => 'Grayscale Hover',
+        ),
+    ));
 
     // Important Section Links (8 items)
     for ($i = 1; $i <= 8; $i++) {

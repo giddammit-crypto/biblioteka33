@@ -37,6 +37,7 @@ if (empty($events)) {
 
 $section_title = get_theme_mod('afisha_title', 'Афиша Мероприятий');
 $bg_style = get_theme_mod('afisha_bg_style', 'default');
+$card_style = get_theme_mod('afisha_card_style', 'default');
 
 // Container Styles - Adaptive: Full width on mobile but with internal padding, rounded on desktop
 $container_classes = "bg-white relative overflow-hidden transition-all duration-500";
@@ -46,6 +47,22 @@ if ($bg_style === 'gradient') {
     $container_classes = "bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 text-white relative overflow-hidden shadow-2xl border border-white/10";
     $bg_overlay = '<div class="absolute inset-0 bg-[url(\'https://www.transparenttextures.com/patterns/cubes.png\')] opacity-10 pointer-events-none mix-blend-overlay"></div>';
 }
+
+// Card Style Logic
+$card_base_classes = 'relative h-[400px] md:h-[500px] w-full overflow-hidden transition-all duration-500 bg-slate-100 select-none group-hover:scale-[1.02] transform-gpu';
+$card_extra_classes = 'rounded-[2rem] shadow-lg hover:shadow-2xl hover:shadow-slate-900/20 border border-slate-200'; // Default
+
+if ($card_style === 'card') {
+    $card_extra_classes = 'rounded-xl shadow-md hover:shadow-xl border-4 border-white';
+} elseif ($card_style === 'clean') {
+    $card_extra_classes = 'rounded-3xl border border-slate-100'; // No shadow
+} elseif ($card_style === 'overlay') {
+    $card_extra_classes = 'rounded-none shadow-none border-0'; // Flat
+} elseif ($card_style === 'glass') {
+    $card_extra_classes = 'rounded-[2rem] shadow-xl border border-white/30 backdrop-blur-sm bg-white/10';
+}
+
+$card_classes = $card_base_classes . ' ' . $card_extra_classes;
 ?>
 
 <section id="afisha" class="py-12 lg:py-24 bg-white overflow-hidden <?php echo city_library_get_animation_class(); ?>">
@@ -103,7 +120,7 @@ if ($bg_style === 'gradient') {
                                  tabindex="0"
                                  aria-label="<?php echo esc_attr($event['title']); ?>">
 
-                                <div class="relative h-[400px] md:h-[500px] w-full rounded-[2rem] overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-slate-900/20 transition-all duration-500 bg-slate-100 select-none border border-slate-200 group-hover:scale-[1.02] transform-gpu">
+                                <div class="<?php echo esc_attr($card_classes); ?>">
 
                                     <!-- Image -->
                                     <?php if ($event['image']) : ?>

@@ -9,9 +9,47 @@
 <?php wp_body_open(); ?>
 <a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-primary transition-all" href="#primary"><?php esc_html_e( 'Перейти к основному содержимому', 'city-library' ); ?></a>
 
-<header id="masthead" class="hidden lg:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group">
-    <div class="w-full px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
+<?php
+$header_style = get_theme_mod('header_style', 'default');
+$menu_style = get_theme_mod('menu_style', 'default');
+
+$header_classes = 'hidden lg:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
+$container_classes = 'w-full px-4 sm:px-6 lg:px-8';
+$flex_classes = 'flex justify-between items-center h-20';
+
+// Header Style Logic
+if ($header_style === 'centered') {
+    $flex_classes = 'flex flex-col justify-center items-center h-auto py-4 space-y-4';
+} elseif ($header_style === 'minimal') {
+    // Logic handled in layout structure below (nav hidden)
+} elseif ($header_style === 'full-width') {
+    $container_classes = 'w-full px-0';
+} elseif ($header_style === 'transparent-overlay') {
+    $header_classes = 'hidden lg:block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
+}
+
+// Menu Style Classes
+$menu_item_classes = 'menu-style-' . $menu_style;
+?>
+<style>
+/* Menu Styles */
+.menu-style-underline a { position: relative; }
+.menu-style-underline a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: currentColor; transition: width 0.3s; }
+.menu-style-underline a:hover::after { width: 100%; }
+
+.menu-style-pill a { padding: 0.5rem 1rem; border-radius: 9999px; transition: background 0.3s, color 0.3s; }
+.menu-style-pill a:hover { background: var(--primary-color); color: white !important; }
+
+.menu-style-bracket a::before { content: '['; opacity: 0; margin-right: 5px; transition: opacity 0.3s, transform 0.3s; transform: translateX(5px); }
+.menu-style-bracket a::after { content: ']'; opacity: 0; margin-left: 5px; transition: opacity 0.3s, transform 0.3s; transform: translateX(-5px); }
+.menu-style-bracket a:hover::before, .menu-style-bracket a:hover::after { opacity: 1; transform: translateX(0); }
+
+.menu-style-bold a:hover { font-weight: 800; }
+</style>
+
+<header id="masthead" class="<?php echo esc_attr($header_classes); ?>">
+    <div class="<?php echo esc_attr($container_classes); ?>">
+        <div class="<?php echo esc_attr($flex_classes); ?>">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
                 <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
@@ -33,7 +71,8 @@
                 </div>
             </div>
 
-            <nav class="hidden lg:landscape:flex items-center space-x-8">
+            <?php if ($header_style !== 'minimal') : ?>
+            <nav class="hidden lg:landscape:flex items-center space-x-8 <?php echo esc_attr($menu_item_classes); ?>">
                  <?php
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
@@ -43,6 +82,7 @@
                     ));
                 ?>
             </nav>
+            <?php endif; ?>
 
             <div class="flex items-center space-x-2">
                 <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
@@ -51,6 +91,11 @@
                 <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
+                <?php if ($header_style === 'minimal') : ?>
+                <button id="desktop-menu-btn" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 ml-2" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" onclick="document.getElementById('mobile-menu').classList.remove('translate-x-full')">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -87,11 +132,20 @@
 <?php if (get_theme_mod('show_hero_section', true)) : ?>
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
+    $hero_opacity = get_theme_mod('hero_bg_opacity', '0.5');
     list($r, $g, $b) = sscanf($hero_color, "#%02x%02x%02x");
-    $hero_gradient = "linear-gradient(rgba($r, $g, $b, 0.7), rgba($r, $g, $b, 0.85))";
+    // Use opacity control for overlay strength
+    $hero_gradient = "linear-gradient(rgba($r, $g, $b, $hero_opacity), rgba($r, $g, $b, $hero_opacity))";
+
+    $hero_align = get_theme_mod('hero_align', 'center');
+    $hero_text_align_class = 'text-' . $hero_align;
+    $hero_flex_align_class = ($hero_align === 'left') ? 'items-start justify-start text-left' : (($hero_align === 'right') ? 'items-end justify-end text-right' : 'items-center justify-center text-center');
+    $hero_mx_class = ($hero_align === 'left' || $hero_align === 'right') ? 'mx-0' : 'mx-auto';
+
+    $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
 ?>
-<section class="relative h-screen flex items-center justify-center hero-gradient lg:pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
-    <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
+<section class="relative h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient lg:pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
+    <div class="max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
             <span class="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse"></span>
@@ -99,15 +153,15 @@
         </div>
         <?php endif; ?>
 
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
+        <h1 class="<?php echo esc_attr($hero_title_size); ?> font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
             <?php echo wp_kses_post(get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека')); ?>
         </h1>
 
-        <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
+        <p class="text-lg md:text-xl text-slate-200 max-w-2xl <?php echo esc_attr($hero_mx_class); ?> font-light leading-relaxed animate-fade-in-up delay-200">
             <?php echo esc_html(get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.')); ?>
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
+        <div class="flex flex-col sm:flex-row <?php echo esc_attr($hero_flex_align_class); ?> gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
             <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
                 <span class="material-symbols-outlined text-xl shrink-0">event</span>
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>
