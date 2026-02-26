@@ -1,39 +1,241 @@
 <?php
 /**
- * City Library Branches Map Shortcode
+ * City Library Branches Map & CPT
  *
  * Usage: [city_library_branches_map]
  */
 
+/**
+ * 1. Register Custom Post Type 'library_branch'
+ */
+function city_library_register_branches_cpt() {
+    $labels = array(
+        'name'                  => _x('Библиотеки', 'Post Type General Name', 'city-library'),
+        'singular_name'         => _x('Библиотека', 'Post Type Singular Name', 'city-library'),
+        'menu_name'             => __('Библиотеки (Карта)', 'city-library'),
+        'name_admin_bar'        => __('Библиотеку', 'city-library'),
+        'archives'              => __('Архив библиотек', 'city-library'),
+        'attributes'            => __('Атрибуты', 'city-library'),
+        'parent_item_colon'     => __('Родительская библиотека:', 'city-library'),
+        'all_items'             => __('Все библиотеки', 'city-library'),
+        'add_new_item'          => __('Добавить новую библиотеку', 'city-library'),
+        'add_new'               => __('Добавить новую', 'city-library'),
+        'new_item'              => __('Новая библиотека', 'city-library'),
+        'edit_item'             => __('Редактировать библиотеку', 'city-library'),
+        'update_item'           => __('Обновить библиотеку', 'city-library'),
+        'view_item'             => __('Просмотреть библиотеку', 'city-library'),
+        'view_items'            => __('Просмотреть библиотеки', 'city-library'),
+        'search_items'          => __('Искать библиотеку', 'city-library'),
+        'not_found'             => __('Не найдено', 'city-library'),
+        'not_found_in_trash'    => __('Не найдено в корзине', 'city-library'),
+    );
+    $args = array(
+        'label'                 => __('Библиотека', 'city-library'),
+        'description'           => __('Каталог библиотек для отображения на карте', 'city-library'),
+        'labels'                => $labels,
+        'supports'              => array('title', 'editor', 'thumbnail'),
+        'hierarchical'          => false,
+        'public'                => false,
+        'show_ui'               => true,
+        'show_in_menu'          => true,
+        'menu_position'         => 20,
+        'menu_icon'             => 'dashicons-location',
+        'show_in_admin_bar'     => true,
+        'show_in_nav_menus'     => false,
+        'can_export'            => true,
+        'has_archive'           => false,
+        'exclude_from_search'   => true,
+        'publicly_queryable'    => false,
+        'capability_type'       => 'post',
+    );
+    register_post_type('library_branch', $args);
+}
+add_action('init', 'city_library_register_branches_cpt');
+
+/**
+ * 2. Add Meta Boxes for Coordinates, Address, Phone
+ */
+function city_library_branches_add_meta_boxes() {
+    add_meta_box(
+        'library_branch_details',
+        __('Детали библиотеки', 'city-library'),
+        'city_library_branches_meta_callback',
+        'library_branch',
+        'normal',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'city_library_branches_add_meta_boxes');
+
+function city_library_branches_meta_callback($post) {
+    wp_nonce_field('city_library_branches_save_meta', 'city_library_branches_nonce');
+
+    $coords = get_post_meta($post->ID, '_library_coords', true);
+    $address = get_post_meta($post->ID, '_library_address', true);
+    $phone = get_post_meta($post->ID, '_library_phone', true);
+    $email = get_post_meta($post->ID, '_library_email', true);
+
+    echo '<table class="form-table">';
+
+    // Coordinates
+    echo '<tr><th><label for="library_coords">' . __('Координаты (lat, lon)', 'city-library') . '</label></th>';
+    echo '<td><input type="text" id="library_coords" name="library_coords" value="' . esc_attr($coords) . '" class="regular-text" placeholder="56.123456, 40.123456" />';
+    echo '<p class="description">' . __('Скопируйте координаты из Яндекс.Карт.', 'city-library') . '</p></td></tr>';
+
+    // Address
+    echo '<tr><th><label for="library_address">' . __('Адрес', 'city-library') . '</label></th>';
+    echo '<td><input type="text" id="library_address" name="library_address" value="' . esc_attr($address) . '" class="regular-text" /></td></tr>';
+
+    // Phone
+    echo '<tr><th><label for="library_phone">' . __('Телефон', 'city-library') . '</label></th>';
+    echo '<td><input type="text" id="library_phone" name="library_phone" value="' . esc_attr($phone) . '" class="regular-text" /></td></tr>';
+
+    // Email
+    echo '<tr><th><label for="library_email">' . __('Email', 'city-library') . '</label></th>';
+    echo '<td><input type="email" id="library_email" name="library_email" value="' . esc_attr($email) . '" class="regular-text" /></td></tr>';
+
+    echo '</table>';
+}
+
+/**
+ * 3. Save Meta Data
+ */
+function city_library_branches_save_meta($post_id) {
+    if (!isset($_POST['city_library_branches_nonce']) || !wp_verify_nonce($_POST['city_library_branches_nonce'], 'city_library_branches_save_meta')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+
+    $fields = ['library_coords', 'library_address', 'library_phone', 'library_email'];
+    foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            update_post_meta($post_id, '_' . $field, sanitize_text_field($_POST[$field]));
+        }
+    }
+}
+add_action('save_post', 'city_library_branches_save_meta');
+
+
+/**
+ * 4. Shortcode Implementation
+ */
 function city_library_branches_map_shortcode($atts) {
     $atts = shortcode_atts(array(
         'height' => '500px',
         'zoom' => '12',
     ), $atts);
 
-    // Hardcoded Branches Data (Basis for future DB integration)
-    $branches = array(
-        array('coords' => [56.162458, 40.470598], 'name' => 'Центральная городская библиотека', 'address' => 'Суздальский пр-т, 2', 'phone' => '21-68-27'),
-        array('coords' => [56.129057, 40.406635], 'name' => 'Центральная детская библиотека', 'address' => 'ул. Большая Московская, 31', 'phone' => '32-47-97'),
-        array('coords' => [56.126485, 40.396951], 'name' => 'Филиал № 1 (Детский)', 'address' => 'ул. Гагарина, 2', 'phone' => '32-47-97'), // Example placeholder coords
-        array('coords' => [56.110756, 40.353347], 'name' => 'Филиал № 2 (Экологическая библиотека)', 'address' => 'пр-т Ленина, 65', 'phone' => '54-32-10'),
-        array('coords' => [56.147985, 40.442953], 'name' => 'Филиал № 4 (Историко-краеведческая)', 'address' => 'ул. Комиссарова, 9', 'phone' => '21-68-27'),
-        // ... Add more branches here or fetch from options
+    // Query Branches
+    $args = array(
+        'post_type' => 'library_branch',
+        'posts_per_page' => -1,
+        'orderby' => 'menu_order title',
+        'order' => 'ASC',
     );
+    $query = new WP_Query($args);
 
-    // Enqueue Yandex API if not already
+    $branches_data = array();
+    $list_html = '';
+
+    if ($query->have_posts()) {
+        $list_html .= '<div class="library-accordion-list mt-8 space-y-4">';
+
+        while ($query->have_posts()) {
+            $query->the_post();
+            $id = get_the_ID();
+            $coords_str = get_post_meta($id, '_library_coords', true);
+            $address = get_post_meta($id, '_library_address', true);
+            $phone = get_post_meta($id, '_library_phone', true);
+            $email = get_post_meta($id, '_library_email', true);
+            $title = get_the_title();
+            $content = get_the_content();
+            $thumbnail = get_the_post_thumbnail_url($id, 'medium');
+
+            if ($coords_str) {
+                $coords = array_map('floatval', explode(',', $coords_str));
+                if (count($coords) === 2) {
+                    $branches_data[] = array(
+                        'coords' => $coords,
+                        'name' => $title,
+                        'address' => $address,
+                        'phone' => $phone,
+                        'id' => $id
+                    );
+                }
+            }
+
+            // Accordion Item
+            $list_html .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300" id="library-item-' . esc_attr($id) . '">';
+
+            // Header
+            $list_html .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+            $list_html .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
+            $list_html .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
+            if ($address) {
+                $list_html .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1">location_on</span>' . esc_html($address) . '</span>';
+            }
+            $list_html .= '</div>';
+            $list_html .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400">expand_more</span>';
+            $list_html .= '</div>'; // End Header
+
+            // Body (Hidden)
+            $list_html .= '<div class="library-body hidden border-t border-slate-100">';
+            $list_html .= '<div class="p-6 flex flex-col md:flex-row gap-8">';
+
+            // Image
+            if ($thumbnail) {
+                $list_html .= '<div class="w-full md:w-1/3 shrink-0">';
+                $list_html .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
+                $list_html .= '</div>';
+            }
+
+            // Content + Details
+            $list_html .= '<div class="w-full">';
+
+            // Mobile Address/Phone (Visible here too for clarity)
+            $list_html .= '<div class="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">';
+            if ($address) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">location_on</span>' . esc_html($address) . '</div>';
+            if ($phone) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">call</span>' . esc_html($phone) . '</div>';
+            if ($email) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
+            $list_html .= '</div>';
+
+            $list_html .= '<div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">';
+            $list_html .= wpautop($content);
+            $list_html .= '</div>';
+
+            $list_html .= '</div>'; // End Content Column
+
+            $list_html .= '</div></div>'; // End Body & Flex
+            $list_html .= '</div>'; // End Item
+        }
+        $list_html .= '</div>';
+        wp_reset_postdata();
+    } else {
+        // Fallback for empty state (optional)
+        $list_html .= '<p class="text-center text-slate-500 py-8">' . __('Библиотеки пока не добавлены.', 'city-library') . '</p>';
+    }
+
+    // Enqueue scripts
     wp_enqueue_script('yandex-maps-api', 'https://api-maps.yandex.ru/2.1/?lang=ru_RU', array(), null, true);
+    wp_register_script('city-library-branches-map', get_template_directory_uri() . '/js/branches-map.js', array('yandex-maps-api'), '2.0', true);
 
-    // Register & Enqueue Map Script
-    wp_register_script('city-library-branches-map', get_template_directory_uri() . '/js/branches-map.js', array('yandex-maps-api'), '1.0', true);
+    // Pass Data to JS
     wp_localize_script('city-library-branches-map', 'branches_map_data', array(
-        'branches' => $branches,
-        'center' => [56.145, 40.405], // Approximate center of Vladimir
+        'branches' => $branches_data,
+        'center' => !empty($branches_data) ? $branches_data[0]['coords'] : [56.145, 40.405],
         'zoom' => intval($atts['zoom'])
     ));
     wp_enqueue_script('city-library-branches-map');
 
-    $output = '<div id="branches-yandex-map" style="width: 100%; height: ' . esc_attr($atts['height']) . '; background: #f0f0f0; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>';
+    // Output
+    $output = '<div class="city-library-map-widget">';
+    $output .= '<div id="branches-yandex-map" style="width: 100%; height: ' . esc_attr($atts['height']) . '; background: #e2e8f0; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);"></div>';
+    $output .= $list_html;
+    $output .= '</div>';
+
+    // Add inline script for accordion to avoid dependency if needed, or add to branches-map.js
+    // I'll put it in branches-map.js for cleanliness, but need to make sure it's loaded.
 
     return $output;
 }

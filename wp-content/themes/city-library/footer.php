@@ -121,8 +121,8 @@ if ($footer_style === 'light-clean') {
         <!-- Social Icons -->
         <div class="flex items-center space-x-4 mt-4 md:mt-0">
             <?php if (get_theme_mod('footer_social_vk')) : ?>
-                <a href="<?php echo esc_url(get_theme_mod('footer_social_vk')); ?>" target="_blank" rel="noopener noreferrer" class="p-2 rounded bg-slate-800 text-white hover:bg-[#0077FF] hover:text-white transition-all transform hover:scale-110 shadow-sm" aria-label="VKontakte">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM17 10.5c.2.2.4.5.6.8.3.4.6.8.9 1.1.2.3.2.6 0 .9-.3.3-.6.3-1 .3h-1.5c-.4 0-.7-.2-.9-.5-.2-.3-.4-.6-.6-1-.2-.3-.4-.6-.7-.6-.2 0-.3.1-.4.3-.1.2-.1.5-.1.8v.5c0 .3-.1.5-.4.6-.8.2-1.8.1-2.9-.4-1.2-.6-2.2-1.6-3.1-2.8-1-1.3-1.8-2.8-2.4-4.3-.1-.3 0-.5.3-.5h1.6c.3 0 .5.2.6.5.3 1 .8 2 1.4 2.8.2.3.4.5.7.5.1 0 .2-.1.3-.2.1-.2.1-.4.1-.7V6.5c0-.4-.1-.7-.5-.8-.2 0-.3-.1-.4-.2.1-.2.4-.3.8-.3h.8c.5 0 .7.3.7.8v2.6c0 .2 0 .4.2.5.1.1.3.1.4 0 .4-.5.8-1.1 1.1-1.7.2-.4.4-.7.4-1.1.1-.2.3-.3.6-.3h1.6c.4 0 .6.2.5.6-.1.4-.3.8-.5 1.2-.3.6-.7 1.1-1.1 1.6z"/></svg>
+                <a href="<?php echo esc_url(get_theme_mod('footer_social_vk')); ?>" target="_blank" rel="noopener noreferrer" class="transition-all transform hover:scale-110 shadow-sm rounded-lg overflow-hidden" aria-label="VKontakte">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/vk-logo.png" alt="VK" class="w-10 h-10 object-contain">
                 </a>
             <?php endif; ?>
             <?php if (get_theme_mod('footer_social_telegram')) : ?>

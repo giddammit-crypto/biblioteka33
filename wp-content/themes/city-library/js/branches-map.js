@@ -1,3 +1,20 @@
+// Global function for Accordion Toggle
+window.toggleLibraryItem = function(header) {
+    const body = header.nextElementSibling;
+    const icon = header.querySelector('.material-symbols-outlined.transform');
+
+    if (body.classList.contains('hidden')) {
+        // Close others? Optional. Let's keep it simple (multiple open allowed).
+        body.classList.remove('hidden');
+        body.classList.add('block');
+        if (icon) icon.classList.add('rotate-180');
+    } else {
+        body.classList.add('hidden');
+        body.classList.remove('block');
+        if (icon) icon.classList.remove('rotate-180');
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const mapContainer = document.getElementById('branches-yandex-map');
     if (!mapContainer || typeof ymaps === 'undefined') return;
@@ -7,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function init() {
         const data = window.branches_map_data || {};
         const branches = data.branches || [];
-        const center = data.center || [56.145, 40.405];
+        // Default center if no data
+        const center = (branches.length > 0 && branches[0].coords) ? branches[0].coords : [56.145, 40.405];
         const zoom = data.zoom || 12;
 
         const myMap = new ymaps.Map("branches-yandex-map", {
@@ -39,6 +57,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }, {
                 preset: 'islands#darkGreenIcon'
             });
+
+            // Optional: Scroll to list item on click
+            placemark.events.add('click', function () {
+                const listItem = document.getElementById('library-item-' + branch.id);
+                if (listItem) {
+                    listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Optionally open it
+                    const header = listItem.querySelector('.library-header');
+                    const body = listItem.querySelector('.library-body');
+                    if (header && body.classList.contains('hidden')) {
+                        toggleLibraryItem(header);
+                    }
+                }
+            });
+
             placemarks.push(placemark);
         });
 
