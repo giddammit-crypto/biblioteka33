@@ -4,7 +4,7 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#0f172a');
 $text_color = get_theme_mod('news_card_grid_text_color', '#1e293b');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-300 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center opacity-100 aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
 
     <!-- Image Container -->
     <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
@@ -19,9 +19,9 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </a>
 
         <!-- Mobile Gradient Overlay (Top) -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/40 to-transparent lg:hidden pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent lg:hidden pointer-events-none"></div>
         <!-- Mobile Gradient Overlay (Bottom) -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent lg:hidden pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:hidden pointer-events-none"></div>
 
         <!-- Floating Category Badge -->
         <?php
@@ -44,7 +44,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 flex flex-col h-full p-6 pt-[67px] lg:pt-6 justify-start lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
+    <div class="relative z-10 flex flex-col h-full p-6 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
         <!-- Make links clickable on mobile (overlay) -->
         <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
 
@@ -63,12 +63,12 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow lg:flex-grow-0 text-slate-200 lg:text-slate-700 lg:text-[var(--card-text)] pointer-events-auto">
+        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow-0 text-slate-200 lg:text-slate-800 lg:text-[var(--card-text)] pointer-events-auto">
             <?php the_excerpt(); ?>
         </div>
 
         <!-- Footer / Link -->
-        <div class="pt-4 mt-auto border-t border-white/20 lg:border-slate-100 flex items-center justify-between pointer-events-auto">
+        <div class="pt-4 lg:mt-auto border-t border-white/20 lg:border-slate-100 flex items-center justify-between pointer-events-auto">
             <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline text-white lg:bg-[var(--read-more-bg)] lg:text-[var(--read-more-text)] hover:lg:bg-[var(--read-more-hover-bg)] hover:lg:text-[var(--read-more-hover-text)] lg:rounded-[var(--read-more-radius)] lg:px-4 lg:py-2 lg:-ml-4 lg:decoration-[var(--read-more-underline)]">
                 <?php _e('Читать полностью', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1 text-primary lg:text-inherit" aria-hidden="true">arrow_forward</span>

@@ -51,11 +51,6 @@ $menu_item_classes = 'menu-style-' . $menu_style;
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
             <div class="flex items-center space-x-3 h-full shrink-0">
-                <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
-                    <span class="material-symbols-outlined text-3xl">menu</span>
-                </button>
-
                 <?php if (has_custom_logo()) : ?>
                     <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                         <?php the_custom_logo(); ?>
@@ -65,15 +60,15 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                         <span class="material-symbols-outlined text-white">menu_book</span>
                     </div>
                 <?php endif; ?>
-                <!-- Text Hidden on Mobile to save space -->
-                <div class="hidden md:block">
-                    <p class="text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                    <p class="text-xs xl:text-sm font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                <!-- Text visible on all screens (adapted size) -->
+                <div class="block">
+                    <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                    <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                 </div>
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden lg:landscape:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?>">
+            <nav class="hidden xl:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?>">
                  <?php
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
@@ -92,18 +87,17 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                 <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
-                <?php if ($header_style === 'minimal') : ?>
-                <button id="desktop-menu-btn" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 ml-2" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" onclick="document.getElementById('mobile-menu').classList.remove('translate-x-full')">
+                <!-- Mobile Menu Button (Visible when nav is hidden, i.e. below XL breakpoint) -->
+                <button id="mobile-menu-btn" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 ml-2 <?php echo ($header_style === 'minimal') ? '' : 'xl:hidden'; ?>" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" onclick="document.getElementById('mobile-menu').classList.remove('translate-x-full')">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <?php endif; ?>
             </div>
         </div>
     </div>
 </header>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 lg:landscape:hidden">
+<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden">
     <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>
@@ -145,7 +139,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 
     $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
 ?>
-<section class="relative h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient lg:pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
+<section class="relative h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20" style="background-image: <?php echo $hero_gradient; ?>, url('<?php echo esc_url(get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg')); ?>'); background-size: cover; background-position: center;">
     <div class="max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">

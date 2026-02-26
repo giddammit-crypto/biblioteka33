@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // News Slider
             if (!newsSwiper && document.querySelector('.news-slider')) {
                 newsSwiper = new Swiper('.news-slider', {
-                    slidesPerView: 1,
-                    spaceBetween: 20,
+                    slidesPerView: 'auto',
+                    centeredSlides: true,
+                    spaceBetween: 16,
                     pagination: {
                         el: '.news-slider .swiper-pagination',
                         clickable: true,

@@ -164,7 +164,7 @@ switch ($style) {
         </button>
 
         <!-- Menu -->
-        <button onclick="document.getElementById('mobile-menu-btn').click();" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none">
+        <button onclick="window.openMobileMenu && window.openMobileMenu()" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">menu</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Меню', 'city-library'); ?></span>
         </button>
