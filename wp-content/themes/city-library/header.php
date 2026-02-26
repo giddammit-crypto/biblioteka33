@@ -15,7 +15,7 @@ $menu_style = get_theme_mod('menu_style', 'default');
 
 $header_classes = 'hidden lg:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
-$flex_classes = 'flex justify-between items-center h-20';
+$flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
 // Header Style Logic
 if ($header_style === 'centered') {
@@ -50,14 +50,14 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 <header id="masthead" class="<?php echo esc_attr($header_classes); ?>">
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
-            <div class="flex items-center space-x-3 h-full py-2">
+            <div class="flex items-center space-x-3 h-full shrink-0">
                 <!-- Mobile Hamburger Button -->
                 <button id="mobile-menu-btn" class="lg:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
 
                 <?php if (has_custom_logo()) : ?>
-                    <div class="custom-logo-wrapper h-full w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
+                    <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                         <?php the_custom_logo(); ?>
                     </div>
                 <?php else : ?>
@@ -66,13 +66,13 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                     </div>
                 <?php endif; ?>
                 <div class="hidden md:block">
-                    <p class="text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                    <p class="text-xs font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                    <p class="text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                    <p class="text-xs xl:text-sm font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                 </div>
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden lg:landscape:flex items-center space-x-8 <?php echo esc_attr($menu_item_classes); ?>">
+            <nav class="hidden lg:landscape:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?>">
                  <?php
                     wp_nav_menu(array(
                         'theme_location' => 'primary',

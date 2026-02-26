@@ -123,10 +123,21 @@ function city_library_scripts() {
         'ajax_url' => admin_url('admin-ajax.php')
     ));
 
+    // Prepare Renewal Button Settings for JS
+    $renewal_settings = array(
+        'btn_text' => get_theme_mod('renewal_btn_text', 'Продлить книгу'),
+        'btn_bg' => get_theme_mod('renewal_btn_bg_color', '#0b7930'),
+        'btn_text_color' => get_theme_mod('renewal_btn_text_color', '#ffffff'),
+        'btn_radius' => get_theme_mod('renewal_btn_radius', 'circle'),
+        'btn_visibility' => get_theme_mod('renewal_btn_visibility', 'mobile-only'),
+        'btn_position' => get_theme_mod('renewal_btn_position', 'bottom-right'),
+    );
+
     wp_localize_script('city-library-book-renewal', 'renewal_params', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('book_renewal_nonce'),
-        'branches' => city_library_get_branches_list() // Helper to pass branch list if needed JS side, though we just need IDs
+        'branches' => city_library_get_branches_list(), // Helper to pass branch list if needed JS side, though we just need IDs
+        'settings' => $renewal_settings
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
@@ -491,6 +502,69 @@ function city_library_customize_register($wp_customize) {
             'type' => 'email',
         ));
     }
+
+    // Book Renewal Button Settings
+    $wp_customize->add_section('renewal_button_section', array(
+        'title' => __('Кнопка продления книг', 'city-library'),
+        'priority' => 145,
+        'description' => __('Настройки внешнего вида и поведения кнопки продления книг.', 'city-library'),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_text', array('default' => 'Продлить книгу', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_text', array(
+        'label' => __('Текст кнопки', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('renewal_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'renewal_btn_bg_color', array(
+        'label' => __('Цвет фона', 'city-library'),
+        'section' => 'renewal_button_section',
+    )));
+
+    $wp_customize->add_setting('renewal_btn_text_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'renewal_btn_text_color', array(
+        'label' => __('Цвет текста/иконки', 'city-library'),
+        'section' => 'renewal_button_section',
+    )));
+
+    $wp_customize->add_setting('renewal_btn_radius', array('default' => 'circle', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'square' => 'Square (0)',
+            'small' => 'Small (Rounded-md)',
+            'medium' => 'Medium (Rounded-xl)',
+            'circle' => 'Circle (Full)',
+        ),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_visibility', array('default' => 'mobile-only', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_visibility', array(
+        'label' => __('Видимость кнопки', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'mobile-only' => 'Только на мобильных',
+            'desktop-only' => 'Только на ПК',
+            'all' => 'На всех устройствах',
+            'hidden' => 'Скрыть полностью',
+        ),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_position', array('default' => 'bottom-right', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_position', array(
+        'label' => __('Позиция на экране', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'bottom-right' => 'Справа внизу',
+            'bottom-left' => 'Слева внизу',
+        ),
+    ));
 
     // Header Section
     $wp_customize->add_section('header_section', array(

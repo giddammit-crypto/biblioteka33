@@ -1,17 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
     const params = window.renewal_params || {};
+    const settings = params.settings || {};
+
+    // Visibility Check
+    const isMobile = window.innerWidth < 1024;
+    const visibility = settings.btn_visibility || 'mobile-only';
+
+    if (visibility === 'hidden') return;
+    if (visibility === 'mobile-only' && !isMobile) return;
+    if (visibility === 'desktop-only' && isMobile) return;
 
     // 1. Create Floating Button (Stylish & Accessible)
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    // Positioned at bottom-[121px] on mobile (131px - 10px), standard bottom-6 on landscape desktop
-    renewBtn.className = 'fixed bottom-[121px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
-    renewBtn.setAttribute('aria-label', 'Открыть форму продления книг');
+
+    // Base Classes
+    let btnClasses = 'fixed z-50 px-6 py-4 font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
+
+    // Position Classes
+    const position = settings.btn_position || 'bottom-right';
+    if (position === 'bottom-left') {
+        btnClasses += ' left-6 bottom-[121px] lg:bottom-24 lg:landscape:bottom-6';
+    } else {
+        btnClasses += ' right-6 bottom-[121px] lg:bottom-24 lg:landscape:bottom-6';
+    }
+
+    // Radius Classes
+    const radius = settings.btn_radius || 'circle';
+    if (radius === 'circle') btnClasses += ' rounded-full';
+    else if (radius === 'medium') btnClasses += ' rounded-xl';
+    else if (radius === 'small') btnClasses += ' rounded-md';
+    else if (radius === 'square') btnClasses += ' rounded-none';
+
+    renewBtn.className = btnClasses;
+
+    // Apply Colors inline
+    renewBtn.style.backgroundColor = settings.btn_bg || '#0b7930';
+    renewBtn.style.color = settings.btn_text_color || '#ffffff';
+
+    renewBtn.setAttribute('aria-label', settings.btn_text || 'Открыть форму продления книг');
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>
-        <span class="hidden md:inline-block font-display tracking-wide text-sm uppercase">Продление книг</span>
+        <span class="hidden md:inline-block font-display tracking-wide text-sm uppercase">${settings.btn_text || 'Продление книг'}</span>
     `;
-    renewBtn.title = "Продление книг онлайн";
+    renewBtn.title = settings.btn_text || "Продление книг онлайн";
     document.body.appendChild(renewBtn);
 
     // Smart Hiding Logic (Hide on scroll down, show on scroll up)
