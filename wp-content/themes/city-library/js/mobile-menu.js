@@ -7,13 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (mobileMenu) {
         // Function to open menu
         function openMobileMenu() {
-            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.remove('translate-x-full', 'pointer-events-none');
             document.body.style.overflow = 'hidden';
         }
 
         // Function to close menu
         function closeMobileMenu() {
-            mobileMenu.classList.add('translate-x-full');
+            mobileMenu.classList.add('translate-x-full', 'pointer-events-none');
             document.body.style.overflow = '';
         }
 
@@ -34,11 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Close Listener (Internal Button - Backup)
-        // Sometimes the global ID lookup might fail if the element is inside a shadow DOM or template (unlikely here, but good safety)
-        const internalCloseBtn = mobileMenu.querySelector('.material-symbols-outlined').closest('button'); // Fallback strategy
-        if (internalCloseBtn && internalCloseBtn !== globalCloseBtn) {
-            internalCloseBtn.addEventListener('click', closeMobileMenu);
-        }
+        // Find ANY button inside the menu that has a "close" icon or text "Close"
+        const internalCloseBtns = mobileMenu.querySelectorAll('button, .menu-item-close a'); // Flexible selector
+        internalCloseBtns.forEach(btn => {
+            // Check if it's the global button (handled) or new one
+            if (btn !== globalCloseBtn) {
+                // If it has "close" icon or text, add listener
+                if (btn.querySelector('.material-symbols-outlined') || btn.textContent.toLowerCase().includes('close') || btn.textContent.toLowerCase().includes('закрыть')) {
+                    btn.addEventListener('click', closeMobileMenu);
+                }
+            }
+        });
 
         // Ensure the ID based internal search also works if the global one didn't match
         const internalIdBtn = mobileMenu.querySelector('#mobile-menu-close');
@@ -65,8 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const renewalBtn = document.getElementById('book-renewal-btn');
 
     if (bottomNav) {
-        let lastScrollTop = 0;
-
         function checkNavVisibility() {
             const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
             const windowHeight = window.innerHeight;
@@ -83,17 +87,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Hide Renewal Button
                 if (renewalBtn) {
-                    // Mobile renewal button logic usually hides it via same classes or separate logic
-                    // If renewal button is floating at bottom, hide it too
                     renewalBtn.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
                 }
             } else {
                 // Show Nav
                 bottomNav.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
 
-                // Show Renewal Button (but check top/hero logic for it if separate?)
-                // User instruction said: "If site scrolled to footer -> hide, else -> show".
-                // This implies it should be visible everywhere else.
+                // Show Renewal Button
                 if (renewalBtn) {
                     renewalBtn.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
                 }

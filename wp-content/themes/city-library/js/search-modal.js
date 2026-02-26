@@ -34,10 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Attach listeners to all toggles
     searchToggles.forEach(toggle => {
-        toggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            openSearch();
-        });
+        if (toggle) {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                openSearch();
+            });
+        }
     });
 
     if (searchClose) {
