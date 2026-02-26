@@ -59,24 +59,26 @@ if ($bg_style === 'gradient') {
             <div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
             <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-[80px] pointer-events-none"></div>
 
-            <div class="flex flex-col xl:flex-row gap-12 items-center relative z-10">
+            <div class="flex flex-col gap-12 relative z-10">
 
-                <!-- Left Column: Text Content & Navigation -->
-                <div class="w-full xl:w-1/3 text-center xl:text-left space-y-8 relative z-20 flex flex-col items-center xl:items-start">
+                <!-- Header Row: Text Content & Navigation -->
+                <div class="w-full flex flex-col xl:flex-row justify-between items-center xl:items-end gap-8 relative z-20">
 
-                    <div class="relative">
-                        <div class="h-2 w-24 bg-gradient-to-r from-primary to-green-400 rounded-full mb-6 mx-auto xl:mx-0 shadow-sm"></div>
-                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight pb-2 break-words text-slate-900 drop-shadow-sm">
-                            <?php echo esc_html($section_title); ?>
-                        </h2>
+                    <div class="text-center xl:text-left space-y-6 max-w-3xl">
+                        <div class="relative">
+                            <div class="h-2 w-24 bg-gradient-to-r from-primary to-green-400 rounded-full mb-6 mx-auto xl:mx-0 shadow-sm"></div>
+                            <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-tight pb-2 break-words text-slate-900 drop-shadow-sm">
+                                <?php echo esc_html($section_title); ?>
+                            </h2>
+                        </div>
+
+                        <p class="text-slate-600 text-lg md:text-xl leading-relaxed font-light">
+                            <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
+                        </p>
                     </div>
 
-                    <p class="text-slate-600 text-lg md:text-xl leading-relaxed font-light max-w-2xl mx-auto xl:mx-0">
-                        <?php _e('Откройте для себя мир культурных событий. Лекции, мастер-классы, встречи с авторами и уникальные выставки — все это ждет вас в нашей библиотеке.', 'city-library'); ?>
-                    </p>
-
-                    <!-- Enhanced Navigation Buttons -->
-                    <div class="flex items-center justify-center xl:justify-start gap-6 pt-4">
+                    <!-- Enhanced Navigation Buttons (Top Right) -->
+                    <div class="flex items-center justify-center xl:justify-end gap-4 shrink-0">
                         <button class="afisha-prev group w-14 h-14 rounded-full bg-white border border-slate-200 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
                             <span class="material-symbols-outlined text-2xl text-slate-700 group-hover:text-white transition-colors duration-300">arrow_back</span>
                         </button>
@@ -86,8 +88,8 @@ if ($bg_style === 'gradient') {
                     </div>
                 </div>
 
-                <!-- Right Column: Cinematic Slider -->
-                <div class="w-full xl:w-2/3 relative z-10">
+                <!-- Full Width Slider -->
+                <div class="w-full relative z-10">
 
                     <!-- Slider Container with overflow-visible for depth effect -->
                     <div class="swiper afisha-slider w-full !pb-12 !px-4 md:!px-0 overflow-visible">
