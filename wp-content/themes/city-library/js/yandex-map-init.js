@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const params = window.yandex_map_params || {};
-    const lat = parseFloat(params.lat) || 56.129057;
-    const lon = parseFloat(params.lon) || 40.406635;
+    const lat = parseFloat(params.lat) || 56.162458;
+    const lon = parseFloat(params.lon) || 40.470598;
     const zoom = parseInt(params.zoom) || 15;
 
     ymaps.ready(init);

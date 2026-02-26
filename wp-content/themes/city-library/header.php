@@ -92,7 +92,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 </header>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden pointer-events-none">
+<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden pointer-events-none">
     <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate pointer-events-auto">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>

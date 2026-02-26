@@ -35,8 +35,15 @@ if ($footer_style === 'light-clean') {
         <div class="footer-column space-y-6">
             <?php if (get_theme_mod('footer_show_map', false)) :
                 $map_height = get_theme_mod('footer_map_height', '300px');
+                $map_width_desktop = get_theme_mod('footer_map_width_desktop', '250px');
             ?>
-                <div id="footer-yandex-map" class="w-full bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200" style="height: <?php echo esc_attr($map_height); ?>;"></div>
+                <style>
+                    #footer-yandex-map { width: 100%; }
+                    @media (min-width: 1024px) {
+                        #footer-yandex-map { width: <?php echo esc_attr($map_width_desktop); ?>; }
+                    }
+                </style>
+                <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200" style="height: <?php echo esc_attr($map_height); ?>;"></div>
             <?php else : ?>
                 <?php
                 $footer_desc = get_theme_mod('footer_description');
@@ -111,8 +118,8 @@ if ($footer_style === 'light-clean') {
         <!-- Social Icons -->
         <div class="flex items-center space-x-4 mt-4 md:mt-0">
             <?php if (get_theme_mod('footer_social_vk')) : ?>
-                <a href="<?php echo esc_url(get_theme_mod('footer_social_vk')); ?>" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full bg-slate-800 text-white hover:bg-[#0077FF] hover:text-white transition-all transform hover:scale-110 shadow-sm" aria-label="VKontakte">
-                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.684 13.044c.725.688 1.487 1.338 2.188 2.05.325.325.575.75.838 1.15.225.35.088.7-.325.75-1.025.138-2.063.15-3.088.025-.575-.075-1.038-.413-1.425-.838-.387-.412-.763-.837-1.125-1.275-.237-.3-.512-.4-.825-.237-.238.125-.338.35-.35.612-.038 1.125.012 2.25-.013 3.375-.012.563-.262.838-.825.863-1.925.087-3.662-.313-5.225-1.525-2.05-1.6-3.487-3.688-4.712-5.925C.287 10.994.012 9.93.012 8.868c0-.1.05-.138.138-.138 1.112.013 2.225.013 3.337 0 .425-.013.725.2.875.588.6 1.575 1.388 3.037 2.513 4.287.213.238.45.35.75.188.3-.163.363-.425.375-.725.038-1.538.075-3.088-.337-4.575-.15-.55-.525-.838-1.1-.925-.337-.05-.312-.175-.15-.362.538-.613 1.288-.9 2.1-.925 1.05-.038 1.8.388 2.038 1.4.15.663.112 1.35.15 2.025.025.438.187.6.612.638.313.025.538-.138.763-.35 1.037-1.012 1.837-2.212 2.45-3.512.162-.338.35-.688.525-1.038.15-.3.4-.463.738-.463 1.1-.012 2.212.013 3.312-.012.35-.013.563.187.438.562-.6 1.763-1.488 3.35-2.613 4.8-.2.25-.387.513-.6.75-.275.313-.262.513.038.813z"/></svg>
+                <a href="<?php echo esc_url(get_theme_mod('footer_social_vk')); ?>" target="_blank" rel="noopener noreferrer" class="p-2 rounded bg-slate-800 text-white hover:bg-[#0077FF] hover:text-white transition-all transform hover:scale-110 shadow-sm" aria-label="VKontakte">
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM17 10.5c.2.2.4.5.6.8.3.4.6.8.9 1.1.2.3.2.6 0 .9-.3.3-.6.3-1 .3h-1.5c-.4 0-.7-.2-.9-.5-.2-.3-.4-.6-.6-1-.2-.3-.4-.6-.7-.6-.2 0-.3.1-.4.3-.1.2-.1.5-.1.8v.5c0 .3-.1.5-.4.6-.8.2-1.8.1-2.9-.4-1.2-.6-2.2-1.6-3.1-2.8-1-1.3-1.8-2.8-2.4-4.3-.1-.3 0-.5.3-.5h1.6c.3 0 .5.2.6.5.3 1 .8 2 1.4 2.8.2.3.4.5.7.5.1 0 .2-.1.3-.2.1-.2.1-.4.1-.7V6.5c0-.4-.1-.7-.5-.8-.2 0-.3-.1-.4-.2.1-.2.4-.3.8-.3h.8c.5 0 .7.3.7.8v2.6c0 .2 0 .4.2.5.1.1.3.1.4 0 .4-.5.8-1.1 1.1-1.7.2-.4.4-.7.4-1.1.1-.2.3-.3.6-.3h1.6c.4 0 .6.2.5.6-.1.4-.3.8-.5 1.2-.3.6-.7 1.1-1.1 1.6z"/></svg>
                 </a>
             <?php endif; ?>
             <?php if (get_theme_mod('footer_social_telegram')) : ?>

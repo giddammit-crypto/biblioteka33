@@ -41,7 +41,7 @@
             <?php if (have_posts()) : ?>
                 <!-- Responsive Layout: Swiper for Mobile (< lg), Grid for Kiosk/Desktop (>= lg) -->
                 <div id="posts-container" class="swiper news-slider w-full">
-                    <div class="swiper-wrapper lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6">
+                    <div class="swiper-wrapper lg:!grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 lg:gap-6">
                         <?php
                         while (have_posts()) :
                             the_post();

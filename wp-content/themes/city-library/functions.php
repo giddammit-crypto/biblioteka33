@@ -2,6 +2,9 @@
 /**
  * Theme setup.
  */
+// Include Branches Map Shortcode
+require_once get_template_directory() . '/inc/branches-map.php';
+
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');
@@ -124,8 +127,8 @@ function city_library_scripts() {
         wp_enqueue_script('city-library-yandex-map', get_template_directory_uri() . '/js/yandex-map-init.js', array('yandex-maps-api'), wp_get_theme()->get('Version'), true);
 
         wp_localize_script('city-library-yandex-map', 'yandex_map_params', array(
-            'lat' => get_theme_mod('footer_map_lat', '56.129057'),
-            'lon' => get_theme_mod('footer_map_lon', '40.406635'),
+            'lat' => get_theme_mod('footer_map_lat', '56.162458'),
+            'lon' => get_theme_mod('footer_map_lon', '40.470598'),
             'zoom' => get_theme_mod('footer_map_zoom', 15),
         ));
     }
@@ -902,14 +905,14 @@ function city_library_customize_register($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('footer_map_lat', array('default' => '56.129057', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('footer_map_lat', array('default' => '56.162458', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_map_lat', array(
         'label' => __('Широта (Latitude)', 'city-library'),
         'section' => 'footer_map_section',
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('footer_map_lon', array('default' => '40.406635', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('footer_map_lon', array('default' => '40.470598', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_map_lon', array(
         'label' => __('Долгота (Longitude)', 'city-library'),
         'section' => 'footer_map_section',
@@ -929,6 +932,14 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Высота карты (например, 300px)', 'city-library'),
         'section' => 'footer_map_section',
         'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_width_desktop', array('default' => '250px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_width_desktop', array(
+        'label' => __('Ширина карты на ПК (Desktop Width)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+        'description' => 'Например: 250px, 300px, 100%'
     ));
 
     // Hero Button Colors

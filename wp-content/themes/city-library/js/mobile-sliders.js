@@ -3,8 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let partnersSwiper = null;
     let importantLinksSwiper = null;
 
+    const breakpoint = 1024;
+
     function initMobileSliders() {
-        if (window.innerWidth < 1024) {
+        const isMobile = window.innerWidth < breakpoint;
+
+        if (isMobile) {
             // News Slider
             if (!newsSwiper && document.querySelector('.news-slider')) {
                 newsSwiper = new Swiper('.news-slider', {
@@ -15,6 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         el: '.news-slider .swiper-pagination',
                         clickable: true,
                     },
+                    on: {
+                        destroy: function() {
+                            // Clean up styles manually
+                            const wrapper = document.querySelector('.news-slider .swiper-wrapper');
+                            if (wrapper) wrapper.removeAttribute('style');
+                            const slides = document.querySelectorAll('.news-slider .swiper-slide');
+                            slides.forEach(slide => slide.removeAttribute('style'));
+                        }
+                    }
                 });
             }
 
@@ -27,6 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         el: '.partners-slider .swiper-pagination',
                         clickable: true,
                     },
+                     on: {
+                        destroy: function() {
+                            const wrapper = document.querySelector('.partners-slider .swiper-wrapper');
+                            if (wrapper) wrapper.removeAttribute('style');
+                            const slides = document.querySelectorAll('.partners-slider .swiper-slide');
+                            slides.forEach(slide => slide.removeAttribute('style'));
+                        }
+                    }
                 });
             }
 
@@ -47,6 +68,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         el: '.important-links-slider .swiper-pagination',
                         clickable: true,
                     },
+                    on: {
+                        destroy: function() {
+                            const wrapper = document.querySelector('.important-links-slider .swiper-wrapper');
+                            if (wrapper) wrapper.removeAttribute('style');
+                            const slides = document.querySelectorAll('.important-links-slider .swiper-slide');
+                            slides.forEach(slide => slide.removeAttribute('style'));
+                        }
+                    }
                 });
             }
         } else {
