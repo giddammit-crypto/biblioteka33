@@ -566,6 +566,42 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
+    // Mobile Bottom Menu Section
+    $wp_customize->add_section('mobile_menu_section', array(
+        'title'    => __('Нижнее мобильное меню', 'city-library'),
+        'priority' => 21,
+    ));
+
+    $wp_customize->add_setting('mobile_menu_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_bg_color', array(
+        'label' => __('Цвет фона', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_icon_color', array('default' => '#64748b', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_icon_color', array(
+        'label' => __('Цвет иконок', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_active_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_active_color', array(
+        'label' => __('Цвет активного элемента', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_style', array(
+        'label' => __('Стиль меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Fixed Bottom)',
+            'ios-blur' => 'iOS Blur (Translucent)',
+            'material-pill' => 'Material Pill (Floating)',
+            'neon-glow' => 'Neon Glow (Dark Mode)',
+            'minimal-border' => 'Minimal Border (Top Line)',
+            'floating-island' => 'Floating Island (Rounded)',
+        ),
+    ));
+
     // Header Section
     $wp_customize->add_section('header_section', array(
         'title'    => __('Настройки шапки (Header)', 'city-library'),
@@ -1390,12 +1426,21 @@ function city_library_dynamic_styles() {
     $bg_body = get_theme_mod('bg_body_color', '#f6f8f6');
     $radius = get_theme_mod('global_border_radius', '2rem');
     $width = get_theme_mod('global_container_width', '80%');
+
+    // Mobile Menu
+    $mob_menu_bg = get_theme_mod('mobile_menu_bg_color', '#ffffff');
+    $mob_menu_icon = get_theme_mod('mobile_menu_icon_color', '#64748b');
+    $mob_menu_active = get_theme_mod('mobile_menu_active_color', '#0b7930');
     ?>
     <style type="text/css">
         :root {
             --primary-color: <?php echo esc_attr($primary_color); ?>;
             --secondary-color: <?php echo esc_attr($secondary_color); ?>;
             --bg-body: <?php echo esc_attr($bg_body); ?>;
+
+            --mob-menu-bg: <?php echo esc_attr($mob_menu_bg); ?>;
+            --mob-menu-icon: <?php echo esc_attr($mob_menu_icon); ?>;
+            --mob-menu-active: <?php echo esc_attr($mob_menu_active); ?>;
 
             --btn-bg: <?php echo esc_attr($btn_bg); ?>;
             --btn-text: <?php echo esc_attr($btn_text); ?>;
