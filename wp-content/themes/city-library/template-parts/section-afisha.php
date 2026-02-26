@@ -79,11 +79,11 @@ if ($bg_style === 'gradient') {
 
                     <!-- Enhanced Navigation Buttons (Top Right) -->
                     <div class="flex items-center justify-center xl:justify-end gap-4 shrink-0">
-                        <button class="afisha-prev group w-14 h-14 rounded-full bg-white border border-slate-200 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl text-slate-700 group-hover:text-white transition-colors duration-300">arrow_back</span>
+                        <button class="afisha-prev slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_back</span>
                         </button>
-                        <button class="afisha-next group w-14 h-14 rounded-full bg-white border border-slate-200 hover:border-primary hover:bg-primary transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Следующий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl text-slate-700 group-hover:text-white transition-colors duration-300">arrow_forward</span>
+                        <button class="afisha-next slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Следующий слайд', 'city-library'); ?>">
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_forward</span>
                         </button>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ if ($bg_style === 'gradient') {
 
         <!-- Action Button -->
         <div class="mt-auto mb-4 pointer-events-auto transform translate-y-4 opacity-0 transition-all duration-500 delay-200" id="afisha-modal-action-wrapper">
-            <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-10 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-green-600 transition-all shadow-lg hover:shadow-green-500/30 hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50 group">
+            <a id="afisha-modal-link" href="#" class="button inline-flex items-center justify-center px-10 py-4 font-bold text-lg uppercase tracking-wider rounded-full transition-all shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50 group">
                 <?php _e('Подробнее', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </a>
@@ -286,11 +286,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Responsive Breakpoints (Mobile First)
         breakpoints: {
-            // Mobile: Single slide, peek effect
+            // Mobile: Single slide, full width adaptive
             320: {
-                slidesPerView: 1.15,
+                slidesPerView: 1,
                 spaceBetween: 16,
-                centeredSlides: true,
+                centeredSlides: false,
             },
             // Tablet: 2 slides
             640: {

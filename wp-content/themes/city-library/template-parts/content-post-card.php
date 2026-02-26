@@ -69,10 +69,10 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Footer / Link -->
         <div class="pt-4 mt-auto border-t border-white/20 lg:border-slate-100 flex items-center justify-between pointer-events-auto">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline text-white lg:text-primary lg:text-[var(--card-link)]">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline text-white lg:bg-[var(--read-more-bg)] lg:text-[var(--read-more-text)] hover:lg:bg-[var(--read-more-hover-bg)] hover:lg:text-[var(--read-more-hover-text)] lg:rounded-[var(--read-more-radius)] lg:px-4 lg:py-2 lg:-ml-4 lg:decoration-[var(--read-more-underline)]">
                 <?php _e('Читать полностью', 'city-library'); ?>
+                <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1 text-primary lg:text-inherit" aria-hidden="true">arrow_forward</span>
             </a>
-            <span class="material-symbols-outlined text-primary transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
         </div>
     </div>
 </article>

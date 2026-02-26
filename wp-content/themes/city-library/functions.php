@@ -349,6 +349,93 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет текста при наведении', 'city-library'), 'section' => 'global_buttons_section',
     )));
 
+    // Slider Buttons Settings (Navigation)
+    $wp_customize->add_section('slider_buttons_section', array(
+        'title'    => __('Кнопки слайдера (Навигация)', 'city-library'),
+        'priority' => 18,
+    ));
+
+    $wp_customize->add_setting('slider_btn_bg_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_icon_color', array('default' => '#334155', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_icon_color', array(
+        'label' => __('Цвет иконки/стрелки', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_hover_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_hover_bg_color', array(
+        'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_hover_icon_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_hover_icon_color', array(
+        'label' => __('Цвет иконки при наведении', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_radius', array('default' => '9999px', 'sanitize_callback' => 'sanitize_text_field')); // Default circle
+    $wp_customize->add_control('slider_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'slider_buttons_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => 'Квадратные (0)',
+            '0.5rem' => 'Скругленные (Small)',
+            '1rem' => 'Скругленные (Medium)',
+            '9999px' => 'Круглые (Circle)',
+        ),
+    ));
+
+
+    // "Read More" / "Details" Buttons Settings
+    $wp_customize->add_section('read_more_buttons_section', array(
+        'title'    => __('Кнопки "Подробнее" / "Читать далее"', 'city-library'),
+        'priority' => 18,
+    ));
+
+    $wp_customize->add_setting('read_more_btn_bg_color', array('default' => 'transparent', 'sanitize_callback' => 'sanitize_text_field')); // Can be transparent
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_text_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_text_color', array(
+        'label' => __('Цвет текста', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_hover_bg_color', array('default' => 'transparent', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_hover_bg_color', array(
+        'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_hover_text_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_hover_text_color', array(
+        'label' => __('Цвет текста при наведении', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_show_underline', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('read_more_show_underline', array(
+        'label' => __('Подчеркивание ссылки', 'city-library'),
+        'section' => 'read_more_buttons_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('read_more_btn_radius', array('default' => '9999px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('read_more_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'read_more_buttons_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => 'Квадратные (0)',
+            '0.5rem' => 'Скругленные (Small)',
+            '1rem' => 'Скругленные (Medium)',
+            '9999px' => 'Круглые (Circle)',
+        ),
+    ));
+
+
     // Layout Settings
     $wp_customize->add_section('layout_section', array(
         'title'    => __('Настройки макета (Layout)', 'city-library'),
@@ -1097,6 +1184,21 @@ function city_library_dynamic_styles() {
     $btn_hover_bg = get_theme_mod('global_btn_hover_bg_color', '#096328');
     $btn_hover_text = get_theme_mod('global_btn_hover_text_color', '#FFFFFF');
 
+    // Slider Buttons
+    $slider_btn_bg = get_theme_mod('slider_btn_bg_color', '#FFFFFF');
+    $slider_btn_icon = get_theme_mod('slider_btn_icon_color', '#334155');
+    $slider_btn_hover_bg = get_theme_mod('slider_btn_hover_bg_color', '#0b7930');
+    $slider_btn_hover_icon = get_theme_mod('slider_btn_hover_icon_color', '#FFFFFF');
+    $slider_btn_radius = get_theme_mod('slider_btn_radius', '9999px');
+
+    // Read More Buttons
+    $read_more_bg = get_theme_mod('read_more_btn_bg_color', 'transparent');
+    $read_more_text = get_theme_mod('read_more_btn_text_color', '#0b7930');
+    $read_more_hover_bg = get_theme_mod('read_more_btn_hover_bg_color', 'transparent');
+    $read_more_hover_text = get_theme_mod('read_more_btn_hover_text_color', '#096328');
+    $read_more_underline = get_theme_mod('read_more_show_underline', true) ? 'underline' : 'none';
+    $read_more_radius = get_theme_mod('read_more_btn_radius', '9999px');
+
     $primary_color = get_theme_mod('primary_color', '#0b7930');
     $secondary_color = get_theme_mod('secondary_color', '#1A3C34');
     $bg_body = get_theme_mod('bg_body_color', '#f6f8f6');
@@ -1108,10 +1210,25 @@ function city_library_dynamic_styles() {
             --primary-color: <?php echo esc_attr($primary_color); ?>;
             --secondary-color: <?php echo esc_attr($secondary_color); ?>;
             --bg-body: <?php echo esc_attr($bg_body); ?>;
+
             --btn-bg: <?php echo esc_attr($btn_bg); ?>;
             --btn-text: <?php echo esc_attr($btn_text); ?>;
             --btn-hover-bg: <?php echo esc_attr($btn_hover_bg); ?>;
             --btn-hover-text: <?php echo esc_attr($btn_hover_text); ?>;
+
+            --slider-btn-bg: <?php echo esc_attr($slider_btn_bg); ?>;
+            --slider-btn-icon: <?php echo esc_attr($slider_btn_icon); ?>;
+            --slider-btn-hover-bg: <?php echo esc_attr($slider_btn_hover_bg); ?>;
+            --slider-btn-hover-icon: <?php echo esc_attr($slider_btn_hover_icon); ?>;
+            --slider-btn-radius: <?php echo esc_attr($slider_btn_radius); ?>;
+
+            --read-more-bg: <?php echo esc_attr($read_more_bg); ?>;
+            --read-more-text: <?php echo esc_attr($read_more_text); ?>;
+            --read-more-hover-bg: <?php echo esc_attr($read_more_hover_bg); ?>;
+            --read-more-hover-text: <?php echo esc_attr($read_more_hover_text); ?>;
+            --read-more-underline: <?php echo esc_attr($read_more_underline); ?>;
+            --read-more-radius: <?php echo esc_attr($read_more_radius); ?>;
+
             --global-radius: <?php echo esc_attr($radius); ?>;
         }
 
@@ -1146,6 +1263,36 @@ function city_library_dynamic_styles() {
         button:hover, .button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .wp-block-button__link:hover {
             background-color: var(--btn-hover-bg) !important;
             color: var(--btn-hover-text) !important;
+        }
+
+        /* Slider Navigation Buttons */
+        .slider-nav-btn {
+            background-color: var(--slider-btn-bg) !important;
+            color: var(--slider-btn-icon) !important;
+            border-radius: var(--slider-btn-radius) !important;
+        }
+        .slider-nav-btn:hover {
+            background-color: var(--slider-btn-hover-bg) !important;
+            color: var(--slider-btn-hover-icon) !important;
+        }
+        .slider-nav-btn span {
+            color: inherit !important;
+        }
+
+        /* Read More / Details Buttons */
+        .read-more-btn {
+            background-color: var(--read-more-bg) !important;
+            color: var(--read-more-text) !important;
+            text-decoration: var(--read-more-underline) !important;
+            border-radius: var(--read-more-radius) !important;
+            padding: 0.5rem 1rem !important; /* py-2 px-4 */
+        }
+        .read-more-btn:hover {
+            background-color: var(--read-more-hover-bg) !important;
+            color: var(--read-more-hover-text) !important;
+        }
+        .read-more-btn span { /* For arrows */
+             color: inherit !important;
         }
 
         /* Header Settings */
