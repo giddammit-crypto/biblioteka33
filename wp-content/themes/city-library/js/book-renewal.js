@@ -55,11 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
     renewBtn.title = settings.btn_text || "Продление книг онлайн";
     document.body.appendChild(renewBtn);
 
-    // Smart Hiding Logic (Hero Zone & Scroll)
-    // The user requested: "Hide in Hero zone".
-    const heroSection = document.querySelector('section.hero-gradient') || document.querySelector('header#masthead');
-    // Use header if hero not present, or just top of page logic.
-    const heroHeight = heroSection ? heroSection.offsetHeight : 300;
+    // Smart Hiding Logic (Scroll)
+    // The user requested: "If site scrolled to footer -> hide, else -> show".
+    // Removed "Hide at Top" logic.
 
     function checkVisibility() {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -67,8 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const docHeight = document.documentElement.scrollHeight;
         const scrollBottom = currentScroll + windowHeight;
 
-        // Hide if in Hero Zone (Top of page) OR at Bottom of page
-        if (currentScroll < heroHeight || scrollBottom >= docHeight - 50) {
+        // Hide ONLY if at Bottom of page (Footer Zone)
+        if (scrollBottom >= docHeight - 50) {
             renewBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full'); // Hide off-screen
         } else {
             renewBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');

@@ -1,50 +1,70 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Mobile Menu Logic ---
     const mobileMenu = document.getElementById('mobile-menu');
-    const closeBtn = document.getElementById('mobile-menu-close');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const globalCloseBtn = document.getElementById('mobile-menu-close');
 
     if (mobileMenu) {
-        // Expose open function globally or via event for bottom nav
-        window.openMobileMenu = function() {
+        // Function to open menu
+        function openMobileMenu() {
             mobileMenu.classList.remove('translate-x-full');
             document.body.style.overflow = 'hidden';
-        };
-
-        const closeMenu = () => {
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        };
-
-        if (closeBtn) {
-            closeBtn.addEventListener('click', closeMenu);
         }
 
-        // Close on outside click
+        // Function to close menu
+        function closeMobileMenu() {
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        // Expose globally just in case
+        window.openMobileMenu = openMobileMenu;
+
+        // Open Listener
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                openMobileMenu();
+            });
+        }
+
+        // Close Listener (Global Button)
+        if (globalCloseBtn) {
+            globalCloseBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        // Close Listener (Internal Button - Backup)
+        // Sometimes the global ID lookup might fail if the element is inside a shadow DOM or template (unlikely here, but good safety)
+        const internalCloseBtn = mobileMenu.querySelector('.material-symbols-outlined').closest('button'); // Fallback strategy
+        if (internalCloseBtn && internalCloseBtn !== globalCloseBtn) {
+            internalCloseBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        // Ensure the ID based internal search also works if the global one didn't match
+        const internalIdBtn = mobileMenu.querySelector('#mobile-menu-close');
+        if (internalIdBtn && internalIdBtn !== globalCloseBtn) {
+             internalIdBtn.addEventListener('click', closeMobileMenu);
+        }
+
+        // Close on Outside Click
         mobileMenu.addEventListener('click', function(e) {
             if (e.target === mobileMenu) {
-                closeMenu();
+                closeMobileMenu();
             }
         });
 
-        // Close button might be inside a template part that is loaded differently or just not found initially
-        // Use delegate if needed, but standard ID should work if present in DOM.
-        // Let's add a safe check for the close button inside the menu container if the global one fails.
-        const internalCloseBtn = mobileMenu.querySelector('#mobile-menu-close');
-        if (internalCloseBtn && internalCloseBtn !== closeBtn) {
-            internalCloseBtn.addEventListener('click', closeMenu);
-        }
-
-        // Close on link click
+        // Close on Link Click
         const links = mobileMenu.querySelectorAll('a');
         links.forEach(link => {
-            link.addEventListener('click', closeMenu);
+            link.addEventListener('click', closeMobileMenu);
         });
     }
 
-    // Smart Scroll Visibility for Bottom Nav
+    // --- Smart Scroll Visibility (Bottom Nav & Renewal Button) ---
     const bottomNav = document.querySelector('nav.safe-area-bottom');
+    const renewalBtn = document.getElementById('book-renewal-btn');
+
     if (bottomNav) {
-        const heroSection = document.querySelector('section.hero-gradient') || document.querySelector('header#masthead');
-        const heroHeight = heroSection ? heroSection.offsetHeight : 300;
         let lastScrollTop = 0;
 
         function checkNavVisibility() {
@@ -53,20 +73,31 @@ document.addEventListener('DOMContentLoaded', function() {
             const docHeight = document.documentElement.scrollHeight;
             const scrollBottom = currentScroll + windowHeight;
 
-            // 1. Hide at Top (Hero Zone)
-            if (currentScroll < heroHeight) {
-                bottomNav.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
-            }
-            // 2. Hide at Bottom (Footer Zone - approx 100px threshold)
-            else if (scrollBottom >= docHeight - 50) {
-                bottomNav.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
-            }
-            // 3. Show in between
-            else {
-                bottomNav.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
-            }
+            // Logic: Hide ONLY if at the very bottom (Footer)
+            // We use a threshold of approx 50-100px from the bottom
+            const isAtBottom = scrollBottom >= docHeight - 50;
 
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+            if (isAtBottom) {
+                // Hide Nav
+                bottomNav.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+
+                // Hide Renewal Button
+                if (renewalBtn) {
+                    // Mobile renewal button logic usually hides it via same classes or separate logic
+                    // If renewal button is floating at bottom, hide it too
+                    renewalBtn.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+                }
+            } else {
+                // Show Nav
+                bottomNav.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+
+                // Show Renewal Button (but check top/hero logic for it if separate?)
+                // User instruction said: "If site scrolled to footer -> hide, else -> show".
+                // This implies it should be visible everywhere else.
+                if (renewalBtn) {
+                    renewalBtn.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+                }
+            }
         }
 
         // Init

@@ -247,13 +247,13 @@ if ($bar_style === 'text-only') {
         </a>
 
         <!-- Search (Opens Modal) -->
-        <button onclick="document.getElementById('search-modal') ? document.getElementById('search-modal').classList.remove('hidden') : window.location.href='?s=';" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none">
+        <button id="search-toggle-mobile" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">search</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Поиск', 'city-library'); ?></span>
         </button>
 
         <!-- Menu (Opens Header Overlay) -->
-        <button onclick="window.openMobileMenu ? window.openMobileMenu() : document.getElementById('mobile-menu').classList.remove('translate-x-full');" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none">
+        <button id="mobile-menu-toggle" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">menu</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Меню', 'city-library'); ?></span>
         </button>
