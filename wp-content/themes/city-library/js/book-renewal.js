@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const scrollThreshold = 50; // Minimum scroll difference to trigger
 
     window.addEventListener('scroll', () => {
-        // Only apply on mobile/portrait where it's floating high
-        if (window.innerWidth >= 1024 && window.matchMedia("(orientation: landscape)").matches) {
+        // Only apply on mobile where it's floating high (desktop & kiosk = stable)
+        if (window.innerWidth >= 1024) {
             renewBtn.classList.remove('translate-y-[200%]');
             return;
         }

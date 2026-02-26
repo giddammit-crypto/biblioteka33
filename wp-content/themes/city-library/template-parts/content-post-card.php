@@ -42,7 +42,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 flex flex-col h-full p-6 pt-16 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
+    <div class="relative z-10 flex flex-col h-full p-6 pt-[67px] lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
         <!-- Make links clickable on mobile (overlay) -->
         <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
 
