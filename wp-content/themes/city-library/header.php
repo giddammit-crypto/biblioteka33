@@ -119,8 +119,16 @@
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    <button id="hero-scroll-btn" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce p-2 rounded-full text-white hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer" aria-label="<?php esc_attr_e('Прокрутить вниз', 'city-library'); ?>">
+        <span class="material-symbols-outlined text-3xl">expand_more</span>
+    </button>
+    <script>
+        document.getElementById('hero-scroll-btn')?.addEventListener('click', function() {
+            window.scrollTo({
+                top: window.innerHeight,
+                behavior: 'smooth'
+            });
+        });
+    </script>
 </section>
 <?php endif; ?>
