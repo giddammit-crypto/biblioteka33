@@ -587,6 +587,36 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет активного элемента', 'city-library'), 'section' => 'mobile_menu_section',
     )));
 
+    $wp_customize->add_setting('mobile_menu_font_color', array('default' => '#64748b', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_font_color', array(
+        'label' => __('Цвет шрифта (текст)', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_font_family', array(
+        'label' => __('Шрифт меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'Inter' => 'Inter',
+            'Montserrat' => 'Montserrat',
+            'Playfair Display' => 'Playfair Display',
+            'Merriweather' => 'Merriweather',
+        ),
+    ));
+
+    $wp_customize->add_setting('mobile_menu_icon_set', array('default' => 'outlined', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_icon_set', array(
+        'label' => __('Набор иконок', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'outlined' => 'Material Outlined (Контурные)',
+            'rounded' => 'Material Rounded (Скругленные)',
+            'sharp' => 'Material Sharp (Острые)',
+        ),
+    ));
+
     $wp_customize->add_setting('mobile_menu_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('mobile_menu_style', array(
         'label' => __('Стиль меню', 'city-library'),
@@ -599,6 +629,16 @@ function city_library_customize_register($wp_customize) {
             'neon-glow' => 'Neon Glow (Dark Mode)',
             'minimal-border' => 'Minimal Border (Top Line)',
             'floating-island' => 'Floating Island (Rounded)',
+            'glassmorphism' => 'Glassmorphism (Frosted Glass)',
+            'gradient-bar' => 'Gradient Bar (Color Flow)',
+            'tab-bar' => 'Tab Bar (Android Style)',
+            'floating-dock' => 'Floating Dock (macOS Style)',
+            'minimal-icons' => 'Minimal Icons (No Text)',
+            'text-only' => 'Text Only (No Icons)',
+            'cyberpunk' => 'Cyberpunk (Futuristic)',
+            'neumorphism' => 'Neumorphism (Soft UI)',
+            'retro-pixel' => 'Retro Pixel (8-bit Vibe)',
+            'sidebar-drawer' => 'Bottom Drawer (Slide Up)',
         ),
     ));
 
@@ -1431,6 +1471,8 @@ function city_library_dynamic_styles() {
     $mob_menu_bg = get_theme_mod('mobile_menu_bg_color', '#ffffff');
     $mob_menu_icon = get_theme_mod('mobile_menu_icon_color', '#64748b');
     $mob_menu_active = get_theme_mod('mobile_menu_active_color', '#0b7930');
+    $mob_menu_font_color = get_theme_mod('mobile_menu_font_color', '#64748b');
+    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Inter');
     ?>
     <style type="text/css">
         :root {
@@ -1441,6 +1483,8 @@ function city_library_dynamic_styles() {
             --mob-menu-bg: <?php echo esc_attr($mob_menu_bg); ?>;
             --mob-menu-icon: <?php echo esc_attr($mob_menu_icon); ?>;
             --mob-menu-active: <?php echo esc_attr($mob_menu_active); ?>;
+            --mob-menu-font-color: <?php echo esc_attr($mob_menu_font_color); ?>;
+            --mob-menu-font: "<?php echo esc_js($mob_menu_font); ?>", sans-serif;
 
             --btn-bg: <?php echo esc_attr($btn_bg); ?>;
             --btn-text: <?php echo esc_attr($btn_text); ?>;
