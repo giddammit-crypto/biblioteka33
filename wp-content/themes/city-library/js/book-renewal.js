@@ -19,10 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Position Classes
     const position = settings.btn_position || 'bottom-right';
+
+    // Logic: Desktop (lg+) landscape follows strict corners.
+    // Mobile/Kiosk (< lg OR portrait) snaps to right-center or left-center (vertical middle).
+
+    // Common desktop base: lg:landscape:bottom-6
     if (position === 'bottom-left') {
-        btnClasses += ' left-6 bottom-[121px] lg:bottom-24 lg:landscape:bottom-6';
+        // Mobile/Kiosk: Left Center (top-1/2 -translate-y-1/2)
+        // Desktop Landscape: Bottom Left (bottom-6)
+        btnClasses += ' left-0 top-1/2 -translate-y-1/2 rounded-l-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:left-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
     } else {
-        btnClasses += ' right-6 bottom-[121px] lg:bottom-24 lg:landscape:bottom-6';
+        // Mobile/Kiosk: Right Center (top-1/2 -translate-y-1/2) - Default request
+        // Desktop Landscape: Bottom Right (bottom-6)
+        btnClasses += ' right-0 top-1/2 -translate-y-1/2 rounded-r-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:right-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
     }
 
     // Radius Classes

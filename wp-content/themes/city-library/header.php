@@ -13,7 +13,7 @@
 $header_style = get_theme_mod('header_style', 'default');
 $menu_style = get_theme_mod('menu_style', 'default');
 
-$header_classes = 'hidden lg:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
+$header_classes = 'block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
 $flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
@@ -25,7 +25,7 @@ if ($header_style === 'centered') {
 } elseif ($header_style === 'full-width') {
     $container_classes = 'w-full px-0';
 } elseif ($header_style === 'transparent-overlay') {
-    $header_classes = 'hidden lg:block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
+    $header_classes = 'block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
 }
 
 // Menu Style Classes
@@ -65,6 +65,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                         <span class="material-symbols-outlined text-white">menu_book</span>
                     </div>
                 <?php endif; ?>
+                <!-- Text Hidden on Mobile to save space -->
                 <div class="hidden md:block">
                     <p class="text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
                     <p class="text-xs xl:text-sm font-display font-bold"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
