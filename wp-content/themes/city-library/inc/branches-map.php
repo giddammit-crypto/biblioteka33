@@ -3,6 +3,7 @@
  * City Library Branches Map & CPT
  *
  * Usage: [city_library_branches_map]
+ * Usage (Single): [city_library_branch id="123"]
  */
 
 /**
@@ -94,6 +95,11 @@ function city_library_branches_meta_callback($post) {
     echo '<tr><th><label for="library_email">' . __('Email', 'city-library') . '</label></th>';
     echo '<td><input type="email" id="library_email" name="library_email" value="' . esc_attr($email) . '" class="regular-text" /></td></tr>';
 
+    // Shortcode Hint (Added as requested)
+    echo '<tr><th>' . __('Шорткод для вставки', 'city-library') . '</th>';
+    echo '<td><code>[city_library_branch id="' . $post->ID . '"]</code><br><span class="description">' . __('Используйте этот код, чтобы вставить информацию о библиотеке в любую запись или страницу.', 'city-library') . '</span></td></tr>';
+
+
     echo '</table>';
 }
 
@@ -118,7 +124,7 @@ add_action('save_post', 'city_library_branches_save_meta');
 
 
 /**
- * 4. Shortcode Implementation
+ * 4. Shortcode Implementation: Map + List
  */
 function city_library_branches_map_shortcode($atts) {
     $atts = shortcode_atts(array(
@@ -212,7 +218,6 @@ function city_library_branches_map_shortcode($atts) {
         $list_html .= '</div>';
         wp_reset_postdata();
     } else {
-        // Fallback for empty state (optional)
         $list_html .= '<p class="text-center text-slate-500 py-8">' . __('Библиотеки пока не добавлены.', 'city-library') . '</p>';
     }
 
@@ -234,9 +239,88 @@ function city_library_branches_map_shortcode($atts) {
     $output .= $list_html;
     $output .= '</div>';
 
-    // Add inline script for accordion to avoid dependency if needed, or add to branches-map.js
-    // I'll put it in branches-map.js for cleanliness, but need to make sure it's loaded.
-
     return $output;
 }
 add_shortcode('city_library_branches_map', 'city_library_branches_map_shortcode');
+
+
+/**
+ * 5. Shortcode for Single Library Accordion
+ */
+function city_library_branch_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'id' => 0,
+    ), $atts);
+
+    $id = intval($atts['id']);
+    if (!$id) return ''; // No ID provided
+
+    $post = get_post($id);
+    if (!$post || $post->post_type !== 'library_branch') return __('Библиотека не найдена.', 'city-library');
+
+    $address = get_post_meta($id, '_library_address', true);
+    $phone = get_post_meta($id, '_library_phone', true);
+    $email = get_post_meta($id, '_library_email', true);
+    $title = get_the_title($id);
+    $content = $post->post_content; // Raw content, apply filter later
+    $thumbnail = get_the_post_thumbnail_url($id, 'medium');
+
+    $output = '';
+
+    // Accordion Item (Single)
+    $output .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300 my-4" id="library-item-' . esc_attr($id) . '">';
+
+    // Header
+    $output .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+    $output .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
+    $output .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
+    if ($address) {
+        $output .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1">location_on</span>' . esc_html($address) . '</span>';
+    }
+    $output .= '</div>';
+    $output .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400">expand_more</span>';
+    $output .= '</div>'; // End Header
+
+    // Body (Hidden)
+    $output .= '<div class="library-body hidden border-t border-slate-100">';
+    $output .= '<div class="p-6 flex flex-col md:flex-row gap-8">';
+
+    // Image
+    if ($thumbnail) {
+        $output .= '<div class="w-full md:w-1/3 shrink-0">';
+        $output .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
+        $output .= '</div>';
+    }
+
+    // Content + Details
+    $output .= '<div class="w-full">';
+
+    // Mobile Address/Phone
+    $output .= '<div class="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">';
+    if ($address) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">location_on</span>' . esc_html($address) . '</div>';
+    if ($phone) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">call</span>' . esc_html($phone) . '</div>';
+    if ($email) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
+    $output .= '</div>';
+
+    $output .= '<div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">';
+    $output .= wpautop($content);
+    $output .= '</div>';
+
+    $output .= '</div>'; // End Content Column
+
+    $output .= '</div></div>'; // End Body & Flex
+    $output .= '</div>'; // End Item
+
+    // Ensure JS is loaded for toggle
+    // If map isn't on page, branches-map.js might not load if it only depended on the map shortcode.
+    // However, branches-map.js has the `toggleLibraryItem` logic.
+    // Let's modify branches-map.js to not fail if map is missing (which I did with `if (!mapContainer...) return;`).
+    // But `toggleLibraryItem` needs to be defined. My previous JS implementation defines it globally *outside* the DOMContentLoaded, so it's safe.
+
+    // But we need to make sure the script file is enqueued if only this shortcode is used.
+    wp_register_script('city-library-branches-map', get_template_directory_uri() . '/js/branches-map.js', array(), '2.0', true);
+    wp_enqueue_script('city-library-branches-map');
+
+    return $output;
+}
+add_shortcode('city_library_branch', 'city_library_branch_shortcode');
