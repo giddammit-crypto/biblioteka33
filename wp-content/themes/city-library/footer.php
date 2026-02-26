@@ -33,16 +33,22 @@ if ($footer_style === 'light-clean') {
 
         <!-- Custom Footer Content / Widget 1 -->
         <div class="footer-column space-y-6">
-            <?php
-            $footer_desc = get_theme_mod('footer_description');
-            if ($footer_desc) : ?>
-                <div class="mb-6 opacity-90 leading-relaxed text-sm">
-                    <?php echo wpautop(esc_html($footer_desc)); ?>
-                </div>
-            <?php endif; ?>
+            <?php if (get_theme_mod('footer_show_map', false)) :
+                $map_height = get_theme_mod('footer_map_height', '300px');
+            ?>
+                <div id="footer-yandex-map" class="w-full bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200" style="height: <?php echo esc_attr($map_height); ?>;"></div>
+            <?php else : ?>
+                <?php
+                $footer_desc = get_theme_mod('footer_description');
+                if ($footer_desc) : ?>
+                    <div class="mb-6 opacity-90 leading-relaxed text-sm">
+                        <?php echo wpautop(esc_html($footer_desc)); ?>
+                    </div>
+                <?php endif; ?>
 
-            <?php if (is_active_sidebar('footer-1')) : ?>
-                 <?php dynamic_sidebar('footer-1'); ?>
+                <?php if (is_active_sidebar('footer-1')) : ?>
+                     <?php dynamic_sidebar('footer-1'); ?>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
 

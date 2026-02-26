@@ -113,6 +113,23 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-cookie-consent', get_template_directory_uri() . '/js/cookie-consent.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-search-modal', get_template_directory_uri() . '/js/search-modal.js', array(), wp_get_theme()->get('Version'), true);
 
+    // Yandex Map
+    if (get_theme_mod('footer_show_map', false)) {
+        $apikey = get_theme_mod('footer_map_apikey', '');
+        $api_url = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+        if ($apikey) {
+            $api_url .= '&apikey=' . esc_attr($apikey);
+        }
+        wp_enqueue_script('yandex-maps-api', $api_url, array(), null, true);
+        wp_enqueue_script('city-library-yandex-map', get_template_directory_uri() . '/js/yandex-map-init.js', array('yandex-maps-api'), wp_get_theme()->get('Version'), true);
+
+        wp_localize_script('city-library-yandex-map', 'yandex_map_params', array(
+            'lat' => get_theme_mod('footer_map_lat', '56.129057'),
+            'lon' => get_theme_mod('footer_map_lon', '40.406635'),
+            'zoom' => get_theme_mod('footer_map_zoom', 15),
+        ));
+    }
+
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
 
@@ -863,6 +880,56 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('footer_social_youtube', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_social_youtube', array('label' => __('YouTube URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    // Footer Map Section
+    $wp_customize->add_section('footer_map_section', array(
+        'title' => __('Яндекс Карта', 'city-library'),
+        'priority' => 125,
+        'description' => __('Настройки карты в футере.', 'city-library'),
+    ));
+
+    $wp_customize->add_setting('footer_show_map', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_map', array(
+        'label' => __('Показать карту', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('footer_map_apikey', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_apikey', array(
+        'label' => __('API Key (Optional for basic use)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_lat', array('default' => '56.129057', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_lat', array(
+        'label' => __('Широта (Latitude)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_lon', array('default' => '40.406635', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_lon', array(
+        'label' => __('Долгота (Longitude)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_zoom', array('default' => 15, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('footer_map_zoom', array(
+        'label' => __('Масштаб (Zoom)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 19, 'step' => 1),
+    ));
+
+    $wp_customize->add_setting('footer_map_height', array('default' => '300px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_height', array(
+        'label' => __('Высота карты (например, 300px)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
 
     // Hero Button Colors
     $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
