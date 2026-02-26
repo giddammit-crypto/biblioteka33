@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-8">
     <div id="primary" class="w-full transition-all duration-300">
 
         <?php
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-6 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative overflow-hidden'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>

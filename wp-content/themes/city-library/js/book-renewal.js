@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Create Floating Button (Stylish & Accessible)
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    // Raised to bottom-[151px] on mobile (+55px), restored to bottom-24 on Kiosk, standard bottom-6 on landscape desktop
-    renewBtn.className = 'fixed bottom-[151px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm';
+    // Positioned at bottom-[131px] on mobile (20px lower than previous 151px), standard bottom-6 on landscape desktop
+    renewBtn.className = 'fixed bottom-[131px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
     renewBtn.setAttribute('aria-label', 'Открыть форму продления книг');
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>
@@ -13,6 +13,31 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     renewBtn.title = "Продление книг онлайн";
     document.body.appendChild(renewBtn);
+
+    // Smart Hiding Logic (Hide on scroll down, show on scroll up)
+    let lastScrollTop = 0;
+    const scrollThreshold = 50; // Minimum scroll difference to trigger
+
+    window.addEventListener('scroll', () => {
+        // Only apply on mobile/portrait where it's floating high
+        if (window.innerWidth >= 1024 && window.matchMedia("(orientation: landscape)").matches) {
+            renewBtn.classList.remove('translate-y-[200%]');
+            return;
+        }
+
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (Math.abs(currentScroll - lastScrollTop) > scrollThreshold) {
+            if (currentScroll > lastScrollTop && currentScroll > 100) {
+                // Scroll Down -> Hide
+                renewBtn.classList.add('translate-y-[200%]');
+            } else {
+                // Scroll Up -> Show
+                renewBtn.classList.remove('translate-y-[200%]');
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        }
+    }, { passive: true });
 
     // 2. Create Modal Structure (Ultra Design: White, Clean, Adaptive)
     const modalOverlay = document.createElement('div');
