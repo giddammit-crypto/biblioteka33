@@ -32,8 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Important Links Slider
             if (!importantLinksSwiper && document.querySelector('.important-links-slider')) {
                 importantLinksSwiper = new Swiper('.important-links-slider', {
-                    slidesPerView: 1, // Full width slide
-                    spaceBetween: 20,
+                    slidesPerView: 2.2,
+                    spaceBetween: 16,
+                    breakpoints: {
+                        640: {
+                            slidesPerView: 3.2,
+                        },
+                        768: {
+                            slidesPerView: 4.2,
+                        }
+                    },
                     pagination: {
                         el: '.important-links-slider .swiper-pagination',
                         clickable: true,

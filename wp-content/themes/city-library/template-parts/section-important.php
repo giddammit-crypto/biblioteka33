@@ -75,7 +75,7 @@ $inter_block_text = get_theme_mod('important_inter_block_text', '');
 
         if ($links_present) : ?>
             <div class="swiper important-links-slider w-full px-4 lg:px-0">
-                <div class="swiper-wrapper grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-6">
+                <div class="swiper-wrapper flex lg:grid lg:grid-cols-8 lg:gap-6">
                     <?php for ($i = 1; $i <= 8; $i++) :
                         $img = get_theme_mod("important_link_image_$i");
                         $url = get_theme_mod("important_link_url_$i", '#');
