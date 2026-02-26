@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Desktop Landscape: Bottom Left (bottom-6)
         btnClasses += ' left-0 top-1/2 -translate-y-1/2 rounded-l-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:left-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
     } else {
-        // Mobile/Kiosk: Right Center (top-1/2 -translate-y-1/2) - Default request
+        // Mobile/Kiosk: Right Center (top-1/2 -translate-y-1/2)
         // Desktop Landscape: Bottom Right (bottom-6)
         btnClasses += ' right-0 top-1/2 -translate-y-1/2 rounded-r-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:right-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
     }
@@ -55,29 +55,28 @@ document.addEventListener('DOMContentLoaded', function() {
     renewBtn.title = settings.btn_text || "Продление книг онлайн";
     document.body.appendChild(renewBtn);
 
-    // Smart Hiding Logic (Hide on scroll down, show on scroll up)
-    let lastScrollTop = 0;
-    const scrollThreshold = 50; // Minimum scroll difference to trigger
+    // Smart Hiding Logic (Hero Zone & Scroll)
+    // The user requested: "Hide in Hero zone".
+    const heroSection = document.querySelector('section.hero-gradient') || document.querySelector('header#masthead');
+    // Use header if hero not present, or just top of page logic.
+    const heroHeight = heroSection ? heroSection.offsetHeight : 300;
 
-    window.addEventListener('scroll', () => {
-        // Only apply on mobile where it's floating high (desktop & kiosk = stable)
-        if (window.innerWidth >= 1024) {
-            renewBtn.classList.remove('translate-y-[200%]');
-            return;
-        }
-
+    function checkVisibility() {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
 
-        if (Math.abs(currentScroll - lastScrollTop) > scrollThreshold) {
-            if (currentScroll > lastScrollTop && currentScroll > 100) {
-                // Scroll Down -> Hide
-                renewBtn.classList.add('translate-y-[200%]');
-            } else {
-                // Scroll Up -> Show
-                renewBtn.classList.remove('translate-y-[200%]');
-            }
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        // Hide if in Hero Zone (Top of page)
+        if (currentScroll < heroHeight) {
+            renewBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full'); // Hide off-screen
+        } else {
+            renewBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');
         }
+    }
+
+    // Initial check
+    checkVisibility();
+
+    window.addEventListener('scroll', () => {
+        checkVisibility();
     }, { passive: true });
 
     // 2. Create Modal Structure (Ultra Design: White, Clean, Adaptive)

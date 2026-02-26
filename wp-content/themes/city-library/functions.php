@@ -95,6 +95,7 @@ function city_library_scripts() {
     // GLightbox CSS & JS
     wp_enqueue_style('glightbox-css', 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css', array(), '3.3.0');
     wp_enqueue_script('glightbox-js', 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js', array(), '3.3.0', true);
+    wp_enqueue_script('city-library-lightbox-init', get_template_directory_uri() . '/js/lightbox-init.js', array('glightbox-js'), wp_get_theme()->get('Version'), true);
 
     // Custom JS files
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
@@ -849,6 +850,19 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('footer_address', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_address', array('label' => __('Адрес', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
+    // Social Links
+    $wp_customize->add_setting('footer_social_vk', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_vk', array('label' => __('VKontakte URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_telegram', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_telegram', array('label' => __('Telegram URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_ok', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_ok', array('label' => __('Odnoklassniki URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_youtube', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_youtube', array('label' => __('YouTube URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
 
     // Hero Button Colors
     $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));

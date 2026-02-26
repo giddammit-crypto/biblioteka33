@@ -99,7 +99,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                     ?>
                         <div class="swiper-slide h-auto">
                             <a href="<?php echo esc_url($url); ?>" class="<?php echo esc_attr($link_wrapper_class); ?>">
-                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 aspect-square">
                             </a>
                         </div>
                     <?php endfor; ?>

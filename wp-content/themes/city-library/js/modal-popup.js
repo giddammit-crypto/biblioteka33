@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showModal() {
+        // Accessibility Check: Do not open if High Contrast Mode is active
+        if (document.body.classList.contains('a11y-high-contrast')) {
+            return;
+        }
+
         modal.classList.remove('hidden');
         // Prevent body scroll
         document.body.style.overflow = 'hidden';

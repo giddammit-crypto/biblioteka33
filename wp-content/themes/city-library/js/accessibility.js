@@ -21,27 +21,51 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-large-text h2 { font-size: 2.5rem !important; }
         body.a11y-large-text p { font-size: 1.25rem !important; }
 
-        /* High Contrast Mode */
+        /* High Contrast Mode (AAA Quality - Black/White/Yellow) */
         body.a11y-high-contrast {
             background-color: #000000 !important;
             color: #ffffff !important;
-            filter: contrast(1.2);
         }
         body.a11y-high-contrast * {
             background-color: #000000 !important;
             color: #ffff00 !important;
             border-color: #ffffff !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
         }
-        body.a11y-high-contrast img,
-        body.a11y-high-contrast video {
-            filter: grayscale(100%) contrast(1.2);
+        /* Ensure links are distinct */
+        body.a11y-high-contrast a {
+            text-decoration: underline !important;
+            color: #00ffff !important; /* Cyan for links */
         }
-        /* Buttons in High Contrast */
+        body.a11y-high-contrast a:hover,
+        body.a11y-high-contrast a:focus {
+            background-color: #00ffff !important;
+            color: #000000 !important;
+        }
+
+        /* Buttons */
         body.a11y-high-contrast button,
-        body.a11y-high-contrast a.button {
+        body.a11y-high-contrast a.button,
+        body.a11y-high-contrast .wp-block-button__link {
             background-color: #ffff00 !important;
             color: #000000 !important;
-            font-weight: bold;
+            border: 2px solid #ffffff !important;
+            font-weight: bold !important;
+        }
+        body.a11y-high-contrast button:hover,
+        body.a11y-high-contrast button:focus {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+
+        /* Inputs */
+        body.a11y-high-contrast input,
+        body.a11y-high-contrast textarea,
+        body.a11y-high-contrast select {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+            border: 2px solid #ffffff !important;
         }
     `;
     document.head.appendChild(style);
