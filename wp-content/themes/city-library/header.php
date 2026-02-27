@@ -92,12 +92,12 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             <!-- Header Actions (Right Side) -->
             <div class="flex items-center space-x-2 shrink-0">
                 <!-- Search Button -->
-                <button id="search-toggle" class="p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
+                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
                     <span class="material-symbols-outlined">search</span>
                 </button>
 
                 <!-- Accessibility Button -->
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
                     <span class="material-symbols-outlined">visibility</span>
                 </button>
 

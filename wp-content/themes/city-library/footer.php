@@ -39,15 +39,17 @@ if ($footer_style === 'light-clean') {
                 $map_width_desktop = get_theme_mod('footer_map_width_desktop', '250px');
             ?>
                 <style>
-                    #footer-yandex-map { width: 100%; }
+                    /* Force Map Visibility on Mobile */
+                    #footer-yandex-map { width: 100% !important; display: block !important; }
                     @media (min-width: 1024px) {
                         #footer-yandex-map {
-                            width: <?php echo esc_attr($map_width_desktop); ?>;
+                            width: <?php echo esc_attr($map_width_desktop); ?> !important;
                             max-width: 100%;
                         }
                     }
                 </style>
-                <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200" style="height: <?php echo esc_attr($map_height); ?>;"></div>
+                <!-- Added explicit min-height for mobile safety -->
+                <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200" style="min-height: 250px; height: <?php echo esc_attr($map_height); ?>;"></div>
             <?php else : ?>
                 <?php
                 $footer_desc = get_theme_mod('footer_description');

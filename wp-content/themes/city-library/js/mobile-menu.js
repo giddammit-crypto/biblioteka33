@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // --- Mobile Menu Logic ---
     const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    // Updated selector to support multiple triggers (Header + Bottom Nav) via class
+    const mobileMenuToggles = document.querySelectorAll('.mobile-menu-toggle-btn');
     const globalCloseBtn = document.getElementById('mobile-menu-close');
 
     if (mobileMenu) {
@@ -35,9 +36,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Expose globally just in case
         window.openMobileMenu = openMobileMenu;
 
-        // Open Listener
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', function(e) {
+        // Open Listeners (for all toggle buttons)
+        if (mobileMenuToggles.length > 0) {
+            mobileMenuToggles.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openMobileMenu();
+                });
+            });
+        }
+
+        // Backward compatibility for legacy ID (if still present)
+        const legacyToggle = document.getElementById('mobile-menu-toggle');
+        if (legacyToggle) {
+             legacyToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 openMobileMenu();
             });
@@ -140,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Smart Scroll Visibility (Bottom Nav & Renewal Button) ---
+    // DISABLED: User feedback indicated this was "broken". Keeping nav always visible for now.
+    /*
     const bottomNav = document.querySelector('nav.safe-area-bottom');
     const renewalBtn = document.getElementById('book-renewal-btn');
 
@@ -177,4 +191,5 @@ document.addEventListener('DOMContentLoaded', function() {
         checkNavVisibility();
         window.addEventListener('scroll', checkNavVisibility, { passive: true });
     }
+    */
 });
