@@ -55,22 +55,34 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 <header id="masthead" class="<?php echo esc_attr($header_classes); ?>">
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
-            <div class="flex items-center space-x-3 h-full shrink-0">
+            <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-3 h-full shrink-0 group/logo focus:outline-none">
                 <?php if (has_custom_logo()) : ?>
                     <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
-                        <?php the_custom_logo(); ?>
+                        <?php
+                            // Custom Logo outputs its own anchor, but we want a unified clickable area.
+                            // However, WP standard is to let custom logo handle it.
+                            // If we wrap everything in <a>, we might have nested <a>.
+                            // Let's filter output or just check if we can make it cleaner.
+                            // standard the_custom_logo() outputs <a href...><img...></a>
+                            // To avoid nested anchors, we might rely on the one inside or suppress it.
+                            // Simpler: Just display the image if possible or use styling to overlay.
+                            // Actually, standard practice: logo is clickable, text is clickable.
+                            // Let's wrap the TEXT in a div, but keep the logo separate to avoid invalid HTML (nested a).
+                            the_custom_logo();
+                        ?>
                     </div>
                 <?php else : ?>
-                    <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
                         <span class="material-symbols-outlined text-white">menu_book</span>
                     </div>
                 <?php endif; ?>
+
                 <!-- Text visible on all screens (adapted size) -->
                 <div class="block">
-                    <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                    <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                    <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                    <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                 </div>
-            </div>
+            </a>
 
             <?php if ($header_style !== 'minimal') : ?>
             <nav class="hidden xl:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?>">
@@ -85,40 +97,82 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             </nav>
             <?php endif; ?>
 
+            <!-- Accessibility button removed as per request -->
             <div class="flex items-center space-x-2">
-                <!-- Search Button Removed as per request -->
-                <!-- Mobile Menu Button Removed as per request -->
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
-                    <span class="material-symbols-outlined">visibility</span>
-                </button>
+                 <!-- Placeholders for other header actions if needed later -->
             </div>
         </div>
     </div>
 </header>
 
-<!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden pointer-events-none">
-    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate pointer-events-auto overflow-y-auto">
-        <div class="flex justify-between items-center mb-8 shrink-0">
-            <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>
-            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 rounded-full transition-colors" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
-                <span class="material-symbols-outlined">close</span>
+<!-- Mobile Menu Overlay - Ultra AAA Design -->
+<?php
+// Determine Mobile Menu Theme Classes
+$mob_menu_style = get_theme_mod('mobile_menu_style', 'default');
+$mob_menu_container_classes = 'absolute right-0 top-0 h-full w-full sm:w-[400px] bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col pointer-events-auto overflow-y-auto transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] translate-x-0'; // Base 'inner' classes
+
+// Theme Specific Overrides
+if ($mob_menu_style === 'ios-blur') {
+    $mob_menu_container_classes = 'absolute right-0 top-0 h-full w-full sm:w-[380px] bg-white/80 backdrop-blur-2xl shadow-none border-l border-white/20 flex flex-col pointer-events-auto overflow-y-auto';
+} elseif ($mob_menu_style === 'neon-glow') {
+    $mob_menu_container_classes .= ' bg-slate-900/95 text-white border-l border-primary/30 shadow-[0_0_50px_rgba(11,121,48,0.3)]';
+} elseif ($mob_menu_style === 'glassmorphism') {
+    $mob_menu_container_classes = 'absolute right-0 top-0 h-full w-full sm:w-[400px] bg-white/60 backdrop-blur-3xl shadow-2xl border-l border-white/40 flex flex-col pointer-events-auto overflow-y-auto';
+} elseif ($mob_menu_style === 'sidebar-drawer') {
+    // Drawer style logic might differ slightly, but keeping consistent structure for now
+    $mob_menu_container_classes .= ' rounded-l-[2.5rem] my-4 mr-4 h-[calc(100%-2rem)] shadow-2xl border border-slate-100';
+}
+?>
+
+<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[9999] bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 xl:hidden pointer-events-none opacity-0 translate-x-full" aria-hidden="true">
+    <div class="<?php echo esc_attr($mob_menu_container_classes); ?> mobile-menu-inner transform transition-transform duration-500 translate-x-full">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center p-6 shrink-0 border-b border-slate-100/50">
+            <div class="flex items-center space-x-3">
+               <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">menu_open</span>
+               </div>
+               <div>
+                   <span class="block text-sm font-bold font-display uppercase tracking-wider text-primary"><?php _e('Меню', 'city-library'); ?></span>
+                   <span class="block text-[10px] text-slate-400 leading-none"><?php echo esc_html(get_theme_mod('header_subtitle', 'Навигация')); ?></span>
+               </div>
+            </div>
+            <button id="mobile-menu-close" class="group p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-full transition-all duration-300 transform hover:rotate-90 active:scale-95" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
+                <span class="material-symbols-outlined text-2xl">close</span>
             </button>
         </div>
-        <nav class="flex-grow space-y-4 flex flex-col shrink-0">
+
+        <!-- Content -->
+        <nav class="flex-grow p-6 space-y-2 overflow-y-auto custom-scrollbar">
             <?php
             wp_nav_menu(array(
                 'theme_location' => 'primary',
                 'container'      => false,
-                'items_wrap'     => '%3$s',
-                // Use a simpler walker or default to ensure vertical stacking
+                'items_wrap'     => '<ul class="space-y-3">%3$s</ul>',
                 'walker'         => new City_Library_Walker_Nav_Menu(),
             ));
             ?>
         </nav>
-        <!-- Mobile Footer/Contact -->
-        <div class="mt-auto border-t border-slate-200 pt-6 shrink-0 pb-6">
-             <p class="text-xs text-slate-500 text-center"><?php echo esc_html(get_theme_mod('footer_copyright')); ?></p>
+
+        <!-- Footer / Contact -->
+        <div class="mt-auto p-6 bg-slate-50/50 border-t border-slate-100/50 shrink-0 space-y-4">
+             <!-- Quick Actions -->
+             <div class="grid grid-cols-2 gap-3">
+                 <a href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>" class="flex items-center justify-center space-x-2 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-xs font-bold text-slate-700 hover:border-primary hover:text-primary transition-colors">
+                     <span class="material-symbols-outlined text-lg">event</span>
+                     <span>Афиша</span>
+                 </a>
+                 <a href="<?php echo esc_url(home_url('/?s=')); ?>" class="flex items-center justify-center space-x-2 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-xs font-bold text-slate-700 hover:border-primary hover:text-primary transition-colors">
+                     <span class="material-symbols-outlined text-lg">search</span>
+                     <span>Поиск</span>
+                 </a>
+             </div>
+
+             <!-- Copyright -->
+             <div class="text-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest"><?php echo esc_html(get_theme_mod('footer_copyright')); ?></p>
+             </div>
         </div>
     </div>
 </div>

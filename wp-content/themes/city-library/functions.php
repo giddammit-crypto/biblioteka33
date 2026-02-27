@@ -280,7 +280,7 @@ function city_library_homepage_query($query) {
         if (isset($_GET['news_archive'])) {
             $query->set('posts_per_page', 8);
         } elseif ($query->is_home()) {
-            $query->set('posts_per_page', 10);
+            $query->set('posts_per_page', 8); // Changed from 10 to 8 as requested
         } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
             $query->set('posts_per_page', 16);
         }
@@ -997,6 +997,24 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'partners_bg_color', array(
         'label' => __('Цвет фона блока', 'city-library'), 'section' => 'partners_section',
     )));
+
+    // Partner Logo Size Settings
+    $wp_customize->add_setting('partners_logo_size', array('default' => 'medium', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('partners_logo_size', array(
+        'label' => __('Размер логотипов партнеров', 'city-library'),
+        'section' => 'partners_section',
+        'type' => 'select',
+        'choices' => array(
+            'xs' => 'XS (Very Small - h-8)',
+            'sm' => 'S (Small - h-12)',
+            'medium' => 'M (Medium - h-16) [Default]',
+            'lg' => 'L (Large - h-20)',
+            'xl' => 'XL (Extra Large - h-24)',
+            '2xl' => '2XL (Huge - h-32)',
+            '3xl' => '3XL (Gigantic - h-40)',
+            'original' => 'Original (Auto)',
+        ),
+    ));
 
     for ($i = 1; $i <= 8; $i++) {
         $wp_customize->add_setting("partner_logo_$i", array('sanitize_callback' => 'esc_url_raw'));
