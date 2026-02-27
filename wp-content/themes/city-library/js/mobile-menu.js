@@ -62,6 +62,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close on Link Click
         const links = mobileMenu.querySelectorAll('a');
         links.forEach(link => {
+            // Optimization: Do NOT close menu if the link is a parent item (has submenus)
+            // This prevents accidental closing when trying to interact with submenus or if the parent link is just a toggle (#)
+            const parentLi = link.closest('li');
+            if (parentLi && parentLi.classList.contains('has-children')) {
+                return; // Skip adding the close listener
+            }
+
             link.addEventListener('click', closeMobileMenu);
         });
 

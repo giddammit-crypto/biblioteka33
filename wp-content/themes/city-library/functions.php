@@ -1446,7 +1446,8 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
         // Desktop: absolute, top-full, hidden by default, block on group-hover/menuitem, white bg, shadow
         // Mobile: hidden by default, block when toggled (via JS), relative/indented
         // Changed xl:group-hover:block to xl:group-hover/menuitem:block
-        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover/menuitem:block z-50 transition-all duration-300 origin-top bg-slate-50 xl:bg-white rounded-lg mt-2 xl:mt-4 space-y-1';
+        // Mobile: bg-transparent (was bg-slate-50), remove rounded/border for cleaner look
+        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover/menuitem:block z-50 transition-all duration-300 origin-top bg-transparent xl:bg-white mt-2 xl:mt-4 space-y-1';
         $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }
 
