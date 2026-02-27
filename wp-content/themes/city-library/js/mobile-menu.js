@@ -52,21 +52,33 @@ document.addEventListener('DOMContentLoaded', function() {
              internalIdBtn.addEventListener('click', closeMobileMenu);
         }
 
-        // Close on Outside Click
+        // Close on Outside Click (Removed to prevent accidental closes while scrolling)
+        /*
         mobileMenu.addEventListener('click', function(e) {
             if (e.target === mobileMenu) {
                 closeMobileMenu();
             }
         });
+        */
 
         // Close on Link Click
         const links = mobileMenu.querySelectorAll('a');
         links.forEach(link => {
             // Optimization: Do NOT close menu if the link is a parent item (has submenus)
-            // This prevents accidental closing when trying to interact with submenus or if the parent link is just a toggle (#)
+            // unless it's a real link (not just a toggle anchor)
             const parentLi = link.closest('li');
+            const href = link.getAttribute('href');
+
+            // Check if it's a "real" link (not # or empty)
+            const isRealLink = href && href !== '#' && !href.startsWith('javascript');
+
             if (parentLi && parentLi.classList.contains('has-children')) {
-                return; // Skip adding the close listener
+                // If it has children, only close if it's a real navigable link
+                // If it is just a toggle (often '#'), don't close
+                if (!isRealLink) {
+                    return;
+                }
+                // If it IS a real link, we let it navigate and close
             }
 
             link.addEventListener('click', closeMobileMenu);

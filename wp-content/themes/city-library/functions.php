@@ -1446,11 +1446,14 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
 
     function start_lvl(&$output, $depth = 0, $args = null) {
         // Submenu UL classes
-        // Desktop: absolute, top-full, hidden by default, block on group-hover/menuitem, white bg, shadow
+        // Desktop: absolute, top-full, opacity-0/invisible by default, fade in on group-hover/menuitem
         // Mobile: hidden by default, block when toggled (via JS), relative/indented
-        // Changed xl:group-hover:block to xl:group-hover/menuitem:block
-        // Mobile: bg-transparent (was bg-slate-50), remove rounded/border for cleaner look
-        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover/menuitem:block z-50 transition-all duration-300 origin-top bg-transparent xl:bg-white mt-2 xl:mt-4 space-y-1';
+        $ul_classes = 'submenu hidden xl:block xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 z-50 transition-all duration-300 ease-in-out origin-top bg-transparent xl:bg-white mt-2 xl:mt-4 space-y-1';
+
+        // Desktop Transitions
+        $ul_classes .= ' xl:opacity-0 xl:invisible xl:translate-y-2';
+        $ul_classes .= ' xl:group-hover/menuitem:opacity-100 xl:group-hover/menuitem:visible xl:group-hover/menuitem:translate-y-0';
+
         $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }
 

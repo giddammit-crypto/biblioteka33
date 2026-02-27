@@ -98,14 +98,14 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 
 <!-- Mobile Menu Overlay -->
 <div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[60] bg-black/50 backdrop-blur-sm transform translate-x-full transition-transform duration-300 xl:hidden pointer-events-none">
-    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate pointer-events-auto">
-        <div class="flex justify-between items-center mb-8">
+    <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate pointer-events-auto overflow-y-auto">
+        <div class="flex justify-between items-center mb-8 shrink-0">
             <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>
             <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 rounded-full transition-colors" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
-        <nav class="flex-grow space-y-4 flex flex-col">
+        <nav class="flex-grow space-y-4 flex flex-col shrink-0">
             <?php
             wp_nav_menu(array(
                 'theme_location' => 'primary',
@@ -117,7 +117,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             ?>
         </nav>
         <!-- Mobile Footer/Contact -->
-        <div class="mt-auto border-t border-slate-200 pt-6">
+        <div class="mt-auto border-t border-slate-200 pt-6 shrink-0 pb-6">
              <p class="text-xs text-slate-500 text-center"><?php echo esc_html(get_theme_mod('footer_copyright')); ?></p>
         </div>
     </div>
