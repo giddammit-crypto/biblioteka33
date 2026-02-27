@@ -108,14 +108,35 @@
 
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {
-                        // Select all links in content that point to images
-                        const contentImages = document.querySelectorAll('.entry-content a[href*=".jpg"], .entry-content a[href*=".jpeg"], .entry-content a[href*=".png"], .entry-content a[href*=".gif"], .entry-content a[href*=".webp"]');
-
-                        contentImages.forEach(link => {
+                        // 1. Handle existing image links
+                        const imageLinks = document.querySelectorAll('.entry-content a[href*=".jpg"], .entry-content a[href*=".jpeg"], .entry-content a[href*=".png"], .entry-content a[href*=".gif"], .entry-content a[href*=".webp"]');
+                        imageLinks.forEach(link => {
                             link.classList.add('glightbox');
                             link.setAttribute('data-gallery', 'post-gallery');
                         });
 
+                        // 2. Handle standalone images (not wrapped in links)
+                        const contentImages = document.querySelectorAll('.entry-content img');
+                        contentImages.forEach(img => {
+                            // Check if image is already inside a link
+                            if (img.closest('a')) {
+                                return;
+                            }
+
+                            // Create a link wrapper
+                            const link = document.createElement('a');
+                            link.href = img.src; // Use the image source as the link destination
+                            link.classList.add('glightbox');
+                            link.setAttribute('data-gallery', 'post-gallery');
+
+                            // Insert the link before the image
+                            img.parentNode.insertBefore(link, img);
+
+                            // Move the image inside the link
+                            link.appendChild(img);
+                        });
+
+                        // Initialize GLightbox
                         const lightbox = GLightbox({
                             selector: '.glightbox',
                             touchNavigation: true,
