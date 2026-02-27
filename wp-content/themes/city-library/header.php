@@ -13,7 +13,7 @@
 $header_style = get_theme_mod('header_style', 'default');
 $menu_style = get_theme_mod('menu_style', 'default');
 
-$header_classes = 'block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
+$header_classes = 'hidden xl:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
 $flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
@@ -77,12 +77,14 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden xl:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?> flex-grow justify-center transition-all duration-500">
+            <nav class="hidden xl:flex items-center flex-grow justify-center transition-all duration-500">
                  <?php
+                    // Wrapped items in <ul class="flex items-center space-x-8 list-none m-0 p-0">
+                    // Added list-none explicitly to remove dots
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
                         'container'      => false,
-                        'items_wrap'     => '%3$s',
+                        'items_wrap'     => '<ul id="%1$s" class="flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
                         'walker'         => new City_Library_Walker_Nav_Menu(),
                     ));
                 ?>
@@ -102,7 +104,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                 </button>
 
                 <!-- Mobile Menu Toggle (Visible only on mobile) -->
-                <button id="mobile-menu-toggle" class="xl:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                <button class="mobile-menu-toggle-btn xl:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>

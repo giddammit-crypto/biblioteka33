@@ -253,7 +253,7 @@ if ($bar_style === 'text-only') {
         </button>
 
         <!-- Menu (Opens Header Overlay) -->
-        <button id="mobile-menu-toggle" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
+        <button class="mobile-menu-toggle-btn <?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">menu</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Меню', 'city-library'); ?></span>
         </button>
