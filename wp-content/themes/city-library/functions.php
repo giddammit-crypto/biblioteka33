@@ -1411,18 +1411,46 @@ add_action('init', 'city_library_disable_comments_admin_bar');
  */
 class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
     function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4';
-        $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">' . esc_html($item->title) . '</a>';
+        // Base classes for the link
+        $link_classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4 flex items-center justify-between w-full';
+
+        // Add parent wrapper li
+        $li_classes = 'group relative py-2 xl:py-0';
+        if ($args->has_children) {
+            $li_classes .= ' has-children';
+        }
+        $output .= '<li class="' . esc_attr($li_classes) . '">';
+
+        // Check if item has children to add toggle button logic
+        if ($args->has_children) {
+            $output .= '<div class="flex items-center justify-between w-full">';
+            $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
+            // Mobile Toggle Button (Visible on mobile/kiosk, hidden on desktop hover)
+            $output .= '<button class="submenu-toggle p-2 xl:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
+            // Desktop Arrow (Visual only, handled by group-hover)
+            $output .= '<span class="material-symbols-outlined text-lg hidden xl:block ml-1 group-hover:rotate-180 transition-transform duration-300">expand_more</span>';
+            $output .= '</div>';
+        } else {
+            $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
+        }
     }
+
     function end_el(&$output, $item, $depth = 0, $args = null) {
-        $output .= "";
+        $output .= "</li>";
     }
+
     function start_lvl(&$output, $depth = 0, $args = null) {
-        $output .= "";
+        // Submenu UL classes
+        // Desktop: absolute, top-full, hidden by default, block on group-hover, white bg, shadow
+        // Mobile: hidden by default, block when toggled (via JS), relative/indented
+        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover:block z-50 transition-all duration-300 origin-top bg-slate-50 xl:bg-white rounded-lg mt-2 xl:mt-4 space-y-1';
+        $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }
+
     function end_lvl(&$output, $depth = 0, $args = null) {
-        $output .= "";
+        $output .= "</ul>";
     }
+
     function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output) {
         $id_field = $this->db_fields['id'];
         if (is_object($args[0])) {

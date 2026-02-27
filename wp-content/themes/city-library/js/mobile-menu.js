@@ -64,6 +64,37 @@ document.addEventListener('DOMContentLoaded', function() {
         links.forEach(link => {
             link.addEventListener('click', closeMobileMenu);
         });
+
+        // --- Submenu Toggle Logic (Mobile Only) ---
+        // Find all toggle buttons within the mobile menu
+        const toggles = mobileMenu.querySelectorAll('.submenu-toggle');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent closing the menu
+
+                // Find the parent list item
+                const parentLi = this.closest('li');
+                if (!parentLi) return;
+
+                // Find the submenu UL
+                const submenu = parentLi.querySelector('ul.submenu');
+                if (!submenu) return;
+
+                // Toggle visibility
+                submenu.classList.toggle('hidden');
+
+                // Rotate the icon
+                const icon = this.querySelector('.material-symbols-outlined');
+                if (icon) {
+                    icon.classList.toggle('rotate-180');
+                }
+
+                // Update aria-expanded
+                const isExpanded = !submenu.classList.contains('hidden');
+                this.setAttribute('aria-expanded', isExpanded);
+            });
+        });
     }
 
     // --- Smart Scroll Visibility (Bottom Nav & Renewal Button) ---
