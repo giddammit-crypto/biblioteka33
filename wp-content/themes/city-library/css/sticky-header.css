@@ -1,11 +1,14 @@
 
 /* Sticky Header Logic */
+/* Logo hiding removed as per request */
+/*
 #masthead.header-scrolled #site-identity {
     max-width: 0;
     opacity: 0;
     margin-right: 0;
     padding: 0;
 }
+*/
 
 #masthead.header-scrolled nav {
     /* Ensure menu stays centered or takes up space */
