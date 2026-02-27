@@ -5,15 +5,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const globalCloseBtn = document.getElementById('mobile-menu-close');
 
     if (mobileMenu) {
+        const mobileMenuInner = mobileMenu.querySelector('.mobile-menu-inner');
+
         // Function to open menu
         function openMobileMenu() {
-            mobileMenu.classList.remove('translate-x-full', 'pointer-events-none');
+            // Show Overlay
+            mobileMenu.classList.remove('pointer-events-none', 'opacity-0');
+            // Slide in Drawer
+            if (mobileMenuInner) {
+                mobileMenuInner.classList.remove('translate-x-full');
+            }
             document.body.style.overflow = 'hidden';
         }
 
         // Function to close menu
         function closeMobileMenu() {
-            mobileMenu.classList.add('translate-x-full', 'pointer-events-none');
+            // Slide out Drawer
+            if (mobileMenuInner) {
+                mobileMenuInner.classList.add('translate-x-full');
+            }
+
+            // Hide Overlay after transition (or immediately, but overlay has transition-opacity)
+            // Ideally we wait for inner transition, but for simplicity we start fade out now
+            mobileMenu.classList.add('pointer-events-none', 'opacity-0');
+
             document.body.style.overflow = '';
         }
 

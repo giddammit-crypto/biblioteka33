@@ -124,7 +124,7 @@ if ($mob_menu_style === 'ios-blur') {
 }
 ?>
 
-<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[9999] bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 xl:hidden pointer-events-none opacity-0 translate-x-full" aria-hidden="true">
+<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[9999] bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 xl:hidden pointer-events-none opacity-0" aria-hidden="true">
     <div class="<?php echo esc_attr($mob_menu_container_classes); ?> mobile-menu-inner transform transition-transform duration-500 translate-x-full">
 
         <!-- Header -->
