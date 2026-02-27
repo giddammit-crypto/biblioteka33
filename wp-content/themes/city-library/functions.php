@@ -161,6 +161,14 @@ function city_library_scripts() {
         'branches' => city_library_get_branches_list(), // Helper to pass branch list if needed JS side, though we just need IDs
         'settings' => $renewal_settings
     ));
+
+    // Sticky Header
+    wp_enqueue_script('city-library-sticky-header', get_template_directory_uri() . '/js/sticky-header.js', array(), wp_get_theme()->get('Version'), true);
+
+    $sticky_css = file_get_contents(get_template_directory() . '/css/sticky-header.css');
+    if ($sticky_css) {
+        wp_add_inline_style('city-library-style', $sticky_css);
+    }
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
 

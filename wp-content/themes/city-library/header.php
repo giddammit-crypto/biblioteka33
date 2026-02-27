@@ -55,37 +55,29 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 <header id="masthead" class="<?php echo esc_attr($header_classes); ?>">
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-3 h-full shrink-0 group/logo focus:outline-none">
-                <?php if (has_custom_logo()) : ?>
-                    <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
-                        <?php
-                            // Custom Logo outputs its own anchor, but we want a unified clickable area.
-                            // However, WP standard is to let custom logo handle it.
-                            // If we wrap everything in <a>, we might have nested <a>.
-                            // Let's filter output or just check if we can make it cleaner.
-                            // standard the_custom_logo() outputs <a href...><img...></a>
-                            // To avoid nested anchors, we might rely on the one inside or suppress it.
-                            // Simpler: Just display the image if possible or use styling to overlay.
-                            // Actually, standard practice: logo is clickable, text is clickable.
-                            // Let's wrap the TEXT in a div, but keep the logo separate to avoid invalid HTML (nested a).
-                            the_custom_logo();
-                        ?>
-                    </div>
-                <?php else : ?>
-                    <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
-                        <span class="material-symbols-outlined text-white">menu_book</span>
-                    </div>
-                <?php endif; ?>
+            <!-- Site Identity (Logo + Title) - Hides on scroll -->
+            <div id="site-identity" class="flex items-center space-x-3 h-full shrink-0 transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-3 h-full shrink-0 group/logo focus:outline-none">
+                    <?php if (has_custom_logo()) : ?>
+                        <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
+                            <?php the_custom_logo(); ?>
+                        </div>
+                    <?php else : ?>
+                        <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
+                            <span class="material-symbols-outlined text-white">menu_book</span>
+                        </div>
+                    <?php endif; ?>
 
-                <!-- Text visible on all screens (adapted size) -->
-                <div class="block">
-                    <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                    <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
-                </div>
-            </a>
+                    <!-- Text visible on all screens (adapted size) -->
+                    <div class="block">
+                        <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                        <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                    </div>
+                </a>
+            </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden xl:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?>">
+            <nav class="hidden xl:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base <?php echo esc_attr($menu_item_classes); ?> flex-grow justify-center transition-all duration-500">
                  <?php
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
@@ -97,9 +89,22 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             </nav>
             <?php endif; ?>
 
-            <!-- Accessibility button removed as per request -->
-            <div class="flex items-center space-x-2">
-                 <!-- Placeholders for other header actions if needed later -->
+            <!-- Header Actions (Right Side) -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <!-- Search Button -->
+                <button id="search-toggle" class="p-2 rounded-full transition-colors hover:bg-slate-100 text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+
+                <!-- Accessibility Button -->
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors hover:bg-slate-100 text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+                    <span class="material-symbols-outlined">visibility</span>
+                </button>
+
+                <!-- Mobile Menu Toggle (Visible only on mobile) -->
+                <button id="mobile-menu-toggle" class="xl:hidden p-2 rounded-full transition-colors hover:bg-slate-100 text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
             </div>
         </div>
     </div>
@@ -201,13 +206,7 @@ if ($mob_menu_style === 'ios-blur') {
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 -z-10" style="background: <?php echo $hero_gradient; ?>;"></div>
 
-    <!-- Accessibility Button (Top Right of Hero) - Adjusted top to clear fixed header -->
-    <div class="absolute top-24 lg:top-28 right-6 z-20">
-        <button id="accessibility-button" class="flex items-center space-x-2 bg-white/20 hover:bg-white/90 backdrop-blur-md border border-white/30 hover:border-white text-white hover:text-slate-900 px-4 py-2 rounded-full transition-all duration-300 group shadow-lg" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
-            <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">visibility</span>
-            <span class="hidden sm:inline text-sm font-bold uppercase tracking-wider"><?php _e('Версия для слабовидящих', 'city-library'); ?></span>
-        </button>
-    </div>
+    <!-- Accessibility Button removed from Hero (Moved to Header) -->
 
     <div class="relative z-10 max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
