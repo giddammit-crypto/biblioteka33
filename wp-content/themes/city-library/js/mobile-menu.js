@@ -39,8 +39,16 @@ document.addEventListener('DOMContentLoaded', function() {
         internalCloseBtns.forEach(btn => {
             // Check if it's the global button (handled) or new one
             if (btn !== globalCloseBtn) {
+                // EXCLUDE submenu toggles from this logic!
+                if (btn.classList.contains('submenu-toggle')) {
+                    return;
+                }
+
                 // If it has "close" icon or text, add listener
-                if (btn.querySelector('.material-symbols-outlined') || btn.textContent.toLowerCase().includes('close') || btn.textContent.toLowerCase().includes('закрыть')) {
+                // Also double check it's not a toggle by checking for expand_more icon just in case
+                const hasExpandIcon = btn.querySelector('.material-symbols-outlined') && btn.querySelector('.material-symbols-outlined').textContent === 'expand_more';
+
+                if (!hasExpandIcon && (btn.querySelector('.material-symbols-outlined') || btn.textContent.toLowerCase().includes('close') || btn.textContent.toLowerCase().includes('закрыть'))) {
                     btn.addEventListener('click', closeMobileMenu);
                 }
             }
