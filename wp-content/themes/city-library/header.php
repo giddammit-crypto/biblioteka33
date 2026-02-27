@@ -201,8 +201,8 @@ if ($mob_menu_style === 'ios-blur') {
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 -z-10" style="background: <?php echo $hero_gradient; ?>;"></div>
 
-    <!-- Accessibility Button (Top Right of Hero) -->
-    <div class="absolute top-6 right-6 z-20">
+    <!-- Accessibility Button (Top Right of Hero) - Adjusted top to clear fixed header -->
+    <div class="absolute top-24 lg:top-28 right-6 z-20">
         <button id="accessibility-button" class="flex items-center space-x-2 bg-white/20 hover:bg-white/90 backdrop-blur-md border border-white/30 hover:border-white text-white hover:text-slate-900 px-4 py-2 rounded-full transition-all duration-300 group shadow-lg" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
             <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">visibility</span>
             <span class="hidden sm:inline text-sm font-bold uppercase tracking-wider"><?php _e('Версия для слабовидящих', 'city-library'); ?></span>
@@ -226,14 +226,25 @@ if ($mob_menu_style === 'ios-blur') {
         </p>
 
         <div class="flex flex-col sm:flex-row <?php echo esc_attr($hero_flex_align_class); ?> gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
+            <?php
+            $btn1_text = get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ');
+            if (!empty($btn1_text)) :
+            ?>
             <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
                 <span class="material-symbols-outlined text-xl shrink-0">event</span>
-                <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>
+                <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html($btn1_text); ?></span>
                 <span class="material-symbols-outlined shrink-0">arrow_forward</span>
             </a>
+            <?php endif; ?>
+
+            <?php
+            $btn2_text = get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ');
+            if (!empty($btn2_text)) :
+            ?>
             <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
-                <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html(get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ')); ?></span>
+                <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html($btn2_text); ?></span>
             </a>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -181,7 +181,8 @@ if (get_theme_mod('show_modal', false)) :
             </div>
         <?php elseif ($modal_image) : ?>
             <div class="w-full">
-                <img src="<?php echo esc_url($modal_image); ?>" alt="<?php echo esc_attr($modal_title); ?>" class="w-full h-auto object-cover max-h-[40vh]">
+                <!-- Adaptive Image: w-full h-auto max-h-[50vh] object-contain to ensure full visibility on small screens -->
+                <img src="<?php echo esc_url($modal_image); ?>" alt="<?php echo esc_attr($modal_title); ?>" class="w-full h-auto object-contain max-h-[50vh] mx-auto">
             </div>
         <?php endif; ?>
         <div class="p-8 text-center space-y-4">
