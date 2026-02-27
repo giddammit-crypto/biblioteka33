@@ -103,7 +103,7 @@ function city_library_scripts() {
     // Custom JS files
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-sidebar', get_template_directory_uri() . '/js/sidebar.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
+    // wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true); // Removed as per request
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
@@ -474,6 +474,7 @@ function city_library_customize_register($wp_customize) {
         'priority' => 19,
     ));
 
+    // Default sidebar to false as requested
     $wp_customize->add_setting('show_sidebar', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('show_sidebar', array(
         'label' => __('Показать сайдбар', 'city-library'),
@@ -1415,7 +1416,8 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
         $link_classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4 flex items-center justify-between w-full';
 
         // Add parent wrapper li
-        $li_classes = 'group relative py-2 xl:py-0';
+        // Changed 'group' to 'group/menuitem' to isolate hover state
+        $li_classes = 'group/menuitem relative py-2 xl:py-0';
         if ($args->has_children) {
             $li_classes .= ' has-children';
         }
@@ -1427,8 +1429,8 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
             // Mobile Toggle Button (Visible on mobile/kiosk, hidden on desktop hover)
             $output .= '<button class="submenu-toggle p-2 xl:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
-            // Desktop Arrow (Visual only, handled by group-hover)
-            $output .= '<span class="material-symbols-outlined text-lg hidden xl:block ml-1 group-hover:rotate-180 transition-transform duration-300">expand_more</span>';
+            // Desktop Arrow (Visual only, handled by group-hover/menuitem)
+            $output .= '<span class="material-symbols-outlined text-lg hidden xl:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
             $output .= '</div>';
         } else {
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
@@ -1441,9 +1443,10 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
 
     function start_lvl(&$output, $depth = 0, $args = null) {
         // Submenu UL classes
-        // Desktop: absolute, top-full, hidden by default, block on group-hover, white bg, shadow
+        // Desktop: absolute, top-full, hidden by default, block on group-hover/menuitem, white bg, shadow
         // Mobile: hidden by default, block when toggled (via JS), relative/indented
-        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover:block z-50 transition-all duration-300 origin-top bg-slate-50 xl:bg-white rounded-lg mt-2 xl:mt-4 space-y-1';
+        // Changed xl:group-hover:block to xl:group-hover/menuitem:block
+        $ul_classes = 'submenu hidden xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 xl:group-hover/menuitem:block z-50 transition-all duration-300 origin-top bg-slate-50 xl:bg-white rounded-lg mt-2 xl:mt-4 space-y-1';
         $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }
 
@@ -1760,6 +1763,49 @@ function city_library_dynamic_styles() {
         /* Afisha Font */
         .afisha-custom-title {
             font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Inter')); ?>", sans-serif !important;
+        }
+
+        /* Pagination Styling */
+        .navigation.pagination {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .page-numbers {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0 0.5rem;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            color: var(--primary-color);
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .page-numbers:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .page-numbers.current {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .page-numbers.dots {
+            border: none;
+            background: transparent;
+            color: #64748b;
         }
     </style>
     <?php

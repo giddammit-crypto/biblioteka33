@@ -149,13 +149,7 @@ if ($footer_style === 'light-clean') {
     </div>
 </footer>
 
-<?php if (get_theme_mod('show_back_to_top', true)) : ?>
-<div class="hidden lg:block">
-    <button id="back-to-top" class="hidden fixed bottom-24 lg:landscape:bottom-8 right-8 w-14 h-14 bg-primary hover:bg-yellow-600 text-secondary rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 z-50" aria-label="<?php esc_attr_e('Вернуться наверх', 'city-library'); ?>">
-        <span class="material-symbols-outlined text-2xl">arrow_upward</span>
-    </button>
-</div>
-<?php endif; ?>
+<!-- Back to top button removed as per request -->
 
 <?php get_template_part('template-parts/mobile-bottom-nav'); ?>
 
