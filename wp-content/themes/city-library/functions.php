@@ -74,7 +74,8 @@ add_filter('upload_mimes', 'city_library_add_mime_types');
  */
 function city_library_scripts() {
     // Main stylesheet.
-    wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+    // Use filemtime for version to force cache clear on update
+    wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), filemtime(get_stylesheet_directory() . '/style.css'));
 
     // Scrollbar Fix
     wp_enqueue_style('city-library-scrollbar-fix', get_template_directory_uri() . '/css/scrollbar-fix.css', array(), wp_get_theme()->get('Version'));
@@ -701,6 +702,8 @@ function city_library_customize_register($wp_customize) {
             'minimal' => 'Minimal (Logo Left, Menu Hidden/Hamburger)',
             'full-width' => 'Full Width (No Container)',
             'transparent-overlay' => 'Transparent Overlay (Absolute)',
+            'floating' => 'Floating (Rounded, Detached)',
+            'dark-mode' => 'Dark Mode (Inverted Colors)',
         ),
     ));
 

@@ -26,6 +26,11 @@ if ($header_style === 'centered') {
     $container_classes = 'w-full px-0';
 } elseif ($header_style === 'transparent-overlay') {
     $header_classes = 'block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
+} elseif ($header_style === 'floating') {
+    $header_classes = 'block fixed top-4 left-4 right-4 z-50 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 transition-all duration-300';
+    $container_classes = 'w-full px-6';
+} elseif ($header_style === 'dark-mode') {
+    $header_classes = 'block fixed top-0 w-full z-50 bg-slate-900 border-b border-slate-800 text-white transition-colors duration-300';
 }
 
 // Menu Style Classes
