@@ -15,7 +15,8 @@ $footer_container_classes = 'w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8';
 if ($footer_style === 'light-clean') {
     $footer_classes = 'bg-white text-slate-700 py-12 border-t border-slate-100';
 } elseif ($footer_style === 'centered') {
-    $footer_classes = 'bg-slate-900 text-white py-20 text-center';
+    // Modified: White BG, Dark Text, Underline on Hover
+    $footer_classes = 'bg-white text-slate-700 py-20 text-center border-t border-slate-200 [&_a:hover]:underline [&_a:hover]:text-slate-900';
     $footer_grid_classes = 'flex flex-col items-center gap-10 max-w-3xl mx-auto';
     $footer_container_classes = 'w-full px-4';
 } elseif ($footer_style === 'minimal') {

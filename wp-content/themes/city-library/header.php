@@ -201,6 +201,14 @@ if ($mob_menu_style === 'ios-blur') {
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 -z-10" style="background: <?php echo $hero_gradient; ?>;"></div>
 
+    <!-- Accessibility Button (Top Right of Hero) -->
+    <div class="absolute top-6 right-6 z-20">
+        <button id="accessibility-button" class="flex items-center space-x-2 bg-white/20 hover:bg-white/90 backdrop-blur-md border border-white/30 hover:border-white text-white hover:text-slate-900 px-4 py-2 rounded-full transition-all duration-300 group shadow-lg" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+            <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">visibility</span>
+            <span class="hidden sm:inline text-sm font-bold uppercase tracking-wider"><?php _e('Версия для слабовидящих', 'city-library'); ?></span>
+        </button>
+    </div>
+
     <div class="relative z-10 max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
         <?php if (get_theme_mod('hero_show_badge', true)) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
