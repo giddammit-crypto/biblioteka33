@@ -18,13 +18,13 @@
         </a>
 
         <!-- Search (Using existing modal trigger) -->
-        <button onclick="document.getElementById('search-toggle').click();" class="group flex flex-col items-center justify-center h-full text-slate-500 hover:text-primary active:text-primary transition-all focus:outline-none">
+        <button onclick="document.getElementById('search-toggle').click();" class="group flex flex-col items-center justify-center h-full text-slate-500 hover:text-primary active:text-primary transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
             <span class="material-symbols-outlined text-3xl mb-1 group-active:scale-95 transition-transform">search</span>
             <span class="text-xs font-bold tracking-wide"><?php _e('Поиск', 'city-library'); ?></span>
         </button>
 
         <!-- Menu (Using existing mobile menu trigger) -->
-        <button onclick="document.getElementById('mobile-menu-btn').click();" class="group flex flex-col items-center justify-center h-full text-slate-500 hover:text-primary active:text-primary transition-all focus:outline-none">
+        <button onclick="document.getElementById('mobile-menu-btn').click();" class="group flex flex-col items-center justify-center h-full text-slate-500 hover:text-primary active:text-primary transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
             <span class="material-symbols-outlined text-3xl mb-1 group-active:scale-95 transition-transform">menu</span>
             <span class="text-xs font-bold tracking-wide"><?php _e('Меню', 'city-library'); ?></span>
         </button>

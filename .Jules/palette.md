@@ -1,7 +1,3 @@
-## 2024-05-22 - Global Styles vs Component Specificity
-**Learning:** Global CSS rules with `!important` injected via PHP (e.g., `button { ... !important }`) override Tailwind utility classes, forcing the use of inline styles for exceptions.
-**Action:** When overriding such styles for specific components (like light-themed navigation buttons), use inline `style="..."` attributes with `!important` as a last resort, or refactor the global injection to be less aggressive.
-
-## 2024-05-22 - Large Typography Overlap
-**Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
-**Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+## 2024-02-28 - Missing Focus States on Tailwind Icon Buttons
+**Learning:** In Tailwind CSS, icon-only buttons (like hamburger menus or search toggles) often miss explicit focus states (`focus-visible:ring-*`), making keyboard navigation invisible. This pattern frequently occurs in custom WordPress themes using Tailwind where standard form elements are customized.
+**Action:** Always verify keyboard accessibility on custom interactive elements (buttons, toggles, close buttons). Apply `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2` to ensure consistent, highly visible focus indicators across the app.
