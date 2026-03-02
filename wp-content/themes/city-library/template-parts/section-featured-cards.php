@@ -35,7 +35,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                             switch ($design_style) {
                                 case 'design-2': // Text over image
                                     ?>
-                                    <div class="relative h-[400px] w-full rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-300">
+                                    <div class="relative w-full aspect-[3/4] lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-all duration-300">
                                         <?php if ($image) : ?>
                                             <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                                         <?php else : ?>
@@ -99,15 +99,15 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
 
                                 case 'design-6': // Glassmorphism
                                     ?>
-                                    <div class="relative flex flex-col h-full rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
+                                    <div class="relative flex flex-col w-full aspect-[3/4] lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
                                         <?php if ($image) : ?>
                                             <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                                         <?php else : ?>
                                             <div class="absolute inset-0 bg-slate-800"></div>
                                         <?php endif; ?>
                                         <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 z-0"></div>
-                                        <div class="relative z-10 flex flex-col justify-end h-[400px] p-4">
-                                            <div class="bg-white/20 backdrop-blur-md border border-white/30 rounded-xl p-5 text-white">
+                                        <div class="relative z-10 flex flex-col justify-end flex-grow p-4 pointer-events-none">
+                                            <div class="bg-white/20 backdrop-blur-md border border-white/30 rounded-xl p-5 text-white pointer-events-auto">
                                                 <h3 class="text-lg font-bold font-display mb-2 text-white shadow-sm"><?php echo esc_html($title); ?></h3>
                                                 <p class="text-sm text-slate-100 line-clamp-2"><?php echo esc_html($desc); ?></p>
                                             </div>
@@ -182,7 +182,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                     ?>
                                     <div class="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl border border-slate-200 transition-all duration-300 group-hover:-translate-y-1">
                                         <?php if ($image) : ?>
-                                            <div class="w-full h-48 overflow-hidden shrink-0 border-b border-slate-100">
+                                            <div class="w-full aspect-[4/3] overflow-hidden shrink-0 border-b border-slate-100">
                                                 <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                                             </div>
                                         <?php endif; ?>

@@ -1509,7 +1509,7 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
 
         // Add parent wrapper li
         // Changed 'group' to 'group/menuitem' to isolate hover state
-        $li_classes = 'group/menuitem relative py-2 xl:py-0';
+        $li_classes = 'group/menuitem relative py-2 lg:py-0';
         if ($args->has_children) {
             $li_classes .= ' has-children';
         }
@@ -1519,10 +1519,10 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
         if ($args->has_children) {
             $output .= '<div class="flex items-center justify-between w-full">';
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
-            // Mobile Toggle Button (Visible on mobile/kiosk, hidden on desktop hover)
-            $output .= '<button class="submenu-toggle p-2 xl:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
+            // Mobile Toggle Button (Visible on mobile, hidden on desktop hover)
+            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
             // Desktop Arrow (Visual only, handled by group-hover/menuitem)
-            $output .= '<span class="material-symbols-outlined text-lg hidden xl:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
+            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
             $output .= '</div>';
         } else {
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
@@ -1537,11 +1537,11 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
         // Submenu UL classes
         // Desktop: absolute, top-full, opacity-0/invisible by default, fade in on group-hover/menuitem
         // Mobile: hidden by default, block when toggled (via JS), relative/indented
-        $ul_classes = 'submenu hidden xl:block xl:absolute xl:top-full xl:left-0 xl:min-w-[200px] xl:bg-white xl:shadow-xl xl:rounded-xl xl:border xl:border-slate-100 xl:p-2 z-50 transition-all duration-300 ease-in-out origin-top bg-transparent xl:bg-white mt-2 xl:mt-4 space-y-1';
+        $ul_classes = 'submenu hidden lg:block lg:absolute lg:top-full lg:left-0 lg:min-w-[200px] lg:bg-white lg:shadow-xl lg:rounded-xl lg:border lg:border-slate-100 lg:p-2 z-50 transition-all duration-300 ease-in-out origin-top bg-transparent lg:bg-white mt-2 lg:mt-4 space-y-1';
 
         // Desktop Transitions
-        $ul_classes .= ' xl:opacity-0 xl:invisible xl:translate-y-2';
-        $ul_classes .= ' xl:group-hover/menuitem:opacity-100 xl:group-hover/menuitem:visible xl:group-hover/menuitem:translate-y-0';
+        $ul_classes .= ' lg:opacity-0 lg:invisible lg:translate-y-2';
+        $ul_classes .= ' lg:group-hover/menuitem:opacity-100 lg:group-hover/menuitem:visible lg:group-hover/menuitem:translate-y-0';
 
         $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }

@@ -63,7 +63,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow-0 text-slate-200 lg:text-slate-900 lg:text-[var(--card-text)] pointer-events-auto">
+        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow-0 text-white lg:text-[var(--card-text)] pointer-events-auto">
             <?php the_excerpt(); ?>
         </div>
 

@@ -13,7 +13,7 @@
 $header_style = get_theme_mod('header_style', 'default');
 $menu_style = get_theme_mod('menu_style', 'default');
 
-$header_classes = 'hidden xl:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
+$header_classes = 'hidden lg:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
 $flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
@@ -25,12 +25,12 @@ if ($header_style === 'centered') {
 } elseif ($header_style === 'full-width') {
     $container_classes = 'w-full px-0';
 } elseif ($header_style === 'transparent-overlay') {
-    $header_classes = 'hidden xl:block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
+    $header_classes = 'hidden lg:block absolute top-0 w-full z-50 bg-transparent border-b border-white/10 hover:bg-white/90 transition-all duration-300 group hover:text-slate-900 text-white';
 } elseif ($header_style === 'floating') {
-    $header_classes = 'hidden xl:block fixed top-4 left-4 right-4 z-50 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 transition-all duration-300';
+    $header_classes = 'hidden lg:block fixed top-4 left-4 right-4 z-50 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 transition-all duration-300';
     $container_classes = 'w-full px-6';
 } elseif ($header_style === 'dark-mode') {
-    $header_classes = 'hidden xl:block fixed top-0 w-full z-50 bg-slate-900 border-b border-slate-800 text-white transition-colors duration-300';
+    $header_classes = 'hidden lg:block fixed top-0 w-full z-50 bg-slate-900 border-b border-slate-800 text-white transition-colors duration-300';
 }
 
 // Menu Style Classes
@@ -56,15 +56,15 @@ $menu_item_classes = 'menu-style-' . $menu_style;
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
             <!-- Site Identity (Logo + Title) - Hides on scroll -->
-            <div id="site-identity" class="flex items-center space-x-3 h-full shrink-0 transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-3 h-full shrink-0 group/logo focus:outline-none">
+            <div id="site-identity" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 group/logo focus:outline-none">
                     <?php if (has_custom_logo()) : ?>
-                        <div class="custom-logo-wrapper h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
+                        <div class="custom-logo-wrapper h-8 xl:h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                             <?php the_custom_logo(); ?>
                         </div>
                     <?php else : ?>
-                        <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
-                            <span class="material-symbols-outlined text-white">menu_book</span>
+                        <div class="w-8 h-8 xl:w-10 xl:h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
+                            <span class="material-symbols-outlined text-white text-sm xl:text-base">menu_book</span>
                         </div>
                     <?php endif; ?>
 
@@ -77,14 +77,14 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden xl:flex items-center flex-grow justify-center transition-all duration-500">
+            <nav class="hidden lg:flex items-center flex-grow justify-center transition-all duration-500 overflow-hidden mx-2 xl:mx-4">
                  <?php
                     // Wrapped items in <ul class="flex items-center space-x-8 list-none m-0 p-0">
-                    // Added list-none explicitly to remove dots
+                    // Added list-none explicitly to remove dots. Used fluid gaps and flex-wrap to prevent overflow on square screens.
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
                         'container'      => false,
-                        'items_wrap'     => '<ul id="%1$s" class="flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
+                        'items_wrap'     => '<ul id="%1$s" class="flex flex-wrap lg:flex-nowrap justify-center items-center gap-x-3 lg:gap-x-4 xl:gap-x-8 gap-y-1 text-xs lg:text-sm xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
                         'walker'         => new City_Library_Walker_Nav_Menu(),
                     ));
                 ?>
@@ -104,7 +104,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
                 </button>
 
                 <!-- Mobile Menu Toggle (Visible only on mobile) -->
-                <button class="mobile-menu-toggle-btn xl:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                <button class="mobile-menu-toggle-btn lg:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
@@ -131,7 +131,7 @@ if ($mob_menu_style === 'ios-blur') {
 }
 ?>
 
-<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[9999] bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 xl:hidden pointer-events-none opacity-0" aria-hidden="true">
+<div id="mobile-menu" class="fixed inset-0 h-[100dvh] z-[9999] bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden pointer-events-none opacity-0" aria-hidden="true">
     <div class="<?php echo esc_attr($mob_menu_container_classes); ?> mobile-menu-inner transform transition-transform duration-500 translate-x-full">
 
         <!-- Header -->

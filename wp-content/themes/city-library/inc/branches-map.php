@@ -234,8 +234,13 @@ function city_library_branches_map_shortcode($atts) {
     wp_enqueue_script('city-library-branches-map');
 
     // Output
-    $output = '<div class="city-library-map-widget">';
-    $output .= '<div id="branches-yandex-map" style="width: 100%; min-height: 300px; display: block; height: ' . esc_attr($atts['height']) . '; background: #e2e8f0; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);"></div>';
+    $output = '<div class="city-library-map-widget w-full">';
+    // Use an inline style block to force Yandex map inner tags to also take full width/height
+    $output .= '<style>
+        #branches-yandex-map { width: 100% !important; display: block !important; min-height: 300px !important; }
+        #branches-yandex-map > ymaps { width: 100% !important; height: 100% !important; }
+    </style>';
+    $output .= '<div id="branches-yandex-map" class="w-full" style="width: 100%; min-height: 300px; display: block; height: ' . esc_attr($atts['height']) . '; background: #e2e8f0; border-radius: 1.5rem; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);"></div>';
     $output .= $list_html;
     $output .= '</div>';
 
