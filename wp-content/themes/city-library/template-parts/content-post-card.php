@@ -21,7 +21,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         <!-- Mobile Gradient Overlay (Top) -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent lg:hidden pointer-events-none"></div>
         <!-- Mobile Gradient Overlay (Bottom) -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent lg:hidden pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent lg:hidden pointer-events-none mix-blend-multiply"></div>
 
         <!-- Floating Category Badge -->
         <?php
@@ -63,7 +63,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow-0 text-white lg:text-[var(--card-text)] pointer-events-auto drop-shadow-md lg:drop-shadow-none">
+        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow-0 text-white lg:text-[var(--card-text)] [&>p]:text-white lg:[&>p]:text-[var(--card-text)] pointer-events-auto drop-shadow-md lg:drop-shadow-none font-medium">
             <?php the_excerpt(); ?>
         </div>
 
