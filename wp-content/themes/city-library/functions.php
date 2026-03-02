@@ -364,6 +364,17 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет фона страницы', 'city-library'), 'section' => 'global_colors_section',
     )));
 
+    // Global Link Colors
+    $wp_customize->add_setting('global_link_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_link_color', array(
+        'label' => __('Глобальный цвет ссылок', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('global_link_hover_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_link_hover_color', array(
+        'label' => __('Глобальный цвет ссылок (при наведении)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
     // Global Button Settings
     $wp_customize->add_section('global_buttons_section', array(
         'title'    => __('Глобальные настройки кнопок', 'city-library'),
@@ -1639,6 +1650,8 @@ function city_library_dynamic_styles() {
     $primary_color = get_theme_mod('primary_color', '#0b7930');
     $secondary_color = get_theme_mod('secondary_color', '#1A3C34');
     $bg_body = get_theme_mod('bg_body_color', '#f6f8f6');
+    $link_color = get_theme_mod('global_link_color', '#0b7930');
+    $link_hover_color = get_theme_mod('global_link_hover_color', '#096328');
     $radius = get_theme_mod('global_border_radius', '2rem');
     $width = get_theme_mod('global_container_width', '80%');
 
@@ -1654,6 +1667,9 @@ function city_library_dynamic_styles() {
             --primary-color: <?php echo esc_attr($primary_color); ?>;
             --secondary-color: <?php echo esc_attr($secondary_color); ?>;
             --bg-body: <?php echo esc_attr($bg_body); ?>;
+
+            --global-link-color: <?php echo esc_attr($link_color); ?>;
+            --global-link-hover-color: <?php echo esc_attr($link_hover_color); ?>;
 
             --mob-menu-bg: <?php echo esc_attr($mob_menu_bg); ?>;
             --mob-menu-icon: <?php echo esc_attr($mob_menu_icon); ?>;
@@ -1691,6 +1707,20 @@ function city_library_dynamic_styles() {
 
         body {
             background-color: var(--bg-body) !important;
+        }
+
+        /* Global Links */
+        /* Applying to general content areas to avoid breaking specific navs */
+        .content-area a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn),
+        .entry-content a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn),
+        .text-link {
+            color: var(--global-link-color);
+            transition: color 0.3s ease;
+        }
+        .content-area a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn):hover,
+        .entry-content a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn):hover,
+        .text-link:hover {
+            color: var(--global-link-hover-color);
         }
 
         /* Global Radius Apply */
