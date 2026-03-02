@@ -77,7 +77,7 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden lg:flex items-center flex-grow justify-center transition-all duration-500 overflow-hidden mx-2 xl:mx-4">
+            <nav class="hidden lg:flex items-center flex-grow justify-center transition-all duration-500 mx-2 xl:mx-4">
                  <?php
                     // Wrapped items in <ul class="flex items-center space-x-8 list-none m-0 p-0">
                     // Added list-none explicitly to remove dots. Used fluid gaps and flex-wrap to prevent overflow on square screens.
