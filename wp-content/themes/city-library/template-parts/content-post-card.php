@@ -55,8 +55,8 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </div>
 
         <!-- Title -->
-        <h3 class="text-xl font-bold font-display leading-tight mb-3 line-clamp-2 pointer-events-auto relative">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-slate-950 lg:text-[var(--card-title)]">
+        <h3 class="text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline lg:text-black lg:bg-transparent lg:p-0 lg:rounded-none lg:shadow-none bg-slate-100/95 backdrop-blur-md text-slate-900 px-3 py-1.5 rounded-lg shadow-sm line-clamp-2 lg:line-clamp-none">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
@@ -69,9 +69,9 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Footer / Link -->
         <div class="pt-4 lg:mt-auto border-t border-white/20 lg:border-slate-200 flex items-center justify-between pointer-events-auto">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 hover:underline text-white lg:bg-[var(--read-more-bg)] lg:text-[var(--read-more-text)] hover:lg:bg-[var(--read-more-hover-bg)] hover:lg:text-[var(--read-more-hover-text)] lg:rounded-[var(--read-more-radius)] lg:px-4 lg:py-2 lg:-ml-4 lg:decoration-[var(--read-more-underline)]">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline lg:bg-[var(--read-more-bg)] lg:text-[var(--read-more-text)] hover:lg:bg-[var(--read-more-hover-bg)] hover:lg:text-[var(--read-more-hover-text)] lg:rounded-[var(--read-more-radius)] lg:px-4 lg:py-2 lg:-ml-4 lg:decoration-[var(--read-more-underline)] bg-slate-100/95 backdrop-blur-md text-slate-900 px-4 py-2 rounded-xl shadow-sm hover:bg-white group-hover:text-primary">
                 <?php _e('Читать полностью', 'city-library'); ?>
-                <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1 text-primary lg:text-inherit" aria-hidden="true">arrow_forward</span>
+                <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1 lg:text-inherit" aria-hidden="true">arrow_forward</span>
             </a>
         </div>
     </div>
