@@ -9,7 +9,10 @@ Text Domain: city-library
 /* Global Reset for Horizontal Overflow */
 html, body {
     overflow-x: hidden;
-    max-width: 100%;
+    max-width: 100vw;
+    overflow-wrap: break-word; /* Ensure long links/words break on mobile */
+    -ms-word-break: break-all;
+    word-break: break-word;
 }
 
 /*
@@ -106,6 +109,19 @@ body {
 p, li, .entry-content p, .entry-content li {
     color: #334155; /* slate-700 for better contrast than standard gray */
     line-height: 1.75; /* Improved line height for comfortable reading */
+}
+
+/* Ensure images inside post content don't overflow */
+.entry-content img,
+.entry-content figure,
+.entry-content iframe,
+.entry-content video {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+.entry-content {
+    overflow-wrap: anywhere; /* Break unbreakable strings inside content */
 }
 
 h1, h2, h3, h4, h5, h6 {
