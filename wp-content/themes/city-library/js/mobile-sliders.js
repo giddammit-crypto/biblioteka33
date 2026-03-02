@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let newsSwiper = null;
     let partnersSwiper = null;
     let importantLinksSwiper = null;
+    let featuredCardsSwiper = null;
 
     const breakpoint = 1024;
 
@@ -9,6 +10,27 @@ document.addEventListener('DOMContentLoaded', function() {
         const isMobile = window.innerWidth < breakpoint;
 
         if (isMobile) {
+            // Featured Cards Slider
+            if (!featuredCardsSwiper && document.querySelector('.featured-cards-slider')) {
+                featuredCardsSwiper = new Swiper('.featured-cards-slider', {
+                    slidesPerView: 'auto',
+                    centeredSlides: true,
+                    spaceBetween: 16,
+                    pagination: {
+                        el: '.featured-cards-slider .swiper-pagination',
+                        clickable: true,
+                    },
+                    on: {
+                        destroy: function() {
+                            const wrapper = document.querySelector('.featured-cards-slider .swiper-wrapper');
+                            if (wrapper) wrapper.removeAttribute('style');
+                            const slides = document.querySelectorAll('.featured-cards-slider .swiper-slide');
+                            slides.forEach(slide => slide.removeAttribute('style'));
+                        }
+                    }
+                });
+            }
+
             // News Slider
             if (!newsSwiper && document.querySelector('.news-slider')) {
                 newsSwiper = new Swiper('.news-slider', {
@@ -80,6 +102,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             // Destroy if exists
+            if (featuredCardsSwiper) {
+                featuredCardsSwiper.destroy(true, true);
+                featuredCardsSwiper = null;
+            }
             if (newsSwiper) {
                 newsSwiper.destroy(true, true);
                 newsSwiper = null;

@@ -1315,6 +1315,58 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
     $wp_customize->add_control('modal_delay', array('label' => __('Задержка (мс)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
 
+    // Featured Cards Section
+    $wp_customize->add_section('featured_cards_section', array(
+        'title' => __('Выделенные карточки (Featured Cards)', 'city-library'),
+        'priority' => 103,
+    ));
+
+    $wp_customize->add_setting('show_featured_cards', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_featured_cards', array(
+        'label' => __('Показать блок', 'city-library'),
+        'section' => 'featured_cards_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('featured_cards_title', array('default' => 'Наши направления', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('featured_cards_title', array('label' => __('Заголовок блока', 'city-library'), 'section' => 'featured_cards_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('featured_cards_design', array('default' => 'design-1', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('featured_cards_design', array(
+        'label' => __('Дизайн карточек', 'city-library'),
+        'section' => 'featured_cards_section',
+        'type' => 'select',
+        'choices' => array(
+            'design-1' => 'Дизайн 1 (Стандартный с рамкой)',
+            'design-2' => 'Дизайн 2 (Текст поверх изображения)',
+            'design-3' => 'Дизайн 3 (Минималистичный без фона)',
+            'design-4' => 'Дизайн 4 (С тенью и скруглением)',
+            'design-5' => 'Дизайн 5 (Градиентный фон)',
+            'design-6' => 'Дизайн 6 (Glassmorphism)',
+            'design-7' => 'Дизайн 7 (Тонкая линия сверху)',
+            'design-8' => 'Дизайн 8 (Сплошная заливка, иконки)',
+            'design-9' => 'Дизайн 9 (Крупный заголовок, без фото)',
+            'design-10' => 'Дизайн 10 (Стиль полароид)',
+        ),
+    ));
+
+    for ($i = 1; $i <= 4; $i++) {
+        $wp_customize->add_setting("fc_image_$i", array('sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "fc_image_$i", array(
+            'label' => sprintf(__('Картинка карточки %d', 'city-library'), $i),
+            'section' => 'featured_cards_section',
+        )));
+
+        $wp_customize->add_setting("fc_title_$i", array('default' => sprintf('Карточка %d', $i), 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("fc_title_$i", array('label' => sprintf(__('Заголовок карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("fc_desc_$i", array('default' => 'Краткое описание карточки.', 'sanitize_callback' => 'sanitize_textarea_field'));
+        $wp_customize->add_control("fc_desc_$i", array('label' => sprintf(__('Описание карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'textarea'));
+
+        $wp_customize->add_setting("fc_link_$i", array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control("fc_link_$i", array('label' => sprintf(__('Ссылка карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'url'));
+    }
+
     // Promo Section
     $wp_customize->add_section('promo_section', array(
         'title' => __('Промо Блок (Promo)', 'city-library'),

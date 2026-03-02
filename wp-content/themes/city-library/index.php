@@ -4,6 +4,8 @@
 
     <?php get_template_part('template-parts/section-promo'); ?>
 
+    <?php get_template_part('template-parts/section-featured-cards'); ?>
+
     <?php $show_sidebar = get_theme_mod('show_sidebar', true); ?>
 
     <!-- Toggle Button -->
