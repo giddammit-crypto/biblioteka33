@@ -335,8 +335,33 @@ function city_library_widgets_init() {
             'after_title'   => '</h4>',
         ));
     }
+
+    // Custom Widget Area for Shortcode
+    register_sidebar( array(
+        'name'          => esc_html__( 'Content Widgets (Shortcode)', 'city-library' ),
+        'id'            => 'content-widgets',
+        'description'   => esc_html__( 'Widgets added here can be displayed inside any page or post using the shortcode [city_library_widgets]', 'city-library' ),
+        'before_widget' => '<div id="%1$s" class="widget %2$s mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="widget-title text-xl font-bold font-display mb-4 text-slate-800">',
+        'after_title'   => '</h3>',
+    ) );
 }
 add_action('widgets_init', 'city_library_widgets_init');
+
+/**
+ * Shortcode to output the 'Content Widgets' sidebar anywhere in content.
+ */
+function city_library_widgets_shortcode() {
+    ob_start();
+    if ( is_active_sidebar( 'content-widgets' ) ) {
+        echo '<div class="city-library-content-widgets-wrapper my-8">';
+        dynamic_sidebar( 'content-widgets' );
+        echo '</div>';
+    }
+    return ob_get_clean();
+}
+add_shortcode( 'city_library_widgets', 'city_library_widgets_shortcode' );
 
 
 /**
