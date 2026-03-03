@@ -28,7 +28,10 @@ if ($link_style === 'shadow') $link_style_class = 'shadow-xl hover:shadow-2xl ho
 if ($link_style === 'border') $link_style_class = 'border-2 border-slate-200 hover:border-primary shadow-sm';
 if ($link_style === 'grayscale') $link_style_class = 'grayscale hover:grayscale-0 shadow-md';
 
-$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 aspect-square $link_radius_class $link_style_class";
+$image_orientation = get_theme_mod('important_links_image_orientation', 'square');
+$aspect_class = ($image_orientation === 'horizontal') ? 'aspect-video' : 'aspect-square';
+
+$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 w-full h-full $aspect_class $link_radius_class $link_style_class";
 ?>
 
 <section class="py-16 bg-white <?php echo city_library_get_animation_class(); ?>">
@@ -97,9 +100,9 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                         $url = get_theme_mod("important_link_url_$i", '#');
                         if (!$img) continue;
                     ?>
-                        <div class="swiper-slide h-auto">
+                        <div class="swiper-slide h-auto flex flex-col">
                             <a href="<?php echo esc_url($url); ?>" class="<?php echo esc_attr($link_wrapper_class); ?>">
-                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 aspect-square">
+                                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr("Link $i"); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             </a>
                         </div>
                     <?php endfor; ?>

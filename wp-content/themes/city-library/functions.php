@@ -1173,6 +1173,11 @@ function city_library_customize_register($wp_customize) {
             'clean' => 'Clean (No Shadow, Minimal)',
             'overlay' => 'Full Overlay (Text on Image)',
             'glass' => 'Glassmorphism (Blur)',
+            'gradient' => 'Gradient Overlay (Dark)',
+            'brutalism' => 'Brutalism (Hard Borders)',
+            'minimal-text' => 'Minimal Text Focus',
+            'cyberpunk' => 'Cyberpunk (Neon Accents)',
+            'rounded-image' => 'Circular Image (Portrait style)',
         ),
     ));
 
@@ -1261,6 +1266,18 @@ function city_library_customize_register($wp_customize) {
             'shadow' => 'Drop Shadow',
             'border' => 'Bordered',
             'grayscale' => 'Grayscale Hover',
+        ),
+    ));
+
+    $wp_customize->add_setting('important_links_image_orientation', array('default' => 'square', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_links_image_orientation', array(
+        'label' => __('Ориентация изображений', 'city-library'),
+        'description' => __('Выберите пропорции для 8 изображений ссылок ниже.', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'square' => 'Квадратные (1:1)',
+            'horizontal' => 'Горизонтальные (16:9)',
         ),
     ));
 

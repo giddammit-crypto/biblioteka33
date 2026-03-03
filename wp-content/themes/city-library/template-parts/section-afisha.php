@@ -49,7 +49,7 @@ if ($bg_style === 'gradient') {
 }
 
 // Card Style Logic
-$card_base_classes = 'relative h-[400px] md:h-[500px] w-full overflow-hidden transition-all duration-500 bg-slate-100 select-none group-hover:scale-[1.02] transform-gpu';
+$card_base_classes = 'relative aspect-[3/4] md:aspect-[4/5] lg:h-[500px] lg:aspect-auto w-full overflow-hidden transition-all duration-500 bg-slate-100 select-none group-hover:scale-[1.02] transform-gpu flex flex-col';
 $card_extra_classes = 'rounded-[2rem] shadow-lg hover:shadow-2xl hover:shadow-slate-900/20 border border-slate-200'; // Default
 
 if ($card_style === 'card') {
@@ -60,6 +60,16 @@ if ($card_style === 'card') {
     $card_extra_classes = 'rounded-none shadow-none border-0'; // Flat
 } elseif ($card_style === 'glass') {
     $card_extra_classes = 'rounded-[2rem] shadow-xl border border-white/30 backdrop-blur-sm bg-white/10';
+} elseif ($card_style === 'gradient') {
+    $card_extra_classes = 'rounded-2xl shadow-lg border-b-4 border-primary';
+} elseif ($card_style === 'brutalism') {
+    $card_extra_classes = 'rounded-none shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_rgba(0,0,0,1)] border-4 border-black';
+} elseif ($card_style === 'minimal-text') {
+    $card_extra_classes = 'rounded-[3rem] border border-slate-200 shadow-sm hover:shadow-xl bg-white';
+} elseif ($card_style === 'cyberpunk') {
+    $card_extra_classes = 'rounded-lg border border-cyan-500/50 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] bg-slate-900';
+} elseif ($card_style === 'rounded-image') {
+    $card_extra_classes = 'rounded-full shadow-lg border-8 border-white hover:border-primary transition-colors';
 }
 
 $card_classes = $card_base_classes . ' ' . $card_extra_classes;
@@ -122,60 +132,110 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
 
                                 <div class="<?php echo esc_attr($card_classes); ?>">
 
-                                    <!-- Image -->
-                                    <?php if ($event['image']) : ?>
-                                        <div class="absolute inset-0 bg-slate-200">
-                                            <img src="<?php echo esc_url($event['image']); ?>"
-                                                 alt="<?php echo esc_attr($event['title']); ?>"
-                                                 loading="lazy"
-                                                 class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-100 will-change-transform">
+                                    <?php if ($card_style === 'minimal-text') : ?>
+                                        <!-- Minimal Text Design Layout -->
+                                        <?php if ($event['image']) : ?>
+                                            <div class="w-full h-3/5 md:h-2/3 shrink-0 overflow-hidden rounded-t-[3rem]">
+                                                <img src="<?php echo esc_url($event['image']); ?>" alt="<?php echo esc_attr($event['title']); ?>" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                            </div>
+                                        <?php else : ?>
+                                            <div class="w-full h-3/5 md:h-2/3 bg-slate-200 flex items-center justify-center rounded-t-[3rem] shrink-0">
+                                                <span class="material-symbols-outlined text-6xl text-slate-400">event</span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="p-6 md:p-8 flex flex-col justify-between flex-grow bg-white rounded-b-[3rem] z-10 pointer-events-none">
+                                            <div class="flex justify-between items-start pointer-events-auto">
+                                                <?php if (!empty($event['badge'])) : ?>
+                                                    <span class="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full"><?php echo esc_html($event['badge']); ?></span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <h3 class="text-xl md:text-2xl font-display font-bold text-slate-900 leading-tight line-clamp-3 pointer-events-auto group-hover:text-primary transition-colors"><?php echo esc_html($event['title']); ?></h3>
                                         </div>
+                                    <?php elseif ($card_style === 'rounded-image') : ?>
+                                         <!-- Circular Image Design Layout -->
+                                         <div class="flex flex-col h-full items-center p-8 bg-white/50 backdrop-blur-sm pointer-events-none">
+                                            <div class="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden shadow-2xl border-4 border-white mb-6 shrink-0 group-hover:border-primary transition-colors duration-500 z-10">
+                                                <?php if ($event['image']) : ?>
+                                                    <img src="<?php echo esc_url($event['image']); ?>" alt="<?php echo esc_attr($event['title']); ?>" loading="lazy" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110">
+                                                <?php else : ?>
+                                                    <div class="w-full h-full bg-slate-200"></div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex-grow flex flex-col items-center justify-center text-center w-full z-10 pointer-events-auto">
+                                                 <?php if (!empty($event['badge'])) : ?>
+                                                    <div class="bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4"><?php echo esc_html($event['badge']); ?></div>
+                                                <?php endif; ?>
+                                                <h3 class="text-2xl font-serif font-bold text-slate-800 leading-tight line-clamp-3 group-hover:text-primary transition-colors"><?php echo esc_html($event['title']); ?></h3>
+                                            </div>
+                                         </div>
                                     <?php else : ?>
-                                        <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-8xl text-slate-300">event</span>
+                                        <!-- Default / Gradient / Glass / Brutalism / Cyberpunk Layout -->
+                                        <!-- Image -->
+                                        <?php if ($event['image']) : ?>
+                                            <div class="absolute inset-0 bg-slate-200 <?php echo ($card_style === 'brutalism') ? 'filter grayscale contrast-125 saturate-0 group-hover:grayscale-0 transition-all duration-500' : ''; ?>">
+                                                <img src="<?php echo esc_url($event['image']); ?>"
+                                                     alt="<?php echo esc_attr($event['title']); ?>"
+                                                     loading="lazy"
+                                                     class="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 opacity-100 will-change-transform <?php echo ($card_style === 'cyberpunk') ? 'mix-blend-luminosity group-hover:mix-blend-normal' : ''; ?>">
+                                            </div>
+                                        <?php else : ?>
+                                            <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-8xl text-slate-300">event</span>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <!-- Cyberpunk Overlays -->
+                                        <?php if ($card_style === 'cyberpunk') : ?>
+                                            <div class="absolute inset-0 bg-slate-900/60 group-hover:bg-slate-900/40 transition-colors duration-500"></div>
+                                            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-cyan-500/40 to-transparent pointer-events-none"></div>
+                                        <?php endif; ?>
+
+                                        <!-- Gradient Overlay (Dark at bottom for text readability) -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90 <?php echo ($card_style === 'brutalism' || $card_style === 'cyberpunk') ? 'hidden' : ''; ?>"></div>
+
+                                        <!-- Brutalism Blocky Overlay -->
+                                        <?php if ($card_style === 'brutalism') : ?>
+                                             <div class="absolute inset-0 bg-white/0 group-hover:bg-primary/20 mix-blend-multiply transition-colors duration-300"></div>
+                                        <?php endif; ?>
+
+                                        <!-- Hover Action (Zoom Icon) -->
+                                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 pointer-events-none transform scale-75 group-hover:scale-100">
+                                            <div class="bg-white/20 backdrop-blur-md border border-white/40 text-white rounded-full p-4 shadow-2xl">
+                                                <span class="material-symbols-outlined text-4xl drop-shadow-md">visibility</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Content Container -->
+                                        <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none">
+
+                                            <!-- Top Area: Badges & Ribbons -->
+                                            <div class="flex justify-between items-start pointer-events-auto">
+                                                <!-- Date/Category Badge -->
+                                                <?php if (!empty($event['badge'])) : ?>
+                                                    <div class="bg-white/90 backdrop-blur-md text-slate-900 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-105 border border-white/50 <?php echo ($card_style === 'brutalism') ? '!rounded-none border-2 !border-black !bg-white !shadow-[4px_4px_0px_rgba(0,0,0,1)]' : ''; ?> <?php echo ($card_style === 'cyberpunk') ? '!bg-slate-900 !border-cyan-500 !text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]' : ''; ?>">
+                                                        <?php echo esc_html($event['badge']); ?>
+                                                    </div>
+                                                <?php endif; ?>
+
+                                                <!-- Ribbon -->
+                                                <?php if (!empty($event['ribbon'])) : ?>
+                                                    <div class="bg-red-600 text-white font-bold text-[10px] uppercase py-1.5 px-3 rounded-lg shadow-md transform rotate-3 hover:rotate-0 transition-transform duration-300 <?php echo ($card_style === 'brutalism') ? '!rounded-none border-2 border-black !bg-black' : ''; ?>">
+                                                        <?php echo esc_html($event['ribbon']); ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <!-- Bottom Area: Title & Line -->
+                                            <div class="transform transition-transform duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-auto <?php echo ($card_style === 'brutalism') ? 'bg-white p-4 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]' : ''; ?>">
+                                                <h3 class="text-2xl md:text-3xl font-display font-bold text-white mb-4 drop-shadow-md leading-tight line-clamp-3 <?php echo ($card_style === 'brutalism') ? '!text-black !drop-shadow-none !mb-0 uppercase tracking-tighter' : ''; ?> <?php echo ($card_style === 'cyberpunk') ? 'font-mono !text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' : ''; ?>">
+                                                    <?php echo esc_html($event['title']); ?>
+                                                </h3>
+
+                                                <!-- Animated Line -->
+                                                <div class="h-1 w-12 bg-primary rounded-full transition-all duration-500 group-hover:w-full group-hover:bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)] <?php echo ($card_style === 'brutalism' || $card_style === 'cyberpunk') ? 'hidden' : ''; ?>"></div>
+                                            </div>
                                         </div>
                                     <?php endif; ?>
-
-                                    <!-- Gradient Overlay (Dark at bottom for text readability) -->
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90"></div>
-
-                                    <!-- Hover Action (Zoom Icon) -->
-                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 pointer-events-none transform scale-75 group-hover:scale-100">
-                                        <div class="bg-white/20 backdrop-blur-md border border-white/40 text-white rounded-full p-4 shadow-2xl">
-                                            <span class="material-symbols-outlined text-4xl drop-shadow-md">visibility</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Content Container -->
-                                    <div class="absolute inset-0 p-6 md:p-8 flex flex-col justify-between pointer-events-none">
-
-                                        <!-- Top Area: Badges & Ribbons -->
-                                        <div class="flex justify-between items-start pointer-events-auto">
-                                            <!-- Date/Category Badge -->
-                                            <?php if (!empty($event['badge'])) : ?>
-                                                <div class="bg-white/90 backdrop-blur-md text-slate-900 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-105 border border-white/50">
-                                                    <?php echo esc_html($event['badge']); ?>
-                                                </div>
-                                            <?php endif; ?>
-
-                                            <!-- Ribbon -->
-                                            <?php if (!empty($event['ribbon'])) : ?>
-                                                <div class="bg-red-600 text-white font-bold text-[10px] uppercase py-1.5 px-3 rounded-lg shadow-md transform rotate-3 hover:rotate-0 transition-transform duration-300">
-                                                    <?php echo esc_html($event['ribbon']); ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <!-- Bottom Area: Title & Line -->
-                                        <div class="transform transition-transform duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-auto">
-                                            <h3 class="text-2xl md:text-3xl font-display font-bold text-white mb-4 drop-shadow-md leading-tight line-clamp-3">
-                                                <?php echo esc_html($event['title']); ?>
-                                            </h3>
-
-                                            <!-- Animated Line -->
-                                            <div class="h-1 w-12 bg-primary rounded-full transition-all duration-500 group-hover:w-full group-hover:bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)]"></div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>
