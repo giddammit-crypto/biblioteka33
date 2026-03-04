@@ -35,15 +35,43 @@ document.addEventListener('DOMContentLoaded', () => {
             transform: none !important;
         }
 
-        /* Override ALL backgrounds and colors for strict contrast */
-        body.a11y-high-contrast *:not(img):not(video):not(.material-symbols-outlined) {
+        /* Override backgrounds and colors carefully to maintain layout integrity */
+        body.a11y-high-contrast,
+        body.a11y-high-contrast main,
+        body.a11y-high-contrast header,
+        body.a11y-high-contrast footer,
+        body.a11y-high-contrast section,
+        body.a11y-high-contrast article,
+        body.a11y-high-contrast div {
             background-color: #000000 !important;
             background-image: none !important;
             color: #ffffff !important;
             border-color: #ffffff !important;
             box-shadow: none !important;
             text-shadow: none !important;
-            border-radius: 0 !important; /* Square corners are often preferred for strict structure */
+            border-radius: 0 !important;
+        }
+
+        /* Ensure specific text elements are forced white */
+        body.a11y-high-contrast p,
+        body.a11y-high-contrast span:not(.material-symbols-outlined),
+        body.a11y-high-contrast li,
+        body.a11y-high-contrast td,
+        body.a11y-high-contrast th,
+        body.a11y-high-contrast label {
+            color: #ffffff !important;
+            background-color: transparent !important;
+        }
+
+        /* Specifically preserve icons but force them white or yellow */
+        body.a11y-high-contrast .material-symbols-outlined {
+            color: #ffffff !important;
+            background-color: transparent !important;
+            font-family: 'Material Symbols Outlined' !important; /* Ensure font isn't overridden */
+        }
+        body.a11y-high-contrast button .material-symbols-outlined,
+        body.a11y-high-contrast a .material-symbols-outlined {
+            color: inherit !important; /* Inherit yellow from parent link/button */
         }
 
         /* Links - Yellow for high visibility against black */
@@ -101,16 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
             display: none !important;
         }
 
-        /* Enforce visible structure for layout elements */
+        /* Enforce visible structure safely without breaking flex/grid widths */
         body.a11y-high-contrast article,
-        body.a11y-high-contrast section,
-        body.a11y-high-contrast .widget {
+        body.a11y-high-contrast .widget,
+        body.a11y-high-contrast .wp-block-group {
             border: 2px solid #ffffff !important;
-            margin-bottom: 2rem !important;
-            padding: 1rem !important;
-            max-width: 100vw !important;
+            margin-bottom: 1rem !important;
+            /* Removed fixed padding that causes overflow on flex items */
             box-sizing: border-box !important;
-            overflow-x: hidden !important;
         }
     `;
 
