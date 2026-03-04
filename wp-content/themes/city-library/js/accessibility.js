@@ -12,21 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style');
     style.id = 'city-library-a11y-styles';
     style.innerHTML = `
-        /* --- GOST High Contrast Mode (AAA - Black/White/Yellow, Arial) --- */
+        /* --- GOST High Contrast Mode (AAA - Black/White/Yellow, Arial, Fully Adaptive) --- */
         body.a11y-high-contrast {
             background-color: #000000 !important;
             color: #ffffff !important;
             font-family: Arial, Helvetica, sans-serif !important; /* GOST recommends simple sans-serif */
-            font-size: 150% !important; /* Enforce large text globally */
+            font-size: clamp(1rem, 2vw + 0.5rem, 1.5rem) !important; /* Adaptive base font size */
             line-height: 1.5 !important;
             letter-spacing: 0.05em !important;
         }
 
-        /* Force text sizes to scale */
-        body.a11y-high-contrast h1, body.a11y-high-contrast .text-5xl, body.a11y-high-contrast .text-6xl, body.a11y-high-contrast .text-7xl, body.a11y-high-contrast .text-8xl { font-size: 3rem !important; line-height: 1.2 !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
-        body.a11y-high-contrast h2, body.a11y-high-contrast .text-4xl, body.a11y-high-contrast .text-3xl { font-size: 2.5rem !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
-        body.a11y-high-contrast h3, body.a11y-high-contrast .text-2xl { font-size: 2rem !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
-        body.a11y-high-contrast p, body.a11y-high-contrast li, body.a11y-high-contrast span, body.a11y-high-contrast div { font-family: Arial, Helvetica, sans-serif !important; }
+        /* Force text sizes to scale adaptively */
+        body.a11y-high-contrast h1, body.a11y-high-contrast .text-5xl, body.a11y-high-contrast .text-6xl, body.a11y-high-contrast .text-7xl, body.a11y-high-contrast .text-8xl { font-size: clamp(2rem, 5vw + 1rem, 3rem) !important; line-height: 1.2 !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast h2, body.a11y-high-contrast .text-4xl, body.a11y-high-contrast .text-3xl { font-size: clamp(1.5rem, 4vw + 0.5rem, 2.5rem) !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast h3, body.a11y-high-contrast .text-2xl { font-size: clamp(1.25rem, 3vw + 0.5rem, 2rem) !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast p, body.a11y-high-contrast li, body.a11y-high-contrast span, body.a11y-high-contrast div { font-family: Arial, Helvetica, sans-serif !important; word-wrap: break-word !important; overflow-wrap: break-word !important; }
 
         /* Disable all transitions and animations */
         body.a11y-high-contrast *, body.a11y-high-contrast *:before, body.a11y-high-contrast *:after {
@@ -108,6 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
             border: 2px solid #ffffff !important;
             margin-bottom: 2rem !important;
             padding: 1rem !important;
+            max-width: 100vw !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
         }
     `;
 

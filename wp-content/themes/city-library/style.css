@@ -122,6 +122,26 @@ p, li, .entry-content p, .entry-content li {
 
 .entry-content {
     overflow-wrap: anywhere; /* Break unbreakable strings inside content */
+    word-break: break-word; /* Safari fallback */
+    hyphens: auto; /* Allow CSS hyphenation where possible */
+    max-width: 100%;
+}
+
+/* Ensure preformatted text blocks and code don't break flex/grid layouts on mobile */
+.entry-content pre,
+.entry-content code {
+    white-space: pre-wrap; /* Wrap code if necessary instead of scrolling horizontally */
+    word-break: break-all;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Ensure tables in content scroll horizontally instead of breaking layout */
+.entry-content table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 h1, h2, h3, h4, h5, h6 {
