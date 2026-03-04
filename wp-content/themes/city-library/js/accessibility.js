@@ -1,32 +1,38 @@
 /**
- * Accessibility Tools (AAA Quality)
+ * Accessibility Tools (AAA Quality - GOST Standard)
  *
- * Provides a robust cycler for accessibility modes with persistent state.
- * Modes: Normal -> Large Text -> High Contrast (Black/White/Yellow)
+ * Provides a robust toggle for accessibility modes with persistent state.
+ * Modes: Normal <-> GOST High Contrast (Black/White/Yellow, Large Text, No Images)
  */
 document.addEventListener('DOMContentLoaded', () => {
     const accessibilityButton = document.getElementById('accessibility-button');
     if (!accessibilityButton) return;
 
-    // Inject CSS for accessibility modes
+    // Inject CSS for GOST AAA accessibility mode
     const style = document.createElement('style');
     style.id = 'city-library-a11y-styles';
     style.innerHTML = `
-        /* --- Large Text Mode --- */
-        body.a11y-large-text {
-            font-size: 130% !important;
-            line-height: 1.6 !important;
-        }
-        body.a11y-large-text h1, body.a11y-large-text .text-5xl, body.a11y-large-text .text-7xl, body.a11y-large-text .text-8xl { font-size: 4rem !important; line-height: 1.2 !important; }
-        body.a11y-large-text h2, body.a11y-large-text .text-4xl, body.a11y-large-text .text-5xl { font-size: 3rem !important; }
-        body.a11y-large-text h3, body.a11y-large-text .text-2xl, body.a11y-large-text .text-3xl { font-size: 2rem !important; }
-        body.a11y-large-text p, body.a11y-large-text li, body.a11y-large-text a, body.a11y-large-text span { font-size: 1.2rem !important; }
-
-        /* --- High Contrast Mode (AAA - Black/White/Yellow) --- */
+        /* --- GOST High Contrast Mode (AAA - Black/White/Yellow, Arial) --- */
         body.a11y-high-contrast {
             background-color: #000000 !important;
             color: #ffffff !important;
-            filter: grayscale(100%) contrast(120%); /* Force grayscale base */
+            font-family: Arial, Helvetica, sans-serif !important; /* GOST recommends simple sans-serif */
+            font-size: 150% !important; /* Enforce large text globally */
+            line-height: 1.5 !important;
+            letter-spacing: 0.05em !important;
+        }
+
+        /* Force text sizes to scale */
+        body.a11y-high-contrast h1, body.a11y-high-contrast .text-5xl, body.a11y-high-contrast .text-6xl, body.a11y-high-contrast .text-7xl, body.a11y-high-contrast .text-8xl { font-size: 3rem !important; line-height: 1.2 !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast h2, body.a11y-high-contrast .text-4xl, body.a11y-high-contrast .text-3xl { font-size: 2.5rem !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast h3, body.a11y-high-contrast .text-2xl { font-size: 2rem !important; font-family: Arial, Helvetica, sans-serif !important; font-weight: bold !important; }
+        body.a11y-high-contrast p, body.a11y-high-contrast li, body.a11y-high-contrast span, body.a11y-high-contrast div { font-family: Arial, Helvetica, sans-serif !important; }
+
+        /* Disable all transitions and animations */
+        body.a11y-high-contrast *, body.a11y-high-contrast *:before, body.a11y-high-contrast *:after {
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
         }
 
         /* Override ALL backgrounds and colors for strict contrast */
@@ -37,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             border-color: #ffffff !important;
             box-shadow: none !important;
             text-shadow: none !important;
+            border-radius: 0 !important; /* Square corners are often preferred for strict structure */
         }
 
         /* Links - Yellow for high visibility against black */
@@ -44,12 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-high-contrast a * {
             color: #ffff00 !important;
             text-decoration: underline !important;
+            text-decoration-thickness: 2px !important;
         }
         body.a11y-high-contrast a:hover,
         body.a11y-high-contrast a:focus {
             background-color: #ffff00 !important;
             color: #000000 !important;
-            outline: 2px solid #ffffff !important;
+            outline: 4px solid #ffffff !important;
+            outline-offset: 4px !important;
         }
 
         /* Buttons & Inputs */
@@ -62,26 +71,43 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-high-contrast [role="button"] {
             background-color: #000000 !important;
             color: #ffff00 !important;
-            border: 2px solid #ffff00 !important;
+            border: 3px solid #ffff00 !important;
             font-weight: bold !important;
+            padding: 10px 15px !important;
+            font-size: 1.2rem !important;
         }
         body.a11y-high-contrast button:hover,
-        body.a11y-high-contrast [role="button"]:hover {
+        body.a11y-high-contrast button:focus,
+        body.a11y-high-contrast [role="button"]:hover,
+        body.a11y-high-contrast [role="button"]:focus {
             background-color: #ffff00 !important;
             color: #000000 !important;
+            outline: 4px solid #ffffff !important;
         }
 
-        /* Images - Optional: Add high contrast filter or border */
+        /* Images - Hide decorative, strictly border informative ones */
         body.a11y-high-contrast img {
-            border: 1px solid #ffffff !important;
-            filter: grayscale(100%) contrast(120%) !important;
+            border: 2px solid #ffffff !important;
+            filter: grayscale(100%) contrast(150%) !important;
+            max-width: 100% !important;
         }
 
-        /* Hide decorative elements */
-        body.a11y-high-contrast .decorative-element,
+        /* Hide purely decorative background elements, blur effects, gradients */
+        body.a11y-high-contrast .absolute.bg-primary\\/5,
+        body.a11y-high-contrast .blur-3xl,
         body.a11y-high-contrast .bg-pattern-slate,
-        body.a11y-high-contrast .hero-gradient {
-            background: none !important;
+        body.a11y-high-contrast [class*="bg-gradient"],
+        body.a11y-high-contrast .pointer-events-none {
+            display: none !important;
+        }
+
+        /* Enforce visible structure for layout elements */
+        body.a11y-high-contrast article,
+        body.a11y-high-contrast section,
+        body.a11y-high-contrast .widget {
+            border: 2px solid #ffffff !important;
+            margin-bottom: 2rem !important;
+            padding: 1rem !important;
         }
     `;
 
@@ -90,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
     }
 
-    const modes = ['normal', 'large-text', 'high-contrast'];
+    const modes = ['normal', 'high-contrast'];
     let currentModeIndex = 0;
 
     // Load saved preference
@@ -109,22 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
         applyMode(newMode);
         localStorage.setItem('city_library_a11y_mode', newMode);
 
-        // Announce change for screen readers via alert or live region (using alert for simplicity as requested)
+        // Announce change for screen readers via alert
         const messages = {
             'normal': 'Обычный режим сайта включен.',
-            'large-text': 'Режим крупного текста включен.',
-            'high-contrast': 'Режим высокой контрастности включен.'
+            'high-contrast': 'Версия для слабовидящих включена.'
         };
         // Use a small timeout to let the UI update first
         setTimeout(() => alert(messages[newMode]), 50);
     });
 
     function applyMode(mode) {
-        document.body.classList.remove('a11y-large-text', 'a11y-high-contrast');
+        document.body.classList.remove('a11y-high-contrast');
 
-        if (mode === 'large-text') {
-            document.body.classList.add('a11y-large-text');
-        } else if (mode === 'high-contrast') {
+        if (mode === 'high-contrast') {
             document.body.classList.add('a11y-high-contrast');
         }
     }

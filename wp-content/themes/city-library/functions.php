@@ -231,7 +231,7 @@ function city_library_send_book_renewal() {
     ";
 
     $headers = array('Content-Type: text/html; charset=UTF-8');
-    $headers[] = 'From: City Library Site <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
+    $headers[] = 'From: Продление книг онлайн <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
     $headers[] = 'Reply-To: ' . $fio . ' <' . $email . '>';
 
     $sent = wp_mail($branch_email, $subject, $message, $headers);
