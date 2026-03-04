@@ -71,11 +71,11 @@ if ($bg_style === 'gradient') {
 
                     <div class="flex items-center justify-center gap-4 pt-4 relative z-30">
                         <!-- Navigation Buttons -->
-                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_back</span>
+                        <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;" aria-label="<?php esc_attr_e('Предыдущее мероприятие', 'city-library'); ?>">
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black" aria-hidden="true">arrow_back</span>
                         </button>
-                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_forward</span>
+                        <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;" aria-label="<?php esc_attr_e('Следующее мероприятие', 'city-library'); ?>">
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black" aria-hidden="true">arrow_forward</span>
                         </button>
                     </div>
                 </div>
@@ -168,7 +168,7 @@ if ($bg_style === 'gradient') {
 <div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
     <!-- Close Button -->
     <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white cursor-pointer group">
-        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300">close</span>
+        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
         <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
     </button>
 
