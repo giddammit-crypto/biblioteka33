@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-high-contrast *, body.a11y-high-contrast *:before, body.a11y-high-contrast *:after {
             transition: none !important;
             animation: none !important;
-            transform: none !important;
+            /* Do not disable transforms globally, as they break Swiper sliders and absolute positioning on mobile */
         }
 
         /* Override backgrounds and colors carefully to maintain layout integrity */
@@ -73,6 +73,48 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-high-contrast .backdrop-blur-xl {
             background-color: #000000 !important;
             border-color: #ffffff !important;
+        }
+
+        /* Fix adaptivity for Swiper sliders and absolute positioned cards in mobile view */
+        body.a11y-high-contrast .swiper-wrapper {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2rem !important;
+        }
+
+        body.a11y-high-contrast .swiper-slide {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        body.a11y-high-contrast article.group {
+            display: flex !important;
+            flex-direction: column !important;
+            height: auto !important;
+            aspect-ratio: auto !important;
+            width: 100% !important;
+            border: 2px solid #ffffff !important;
+            position: relative !important;
+        }
+
+        body.a11y-high-contrast article.group > div.absolute.inset-0 {
+            position: relative !important;
+            height: auto !important;
+            min-height: 200px !important;
+            width: 100% !important;
+            border-bottom: 2px solid #ffffff !important;
+        }
+
+        body.a11y-high-contrast article.group > div.relative.z-10 {
+            position: relative !important;
+            padding: 1.5rem !important;
+            pointer-events: auto !important;
+            background-color: #000000 !important;
+        }
+
+        /* Ensure links that span whole cards are clickable but don't block text */
+        body.a11y-high-contrast article.group a.absolute.inset-0.lg\\:hidden {
+            display: none !important;
         }
 
         /* Specifically preserve icons but force them white or yellow */
@@ -137,8 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         /* Hide purely decorative background elements, blur effects, gradients */
         body.a11y-high-contrast .absolute.bg-primary\\/5,
         body.a11y-high-contrast .blur-3xl,
-        body.a11y-high-contrast .bg-pattern-slate,
-        body.a11y-high-contrast [class*="bg-gradient"],
         body.a11y-high-contrast [class*="bg-gradient"]:not(.swiper-button-prev):not(.swiper-button-next) {
             display: none !important;
         }
