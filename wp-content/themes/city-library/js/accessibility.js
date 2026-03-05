@@ -172,8 +172,12 @@ document.addEventListener('DOMContentLoaded', () => {
             border: 2px solid #ffffff !important;
             filter: grayscale(100%) contrast(150%) !important;
             max-width: 100% !important;
+            max-height: 50vh !important; /* Prevent images from becoming gigantic on desktop */
             height: auto !important; /* Allow natural aspect ratio scaling */
             object-fit: contain !important; /* Prevent cropping/zooming distortion */
+            margin-left: auto !important;
+            margin-right: auto !important;
+            display: block !important;
         }
 
         /* Hide purely decorative background elements, blur effects, gradients */
