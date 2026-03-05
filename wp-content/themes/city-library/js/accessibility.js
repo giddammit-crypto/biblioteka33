@@ -36,31 +36,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         /* Override backgrounds and colors carefully to maintain layout integrity */
-        body.a11y-high-contrast,
-        body.a11y-high-contrast main,
-        body.a11y-high-contrast header,
-        body.a11y-high-contrast footer,
-        body.a11y-high-contrast section,
-        body.a11y-high-contrast article,
-        body.a11y-high-contrast div {
+        body.a11y-high-contrast {
             background-color: #000000 !important;
-            background-image: none !important;
             color: #ffffff !important;
-            border-color: #ffffff !important;
+        }
+
+        /* Remove background graphics, shadows, and rounded corners globally without destroying div display properties */
+        body.a11y-high-contrast *,
+        body.a11y-high-contrast *::before,
+        body.a11y-high-contrast *::after {
+            background-image: none !important;
             box-shadow: none !important;
             text-shadow: none !important;
             border-radius: 0 !important;
         }
 
-        /* Ensure specific text elements are forced white */
-        body.a11y-high-contrast p,
-        body.a11y-high-contrast span:not(.material-symbols-outlined),
-        body.a11y-high-contrast li,
-        body.a11y-high-contrast td,
-        body.a11y-high-contrast th,
-        body.a11y-high-contrast label {
+        /* Force high contrast text colors explicitly on standard containers */
+        body.a11y-high-contrast h1, body.a11y-high-contrast h2, body.a11y-high-contrast h3, body.a11y-high-contrast h4, body.a11y-high-contrast h5, body.a11y-high-contrast h6,
+        body.a11y-high-contrast p, body.a11y-high-contrast span:not(.material-symbols-outlined), body.a11y-high-contrast li, body.a11y-high-contrast td, body.a11y-high-contrast th, body.a11y-high-contrast label, body.a11y-high-contrast div {
             color: #ffffff !important;
-            background-color: transparent !important;
+        }
+
+        /* Ensure containers that might have inherited light backgrounds from Tailwind are forced black */
+        body.a11y-high-contrast main,
+        body.a11y-high-contrast header,
+        body.a11y-high-contrast footer,
+        body.a11y-high-contrast section,
+        body.a11y-high-contrast article,
+        body.a11y-high-contrast nav,
+        body.a11y-high-contrast .bg-white,
+        body.a11y-high-contrast .bg-slate-50,
+        body.a11y-high-contrast .bg-slate-100,
+        body.a11y-high-contrast .bg-slate-800,
+        body.a11y-high-contrast .bg-slate-900,
+        body.a11y-high-contrast .backdrop-blur-md,
+        body.a11y-high-contrast .backdrop-blur-xl {
+            background-color: #000000 !important;
+            border-color: #ffffff !important;
         }
 
         /* Specifically preserve icons but force them white or yellow */
@@ -113,11 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
             outline: 4px solid #ffffff !important;
         }
 
-        /* Images - Hide decorative, strictly border informative ones */
+        /* Images - Strictly border informative ones, ensure they adapt properly */
         body.a11y-high-contrast img {
             border: 2px solid #ffffff !important;
             filter: grayscale(100%) contrast(150%) !important;
             max-width: 100% !important;
+            height: auto !important; /* Allow natural aspect ratio scaling */
+            object-fit: contain !important; /* Prevent cropping/zooming distortion */
         }
 
         /* Hide purely decorative background elements, blur effects, gradients */
@@ -125,18 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-high-contrast .blur-3xl,
         body.a11y-high-contrast .bg-pattern-slate,
         body.a11y-high-contrast [class*="bg-gradient"],
-        body.a11y-high-contrast .pointer-events-none {
+        body.a11y-high-contrast [class*="bg-gradient"]:not(.swiper-button-prev):not(.swiper-button-next) {
             display: none !important;
         }
 
-        /* Enforce visible structure safely without breaking flex/grid widths */
+        /* Enforce visible structure and borders safely */
         body.a11y-high-contrast article,
         body.a11y-high-contrast .widget,
-        body.a11y-high-contrast .wp-block-group {
+        body.a11y-high-contrast .swiper-slide > div,
+        body.a11y-high-contrast #masthead,
+        body.a11y-high-contrast footer {
             border: 2px solid #ffffff !important;
-            margin-bottom: 1rem !important;
-            /* Removed fixed padding that causes overflow on flex items */
             box-sizing: border-box !important;
+        }
+
+        /* Ensure header doesn't overlap weirdly when border is applied */
+        body.a11y-high-contrast #masthead {
+            border-top: none !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: 4px solid #ffffff !important;
         }
     `;
 
