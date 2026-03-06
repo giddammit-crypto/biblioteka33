@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     banner.innerHTML = `
         <div class="flex items-start gap-4 max-w-4xl">
             <div class="shrink-0 p-3 bg-primary/10 rounded-full hidden sm:block">
-                <span class="material-symbols-outlined text-3xl text-primary">cookie</span>
+                <span class="material-symbols-outlined text-3xl text-primary" aria-hidden="true">cookie</span>
             </div>
             <div>
                 <h4 class="text-lg font-bold font-display text-slate-900 mb-2">Мы используем файлы cookie</h4>

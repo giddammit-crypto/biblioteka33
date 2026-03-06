@@ -28,15 +28,15 @@
                 <div class="mt-12 text-center">
                     <?php the_posts_pagination(array(
                         'mid_size'  => 2,
-                        'prev_text' => '<span class="material-symbols-outlined">chevron_left</span>',
-                        'next_text' => '<span class="material-symbols-outlined">chevron_right</span>',
+                        'prev_text' => '<span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>',
+                        'next_text' => '<span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>',
                         'screen_reader_text' => __('Навигация по записям', 'city-library'),
                     )); ?>
                 </div>
 
             <?php else : ?>
                 <div class="text-center py-12">
-                    <span class="material-symbols-outlined text-6xl text-slate-300 mb-4 hover:scale-110 transition-transform duration-300">sentiment_dissatisfied</span>
+                    <span class="material-symbols-outlined text-6xl text-slate-300 mb-4 hover:scale-110 transition-transform duration-300" aria-hidden="true">sentiment_dissatisfied</span>
                     <h2 class="text-2xl font-bold text-slate-700 mb-2"><?php _e('Ничего не найдено', 'city-library'); ?></h2>
                     <p class="text-slate-500 mb-8"><?php _e('Попробуйте изменить запрос или вернитесь на главную.', 'city-library'); ?></p>
                     <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-flex items-center px-8 py-3 bg-primary text-white rounded-full font-bold hover:bg-primary/90 transition-colors hover:shadow-lg hover:-translate-y-1 duration-300">

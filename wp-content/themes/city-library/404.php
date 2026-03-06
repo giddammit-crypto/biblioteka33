@@ -19,7 +19,7 @@
                 </div>
 
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-flex items-center gap-2 text-primary font-bold uppercase tracking-widest hover:text-primary/80 transition-colors group">
-                    <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                    <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform" aria-hidden="true">arrow_back</span>
                     <?php _e('Вернуться на главную', 'city-library'); ?>
                 </a>
             </div>
