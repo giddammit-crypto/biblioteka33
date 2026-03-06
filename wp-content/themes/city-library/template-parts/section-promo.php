@@ -29,7 +29,7 @@ $link = get_theme_mod('promo_link', '#');
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
              <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
-                <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
+                <span class="material-symbols-outlined text-6xl text-slate-400" aria-hidden="true">image</span>
              </div>
         <?php endif; ?>
 
@@ -51,7 +51,7 @@ $link = get_theme_mod('promo_link', '#');
                 <div>
                     <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group text-center max-w-full">
                         <span class="whitespace-normal"><?php echo esc_html($btn_text); ?></span>
-                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>

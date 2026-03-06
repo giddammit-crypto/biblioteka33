@@ -10,7 +10,7 @@
     <?php if ($show_sidebar) : ?>
     <div class="mb-6 px-4 lg:px-0">
          <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-            <span class="material-symbols-outlined">menu_open</span>
+            <span class="material-symbols-outlined" aria-hidden="true">menu_open</span>
             <span class="text-sm font-bold uppercase"><?php _e('Скрыть/Показать сайдбар', 'city-library'); ?></span>
         </button>
     </div>
@@ -60,7 +60,7 @@
                 <div class="mt-16 text-center border-t border-slate-200 pt-8">
                     <a href="<?php echo esc_url(add_query_arg('news_archive', 'true', home_url('/'))); ?>" class="inline-flex items-center text-slate-900 font-bold text-lg hover:underline decoration-2 underline-offset-4">
                         <?php _e('Архив новостей', 'city-library'); ?>
-                        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                        <span class="material-symbols-outlined ml-2" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
 

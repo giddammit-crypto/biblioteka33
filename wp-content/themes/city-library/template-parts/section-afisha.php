@@ -72,10 +72,10 @@ if ($bg_style === 'gradient') {
                     <div class="flex items-center justify-center gap-4 pt-4 relative z-30">
                         <!-- Navigation Buttons -->
                         <button class="afisha-prev group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_back</span>
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black" aria-hidden="true">arrow_back</span>
                         </button>
                         <button class="afisha-next group p-3 md:p-4 rounded-full border border-slate-300 hover:border-slate-400 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-sm" style="background-color: #f1f5f9 !important; color: #000000 !important;">
-                            <span class="material-symbols-outlined relative z-10 transition-colors text-black">arrow_forward</span>
+                            <span class="material-symbols-outlined relative z-10 transition-colors text-black" aria-hidden="true">arrow_forward</span>
                         </button>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ if ($bg_style === 'gradient') {
                                         </div>
                                     <?php else : ?>
                                         <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-8xl text-slate-700">event</span>
+                                            <span class="material-symbols-outlined text-8xl text-slate-700" aria-hidden="true">event</span>
                                         </div>
                                     <?php endif; ?>
 
@@ -118,7 +118,7 @@ if ($bg_style === 'gradient') {
                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20 pointer-events-none">
                                         <div class="bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold uppercase tracking-widest py-3 px-6 rounded-full flex items-center gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
                                             <span><?php _e('Увеличить', 'city-library'); ?></span>
-                                            <span class="material-symbols-outlined">zoom_in</span>
+                                            <span class="material-symbols-outlined" aria-hidden="true">zoom_in</span>
                                         </div>
                                     </div>
 
@@ -168,7 +168,7 @@ if ($bg_style === 'gradient') {
 <div id="afisha-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 backdrop-blur-sm transition-opacity duration-300 opacity-0" aria-hidden="true">
     <!-- Close Button -->
     <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white cursor-pointer group">
-        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300">close</span>
+        <span class="material-symbols-outlined text-4xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
         <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
     </button>
 
@@ -183,7 +183,7 @@ if ($bg_style === 'gradient') {
         <div class="mt-auto mb-4">
             <a id="afisha-modal-link" href="#" class="inline-flex items-center justify-center px-8 py-4 bg-primary text-white font-bold text-lg uppercase tracking-wider rounded-full hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50">
                 <?php _e('Перейти к полной записи', 'city-library'); ?>
-                <span class="material-symbols-outlined ml-2 text-2xl">arrow_forward</span>
+                <span class="material-symbols-outlined ml-2 text-2xl" aria-hidden="true">arrow_forward</span>
             </a>
         </div>
     </div>
