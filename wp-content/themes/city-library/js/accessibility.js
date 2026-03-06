@@ -129,20 +129,31 @@ document.addEventListener('DOMContentLoaded', () => {
             margin-left: auto !important;
             margin-right: auto !important;
             display: block !important;
+            position: relative !important; /* Force static/relative so absolutely positioned images appear */
         }
 
         /* UI Adjustments for Adaptivity */
-        body.a11y-active .swiper-wrapper { display: flex !important; flex-direction: column !important; gap: 2rem !important; }
-        body.a11y-active .swiper-slide { width: 100% !important; height: auto !important; }
-        body.a11y-active article.group { display: flex !important; flex-direction: column !important; height: auto !important; width: 100% !important; border: 2px solid var(--a11y-border) !important; position: relative !important; }
-        body.a11y-active article.group > div.absolute.inset-0 { position: relative !important; height: auto !important; min-height: 200px !important; width: 100% !important; border-bottom: 2px solid var(--a11y-border) !important; }
+        body.a11y-active .swiper-wrapper { display: flex !important; flex-direction: column !important; gap: 2rem !important; transform: none !important; }
+        body.a11y-active .swiper-slide { width: 100% !important; height: auto !important; position: relative !important; }
+        body.a11y-active .swiper-slide > div { position: relative !important; height: auto !important; }
+
+        body.a11y-active article.group { display: flex !important; flex-direction: column !important; height: auto !important; width: 100% !important; border: 2px solid var(--a11y-border) !important; position: relative !important; overflow: visible !important; }
+        body.a11y-active article.group > div.absolute.inset-0,
+        body.a11y-active article.group > div:first-child { position: relative !important; height: auto !important; min-height: 200px !important; width: 100% !important; border-bottom: 2px solid var(--a11y-border) !important; overflow: visible !important; }
         body.a11y-active article.group > div.relative.z-10 { position: relative !important; padding: 1.5rem !important; pointer-events: auto !important; }
         body.a11y-active article.group a.absolute.inset-0.lg\\:hidden { display: none !important; }
         body.a11y-active .absolute.bg-primary\\/5, body.a11y-active .blur-3xl, body.a11y-active [class*="bg-gradient"]:not(.swiper-button-prev):not(.swiper-button-next) { display: none !important; }
         body.a11y-active article, body.a11y-active .widget, body.a11y-active .swiper-slide > div, body.a11y-active footer { border: 2px solid var(--a11y-border) !important; box-sizing: border-box !important; }
-        body.a11y-active #masthead { border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 4px solid var(--a11y-border) !important; }
 
-        /* Panel UI Styles (Isolated to prevent inheritance) */
+        /* Menu & Header Adaptivity */
+        body.a11y-active #masthead { border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 4px solid var(--a11y-border) !important; height: auto !important; }
+        body.a11y-active #masthead > div { flex-wrap: wrap !important; gap: 1rem !important; }
+        body.a11y-active nav { width: 100% !important; overflow: visible !important; }
+        body.a11y-active nav > ul { flex-wrap: wrap !important; display: flex !important; justify-content: flex-start !important; gap: 1rem !important; }
+        body.a11y-active .sub-menu { position: static !important; display: block !important; opacity: 1 !important; visibility: visible !important; transform: none !important; box-shadow: none !important; padding-left: 1rem !important; border-left: 2px solid var(--a11y-border) !important; margin-top: 0.5rem !important; }
+        body.a11y-active li.group > a .material-symbols-outlined { display: none !important; }
+
+        /* Compact Panel UI Styles (Adaptive toolbar) */
         #a11y-panel {
             display: none;
             position: fixed;
@@ -152,12 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
             z-index: 999999;
             background: #ffffff;
             color: #000000;
-            border-bottom: 4px solid #000000;
-            padding: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-bottom: 2px solid #000000;
+            padding: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             font-family: Arial, Helvetica, sans-serif !important;
             letter-spacing: normal !important;
-            font-size: 16px !important;
+            font-size: 14px !important;
             max-height: 100vh;
             overflow-y: auto;
         }
@@ -177,47 +188,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         #a11y-panel .a11y-panel-inner {
-            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        #a11y-panel .a11y-row {
+        #a11y-panel .a11y-group {
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            margin-bottom: 1rem;
-            gap: 1rem;
-            border: none !important;
+            gap: 0.25rem;
+            border: 1px solid #ccc !important;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
         }
 
         #a11y-panel .a11y-label {
             font-weight: bold !important;
-            font-size: 1.2rem !important;
-            min-width: 150px;
-            margin: 0 !important;
-            color: #000000 !important;
+            font-size: 0.85rem !important;
+            margin-right: 0.5rem !important;
+            color: #333 !important;
             border: none !important;
+            text-transform: uppercase;
         }
 
         #a11y-panel button.a11y-btn {
-            background: #ffffff !important;
+            background: #f8f9fa !important;
             color: #000000 !important;
-            border: 2px solid #000000 !important;
-            padding: 0.5rem 1rem !important;
-            font-size: 1.1rem !important;
+            border: 1px solid #000000 !important;
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.9rem !important;
             font-weight: bold !important;
             cursor: pointer !important;
-            border-radius: 0 !important;
+            border-radius: 2px !important;
             text-decoration: none !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            min-width: 32px;
+            text-align: center;
         }
 
         #a11y-panel button.a11y-btn:hover, #a11y-panel button.a11y-btn:focus {
             background: #e2e8f0 !important;
             outline: 2px solid #000000 !important;
-            outline-offset: 2px !important;
         }
 
         #a11y-panel button.a11y-btn.active {
@@ -227,36 +241,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* Specific theme buttons inside panel */
         #a11y-panel button[data-action="theme"][data-value="bw"] { background: #ffffff !important; color: #000000 !important; }
-        #a11y-panel button[data-action="theme"][data-value="bw"].active { border-width: 4px !important; }
         #a11y-panel button[data-action="theme"][data-value="wb"] { background: #000000 !important; color: #ffffff !important; }
-        #a11y-panel button[data-action="theme"][data-value="wb"].active { border-width: 4px !important; border-color: #666 !important; }
+        #a11y-panel button[data-action="theme"][data-value="wb"].active { border-color: #666 !important; }
         #a11y-panel button[data-action="theme"][data-value="bb"] { background: #9dd1ff !important; color: #063462 !important; border-color: #063462 !important; }
-        #a11y-panel button[data-action="theme"][data-value="bb"].active { border-width: 4px !important; }
         #a11y-panel button[data-action="theme"][data-value="br"] { background: #f7f3d6 !important; color: #4d3319 !important; border-color: #4d3319 !important; }
-        #a11y-panel button[data-action="theme"][data-value="br"].active { border-width: 4px !important; }
 
-        #a11y-panel .a11y-close-row {
+        #a11y-panel .a11y-actions {
             display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 2px solid #000000 !important;
-            flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.5rem;
+            margin-left: auto;
         }
 
-        #a11y-panel .a11y-close-row button {
-            font-size: 1.2rem !important;
-            padding: 0.75rem 1.5rem !important;
+        #a11y-panel button.a11y-btn-turn-off {
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+            border-color: #991b1b !important;
         }
+        #a11y-panel button.a11y-btn-turn-off:hover { background: #fca5a5 !important; }
 
-        #a11y-panel .a11y-close-row button.a11y-btn-turn-off {
-            background: #ffcccc !important;
-            color: #cc0000 !important;
-            border-color: #cc0000 !important;
-        }
-        #a11y-panel .a11y-close-row button.a11y-btn-turn-off:hover {
-            background: #ff9999 !important;
+        @media (max-width: 1024px) {
+            #a11y-panel .a11y-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+            }
+            #a11y-panel .a11y-group {
+                flex: 1 1 auto;
+                justify-content: center;
+            }
         }
     `;
 
@@ -286,44 +299,51 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Failed to parse a11y settings', e);
     }
 
-    // Create Panel HTML
+    // Create Compact Toolbar HTML
     const panelHTML = `
         <div id="a11y-panel" aria-label="Панель настроек для слабовидящих" role="dialog" aria-modal="false">
             <div class="a11y-panel-inner">
-                <div class="a11y-row">
-                    <div class="a11y-label">Размер шрифта:</div>
-                    <button class="a11y-btn" data-action="size" data-value="normal">А (Обычный)</button>
-                    <button class="a11y-btn" data-action="size" data-value="large">А+ (Увеличенный)</button>
-                    <button class="a11y-btn" data-action="size" data-value="xlarge">А++ (Большой)</button>
+
+                <div class="a11y-group">
+                    <span class="a11y-label">Размер:</span>
+                    <button class="a11y-btn" data-action="size" data-value="normal" title="Обычный">А</button>
+                    <button class="a11y-btn" data-action="size" data-value="large" title="Увеличенный">А+</button>
+                    <button class="a11y-btn" data-action="size" data-value="xlarge" title="Большой">А++</button>
                 </div>
-                <div class="a11y-row">
-                    <div class="a11y-label">Цвета сайта:</div>
-                    <button class="a11y-btn" data-action="theme" data-value="bw">Ц (Чёрным по белому)</button>
-                    <button class="a11y-btn" data-action="theme" data-value="wb">Ц (Белым по чёрному)</button>
-                    <button class="a11y-btn" data-action="theme" data-value="bb">Ц (Тёмно-синим по голубому)</button>
-                    <button class="a11y-btn" data-action="theme" data-value="br">Ц (Коричневым по бежевому)</button>
+
+                <div class="a11y-group">
+                    <span class="a11y-label">Цвет:</span>
+                    <button class="a11y-btn" data-action="theme" data-value="bw" title="Чёрным по белому">Ц</button>
+                    <button class="a11y-btn" data-action="theme" data-value="wb" title="Белым по чёрному">Ц</button>
+                    <button class="a11y-btn" data-action="theme" data-value="bb" title="Тёмно-синим по голубому">Ц</button>
+                    <button class="a11y-btn" data-action="theme" data-value="br" title="Коричневым по бежевому">Ц</button>
                 </div>
-                <div class="a11y-row">
-                    <div class="a11y-label">Шрифт:</div>
-                    <button class="a11y-btn" data-action="font" data-value="sans">Без засечек</button>
-                    <button class="a11y-btn" data-action="font" data-value="serif">С засечками</button>
+
+                <div class="a11y-group">
+                    <span class="a11y-label">Шрифт:</span>
+                    <button class="a11y-btn" data-action="font" data-value="sans" title="Без засечек">Без</button>
+                    <button class="a11y-btn" data-action="font" data-value="serif" title="С засечками">С</button>
                 </div>
-                <div class="a11y-row">
-                    <div class="a11y-label">Интервал:</div>
-                    <button class="a11y-btn" data-action="spacing" data-value="normal">Обычный</button>
-                    <button class="a11y-btn" data-action="spacing" data-value="medium">Средний</button>
-                    <button class="a11y-btn" data-action="spacing" data-value="large">Большой</button>
+
+                <div class="a11y-group">
+                    <span class="a11y-label">Инт:</span>
+                    <button class="a11y-btn" data-action="spacing" data-value="normal" title="Обычный интервал">=</button>
+                    <button class="a11y-btn" data-action="spacing" data-value="medium" title="Средний интервал">==</button>
+                    <button class="a11y-btn" data-action="spacing" data-value="large" title="Большой интервал">===</button>
                 </div>
-                <div class="a11y-row">
-                    <div class="a11y-label">Изображения:</div>
-                    <button class="a11y-btn" data-action="images" data-value="color">Цветные</button>
-                    <button class="a11y-btn" data-action="images" data-value="grayscale">Чёрно-белые</button>
-                    <button class="a11y-btn" data-action="images" data-value="hidden">Скрыть</button>
+
+                <div class="a11y-group">
+                    <span class="a11y-label">Изобр:</span>
+                    <button class="a11y-btn" data-action="images" data-value="color" title="Цветные">Цв</button>
+                    <button class="a11y-btn" data-action="images" data-value="grayscale" title="Чёрно-белые">ЧБ</button>
+                    <button class="a11y-btn" data-action="images" data-value="hidden" title="Скрыть">Нет</button>
                 </div>
-                <div class="a11y-close-row">
-                    <button class="a11y-btn a11y-btn-turn-off" id="a11y-turn-off">Выключить версию для слабовидящих</button>
-                    <button class="a11y-btn" id="a11y-close-panel">Скрыть панель (Оставить настройки)</button>
+
+                <div class="a11y-actions">
+                    <button class="a11y-btn" id="a11y-close-panel" title="Скрыть панель">Скрыть панель</button>
+                    <button class="a11y-btn a11y-btn-turn-off" id="a11y-turn-off" title="Выключить версию для слабовидящих">Выключить АА</button>
                 </div>
+
             </div>
         </div>
     `;
