@@ -145,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
         body.a11y-active .absolute.bg-primary\\/5, body.a11y-active .blur-3xl, body.a11y-active [class*="bg-gradient"]:not(.swiper-button-prev):not(.swiper-button-next) { display: none !important; }
         body.a11y-active article, body.a11y-active .widget, body.a11y-active .swiper-slide > div, body.a11y-active footer { border: 2px solid var(--a11y-border) !important; box-sizing: border-box !important; }
 
+        /* Hide Specific Blocks in A11y Mode */
+        body.a11y-active .hero-gradient, body.a11y-active .featured-cards-section { display: none !important; }
+
         /* Menu & Header Adaptivity */
         body.a11y-active #masthead { border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 4px solid var(--a11y-border) !important; height: auto !important; }
         body.a11y-active #masthead > div { flex-wrap: wrap !important; gap: 1rem !important; }
