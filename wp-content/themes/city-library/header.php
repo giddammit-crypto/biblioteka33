@@ -14,8 +14,8 @@
         <div class="flex justify-between items-center h-20">
             <div class="flex items-center space-x-3 h-full py-2">
                 <!-- Mobile Hamburger Button -->
-                <button id="mobile-menu-btn" class="lg:landscape:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
-                    <span class="material-symbols-outlined text-3xl">menu</span>
+                <button id="mobile-menu-btn" class="lg:landscape:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="<?php esc_attr_e('Открыть меню', 'city-library'); ?>" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="material-symbols-outlined text-3xl" aria-hidden="true">menu</span>
                 </button>
 
                 <?php if (has_custom_logo()) : ?>
@@ -45,11 +45,11 @@
             </nav>
 
             <div class="flex items-center space-x-2">
-                <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
-                    <span class="material-symbols-outlined">search</span>
+                <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
                 </button>
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
-                    <span class="material-symbols-outlined">visibility</span>
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="<?php esc_attr_e('Настройки доступности', 'city-library'); ?>" style="background-color: #ffffff !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                 </button>
             </div>
         </div>
@@ -61,8 +61,8 @@
     <div class="absolute right-0 top-0 h-full w-4/5 max-w-sm bg-white shadow-2xl p-6 flex flex-col bg-pattern-slate">
         <div class="flex justify-between items-center mb-8">
             <span class="text-lg font-bold font-display text-secondary"><?php _e('Меню', 'city-library'); ?></span>
-            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 rounded-full transition-colors" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
-                <span class="material-symbols-outlined">close</span>
+            <button id="mobile-menu-close" class="p-2 hover:bg-slate-100 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
             </button>
         </div>
         <nav class="flex-grow space-y-4 flex flex-col">
@@ -108,12 +108,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
-            <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
-                <span class="material-symbols-outlined text-xl shrink-0">event</span>
+            <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
+                <span class="material-symbols-outlined text-xl shrink-0" aria-hidden="true">event</span>
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html(get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ')); ?></span>
-                <span class="material-symbols-outlined shrink-0">arrow_forward</span>
+                <span class="material-symbols-outlined shrink-0" aria-hidden="true">arrow_forward</span>
             </a>
-            <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
+            <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html(get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ')); ?></span>
             </a>
         </div>
