@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchModal = document.getElementById('search-modal');
     const searchClose = document.getElementById('search-modal-close');
     const searchInput = searchModal ? searchModal.querySelector('input[type="search"]') : null;
+    let lastFocusedElement = null;
 
     if (!searchToggle || !searchModal || !searchClose) return;
 
     function openSearch() {
+        lastFocusedElement = document.activeElement;
         searchModal.classList.remove('hidden');
         // Small delay for transition
         requestAnimationFrame(() => {
@@ -28,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             searchModal.classList.add('hidden');
             document.body.style.overflow = '';
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
         }, 300);
     }
 
