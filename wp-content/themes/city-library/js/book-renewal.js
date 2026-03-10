@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renewBtn.className = 'fixed bottom-[151px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm';
     renewBtn.setAttribute('aria-label', 'Открыть форму продления книг');
     renewBtn.innerHTML = `
-        <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>
+        <span aria-hidden="true" class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>
         <span class="hidden md:inline-block font-display tracking-wide text-sm uppercase">Продление книг</span>
     `;
     renewBtn.title = "Продление книг онлайн";
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Онлайн сервис</p>
                 </div>
                 <button type="button" class="modal-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                    <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                    <span aria-hidden="true" class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
                 </button>
             </div>
 
@@ -53,52 +53,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <!-- FIO Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Ф.И.О. читателя *</label>
+                        <label for="renewal-fio" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Ф.И.О. читателя *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">person</span>
-                            <input type="text" name="fio" required placeholder="Иванов Иван Иванович"
+                            <span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">person</span>
+                            <input type="text" id="renewal-fio" name="fio" required placeholder="Иванов Иван Иванович"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Card Number Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Номер читательского билета *</label>
+                        <label for="renewal-card-number" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Номер читательского билета *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">badge</span>
-                            <input type="text" name="card_number" required placeholder="№ 12345"
+                            <span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">badge</span>
+                            <input type="text" id="renewal-card-number" name="card_number" required placeholder="№ 12345"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Branch Select -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Филиал *</label>
+                        <label for="renewal-branch" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Филиал *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">store</span>
-                            <select name="branch" required
+                            <span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">store</span>
+                            <select id="renewal-branch" name="branch" required
                                     class="w-full pl-12 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm appearance-none cursor-pointer">
                                 ${branchOptions}
                             </select>
-                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">expand_more</span>
+                            <span aria-hidden="true" class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">expand_more</span>
                         </div>
                     </div>
 
                     <!-- Email Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Email для связи *</label>
+                        <label for="renewal-email" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Email для связи *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">mail</span>
-                            <input type="email" name="email" required placeholder="example@mail.ru"
+                            <span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">mail</span>
+                            <input type="email" id="renewal-email" name="email" required placeholder="example@mail.ru"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Books Textarea -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Список книг (автор, название) *</label>
+                        <label for="renewal-books" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Список книг (автор, название) *</label>
                         <div class="relative">
-                            <textarea name="books" rows="3" required placeholder="Пример: Пушкин А.С. - Евгений Онегин..."
+                            <textarea id="renewal-books" name="books" rows="3" required placeholder="Пример: Пушкин А.С. - Евгений Онегин..."
                                       class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm resize-none"></textarea>
                         </div>
                     </div>
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Submit Button -->
                     <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-primary hover:bg-green-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 flex justify-center items-center gap-2 group mt-2">
                         <span class="uppercase tracking-widest text-xs md:text-sm">Отправить заявку</span>
-                        <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">send</span>
+                        <span aria-hidden="true" class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">send</span>
                     </button>
 
                     <!-- Legal Text -->
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.classList.add('opacity-80', 'cursor-wait');
         const originalBtnContent = submitBtn.innerHTML;
         submitBtn.innerHTML = `
-            <span class="material-symbols-outlined animate-spin text-xl">refresh</span>
+            <span aria-hidden="true" class="material-symbols-outlined animate-spin text-xl">refresh</span>
             <span class="uppercase tracking-widest text-xs md:text-sm">Отправка...</span>
         `;
         msgBox.classList.add('hidden');
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     msgBox.classList.add('bg-green-50', 'text-green-700', 'border-green-200');
                     msgBox.innerHTML = `
                         <div class="flex flex-col items-center gap-2">
-                            <span class="material-symbols-outlined text-3xl text-green-600">check_circle</span>
+                            <span aria-hidden="true" class="material-symbols-outlined text-3xl text-green-600">check_circle</span>
                             <span>${data.data.message}</span>
                         </div>
                     `;
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 msgBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
                 msgBox.innerHTML = `
                     <div class="flex flex-col items-center gap-2">
-                        <span class="material-symbols-outlined text-3xl text-red-600">error</span>
+                        <span aria-hidden="true" class="material-symbols-outlined text-3xl text-red-600">error</span>
                         <span>${err.message || 'Ошибка соединения.'}</span>
                     </div>
                 `;
