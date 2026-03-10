@@ -185,7 +185,19 @@ if ($mob_menu_style === 'ios-blur') {
 </div>
 
 <main>
-<?php if (get_theme_mod('show_hero_section', true)) : ?>
+<?php
+// Determine if we should show a custom hero for this specific post/page
+$is_custom_hero = false;
+$post_id = get_the_ID();
+if ((is_single() || is_page()) && $post_id) {
+    if (get_post_meta($post_id, '_hero_custom_enable', true) === 'yes') {
+        $is_custom_hero = true;
+    }
+}
+
+// Global toggle logic: Show if Custom Hero is enabled, OR if the global setting allows it
+if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
+?>
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
     $hero_opacity = get_theme_mod('hero_bg_opacity', '0.5');
@@ -197,9 +209,33 @@ if ($mob_menu_style === 'ios-blur') {
     $hero_text_align_class = 'text-' . $hero_align;
     $hero_flex_align_class = ($hero_align === 'left') ? 'items-start justify-start text-left' : (($hero_align === 'right') ? 'items-end justify-end text-right' : 'items-center justify-center text-center');
     $hero_mx_class = ($hero_align === 'left' || $hero_align === 'right') ? 'mx-0' : 'mx-auto';
-
     $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
-    $hero_image_url = get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg');
+
+    // Fetch values: Use custom meta if enabled, else fallback to customizer defaults
+    if ($is_custom_hero) {
+        $meta_title = get_post_meta($post_id, '_hero_custom_title', true);
+        $meta_subtitle = get_post_meta($post_id, '_hero_custom_subtitle', true);
+        $meta_image = get_post_meta($post_id, '_hero_custom_image', true);
+        $meta_btn1_text = get_post_meta($post_id, '_hero_custom_btn1_text', true);
+        $meta_btn1_link = get_post_meta($post_id, '_hero_custom_btn1_link', true);
+
+        $hero_title = !empty($meta_title) ? $meta_title : get_the_title();
+        $hero_subtitle = !empty($meta_subtitle) ? $meta_subtitle : '';
+        $hero_image_url = !empty($meta_image) ? $meta_image : get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg');
+        $btn1_text = $meta_btn1_text;
+        $btn1_link = !empty($meta_btn1_link) ? $meta_btn1_link : '#content';
+        $btn2_text = ''; // Secondary button disabled for custom hero by default to keep it clean
+        $hero_show_badge = false; // Hide badge on custom posts
+    } else {
+        $hero_title = get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека');
+        $hero_subtitle = get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.');
+        $hero_image_url = get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg');
+        $btn1_text = get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ');
+        $btn1_link = get_theme_mod('hero_primary_button_link', '#events');
+        $btn2_text = get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ');
+        $btn2_link = get_theme_mod('hero_secondary_button_link', '#about');
+        $hero_show_badge = get_theme_mod('hero_show_badge', true);
+    }
 ?>
 <section class="relative min-h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20 overflow-hidden">
     <!-- Adaptive Image -->
@@ -208,10 +244,8 @@ if ($mob_menu_style === 'ios-blur') {
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 -z-10" style="background: <?php echo $hero_gradient; ?>;"></div>
 
-    <!-- Accessibility Button removed from Hero (Moved to Header) -->
-
     <div class="relative z-10 max-w-4xl <?php echo esc_attr($hero_mx_class); ?> px-4 space-y-8 w-full">
-        <?php if (get_theme_mod('hero_show_badge', true)) : ?>
+        <?php if ($hero_show_badge) : ?>
         <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
             <span class="w-2 h-2 bg-primary rounded-full mr-3 animate-pulse"></span>
             <span class="text-xs font-bold text-white uppercase tracking-widest"><?php echo esc_html(get_theme_mod('hero_badge_text', 'Добро пожаловать в мир знаний')); ?></span>
@@ -219,30 +253,26 @@ if ($mob_menu_style === 'ios-blur') {
         <?php endif; ?>
 
         <h1 class="<?php echo esc_attr($hero_title_size); ?> font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
-            <?php echo wp_kses_post(get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека')); ?>
+            <?php echo wp_kses_post($hero_title); ?>
         </h1>
 
+        <?php if (!empty($hero_subtitle)) : ?>
         <p class="text-lg md:text-xl text-slate-200 max-w-2xl <?php echo esc_attr($hero_mx_class); ?> font-light leading-relaxed animate-fade-in-up delay-200">
-            <?php echo esc_html(get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.')); ?>
+            <?php echo esc_html($hero_subtitle); ?>
         </p>
+        <?php endif; ?>
 
         <div class="flex flex-col sm:flex-row <?php echo esc_attr($hero_flex_align_class); ?> gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
-            <?php
-            $btn1_text = get_theme_mod('hero_primary_button_text', 'АФИША МЕРОПРИЯТИЙ');
-            if (!empty($btn1_text)) :
-            ?>
-            <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>">
-                <span class="material-symbols-outlined text-xl shrink-0">event</span>
+            <?php if (!empty($btn1_text)) : ?>
+            <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url($btn1_link); ?>">
+                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined text-xl shrink-0">event</span><?php endif; ?>
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html($btn1_text); ?></span>
-                <span class="material-symbols-outlined shrink-0">arrow_forward</span>
+                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined shrink-0">arrow_forward</span><?php endif; ?>
             </a>
             <?php endif; ?>
 
-            <?php
-            $btn2_text = get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ');
-            if (!empty($btn2_text)) :
-            ?>
-            <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center" href="<?php echo esc_url(get_theme_mod('hero_secondary_button_link', '#about')); ?>">
+            <?php if (!empty($btn2_text)) : ?>
+            <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center" href="<?php echo esc_url($btn2_link); ?>">
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html($btn2_text); ?></span>
             </a>
             <?php endif; ?>

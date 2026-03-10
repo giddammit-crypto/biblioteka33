@@ -5,6 +5,9 @@
 // Include Branches Map Shortcode
 require_once get_template_directory() . '/inc/branches-map.php';
 
+// Include Hero Custom Meta Box
+require_once get_template_directory() . '/inc/hero-meta-box.php';
+
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');
