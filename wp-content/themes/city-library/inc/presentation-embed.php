@@ -26,12 +26,12 @@ function city_library_presentation_shortcode($atts) {
     }
 
     // The official Microsoft Office embed URL
-    $embed_url = 'https://view.officeapps.live.com/op/embed.aspx?src=' . urlencode($url);
+    $embed_url = 'https://view.officeapps.live.com/op/embed.aspx?src=' . urlencode($url) . '&wdAr=1.7777';
 
     ob_start();
     ?>
-    <div class="my-8 w-full">
-        <div class="relative bg-slate-100 rounded-xl overflow-hidden shadow-lg border border-slate-200 group aspect-video">
+    <div class="my-8 w-full city-library-presentation">
+        <div class="relative bg-slate-100 rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="padding-bottom: 56.25%;">
 
             <!-- Loading State Placeholder -->
             <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0">

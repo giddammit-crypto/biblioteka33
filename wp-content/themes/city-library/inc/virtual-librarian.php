@@ -32,17 +32,18 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'arcee-ai/trinity-large-preview:free', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemma-2-9b-it:free', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
         'label' => __('Модель ИИ', 'city-library'),
         'section' => 'virtual_librarian_section',
         'type' => 'select',
         'choices' => array(
-            'arcee-ai/trinity-large-preview:free' => 'Trinity Large Preview (Free)',
             'google/gemma-2-9b-it:free' => 'Google: Gemma 2 9B (Free)',
-            'meta-llama/llama-3.1-8b-instruct:free' => 'Meta: Llama 3.1 8B (Free)',
+            'google/gemma-7b-it:free' => 'Google: Gemma 7B (Free)',
+            'arcee-ai/trinity-large-preview:free' => 'Trinity Large Preview (Free)',
             'mistralai/mistral-7b-instruct:free' => 'Mistral: 7B Instruct (Free)',
-            'openai/gpt-4o-mini' => 'OpenAI: GPT-4o Mini (Paid)',
+            'deepseek/deepseek-chat:free' => 'DeepSeek: Chat (Free)',
+            'qwen/qwen-2-7b-instruct:free' => 'Qwen 2 7B Instruct (Free)',
         )
     ));
 
