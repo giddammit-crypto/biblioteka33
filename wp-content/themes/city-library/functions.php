@@ -11,6 +11,12 @@ require_once get_template_directory() . '/inc/post-slider.php';
 // Include Hero Custom Meta Box
 require_once get_template_directory() . '/inc/hero-meta-box.php';
 
+// Include Presentation Embed Shortcode
+require_once get_template_directory() . '/inc/presentation-embed.php';
+
+// Include Virtual Librarian AI
+require_once get_template_directory() . '/inc/virtual-librarian.php';
+
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');

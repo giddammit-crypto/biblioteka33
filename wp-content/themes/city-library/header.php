@@ -201,15 +201,7 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
 <?php
     $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
     $hero_opacity = get_theme_mod('hero_bg_opacity', '0.5');
-    list($r, $g, $b) = sscanf($hero_color, "#%02x%02x%02x");
-    // Use opacity control for overlay strength
-    $hero_gradient = "linear-gradient(rgba($r, $g, $b, $hero_opacity), rgba($r, $g, $b, $hero_opacity))";
-
-    $hero_align = get_theme_mod('hero_align', 'center');
-    $hero_text_align_class = 'text-' . $hero_align;
-    $hero_flex_align_class = ($hero_align === 'left') ? 'items-start justify-start text-left' : (($hero_align === 'right') ? 'items-end justify-end text-right' : 'items-center justify-center text-center');
-    $hero_mx_class = ($hero_align === 'left' || $hero_align === 'right') ? 'mx-0' : 'mx-auto';
-    $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
+    $hero_height_class = 'min-h-screen';
 
     // Fetch values: Use custom meta if enabled, else fallback to customizer defaults
     if ($is_custom_hero) {
@@ -219,6 +211,11 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
         $meta_btn1_text = get_post_meta($post_id, '_hero_custom_btn1_text', true);
         $meta_btn1_link = get_post_meta($post_id, '_hero_custom_btn1_link', true);
 
+        $meta_color = get_post_meta($post_id, '_hero_custom_overlay_color', true);
+        $meta_opacity = get_post_meta($post_id, '_hero_custom_overlay_opacity', true);
+        $meta_align = get_post_meta($post_id, '_hero_custom_align', true);
+        $meta_height = get_post_meta($post_id, '_hero_custom_height', true);
+
         $hero_title = !empty($meta_title) ? $meta_title : get_the_title();
         $hero_subtitle = !empty($meta_subtitle) ? $meta_subtitle : '';
         $hero_image_url = !empty($meta_image) ? $meta_image : get_theme_mod('hero_background_image', get_template_directory_uri() . '/images/hero-bg.jpg');
@@ -226,6 +223,11 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
         $btn1_link = !empty($meta_btn1_link) ? $meta_btn1_link : '#content';
         $btn2_text = ''; // Secondary button disabled for custom hero by default to keep it clean
         $hero_show_badge = false; // Hide badge on custom posts
+
+        $hero_color = !empty($meta_color) ? $meta_color : get_theme_mod('hero_overlay_color', '#1a3c34');
+        $hero_opacity = ($meta_opacity !== '') ? $meta_opacity : get_theme_mod('hero_bg_opacity', '0.5');
+        $hero_align = !empty($meta_align) ? $meta_align : get_theme_mod('hero_align', 'center');
+        $hero_height_class = !empty($meta_height) ? $meta_height : 'min-h-screen';
     } else {
         $hero_title = get_theme_mod('hero_title', 'Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека');
         $hero_subtitle = get_theme_mod('hero_subtitle', 'Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.');
@@ -235,9 +237,22 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
         $btn2_text = get_theme_mod('hero_secondary_button_text', 'УЗНАТЬ БОЛЬШЕ');
         $btn2_link = get_theme_mod('hero_secondary_button_link', '#about');
         $hero_show_badge = get_theme_mod('hero_show_badge', true);
+
+        $hero_color = get_theme_mod('hero_overlay_color', '#1a3c34');
+        $hero_opacity = get_theme_mod('hero_bg_opacity', '0.5');
+        $hero_align = get_theme_mod('hero_align', 'center');
     }
+
+    // Apply styling rules based on chosen properties
+    list($r, $g, $b) = sscanf($hero_color, "#%02x%02x%02x") ?: [26, 60, 52]; // Default to #1a3c34 if parsing fails
+    $hero_gradient = "linear-gradient(rgba($r, $g, $b, $hero_opacity), rgba($r, $g, $b, $hero_opacity))";
+
+    $hero_text_align_class = 'text-' . $hero_align;
+    $hero_flex_align_class = ($hero_align === 'left') ? 'items-start justify-start text-left' : (($hero_align === 'right') ? 'items-end justify-end text-right' : 'items-center justify-center text-center');
+    $hero_mx_class = ($hero_align === 'left' || $hero_align === 'right') ? 'mx-0' : 'mx-auto';
+    $hero_title_size = get_theme_mod('hero_title_size', 'text-5xl md:text-7xl lg:text-8xl');
 ?>
-<section class="relative min-h-screen flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20 overflow-hidden">
+<section class="relative <?php echo esc_attr($hero_height_class); ?> flex <?php echo esc_attr($hero_flex_align_class); ?> hero-gradient pt-24 lg:pt-20 overflow-hidden">
     <!-- Adaptive Image -->
     <img src="<?php echo esc_url($hero_image_url); ?>" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover -z-20">
 
