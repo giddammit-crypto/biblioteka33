@@ -30,43 +30,36 @@ function city_library_presentation_shortcode($atts) {
 
     ob_start();
     ?>
-    <div class="my-8 city-library-presentation-wrapper relative bg-slate-100 rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="height: <?php echo esc_attr($atts['height']); ?>;">
+    <div class="my-8 w-full">
+        <div class="relative bg-slate-100 rounded-xl overflow-hidden shadow-lg border border-slate-200 group aspect-video">
 
-        <!-- Loading State Placeholder -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0">
-            <span class="material-symbols-outlined text-4xl animate-spin mb-2">sync</span>
-            <span class="text-sm font-medium uppercase tracking-widest"><?php _e('Загрузка презентации...', 'city-library'); ?></span>
-        </div>
+            <!-- Loading State Placeholder -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0">
+                <span class="material-symbols-outlined text-4xl animate-spin mb-2">sync</span>
+                <span class="text-sm font-medium uppercase tracking-widest"><?php _e('Загрузка презентации...', 'city-library'); ?></span>
+            </div>
 
-        <iframe
-            src="<?php echo esc_url($embed_url); ?>"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            title="<?php esc_attr_e('Презентация', 'city-library'); ?>"
-            class="relative z-10 w-full h-full"
-            allowfullscreen="true"
-            webkitallowfullscreen="true"
-            mozallowfullscreen="true">
-        </iframe>
+            <iframe
+                src="<?php echo esc_url($embed_url); ?>"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                title="<?php esc_attr_e('Презентация', 'city-library'); ?>"
+                class="absolute inset-0 z-10 w-full h-full"
+                allowfullscreen="true"
+                webkitallowfullscreen="true"
+                mozallowfullscreen="true">
+            </iframe>
 
-        <!-- Fullscreen helper overlay (visible on hover) -->
-        <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div class="bg-black/70 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-xl border border-white/10">
-                <span class="material-symbols-outlined text-sm">fullscreen</span>
-                <?php _e('Используйте кнопку в плеере для полного экрана', 'city-library'); ?>
+            <!-- Fullscreen helper overlay (visible on hover) -->
+            <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <div class="bg-black/70 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-xl border border-white/10">
+                    <span class="material-symbols-outlined text-sm">fullscreen</span>
+                    <?php _e('Используйте кнопку в плеере для полного экрана', 'city-library'); ?>
+                </div>
             </div>
         </div>
     </div>
-
-    <style>
-        /* Responsive height adjustments */
-        @media (max-width: 768px) {
-            .city-library-presentation-wrapper {
-                height: 300px !important;
-            }
-        }
-    </style>
     <?php
     return ob_get_clean();
 }

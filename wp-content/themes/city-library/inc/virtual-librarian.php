@@ -32,20 +32,90 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemma-7b-it:free', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'arcee-ai/trinity-large-preview:free', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
         'label' => __('Модель ИИ', 'city-library'),
         'section' => 'virtual_librarian_section',
         'type' => 'select',
         'choices' => array(
-            'google/gemma-7b-it:free' => 'Google: Gemma 7B (Free)',
-            'meta-llama/llama-3-8b-instruct:free' => 'Meta: Llama 3 8B (Free)',
+            'arcee-ai/trinity-large-preview:free' => 'Trinity Large Preview (Free)',
+            'google/gemma-2-9b-it:free' => 'Google: Gemma 2 9B (Free)',
+            'meta-llama/llama-3.1-8b-instruct:free' => 'Meta: Llama 3.1 8B (Free)',
             'mistralai/mistral-7b-instruct:free' => 'Mistral: 7B Instruct (Free)',
             'openai/gpt-4o-mini' => 'OpenAI: GPT-4o Mini (Paid)',
         )
     ));
+
+    $wp_customize->add_setting('ai_librarian_kb_ids', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('ai_librarian_kb_ids', array(
+        'label' => __('База знаний (ID файлов)', 'city-library'),
+        'description' => __('Введите через запятую ID файлов (TXT, DOCX, ODT) из Медиабиблиотеки для использования в качестве базы знаний ИИ. Пример: 12,34,56. (DOC не поддерживается, конвертируйте в DOCX)', 'city-library'),
+        'section' => 'virtual_librarian_section',
+        'type' => 'text',
+    ));
 }
 add_action('customize_register', 'city_library_ai_customizer');
+
+// Clear KB cache when customizer is saved
+function city_library_clear_ai_kb_cache() {
+    delete_transient('city_library_ai_kb_text');
+}
+add_action('customize_save_after', 'city_library_clear_ai_kb_cache');
+
+// Helper function to extract text from files
+function city_library_extract_text_from_files($ids_string) {
+    if (empty($ids_string)) return '';
+
+    $cached_text = get_transient('city_library_ai_kb_text');
+    if ($cached_text !== false) {
+        return $cached_text;
+    }
+
+    $ids = array_map('intval', explode(',', $ids_string));
+    $extracted_text = "";
+
+    foreach ($ids as $id) {
+        if (!$id) continue;
+
+        $filepath = get_attached_file($id);
+        if (!$filepath || !file_exists($filepath)) continue;
+
+        $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+
+        if ($ext === 'txt') {
+            $text = file_get_contents($filepath);
+            $extracted_text .= wp_strip_all_tags($text) . "\n\n";
+        } elseif ($ext === 'docx' || $ext === 'odt') {
+            if (class_exists('ZipArchive')) {
+                $zip = new ZipArchive();
+                if ($zip->open($filepath) === true) {
+                    $xml_content = '';
+                    if ($ext === 'docx' && ($index = $zip->locateName('word/document.xml')) !== false) {
+                        $xml_content = $zip->getFromIndex($index);
+                    } elseif ($ext === 'odt' && ($index = $zip->locateName('content.xml')) !== false) {
+                        $xml_content = $zip->getFromIndex($index);
+                    }
+                    $zip->close();
+
+                    if (!empty($xml_content)) {
+                        // Replace XML tags with spaces to avoid word merging, then strip
+                        $clean_text = strip_tags(str_replace(['<', '>'], [' <', '> '], $xml_content));
+                        // Clean up excess whitespace
+                        $clean_text = preg_replace('/\s+/', ' ', $clean_text);
+                        $extracted_text .= trim($clean_text) . "\n\n";
+                    }
+                }
+            }
+        }
+    }
+
+    // Cache the extracted text for 12 hours (to avoid unzipping on every chat message)
+    // Limit to ~20,000 characters to fit within most free model context windows safely
+    $extracted_text = mb_substr($extracted_text, 0, 20000);
+    set_transient('city_library_ai_kb_text', $extracted_text, 12 * HOUR_IN_SECONDS);
+
+    return $extracted_text;
+}
 
 // 2. Render Frontend Chat Widget
 function city_library_render_ai_librarian() {
@@ -143,11 +213,26 @@ function city_library_handle_ai_chat() {
     }
 
     // Build Context (Simulated RAG)
-    $context = "Ты профессиональный, вежливый и культурный Виртуальный Библиотекарь Центральной городской библиотеки (biblioteka33.ru). Твоя задача — помогать пользователям. Строго соблюдай этикет. Отвечай кратко и по делу. Не выдумывай факты. Используй ТОЛЬКО предоставленную ниже информацию.\n\n";
+    $context = "Ты профессиональный, вежливый и культурный Виртуальный Библиотекарь Центральной городской библиотеки (biblioteka33.ru). Твоя задача — помогать пользователям. Строго соблюдай этикет. Отвечай кратко и по делу. Не выдумывай факты. Используй ТОЛЬКО предоставленную ниже информацию из базы знаний и новостей.\n\n";
+
+    // Add File Knowledge Base
+    $kb_ids = get_theme_mod('ai_librarian_kb_ids', '');
+    $file_text = city_library_extract_text_from_files($kb_ids);
+    if (!empty($file_text)) {
+        $context .= "БАЗА ЗНАНИЙ (Официальные документы):\n" . $file_text . "\n\n";
+    }
 
     // Add library branches info (if configured in customizer)
     $branches_text = get_theme_mod('branches_map_description', 'Главный филиал находится в центре города. Время работы с 9:00 до 19:00.');
     $context .= "ИНФОРМАЦИЯ О БИБЛИОТЕКЕ:\n" . strip_tags($branches_text) . "\n\n";
+
+    // Add Site Map for Navigation Links
+    $context .= "СТРУКТУРА САЙТА (Используй эти ссылки, если пользователь спрашивает, где найти информацию):\n";
+    $context .= "- Главная страница: " . home_url('/') . "\n";
+    $context .= "- Новости: " . home_url('/?news_archive=true') . "\n";
+    $context .= "- Афиша / Мероприятия: " . home_url('/#afisha') . "\n";
+    $context .= "- Контакты / Филиалы: " . home_url('/#branches') . "\n";
+    $context .= "- Важная информация / Услуги: " . home_url('/#important') . "\n\n";
 
     // Add recent news
     $context .= "СВЕЖИЕ НОВОСТИ:\n";
