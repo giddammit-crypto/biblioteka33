@@ -5,6 +5,9 @@
 // Include Branches Map Shortcode
 require_once get_template_directory() . '/inc/branches-map.php';
 
+// Include Inline Post Slider Shortcode
+require_once get_template_directory() . '/inc/post-slider.php';
+
 // Include Hero Custom Meta Box
 require_once get_template_directory() . '/inc/hero-meta-box.php';
 

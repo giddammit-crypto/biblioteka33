@@ -89,63 +89,32 @@
 
                 if ($attachments) : ?>
                     <div class="mt-12 border-t border-slate-200 pt-8">
-                        <h3 class="text-2xl font-bold font-display mb-6 text-slate-900"><?php _e('Галерея', 'city-library'); ?></h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <?php foreach ($attachments as $attachment) :
-                                $img_url = wp_get_attachment_image_src($attachment->ID, 'full');
-                                $thumb_url = wp_get_attachment_image_src($attachment->ID, 'medium');
-                            ?>
-                                <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
-                                    <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-75 group-hover:scale-100">zoom_in</span>
-                                    </div>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
+                        <details class="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-4 cursor-pointer text-xl font-bold font-display text-slate-900 bg-white hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary text-2xl">photo_library</span>
+                                    <?php _e('Галерея изображений', 'city-library'); ?>
+                                </div>
+                                <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="p-6 border-t border-slate-200 bg-white">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <?php foreach ($attachments as $attachment) :
+                                        $img_url = wp_get_attachment_image_src($attachment->ID, 'full');
+                                        $thumb_url = wp_get_attachment_image_src($attachment->ID, 'medium');
+                                    ?>
+                                        <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group/img relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
+                                            <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110">
+                                            <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 transform scale-75 group-hover/img:scale-100">zoom_in</span>
+                                            </div>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </details>
                     </div>
                 <?php endif; ?>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        // 1. Handle existing image links
-                        const imageLinks = document.querySelectorAll('.entry-content a[href*=".jpg"], .entry-content a[href*=".jpeg"], .entry-content a[href*=".png"], .entry-content a[href*=".gif"], .entry-content a[href*=".webp"]');
-                        imageLinks.forEach(link => {
-                            link.classList.add('glightbox');
-                            link.setAttribute('data-gallery', 'post-gallery');
-                        });
-
-                        // 2. Handle standalone images (not wrapped in links)
-                        const contentImages = document.querySelectorAll('.entry-content img');
-                        contentImages.forEach(img => {
-                            // Check if image is already inside a link
-                            if (img.closest('a')) {
-                                return;
-                            }
-
-                            // Create a link wrapper
-                            const link = document.createElement('a');
-                            link.href = img.src; // Use the image source as the link destination
-                            link.classList.add('glightbox');
-                            link.setAttribute('data-gallery', 'post-gallery');
-
-                            // Insert the link before the image
-                            img.parentNode.insertBefore(link, img);
-
-                            // Move the image inside the link
-                            link.appendChild(img);
-                        });
-
-                        // Initialize GLightbox
-                        const lightbox = GLightbox({
-                            selector: '.glightbox',
-                            touchNavigation: true,
-                            loop: true,
-                            autoplayVideos: true,
-                            zoomable: true
-                        });
-                    });
-                </script>
             </article>
 
         <?php
