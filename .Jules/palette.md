@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2024-05-23 - Screen Reader Redundancy with Icon Fonts
+**Learning:** Decorative Google Material Symbol `<span>` elements used as icons (e.g., `<span class="material-symbols-outlined">search</span>`) are read literally by screen readers unless explicitly hidden, which causes redundant announcements when the parent `<button>` already has an `aria-label` or visible text.
+**Action:** Always add `aria-hidden="true"` to decorative icon font elements to prevent screen readers from reading their literal text, relying instead on associated `aria-label` attributes or explicit screen-reader-only `<label>` elements for accessibility.
