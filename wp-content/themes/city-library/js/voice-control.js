@@ -84,9 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Redirect to the first news item (assuming it's on the homepage or news archive)
             const firstNewsLink = document.querySelector('.news-slider a, .content-area a');
             if (firstNewsLink && firstNewsLink.href) {
-                window.location.href = firstNewsLink.href;
+                // Ensure URL contains a hash to scroll past hero
+                let targetUrl = firstNewsLink.href;
+                if (!targetUrl.includes('#')) {
+                    targetUrl += '#primary';
+                }
+                window.location.href = targetUrl;
             } else {
-                window.location.href = cl_voice_control.home_url + '/?news_archive=true';
+                window.location.href = cl_voice_control.home_url + '/?news_archive=true#primary';
             }
             return;
         }
@@ -103,7 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (cmd.includes('на главную') || cmd.includes('главная страница')) {
             speak('Открываю главную страницу');
-            window.location.href = cl_voice_control.home_url;
+            // Append #primary to scroll past hero on homepage
+            window.location.href = cl_voice_control.home_url + '/#primary';
             return;
         }
 
@@ -206,9 +212,70 @@ document.addEventListener('DOMContentLoaded', () => {
         hideIndicator();
     };
 
+    // Dragging Logic
+    let isDragging = false;
+    let dragStartX, dragStartY;
+    let initialX, initialY;
+
+    mobileVoiceBtn.addEventListener('touchstart', (e) => {
+        isDragging = false;
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+
+        const rect = mobileVoiceBtn.getBoundingClientRect();
+        // Calculate offset of touch point from the element's top-left corner
+        initialX = dragStartX - rect.left;
+        initialY = dragStartY - rect.top;
+
+        // Disable CSS transitions during drag for smooth movement
+        mobileVoiceBtn.style.transition = 'none';
+    }, { passive: true });
+
+    mobileVoiceBtn.addEventListener('touchmove', (e) => {
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+
+        // Calculate distance moved to determine if it's a drag or just a tap
+        const deltaX = Math.abs(touchX - dragStartX);
+        const deltaY = Math.abs(touchY - dragStartY);
+
+        if (deltaX > 5 || deltaY > 5) {
+            isDragging = true;
+            e.preventDefault(); // Prevent scrolling while dragging
+
+            // Calculate new position
+            let newX = touchX - initialX;
+            let newY = touchY - initialY;
+
+            // Constrain to window bounds
+            const maxX = window.innerWidth - mobileVoiceBtn.offsetWidth;
+            const maxY = window.innerHeight - mobileVoiceBtn.offsetHeight;
+
+            newX = Math.max(0, Math.min(newX, maxX));
+            newY = Math.max(0, Math.min(newY, maxY));
+
+            // Apply new position using inline styles (overrides Tailwind classes like bottom-24 right-4)
+            mobileVoiceBtn.style.right = 'auto'; // Disable initial right alignment
+            mobileVoiceBtn.style.bottom = 'auto'; // Disable initial bottom alignment
+            mobileVoiceBtn.style.left = `${newX}px`;
+            mobileVoiceBtn.style.top = `${newY}px`;
+        }
+    }, { passive: false });
+
+    mobileVoiceBtn.addEventListener('touchend', (e) => {
+        // Re-enable hover transitions
+        mobileVoiceBtn.style.transition = '';
+    });
+
     // Single click to activate on mobile
     mobileVoiceBtn.addEventListener('click', (e) => {
         e.preventDefault();
+
+        // If the user was dragging the button, don't trigger the voice assistant
+        if (isDragging) {
+            isDragging = false;
+            return;
+        }
 
         if (isListening) {
             recognition.stop();
