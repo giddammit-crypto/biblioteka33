@@ -11,7 +11,7 @@ function city_library_post_slider_shortcode($atts) {
         'ids' => '', // Comma separated list of attachment IDs
         'ratio' => '21/9', // e.g. 16/9, 4/3, 1/1
         'effect' => 'fade', // fade, slide, cube, coverflow, flip
-        'object_fit' => 'cover', // cover, contain
+        'object_fit' => 'contain', // cover, contain
         'autoplay' => 'true', // true, false
     ), $atts, 'city_library_slider');
 
@@ -20,9 +20,15 @@ function city_library_post_slider_shortcode($atts) {
 
     // Validate aspect ratio to ensure it's safe for inline styles if needed
     $ratio = sanitize_text_field($atts['ratio']);
+    $is_auto = ($ratio === 'auto');
+
     $effect = sanitize_text_field($atts['effect']);
-    $object_fit = in_array($atts['object_fit'], ['cover', 'contain']) ? $atts['object_fit'] : 'cover';
+    $object_fit = in_array($atts['object_fit'], ['cover', 'contain']) ? $atts['object_fit'] : 'contain';
     $autoplay = filter_var($atts['autoplay'], FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false';
+
+    // CSS rules based on ratio
+    $slider_style = $is_auto ? '' : 'aspect-ratio: ' . esc_attr($ratio) . ';';
+    $img_classes = $is_auto ? 'w-full h-auto object-contain' : 'w-full h-full object-' . esc_attr($object_fit);
 
     if (!empty($atts['ids'])) {
         // Fetch specific IDs
@@ -59,16 +65,16 @@ function city_library_post_slider_shortcode($atts) {
     ob_start();
     ?>
     <div class="my-8 relative group/slider" id="<?php echo esc_attr($slider_id); ?>">
-        <div class="swiper inline-post-slider rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50" style="aspect-ratio: <?php echo esc_attr($ratio); ?>;">
+        <div class="swiper inline-post-slider rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50" style="<?php echo $slider_style; ?>">
             <div class="swiper-wrapper">
                 <?php foreach ($attachments as $attachment) :
                     $img_full = wp_get_attachment_image_src($attachment->ID, 'full');
                     $img_large = wp_get_attachment_image_src($attachment->ID, 'large');
                     $alt_text = get_post_meta($attachment->ID, '_wp_attachment_image_alt', true) ?: $attachment->post_title;
                 ?>
-                    <div class="swiper-slide bg-slate-100 flex items-center justify-center">
-                        <a href="<?php echo esc_url($img_full[0]); ?>" class="glightbox block w-full h-full cursor-zoom-in relative">
-                            <img src="<?php echo esc_url($img_large[0]); ?>" alt="<?php echo esc_attr($alt_text); ?>" class="w-full h-full object-<?php echo esc_attr($object_fit); ?>">
+                    <div class="swiper-slide bg-slate-100 flex items-center justify-center <?php echo $is_auto ? 'h-auto' : ''; ?>">
+                        <a href="<?php echo esc_url($img_full[0]); ?>" class="glightbox block w-full <?php echo $is_auto ? 'h-auto flex items-center' : 'h-full'; ?> cursor-zoom-in relative">
+                            <img src="<?php echo esc_url($img_large[0]); ?>" alt="<?php echo esc_attr($alt_text); ?>" class="<?php echo $img_classes; ?>">
                             <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 hover:opacity-100 pointer-events-none">
                                 <span class="material-symbols-outlined text-white bg-black/50 p-3 rounded-full drop-shadow-md">zoom_in</span>
                             </div>
@@ -104,6 +110,7 @@ function city_library_post_slider_shortcode($atts) {
                         new Swiper(sliderElement, {
                             loop: true,
                             speed: 600,
+                            autoHeight: <?php echo $is_auto ? 'true' : 'false'; ?>,
                             autoplay: autoplayConfig,
                             pagination: {
                                 el: sliderWrapper.querySelector('.swiper-pagination'),

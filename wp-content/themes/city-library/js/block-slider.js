@@ -31,7 +31,7 @@
             },
             objectFit: {
                 type: 'string',
-                default: 'cover'
+                default: 'contain'
             },
             autoplay: {
                 type: 'boolean',
@@ -65,6 +65,7 @@
                         label: 'Соотношение сторон',
                         value: attributes.ratio,
                         options: [
+                            { label: 'Адаптивный (Auto)', value: 'auto' },
                             { label: 'Широкий (21:9)', value: '21/9' },
                             { label: 'Стандартный (16:9)', value: '16/9' },
                             { label: 'Квадратный (1:1)', value: '1/1' },
@@ -87,8 +88,8 @@
                         label: 'Вписывание изображений',
                         value: attributes.objectFit,
                         options: [
-                            { label: 'Заполнение (Cover)', value: 'cover' },
-                            { label: 'Вмещение (Contain)', value: 'contain' }
+                            { label: 'Вмещение - Адаптивно (Contain)', value: 'contain' },
+                            { label: 'Заполнение - Обрезка (Cover)', value: 'cover' }
                         ],
                         onChange: function(value) { setAttributes({ objectFit: value }); }
                     }),
@@ -116,7 +117,8 @@
                 ];
             }
 
-            var ratioStyle = attributes.ratio.replace('/', ':'); // CSS format 16:9
+            var isAuto = attributes.ratio === 'auto';
+            var ratioStyle = isAuto ? 'auto' : attributes.ratio.replace('/', ':'); // CSS format 16:9
 
             // Preview render
             return [
@@ -139,14 +141,15 @@
                         'div',
                         {
                             style: {
-                                aspectRatio: attributes.ratio,
+                                aspectRatio: isAuto ? 'auto' : attributes.ratio,
+                                minHeight: isAuto ? '200px' : 'auto',
                                 position: 'relative',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 background: '#eee',
                                 backgroundImage: 'url(' + attributes.images[0].url + ')',
-                                backgroundSize: attributes.objectFit,
+                                backgroundSize: isAuto ? 'contain' : attributes.objectFit,
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat'
                             }
