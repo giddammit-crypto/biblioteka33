@@ -36,6 +36,10 @@
             autoplay: {
                 type: 'boolean',
                 default: true
+            },
+            style: {
+                type: 'string',
+                default: 'default'
             }
         },
 
@@ -72,6 +76,17 @@
                             { label: 'Классический (4:3)', value: '4/3' }
                         ],
                         onChange: function(value) { setAttributes({ ratio: value }); }
+                    }),
+                    el(SelectControl, {
+                        label: 'Визуальный стиль',
+                        value: attributes.style,
+                        options: [
+                            { label: 'По умолчанию (Скругления и рамка)', value: 'default' },
+                            { label: 'Карточка с тенью', value: 'shadow-card' },
+                            { label: 'Минимализм (Без фона)', value: 'minimal' },
+                            { label: 'Брутализм (Черная рамка)', value: 'brutalism' }
+                        ],
+                        onChange: function(value) { setAttributes({ style: value }); }
                     }),
                     el(SelectControl, {
                         label: 'Эффект переключения',
@@ -184,6 +199,7 @@
                             'ratio="' + attributes.ratio + '" ' +
                             'effect="' + attributes.effect + '" ' +
                             'object_fit="' + attributes.objectFit + '" ' +
+                            'style="' + attributes.style + '" ' +
                             'autoplay="' + (attributes.autoplay ? 'true' : 'false') + '"]';
 
             return el(wp.element.RawHTML, {}, shortcode);

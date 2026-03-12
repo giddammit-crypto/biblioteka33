@@ -13,6 +13,7 @@ function city_library_post_slider_shortcode($atts) {
         'effect' => 'fade', // fade, slide, cube, coverflow, flip
         'object_fit' => 'contain', // cover, contain
         'autoplay' => 'true', // true, false
+        'style' => 'default', // default, shadow-card, brutalism, minimal
     ), $atts, 'city_library_slider');
 
     $attachments = [];
@@ -25,10 +26,26 @@ function city_library_post_slider_shortcode($atts) {
     $effect = sanitize_text_field($atts['effect']);
     $object_fit = in_array($atts['object_fit'], ['cover', 'contain']) ? $atts['object_fit'] : 'contain';
     $autoplay = filter_var($atts['autoplay'], FILTER_VALIDATE_BOOLEAN) ? 'true' : 'false';
+    $style = in_array($atts['style'], ['default', 'shadow-card', 'brutalism', 'minimal']) ? $atts['style'] : 'default';
 
-    // CSS rules based on ratio
-    $slider_style = $is_auto ? '' : 'aspect-ratio: ' . esc_attr($ratio) . ';';
+    // Base CSS rules
+    $slider_style_css = $is_auto ? '' : 'aspect-ratio: ' . esc_attr($ratio) . ';';
     $img_classes = $is_auto ? 'w-full h-auto object-contain' : 'w-full h-full object-' . esc_attr($object_fit);
+
+    // Apply visual styles
+    $container_classes = 'swiper inline-post-slider overflow-hidden';
+
+    if ($style === 'shadow-card') {
+        $container_classes .= ' rounded-2xl shadow-2xl border border-slate-100 bg-white';
+        $img_classes .= ' rounded-2xl';
+    } elseif ($style === 'brutalism') {
+        $container_classes .= ' border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white';
+    } elseif ($style === 'minimal') {
+        $container_classes .= ' bg-transparent';
+    } else {
+        // default
+        $container_classes .= ' rounded-xl shadow border border-slate-200 bg-slate-50';
+    }
 
     if (!empty($atts['ids'])) {
         // Fetch specific IDs
@@ -65,14 +82,14 @@ function city_library_post_slider_shortcode($atts) {
     ob_start();
     ?>
     <div class="my-8 relative group/slider" id="<?php echo esc_attr($slider_id); ?>">
-        <div class="swiper inline-post-slider rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-slate-50" style="<?php echo $slider_style; ?>">
+        <div class="<?php echo esc_attr($container_classes); ?>" style="<?php echo esc_attr($slider_style_css); ?>">
             <div class="swiper-wrapper">
                 <?php foreach ($attachments as $attachment) :
                     $img_full = wp_get_attachment_image_src($attachment->ID, 'full');
                     $img_large = wp_get_attachment_image_src($attachment->ID, 'large');
                     $alt_text = get_post_meta($attachment->ID, '_wp_attachment_image_alt', true) ?: $attachment->post_title;
                 ?>
-                    <div class="swiper-slide bg-slate-100 flex items-center justify-center <?php echo $is_auto ? 'h-auto' : ''; ?>">
+                    <div class="swiper-slide flex items-center justify-center <?php echo $is_auto ? 'h-auto' : ''; ?> <?php echo ($style === 'minimal') ? 'bg-transparent' : 'bg-slate-50'; ?>">
                         <a href="<?php echo esc_url($img_full[0]); ?>" class="glightbox block w-full <?php echo $is_auto ? 'h-auto flex items-center' : 'h-full'; ?> cursor-zoom-in relative">
                             <img src="<?php echo esc_url($img_large[0]); ?>" alt="<?php echo esc_attr($alt_text); ?>" class="<?php echo $img_classes; ?>">
                             <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 hover:opacity-100 pointer-events-none">
