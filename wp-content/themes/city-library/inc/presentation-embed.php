@@ -25,16 +25,16 @@ function city_library_presentation_shortcode($atts) {
         $is_ppt = true;
     }
 
-    // The official Microsoft Office embed URL
-    $embed_url = 'https://view.officeapps.live.com/op/embed.aspx?src=' . urlencode($url) . '&wdAr=1.7777';
+    // Use Google Docs Viewer for better responsive embedding and scaling
+    $embed_url = 'https://docs.google.com/gview?url=' . urlencode($url) . '&embedded=true';
 
     ob_start();
     ?>
     <div class="my-8 w-full city-library-presentation">
-        <div class="relative bg-slate-100 rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="padding-bottom: 56.25%;">
+        <div class="relative bg-white rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="padding-bottom: 56.25%;">
 
             <!-- Loading State Placeholder -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0">
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0 bg-slate-50">
                 <span class="material-symbols-outlined text-4xl animate-spin mb-2">sync</span>
                 <span class="text-sm font-medium uppercase tracking-widest"><?php _e('Загрузка презентации...', 'city-library'); ?></span>
             </div>
@@ -45,7 +45,7 @@ function city_library_presentation_shortcode($atts) {
                 height="100%"
                 frameborder="0"
                 title="<?php esc_attr_e('Презентация', 'city-library'); ?>"
-                class="absolute inset-0 z-10 w-full h-full"
+                class="absolute inset-0 z-10 w-full h-full bg-white"
                 allowfullscreen="true"
                 webkitallowfullscreen="true"
                 mozallowfullscreen="true">
