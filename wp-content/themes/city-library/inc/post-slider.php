@@ -133,3 +133,28 @@ function city_library_post_slider_shortcode($atts) {
     return ob_get_clean();
 }
 add_shortcode('city_library_slider', 'city_library_post_slider_shortcode');
+
+/**
+ * Register Gutenberg Block for the Slider
+ */
+function city_library_register_slider_block() {
+    // Check if Gutenberg is active
+    if (!function_exists('register_block_type')) {
+        return;
+    }
+
+    // Register script
+    wp_register_script(
+        'city-library-slider-block',
+        get_template_directory_uri() . '/js/block-slider.js',
+        array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-block-editor'),
+        filemtime(get_template_directory() . '/js/block-slider.js')
+    );
+
+    // Register block
+    register_block_type('city-library/slider', array(
+        'editor_script' => 'city-library-slider-block',
+        // The frontend rendering is handled by the shortcode generated in save()
+    ));
+}
+add_action('init', 'city_library_register_slider_block');

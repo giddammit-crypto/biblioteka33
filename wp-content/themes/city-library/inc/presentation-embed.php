@@ -40,10 +40,10 @@ function city_library_presentation_shortcode($atts) {
     ob_start();
     ?>
     <div class="my-8 w-full city-library-presentation">
-        <div class="relative bg-white rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="padding-bottom: <?php echo esc_attr($padding_bottom); ?>;">
+        <div class="relative bg-white rounded-xl overflow-hidden shadow-lg border border-slate-200 group" style="position: relative; height: 0; padding-bottom: <?php echo esc_attr($padding_bottom); ?>; overflow: hidden;">
 
             <!-- Loading State Placeholder -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0 bg-slate-50">
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0 bg-slate-50" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
                 <span class="material-symbols-outlined text-4xl animate-spin mb-2">sync</span>
                 <span class="text-sm font-medium uppercase tracking-widest"><?php _e('Загрузка презентации...', 'city-library'); ?></span>
             </div>
@@ -55,6 +55,7 @@ function city_library_presentation_shortcode($atts) {
                 frameborder="0"
                 title="<?php esc_attr_e('Презентация', 'city-library'); ?>"
                 class="absolute inset-0 z-10 w-full h-full bg-white"
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                 allowfullscreen="true"
                 webkitallowfullscreen="true"
                 mozallowfullscreen="true">
