@@ -90,11 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setBestRussianVoice(utterance, voices) {
         // Filter for Russian voices
-        const ruVoices = voices.filter(voice => voice.lang.includes('ru'));
+        const ruVoices = voices.filter(voice => voice.lang.includes('ru') || voice.lang.includes('RU'));
         if (ruVoices.length > 0) {
-            // Prefer "Google" or "Microsoft" voices as they often sound more natural
-            const premiumVoice = ruVoices.find(voice => voice.name.includes('Google') || voice.name.includes('Microsoft'));
+            // Prefer "Yandex", "Google", "Microsoft", or Apple's "Milena" (premium natural voices)
+            const premiumVoice = ruVoices.find(voice =>
+                voice.name.includes('Yandex') ||
+                voice.name.includes('Google') ||
+                voice.name.includes('Microsoft') ||
+                voice.name.includes('Milena') ||
+                voice.name.includes('Yuri')
+            );
+
+            // If premium found, use it. Otherwise default to first available Russian voice.
             utterance.voice = premiumVoice ? premiumVoice : ruVoices[0];
+
+            // Tweak pitch/rate slightly for a more natural librarian feel if possible
+            utterance.pitch = 1.0;
+            utterance.rate = 1.05;
         }
     }
 
@@ -156,12 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (cmd.includes('контакты') || cmd.includes('адрес') || cmd.includes('где вы находитесь')) {
+        // We removed the hardcoded 'контакты' or 'где вы находитесь' catch-all.
+        // We only catch specific global commands here. Branch address queries go to AI.
+
+        if (cmd.includes('открой контакты') || cmd.includes('раздел контакты')) {
             speak('Открываю раздел контактов');
 
-            // Logic to open "О нас" submenu and navigate to Contacts
-            // In WordPress standard menu, if 'Контакты' is under 'О нас', it usually has its own URL.
-            // We search for a link with text containing 'контакт'
             const allLinks = Array.from(document.querySelectorAll('a'));
             const contactLink = allLinks.find(el => el.textContent.toLowerCase().includes('контакт'));
 
@@ -170,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (document.getElementById('branches')) {
                  document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
             } else {
-                 // Fallback to homepage anchor
                  window.location.href = cl_voice_control.home_url + '/#branches';
             }
             return;
@@ -229,8 +240,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     const plainText = response.data.reply.replace(/<[^>]*>?/gm, '').trim();
                     speak(plainText);
 
-                    // If the response contains an address mapping from our hardcoded DB (e.g. Суздальский), offer the map link visually or try to scroll
-                    if (plainText.toLowerCase().includes('суздальский') || plainText.toLowerCase().includes('улица')) {
+                    // Open Yandex Maps if an exact address from Vladimir is returned
+                    // Extract strings like "г. Владимир, пр-кт Ленина, д. 12"
+                    const addressMatch = plainText.match(/г\.\s*Владимир,\s*([^.,]+),\s*д\.\s*(\d+[-а-яА-Я]*)/i);
+
+                    if (addressMatch) {
+                        const extractedAddress = addressMatch[0];
+                        // Check if it's an inquiry about location to show map
+                        if (query.toLowerCase().includes('где') || query.toLowerCase().includes('адрес') || query.toLowerCase().includes('находится')) {
+                             // Wait a bit so the voice can start, then redirect to yandex maps with the query
+                             setTimeout(() => {
+                                 window.open(`https://yandex.ru/maps/?text=${encodeURIComponent(extractedAddress)}`, '_blank');
+                             }, 1500);
+                        } else if (document.getElementById('footer-yandex-map')) {
+                             // Scroll to the embedded map in footer
+                             document.getElementById('footer-yandex-map').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    } else if (plainText.toLowerCase().includes('суздальский') || plainText.toLowerCase().includes('улица')) {
                         if (document.getElementById('branches')) {
                             document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
                         }

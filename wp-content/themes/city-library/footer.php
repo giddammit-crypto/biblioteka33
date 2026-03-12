@@ -45,9 +45,16 @@ if ($footer_style === 'light-clean') {
                         display: block !important;
                         min-height: 250px !important;
                         height: <?php echo esc_attr($map_height); ?> !important;
+                        position: relative;
+                        overflow: hidden;
                     }
-                    /* Ensure ymaps canvas wrapper takes full size */
+                    /* Yandex Maps sometimes injects generic classes that break layout, we force 100% */
                     #footer-yandex-map > ymaps {
+                        width: 100% !important;
+                        height: 100% !important;
+                        display: block !important;
+                    }
+                    #footer-yandex-map ymaps[class*="map"] {
                         width: 100% !important;
                         height: 100% !important;
                     }
@@ -59,7 +66,7 @@ if ($footer_style === 'light-clean') {
                     }
                 </style>
                 <!-- Added explicit inline styles as fallback -->
-                <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl overflow-hidden shadow-inner border border-slate-200 w-full" style="min-height: 250px; height: <?php echo esc_attr($map_height); ?>;"></div>
+                <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl shadow-inner border border-slate-200 w-full z-10" style="min-height: 250px; height: <?php echo esc_attr($map_height); ?>;"></div>
             <?php else : ?>
                 <?php
                 $footer_desc = get_theme_mod('footer_description');
