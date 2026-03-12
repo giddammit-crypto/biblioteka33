@@ -118,6 +118,22 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-sidebar', get_template_directory_uri() . '/js/sidebar.js', array(), wp_get_theme()->get('Version'), true);
     // wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true); // Removed as per request
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
+
+    // Voice Control Enqueue
+    $enable_voice = get_theme_mod('enable_voice_control', false);
+    $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
+
+    if ($enable_voice) {
+        if (!$voice_test_mode || is_user_logged_in()) {
+            wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery'), wp_get_theme()->get('Version'), true);
+            wp_localize_script('city-library-voice', 'cl_voice_control', array(
+                'enabled' => true,
+                'home_url' => home_url(),
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'ai_nonce' => wp_create_nonce('ai_chat_nonce')
+            ));
+        }
+    }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-sliders', get_template_directory_uri() . '/js/mobile-sliders.js', array('swiper-js'), wp_get_theme()->get('Version'), true);

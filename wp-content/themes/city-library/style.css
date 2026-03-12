@@ -127,6 +127,42 @@ p, li, .entry-content p, .entry-content li {
     max-width: 100%;
 }
 
+/* Image Alignment Classes (WordPress Standard) */
+.aligncenter {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    clear: both;
+}
+
+.alignleft {
+    float: left;
+    margin-right: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.alignright {
+    float: right;
+    margin-left: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.alignnone {
+    float: none;
+    margin-bottom: 1.5rem !important;
+}
+
+.wp-caption {
+    max-width: 100%;
+}
+
+.wp-caption-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
 /* Ensure preformatted text blocks and code don't break flex/grid layouts on mobile */
 .entry-content pre,
 .entry-content code {

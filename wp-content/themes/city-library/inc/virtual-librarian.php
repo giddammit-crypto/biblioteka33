@@ -17,7 +17,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'checkbox',
     ));
 
-    $wp_customize->add_setting('ai_librarian_test_mode', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_setting('ai_librarian_test_mode', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('ai_librarian_test_mode', array(
         'label' => __('Режим тестирования (Только для авторизованных)', 'city-library'),
         'description' => __('Если включено, чат увидят только залогиненные администраторы/редакторы.', 'city-library'),
@@ -53,6 +53,22 @@ function city_library_ai_customizer($wp_customize) {
         'description' => __('Введите через запятую ID файлов (TXT, DOCX, ODT) из Медиабиблиотеки для использования в качестве базы знаний ИИ. Пример: 12,34,56. (DOC не поддерживается, конвертируйте в DOCX)', 'city-library'),
         'section' => 'virtual_librarian_section',
         'type' => 'text',
+    ));
+
+    // Voice Control Settings
+    $wp_customize->add_setting('enable_voice_control', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('enable_voice_control', array(
+        'label' => __('Включить Голосовое Управление', 'city-library'),
+        'description' => __('Активация по двойному клику на кнопку версии для слабовидящих.', 'city-library'),
+        'section' => 'virtual_librarian_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('voice_control_test_mode', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('voice_control_test_mode', array(
+        'label' => __('Голосовое управление только для авторизованных', 'city-library'),
+        'section' => 'virtual_librarian_section',
+        'type' => 'checkbox',
     ));
 }
 add_action('customize_register', 'city_library_ai_customizer');
@@ -211,6 +227,11 @@ function city_library_handle_ai_chat() {
 
     if (empty($user_message)) {
         wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
+    }
+
+    // Security Check: Enforce test mode strictly on the server-side
+    if (get_theme_mod('ai_librarian_test_mode', true) && !is_user_logged_in()) {
+        wp_send_json_error(array('reply' => 'Виртуальный библиотекарь в данный момент доступен только для авторизованных пользователей.'));
     }
 
     // Build Context (Simulated RAG)
