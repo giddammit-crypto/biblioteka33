@@ -8,15 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const a11yToggleBtn = document.getElementById('accessibility-button');
-    if (!a11yToggleBtn) {
-        console.warn('Voice Control: Accessibility button not found.');
-        return;
+    const mobileVoiceBtn = document.getElementById('mobile-voice-assistant-btn');
+    if (!mobileVoiceBtn) {
+        return; // Early return if button is not present (e.g., user not logged in)
     }
 
     let recognition = null;
     let isListening = false;
     const synth = window.speechSynthesis;
+    const isMobile = window.innerWidth < 1024;
 
     // Web Speech API Initialization
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -27,26 +27,45 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.interimResults = false;
     } else {
         console.warn('Speech Recognition API not supported in this browser.');
+        // Optionally, hide the button if API is not supported
+        mobileVoiceBtn.style.display = 'none';
         return;
     }
 
-    // UI Indicator
+    // UI Indicator (Stylish Mobile Overlay)
     const indicator = document.createElement('div');
-    indicator.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl z-[9999] font-bold text-sm flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-[-20px] pointer-events-none';
-    indicator.innerHTML = '<span class="material-symbols-outlined animate-pulse">mic</span> Слушаю команду...';
+    indicator.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-8 rounded-3xl shadow-2xl z-[9999] font-bold text-xl flex flex-col items-center gap-4 transition-all duration-300 opacity-0 scale-90 pointer-events-none text-center border border-white/10';
+    indicator.innerHTML = `
+        <div class="relative w-16 h-16 flex items-center justify-center bg-primary rounded-full mb-2">
+            <span class="material-symbols-outlined text-4xl animate-pulse">mic</span>
+            <div class="absolute inset-0 rounded-full border-[3px] border-primary animate-ping opacity-75"></div>
+        </div>
+        <span class="tracking-wide text-glow">Слушаю Вас!</span>
+    `;
     document.body.appendChild(indicator);
 
     function showIndicator() {
         indicator.style.opacity = '1';
-        indicator.style.transform = 'translate(-50%, 0)';
+        indicator.style.transform = 'translate(-50%, -50%) scale(1)';
+        // Change the button state to show it's active
+        mobileVoiceBtn.classList.add('bg-primary', 'text-white');
+        mobileVoiceBtn.classList.remove('bg-white', 'text-primary');
     }
 
     function hideIndicator() {
         indicator.style.opacity = '0';
-        indicator.style.transform = 'translate(-50%, -20px)';
+        indicator.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        // Revert button state
+        mobileVoiceBtn.classList.remove('bg-primary', 'text-white');
+        mobileVoiceBtn.classList.add('bg-white', 'text-primary');
     }
 
     function speak(text) {
+        // As per request: "Вместо этого (Слушаю) для мобильной версии надо сделать всплывающее уведомление"
+        // We will skip voice synthesis for the "Слушаю" phrase, but still use it for other responses.
+        if (text === 'Слушаю' && isMobile) {
+            return;
+        }
         if (synth.speaking) synth.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ru-RU';
@@ -90,17 +109,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (cmd.includes('контакты') || cmd.includes('адрес') || cmd.includes('где вы находитесь')) {
             speak('Открываю раздел контактов');
-            if (document.getElementById('branches')) {
-                document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
+
+            // Logic to open "О нас" submenu and navigate to Contacts
+            // In WordPress standard menu, if 'Контакты' is under 'О нас', it usually has its own URL.
+            // We search for a link with text containing 'контакт'
+            const allLinks = Array.from(document.querySelectorAll('a'));
+            const contactLink = allLinks.find(el => el.textContent.toLowerCase().includes('контакт'));
+
+            if (contactLink && contactLink.href) {
+                 window.location.href = contactLink.href;
+            } else if (document.getElementById('branches')) {
+                 document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
             } else {
-                window.location.href = cl_voice_control.home_url + '/#branches';
+                 // Fallback to homepage anchor
+                 window.location.href = cl_voice_control.home_url + '/#branches';
+            }
+            return;
+        }
+
+        if (cmd.includes('продление книг') || cmd.includes('продлить книгу')) {
+            speak('Открываю форму продления книг');
+            const renewBtn = document.getElementById('book-renewal-btn');
+            if (renewBtn) {
+                // Ensure it's not hidden due to visibility logic
+                renewBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');
+                renewBtn.click();
+            } else {
+                speak('Функция продления книг сейчас недоступна.');
             }
             return;
         }
 
         if (cmd.includes('версия для слабовидящих') || cmd.includes('обычная версия')) {
              speak('Переключаю режим отображения');
-             a11yToggleBtn.click();
+             const a11yToggleBtn = document.getElementById('accessibility-button');
+             if (a11yToggleBtn) a11yToggleBtn.click();
              return;
         }
 
@@ -163,9 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hideIndicator();
     };
 
-    // Double click to activate
-    a11yToggleBtn.addEventListener('dblclick', (e) => {
-        e.preventDefault(); // Prevent standard toggle on double click
+    // Single click to activate on mobile
+    mobileVoiceBtn.addEventListener('click', (e) => {
+        e.preventDefault();
 
         if (isListening) {
             recognition.stop();
