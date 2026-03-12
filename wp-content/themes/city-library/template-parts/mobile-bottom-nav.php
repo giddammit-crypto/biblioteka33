@@ -273,4 +273,75 @@ if ($enable_voice && (!$voice_test_mode || is_user_logged_in())) :
     <!-- Radar pulse effect behind icon -->
     <span class="absolute inset-0 rounded-full border border-primary/30 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] opacity-0 group-hover:opacity-100"></span>
 </button>
+
+<!-- Voice Commands Modal -->
+<div id="voice-commands-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-commands-title">
+    <div class="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative max-h-[90vh] flex flex-col border border-slate-100 ring-1 ring-black/5 voice-modal-content">
+        <!-- Header -->
+        <div class="relative bg-white px-8 py-6 shrink-0 border-b border-slate-100 flex items-center justify-between z-10">
+            <div>
+                <h3 id="voice-commands-title" class="text-2xl font-display font-bold text-slate-900 tracking-tight leading-none">
+                    Голосовой помощник
+                </h3>
+                <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Доступные команды</p>
+            </div>
+            <button type="button" class="voice-modal-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
+                <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="px-8 py-6 overflow-y-auto custom-scrollbar bg-slate-50 space-y-4">
+            <p class="text-sm text-slate-600 mb-4 font-medium leading-relaxed">
+                Нажмите кнопку с микрофоном и произнесите одну из команд:
+            </p>
+
+            <ul class="space-y-3">
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">article</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«Открой последние новости»</strong>
+                        <span class="text-xs text-slate-500">Переход к свежим событиям</span>
+                    </div>
+                </li>
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">event</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«Афиша» или «Мероприятия»</strong>
+                        <span class="text-xs text-slate-500">Показать расписание событий</span>
+                    </div>
+                </li>
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">auto_stories</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«Продление книг»</strong>
+                        <span class="text-xs text-slate-500">Открыть форму продления онлайн</span>
+                    </div>
+                </li>
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">location_on</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«Контакты» или «Библиотека номер 2»</strong>
+                        <span class="text-xs text-slate-500">Информация о филиалах</span>
+                    </div>
+                </li>
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">home</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«На главную»</strong>
+                        <span class="text-xs text-slate-500">Вернуться в начало сайта</span>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="mt-6 p-4 bg-primary/10 rounded-2xl border border-primary/20">
+                <p class="text-xs text-slate-700 leading-relaxed font-medium">
+                    <span class="font-bold text-primary block mb-1">Задайте любой вопрос:</span>
+                    Например: <em class="text-slate-500">«Кто автор Евгения Онегина?»</em> или <em class="text-slate-500">«График работы филиала номер 5»</em>. Наш Виртуальный библиотекарь найдет ответ!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php endif; ?>

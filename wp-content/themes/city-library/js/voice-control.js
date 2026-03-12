@@ -70,7 +70,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ru-RU';
         utterance.rate = 1.0;
+
+        // Attempt to find a high-quality (Google/Microsoft) Russian voice
+        let voices = synth.getVoices();
+
+        // Sometimes voices aren't loaded immediately
+        if (voices.length === 0) {
+            synth.onvoiceschanged = () => {
+                voices = synth.getVoices();
+                setBestRussianVoice(utterance, voices);
+                synth.speak(utterance);
+            };
+            return;
+        }
+
+        setBestRussianVoice(utterance, voices);
         synth.speak(utterance);
+    }
+
+    function setBestRussianVoice(utterance, voices) {
+        // Filter for Russian voices
+        const ruVoices = voices.filter(voice => voice.lang.includes('ru'));
+        if (ruVoices.length > 0) {
+            // Prefer "Google" or "Microsoft" voices as they often sound more natural
+            const premiumVoice = ruVoices.find(voice => voice.name.includes('Google') || voice.name.includes('Microsoft'));
+            utterance.voice = premiumVoice ? premiumVoice : ruVoices[0];
+        }
     }
 
     // Command Processing
@@ -110,6 +135,24 @@ document.addEventListener('DOMContentLoaded', () => {
             speak('Открываю главную страницу');
             // Append #primary to scroll past hero on homepage
             window.location.href = cl_voice_control.home_url + '/#primary';
+            return;
+        }
+
+        if (cmd.includes('что ты умеешь') || cmd.includes('помощь') || cmd.includes('какие команды')) {
+            speak('Открываю список доступных команд');
+            const commandsModal = document.getElementById('voice-commands-modal');
+            if (commandsModal) {
+                commandsModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => {
+                    commandsModal.classList.remove('opacity-0');
+                    const content = commandsModal.querySelector('.voice-modal-content');
+                    if (content) {
+                        content.classList.remove('scale-90');
+                        content.classList.add('scale-100');
+                    }
+                });
+            }
             return;
         }
 
@@ -164,6 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Show thinking indicator for AI
+        const a11yToggleBtn = document.getElementById('accessibility-button');
+        const iconBtn = mobileVoiceBtn.querySelector('span');
+        if (iconBtn) {
+            iconBtn.textContent = 'more_horiz';
+            iconBtn.classList.add('animate-spin');
+        }
+
         jQuery.ajax({
             url: cl_voice_control.ajax_url,
             type: 'POST',
@@ -175,14 +226,27 @@ document.addEventListener('DOMContentLoaded', () => {
             success: function(response) {
                 if (response.success) {
                     // Strip HTML tags from AI response before speaking
-                    const plainText = response.data.reply.replace(/<[^>]*>?/gm, '');
+                    const plainText = response.data.reply.replace(/<[^>]*>?/gm, '').trim();
                     speak(plainText);
+
+                    // If the response contains an address mapping from our hardcoded DB (e.g. Суздальский), offer the map link visually or try to scroll
+                    if (plainText.toLowerCase().includes('суздальский') || plainText.toLowerCase().includes('улица')) {
+                        if (document.getElementById('branches')) {
+                            document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
                 } else {
                     speak('Я не смог найти ответ на этот вопрос.');
                 }
             },
             error: function() {
                 speak('Произошла ошибка связи с сервером.');
+            },
+            complete: function() {
+                if (iconBtn) {
+                    iconBtn.textContent = 'mic';
+                    iconBtn.classList.remove('animate-spin');
+                }
             }
         });
     }
@@ -266,6 +330,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // Re-enable hover transitions
         mobileVoiceBtn.style.transition = '';
     });
+
+    // Voice Commands Modal Close Logic
+    const commandsModal = document.getElementById('voice-commands-modal');
+    if (commandsModal) {
+        const closeBtn = commandsModal.querySelector('.voice-modal-close');
+
+        function closeVoiceModal() {
+            commandsModal.classList.add('opacity-0');
+            const content = commandsModal.querySelector('.voice-modal-content');
+            if (content) {
+                content.classList.remove('scale-100');
+                content.classList.add('scale-90');
+            }
+            setTimeout(() => {
+                commandsModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 500);
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeVoiceModal);
+        }
+
+        commandsModal.addEventListener('click', (e) => {
+            if (e.target === commandsModal) {
+                closeVoiceModal();
+            }
+        });
+    }
 
     // Single click to activate on mobile
     mobileVoiceBtn.addEventListener('click', (e) => {
