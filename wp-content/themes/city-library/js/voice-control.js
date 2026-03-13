@@ -104,9 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // If premium found, use it. Otherwise default to first available Russian voice.
             utterance.voice = premiumVoice ? premiumVoice : ruVoices[0];
 
-            // Tweak pitch/rate slightly for a more natural librarian feel if possible
-            utterance.pitch = 1.0;
-            utterance.rate = 1.05;
+            // Apply customizer settings
+            utterance.pitch = parseFloat(cl_voice_control.voice_pitch) || 1.0;
+            utterance.rate = parseFloat(cl_voice_control.voice_rate) || 1.05;
         }
     }
 
@@ -200,6 +200,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (cmd.includes('электронный каталог') || cmd.includes('каталог книг') || cmd.includes('каталог')) {
+            speak('Открываю электронный каталог');
+            // Wait a bit to let the voice synthesize before opening new tab
+            setTimeout(() => {
+                window.open('http://library.vladimir.ru/rguest_vlad_cgb.htm', '_blank');
+            }, 1500);
+            return;
+        }
+
         if (cmd.includes('версия для слабовидящих') || cmd.includes('обычная версия')) {
              speak('Переключаю режим отображения');
              const a11yToggleBtn = document.getElementById('accessibility-button');
@@ -262,11 +271,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 } else {
-                    speak('Я не смог найти ответ на этот вопрос.');
+                    const errorMsg = (response.data && response.data.reply) ? response.data.reply : 'Извините, я не смогла найти ответ на этот вопрос.';
+                    speak(errorMsg);
                 }
             },
             error: function() {
-                speak('Произошла ошибка связи с сервером.');
+                speak('Произошла ошибка связи с сервером. Пожалуйста, проверьте подключение к интернету.');
             },
             complete: function() {
                 if (iconBtn) {

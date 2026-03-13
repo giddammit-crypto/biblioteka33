@@ -5,14 +5,15 @@
 
 // 1. Register Customizer Settings
 function city_library_ai_customizer($wp_customize) {
+    // --- Section: Virtual Librarian (Chat UI) ---
     $wp_customize->add_section('virtual_librarian_section', array(
-        'title' => __('Виртуальный библиотекарь (ИИ)', 'city-library'),
+        'title' => __('Виртуальный библиотекарь (Чат ИИ)', 'city-library'),
         'priority' => 160,
     ));
 
     $wp_customize->add_setting('enable_ai_librarian', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('enable_ai_librarian', array(
-        'label' => __('Включить Виртуального библиотекаря', 'city-library'),
+        'label' => __('Включить текстовый виджет чата ИИ', 'city-library'),
         'section' => 'virtual_librarian_section',
         'type' => 'checkbox',
     ));
@@ -20,22 +21,43 @@ function city_library_ai_customizer($wp_customize) {
     $wp_customize->add_setting('ai_librarian_test_mode', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('ai_librarian_test_mode', array(
         'label' => __('Режим тестирования (Только для авторизованных)', 'city-library'),
-        'description' => __('Если включено, чат увидят только залогиненные администраторы/редакторы.', 'city-library'),
         'section' => 'virtual_librarian_section',
+        'type' => 'checkbox',
+    ));
+
+    // --- Section: Voice Assistant & AI Engine (Core AI Settings) ---
+    $wp_customize->add_section('voice_assistant_section', array(
+        'title' => __('Голосовой Ассистент и Ядро ИИ', 'city-library'),
+        'priority' => 161,
+        'description' => __('Тонкие настройки ядра Искусственного Интеллекта и голосового ассистента.', 'city-library'),
+    ));
+
+    $wp_customize->add_setting('enable_voice_control', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('enable_voice_control', array(
+        'label' => __('Включить Голосового Ассистента', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('voice_control_test_mode', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('voice_control_test_mode', array(
+        'label' => __('Тестовый режим (только авторизованные)', 'city-library'),
+        'section' => 'voice_assistant_section',
         'type' => 'checkbox',
     ));
 
     $wp_customize->add_setting('openrouter_api_key', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('openrouter_api_key', array(
         'label' => __('OpenRouter API Key', 'city-library'),
-        'section' => 'virtual_librarian_section',
+        'description' => __('Обязателен для работы ИИ', 'city-library'),
+        'section' => 'voice_assistant_section',
         'type' => 'text',
     ));
 
     $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemma-2-9b-it:free', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
-        'label' => __('Модель ИИ', 'city-library'),
-        'section' => 'virtual_librarian_section',
+        'label' => __('Модель нейросети (LLM)', 'city-library'),
+        'section' => 'voice_assistant_section',
         'type' => 'select',
         'choices' => array(
             'google/gemma-2-9b-it:free' => 'Google: Gemma 2 9B (Free)',
@@ -50,25 +72,33 @@ function city_library_ai_customizer($wp_customize) {
     $wp_customize->add_setting('ai_librarian_kb_ids', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_kb_ids', array(
         'label' => __('База знаний (ID файлов)', 'city-library'),
-        'description' => __('Введите через запятую ID файлов (TXT, DOCX, ODT) из Медиабиблиотеки для использования в качестве базы знаний ИИ. Пример: 12,34,56. (DOC не поддерживается, конвертируйте в DOCX)', 'city-library'),
-        'section' => 'virtual_librarian_section',
+        'description' => __('Введите через запятую ID файлов (TXT, DOCX, ODT) из Медиабиблиотеки.', 'city-library'),
+        'section' => 'voice_assistant_section',
         'type' => 'text',
     ));
 
-    // Voice Control Settings
-    $wp_customize->add_setting('enable_voice_control', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
-    $wp_customize->add_control('enable_voice_control', array(
-        'label' => __('Включить Голосовое Управление', 'city-library'),
-        'description' => __('Активация по двойному клику на кнопку версии для слабовидящих.', 'city-library'),
-        'section' => 'virtual_librarian_section',
-        'type' => 'checkbox',
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем.', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_control('ai_persona_prompt', array(
+        'label' => __('Системный промпт (Persona)', 'city-library'),
+        'description' => __('Инструкция для ИИ, определяющая его характер.', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'textarea',
     ));
 
-    $wp_customize->add_setting('voice_control_test_mode', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
-    $wp_customize->add_control('voice_control_test_mode', array(
-        'label' => __('Голосовое управление только для авторизованных', 'city-library'),
-        'section' => 'virtual_librarian_section',
-        'type' => 'checkbox',
+    $wp_customize->add_setting('voice_pitch', array('default' => '1.0', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('voice_pitch', array(
+        'label' => __('Тон голоса (Pitch)', 'city-library'),
+        'description' => __('Обычно 1.0. Можно сделать выше (1.2) или ниже (0.8).', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('voice_rate', array('default' => '1.05', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('voice_rate', array(
+        'label' => __('Скорость речи (Rate)', 'city-library'),
+        'description' => __('Обычно 1.05.', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'text',
     ));
 }
 add_action('customize_register', 'city_library_ai_customizer');
@@ -235,7 +265,9 @@ function city_library_handle_ai_chat() {
     }
 
     // Build Context (Simulated RAG)
-    $context = "Ты библиограф-библиотекарь с 30 летним стажем. Ты работаешь в Центральной городской библиотеке города Владимира (сокращенно МБУК ЦГБ г. Владимира), которая находится по адресу: Суздальский проспект, д. 2 (сайт: biblioteka33.ru).
+    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем.');
+
+    $context = $base_persona . " Ты работаешь в Центральной городской библиотеке города Владимира (сокращенно МБУК ЦГБ г. Владимира), которая находится по адресу: Суздальский проспект, д. 2 (сайт: biblioteka33.ru). Говори о себе в женском роде (например, 'я нашла', 'я могу подсказать').
     КАТЕГОРИЧЕСКИ ВАЖНО: Ты НЕ Владимирская Областная Научная Библиотека. Если спросят про областную библиотеку - вежливо отвечай, что ты представляешь городскую библиотеку. Данные запросов по библиотекам-филиалам касаются ТОЛЬКО библиотек-филиалов МБУК ЦГБ г. Владимира.
     ПРАВИЛА ОТВЕТОВ:
     1. Давай профессиональные, краткие, точные и правдивые ответы высшего качества (ААА).
@@ -276,13 +308,31 @@ function city_library_handle_ai_chat() {
         $context .= "ДРУГАЯ ИНФОРМАЦИЯ О БИБЛИОТЕКЕ:\n" . strip_tags($branches_text) . "\n\n";
     }
 
-    // Add Site Map for Navigation Links
-    $context .= "СТРУКТУРА САЙТА (Используй эти ссылки, если пользователь спрашивает, где найти информацию):\n";
+    // Dynamically Add Real WordPress Menu Structure
+    $context .= "СТРУКТУРА САЙТА И МЕНЮ (Используй эти реальные ссылки, если пользователь спрашивает, где найти информацию):\n";
     $context .= "- Главная страница: " . home_url('/') . "\n";
     $context .= "- Новости: " . home_url('/?news_archive=true') . "\n";
     $context .= "- Афиша / Мероприятия: " . home_url('/#afisha') . "\n";
-    $context .= "- Контакты / Филиалы: " . home_url('/#branches') . "\n";
-    $context .= "- Важная информация / Услуги: " . home_url('/#important') . "\n\n";
+    $context .= "- Карта филиалов: " . home_url('/#branches') . "\n";
+    $context .= "- Важная информация: " . home_url('/#important') . "\n";
+
+    // Fetch primary menu items to teach AI the actual site structure
+    $menu_locations = get_nav_menu_locations();
+    if (isset($menu_locations['primary'])) {
+        $menu = wp_get_nav_menu_object($menu_locations['primary']);
+        if ($menu) {
+            $menu_items = wp_get_nav_menu_items($menu->term_id);
+            if ($menu_items) {
+                foreach ($menu_items as $item) {
+                    // Include parent and child titles with their URLs
+                    $title = esc_html($item->title);
+                    $url = esc_url($item->url);
+                    $context .= "- Меню '$title': $url \n";
+                }
+            }
+        }
+    }
+    $context .= "\n";
 
     // Add recent news
     $context .= "СВЕЖИЕ НОВОСТИ:\n";
@@ -325,7 +375,7 @@ function city_library_handle_ai_chat() {
         $reply = wp_kses_post(nl2br($data['choices'][0]['message']['content']));
         wp_send_json_success(array('reply' => $reply));
     } else {
-        wp_send_json_error(array('reply' => 'Библиотекарь затрудняется ответить.'));
+        wp_send_json_error(array('reply' => 'Извините, я затрудняюсь ответить на этот вопрос.'));
     }
 }
 add_action('wp_ajax_city_library_ai_chat', 'city_library_handle_ai_chat');

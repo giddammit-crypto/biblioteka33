@@ -332,6 +332,13 @@ if ($enable_voice && (!$voice_test_mode || is_user_logged_in())) :
                         <span class="text-xs text-slate-500">Вернуться в начало сайта</span>
                     </div>
                 </li>
+                <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
+                    <span class="material-symbols-outlined text-primary mt-0.5">menu_book</span>
+                    <div>
+                        <strong class="text-sm text-slate-900 block font-bold">«Электронный каталог»</strong>
+                        <span class="text-xs text-slate-500">Открыть каталог книг в новой вкладке</span>
+                    </div>
+                </li>
             </ul>
 
             <div class="mt-6 p-4 bg-primary/10 rounded-2xl border border-primary/20">

@@ -130,7 +130,9 @@ function city_library_scripts() {
                 'enabled' => true,
                 'home_url' => home_url(),
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'ai_nonce' => wp_create_nonce('ai_chat_nonce')
+                'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
+                'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
+                'voice_rate' => get_theme_mod('voice_rate', '1.05')
             ));
         }
     }
