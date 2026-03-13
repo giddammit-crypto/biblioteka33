@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (matched) {
                     speak('Открываю: ' + customCmd.phrases[0]); // Use the first phrase as the friendly name
                     setTimeout(() => {
-                        window.open(customCmd.url, '_blank');
+                        window.location.href = customCmd.url; // Use redirect instead of window.open to prevent mobile popup blockers
                     }, 1500);
                     return; // Stop processing further
                 }
@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             speak('Открываю электронный каталог');
             // Wait a bit to let the voice synthesize before opening new tab
             setTimeout(() => {
-                window.open('http://library.vladimir.ru/rguest_vlad_cgb.htm', '_blank');
+                window.location.href = 'http://library.vladimir.ru/rguest_vlad_cgb.htm';
             }, 1500);
             return;
         }
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 message: query
             },
             success: function(response) {
-                if (response.success) {
+                if (response.success && response.data && response.data.reply) {
                     // Prepare text. We want plain text for speech, but we can allow basic formatting in the modal
                     const rawHtml = response.data.reply;
                     const plainText = rawHtml.replace(/<[^>]*>?/gm, '').trim();
@@ -445,10 +445,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (addressMatch) {
                         const extractedAddress = addressMatch[0];
                         // Check if it's an inquiry about location to show map
-                        if (query.toLowerCase().includes('где') || query.toLowerCase().includes('адрес') || query.toLowerCase().includes('находится')) {
+                        if (query.toLowerCase().includes('где') || query.toLowerCase().includes('адрес') || query.toLowerCase().includes('находится') || query.toLowerCase().includes('карта') || query.toLowerCase().includes('маршрут')) {
                              // Wait a bit so the voice can start, then redirect to yandex maps with the query
                              setTimeout(() => {
-                                 window.open(`https://yandex.ru/maps/?text=${encodeURIComponent(extractedAddress)}`, '_blank');
+                                 window.location.href = `https://yandex.ru/maps/?text=${encodeURIComponent(extractedAddress)}`;
                              }, 1500);
                         } else if (document.getElementById('footer-yandex-map')) {
                              // Scroll to the embedded map in footer
