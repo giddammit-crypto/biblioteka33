@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Match the CSS lg:landscape:hidden logic (shows on mobile < 1024 OR any portrait screen like 1080x1920 Kiosk)
     const isMobileOrKiosk = !window.matchMedia('(min-width: 1024px) and (orientation: landscape)').matches;
 
+    // Abort completely if not on Mobile/Kiosk as per user request
+    if (!isMobileOrKiosk) {
+        mobileVoiceBtn.style.display = 'none';
+        return;
+    }
+
     // --- 24-HOUR TEST LOGIC ---
     let hasAccess = cl_voice_control.is_logged_in || !cl_voice_control.test_mode;
 
@@ -199,12 +205,33 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileVoiceBtn.classList.add('bg-white', 'text-primary');
     }
 
-    function speak(text) {
+    function speak(text, showInModal = false) {
         // As per request: "Вместо этого (Слушаю) для мобильной версии надо сделать всплывающее уведомление"
         // We will skip voice synthesis for the "Слушаю" phrase, but still use it for other responses.
         if (text === 'Слушаю' && isMobileOrKiosk) {
             return;
         }
+
+        // Show AI Answer Modal if requested
+        if (showInModal) {
+            const aiModal = document.getElementById('voice-ai-answer-modal');
+            const aiText = document.getElementById('voice-ai-answer-text');
+            if (aiModal && aiText) {
+                // Strip markdown-like bold tags for cleaner UI if needed, but innerHTML allows some formatting
+                aiText.innerHTML = text;
+                aiModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                requestAnimationFrame(() => {
+                    aiModal.classList.remove('opacity-0');
+                    const content = aiModal.querySelector('.voice-modal-content');
+                    if (content) {
+                        content.classList.remove('scale-90');
+                        content.classList.add('scale-100');
+                    }
+                });
+            }
+        }
+
         if (synth.speaking) synth.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ru-RU';
@@ -400,9 +427,16 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             success: function(response) {
                 if (response.success) {
-                    // Strip HTML tags from AI response before speaking
-                    const plainText = response.data.reply.replace(/<[^>]*>?/gm, '').trim();
-                    speak(plainText);
+                    // Prepare text. We want plain text for speech, but we can allow basic formatting in the modal
+                    const rawHtml = response.data.reply;
+                    const plainText = rawHtml.replace(/<[^>]*>?/gm, '').trim();
+
+                    // Pass true to show the modal with the HTML formatted text
+                    speak(plainText, true);
+
+                    // Update modal content with original HTML (with line breaks)
+                    const aiText = document.getElementById('voice-ai-answer-text');
+                    if (aiText) aiText.innerHTML = rawHtml;
 
                     // Open Yandex Maps if an exact address from Vladimir is returned
                     // Extract strings like "г. Владимир, пр-кт Ленина, д. 12"
@@ -522,21 +556,36 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileVoiceBtn.style.transition = '';
     });
 
-    // Voice Commands Modal Close Logic
-    const commandsModal = document.getElementById('voice-commands-modal');
-    if (commandsModal) {
-        const closeBtn = commandsModal.querySelector('.voice-modal-close');
+    // Generic Voice Modal Close Logic (handles both Commands and AI Answer modals)
+    const voiceModals = [
+        document.getElementById('voice-commands-modal'),
+        document.getElementById('voice-ai-answer-modal')
+    ];
+
+    voiceModals.forEach(modal => {
+        if (!modal) return;
+
+        const closeBtn = modal.querySelector('.voice-modal-close') || modal.querySelector('.voice-ai-answer-close');
 
         function closeVoiceModal() {
-            commandsModal.classList.add('opacity-0');
-            const content = commandsModal.querySelector('.voice-modal-content');
+            modal.classList.add('opacity-0');
+            const content = modal.querySelector('.voice-modal-content');
             if (content) {
                 content.classList.remove('scale-100');
                 content.classList.add('scale-90');
             }
             setTimeout(() => {
-                commandsModal.classList.add('hidden');
-                document.body.style.overflow = '';
+                modal.classList.add('hidden');
+                // Only reset overflow if NO voice modals are open
+                const anyOpen = voiceModals.some(m => m && !m.classList.contains('hidden'));
+                if (!anyOpen) {
+                    document.body.style.overflow = '';
+                }
+
+                // If it's the AI answer modal, stop speech synthesis on close so it stops talking if dismissed
+                if (modal.id === 'voice-ai-answer-modal' && synth.speaking) {
+                    synth.cancel();
+                }
             }, 500);
         }
 
@@ -544,12 +593,12 @@ document.addEventListener('DOMContentLoaded', () => {
             closeBtn.addEventListener('click', closeVoiceModal);
         }
 
-        commandsModal.addEventListener('click', (e) => {
-            if (e.target === commandsModal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
                 closeVoiceModal();
             }
         });
-    }
+    });
 
     // Single click to activate on mobile
     mobileVoiceBtn.addEventListener('click', (e) => {

@@ -337,8 +337,34 @@ if ($enable_voice) :
     </div>
 </div>
 
+<!-- AI Answer Text Modal -->
+<div id="voice-ai-answer-modal" class="fixed inset-0 z-[120] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-ai-answer-title">
+    <div class="bg-white rounded-[2rem] w-full max-w-md shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative flex flex-col border border-slate-100 ring-1 ring-black/5 voice-modal-content">
+        <!-- Header -->
+        <div class="relative bg-white px-6 py-4 shrink-0 border-b border-slate-100 flex items-center justify-between z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+                </div>
+                <h3 id="voice-ai-answer-title" class="text-base font-display font-bold text-slate-900 tracking-tight leading-none">
+                    Ответ ассистента
+                </h3>
+            </div>
+            <button type="button" class="voice-ai-answer-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
+                <span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="px-6 py-5 overflow-y-auto custom-scrollbar bg-slate-50 max-h-[60vh]">
+            <p id="voice-ai-answer-text" class="text-sm text-slate-700 leading-relaxed font-medium">
+                <!-- AI text injected here -->
+            </p>
+        </div>
+    </div>
+</div>
+
 <!-- Voice Commands Modal -->
-<div id="voice-commands-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-commands-title">
     <div class="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative max-h-[90vh] flex flex-col border border-slate-100 ring-1 ring-black/5 voice-modal-content">
         <!-- Header -->
         <div class="relative bg-white px-8 py-6 shrink-0 border-b border-slate-100 flex items-center justify-between z-10">
