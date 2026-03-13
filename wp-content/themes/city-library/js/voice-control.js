@@ -10,13 +10,152 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mobileVoiceBtn = document.getElementById('mobile-voice-assistant-btn');
     if (!mobileVoiceBtn) {
-        return; // Early return if button is not present (e.g., user not logged in)
+        return;
     }
+
+    // Match the CSS lg:landscape:hidden logic (shows on mobile < 1024 OR any portrait screen like 1080x1920 Kiosk)
+    const isMobileOrKiosk = !window.matchMedia('(min-width: 1024px) and (orientation: landscape)').matches;
+
+    // --- 24-HOUR TEST LOGIC ---
+    let hasAccess = cl_voice_control.is_logged_in || !cl_voice_control.test_mode;
+
+    // 1. Check if user just activated the test via hash
+    if (window.location.hash === '#voicetest' && isMobileOrKiosk) {
+        const date = new Date();
+        const expirationTimestamp = date.getTime() + (24 * 60 * 60 * 1000); // 24 hours from now
+
+        // We set the browser cookie expiration to 30 days so it isn't automatically deleted,
+        // allowing us to detect it later and show the feedback modal.
+        const cookieExpireDate = new Date();
+        cookieExpireDate.setTime(cookieExpireDate.getTime() + (30 * 24 * 60 * 60 * 1000));
+
+        document.cookie = "cl_voice_test_active=" + expirationTimestamp + "; expires=" + cookieExpireDate.toUTCString() + "; path=/";
+        hasAccess = true;
+
+        // Remove hash cleanly
+        history.replaceState(null, null, ' ');
+
+        // Show Welcome Modal
+        const welcomeModal = document.getElementById('voice-test-welcome-modal');
+        if (welcomeModal) {
+            welcomeModal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                welcomeModal.classList.remove('opacity-0');
+                welcomeModal.querySelector('.test-modal-content').classList.remove('scale-90');
+                welcomeModal.querySelector('.test-modal-content').classList.add('scale-100');
+            });
+
+            const startBtn = document.getElementById('voice-test-start-btn');
+            if (startBtn) {
+                startBtn.addEventListener('click', () => {
+                    welcomeModal.classList.add('opacity-0');
+                    welcomeModal.querySelector('.test-modal-content').classList.remove('scale-100');
+                    welcomeModal.querySelector('.test-modal-content').classList.add('scale-90');
+                    setTimeout(() => welcomeModal.classList.add('hidden'), 500);
+                });
+            }
+        }
+    }
+
+    // 2. Check existing cookie
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    };
+
+    const cookieVal = getCookie('cl_voice_test_active');
+    if (cookieVal) {
+        const expiresAt = parseInt(cookieVal, 10);
+        if (new Date().getTime() < expiresAt) {
+            hasAccess = true;
+        } else {
+            // Cookie expired! Show feedback modal if we haven't already.
+            // We use a secondary flag in localStorage so it only shows once after expiration.
+            if (!localStorage.getItem('cl_voice_test_feedback_done') && isMobileOrKiosk) {
+                const feedbackModal = document.getElementById('voice-test-feedback-modal');
+                if (feedbackModal) {
+                    feedbackModal.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        feedbackModal.classList.remove('opacity-0');
+                        feedbackModal.querySelector('.test-modal-content').classList.remove('scale-90');
+                        feedbackModal.querySelector('.test-modal-content').classList.add('scale-100');
+                    });
+
+                    // Star Rating Logic
+                    const stars = document.querySelectorAll('#voice-feedback-stars span');
+                    const ratingInput = document.getElementById('voice-feedback-rating-input');
+                    let currentRating = 0;
+
+                    stars.forEach(star => {
+                        star.addEventListener('click', function() {
+                            currentRating = parseInt(this.getAttribute('data-value'));
+                            ratingInput.value = currentRating;
+                            stars.forEach(s => {
+                                if (parseInt(s.getAttribute('data-value')) <= currentRating) {
+                                    s.classList.add('text-yellow-400');
+                                    s.classList.remove('text-slate-300');
+                                    s.classList.add('material-symbols-rounded');
+                                    s.classList.remove('material-symbols-outlined');
+                                } else {
+                                    s.classList.remove('text-yellow-400');
+                                    s.classList.add('text-slate-300');
+                                    s.classList.remove('material-symbols-rounded');
+                                    s.classList.add('material-symbols-outlined');
+                                }
+                            });
+                        });
+                    });
+
+                    // Form Submit Logic
+                    const form = document.getElementById('voice-test-feedback-form');
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        if (currentRating === 0) {
+                            alert('Пожалуйста, поставьте оценку от 1 до 5 звезд.');
+                            return;
+                        }
+
+                        const btn = document.getElementById('voice-feedback-submit-btn');
+                        btn.disabled = true;
+                        btn.textContent = 'Отправка...';
+
+                        const formData = new FormData(form);
+                        formData.append('action', 'city_library_voice_feedback');
+                        formData.append('nonce', cl_voice_control.ai_nonce);
+
+                        fetch(cl_voice_control.ajax_url, { method: 'POST', body: formData })
+                            .then(res => res.json())
+                            .then(data => {
+                                localStorage.setItem('cl_voice_test_feedback_done', 'true');
+                                // Force reload to completely remove assistant
+                                window.location.reload();
+                            })
+                            .catch(err => {
+                                btn.disabled = false;
+                                btn.textContent = 'Отправить отчет';
+                                alert('Произошла ошибка при отправке.');
+                            });
+                    });
+                }
+            }
+        }
+    }
+
+    if (!hasAccess) {
+        mobileVoiceBtn.style.display = 'none';
+        return;
+    }
+
+    // Ensure button is visible if logic passed and it's hidden by inline style previously
+    mobileVoiceBtn.style.display = 'flex';
+
+    // --- END TEST LOGIC ---
 
     let recognition = null;
     let isListening = false;
     const synth = window.speechSynthesis;
-    const isMobile = window.innerWidth < 1024;
 
     // Web Speech API Initialization
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -63,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function speak(text) {
         // As per request: "Вместо этого (Слушаю) для мобильной версии надо сделать всплывающее уведомление"
         // We will skip voice synthesis for the "Слушаю" phrase, but still use it for other responses.
-        if (text === 'Слушаю' && isMobile) {
+        if (text === 'Слушаю' && isMobileOrKiosk) {
             return;
         }
         if (synth.speaking) synth.cancel();
@@ -166,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (cmd.includes('что ты умеешь') || cmd.includes('помощь') || cmd.includes('какие команды')) {
+        if (cmd.includes('что ты умеешь') || cmd.includes('помощь') || cmd.includes('команд')) {
             speak('Открываю список доступных команд');
             const commandsModal = document.getElementById('voice-commands-modal');
             if (commandsModal) {

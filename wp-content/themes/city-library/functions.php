@@ -123,35 +123,36 @@ function city_library_scripts() {
     $enable_voice = get_theme_mod('enable_voice_control', false);
     $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
 
+    // We now always enqueue the script if voice is globally enabled, so the JS can check for #voicetest and cookies
     if ($enable_voice) {
-        if (!$voice_test_mode || is_user_logged_in()) {
-            wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery'), wp_get_theme()->get('Version'), true);
+        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery'), wp_get_theme()->get('Version'), true);
 
-            $custom_commands = array();
-            for ($i = 1; $i <= 20; $i++) {
-                $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
-                $url = get_theme_mod("voice_cmd_url_$i", '');
-                if (!empty(trim($phrases)) && !empty(trim($url))) {
-                    $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
-                    if (!empty($phrases_array)) {
-                        $custom_commands[] = array(
-                            'phrases' => array_values($phrases_array),
-                            'url' => esc_url($url)
-                        );
-                    }
+        $custom_commands = array();
+        for ($i = 1; $i <= 20; $i++) {
+            $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
+            $url = get_theme_mod("voice_cmd_url_$i", '');
+            if (!empty(trim($phrases)) && !empty(trim($url))) {
+                $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
+                if (!empty($phrases_array)) {
+                    $custom_commands[] = array(
+                        'phrases' => array_values($phrases_array),
+                        'url' => esc_url($url)
+                    );
                 }
             }
-
-            wp_localize_script('city-library-voice', 'cl_voice_control', array(
-                'enabled' => true,
-                'home_url' => home_url(),
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
-                'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
-                'voice_rate' => get_theme_mod('voice_rate', '1.05'),
-                'custom_commands' => $custom_commands
-            ));
         }
+
+        wp_localize_script('city-library-voice', 'cl_voice_control', array(
+            'enabled' => true,
+            'test_mode' => $voice_test_mode,
+            'is_logged_in' => is_user_logged_in(),
+            'home_url' => home_url(),
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
+            'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
+            'voice_rate' => get_theme_mod('voice_rate', '1.05'),
+            'custom_commands' => $custom_commands
+        ));
     }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
@@ -232,6 +233,31 @@ function city_library_get_branches_list() {
     }
     return $branches;
 }
+
+/**
+ * AJAX Handler for Voice Test Feedback
+ */
+function city_library_voice_feedback() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+
+    $rating = intval($_POST['rating']);
+    $feedback = sanitize_textarea_field($_POST['feedback']);
+
+    $to = 'xxoleg6@yandex.ru';
+    $subject = 'Отчет о тестировании Голосового Ассистента (Оценка: ' . $rating . '/5)';
+    $message = "Оценка: $rating из 5\n\nОтзыв/Ошибки:\n$feedback";
+    $headers = array('Content-Type: text/plain; charset=UTF-8');
+
+    // Attempt to send email
+    wp_mail($to, $subject, $message, $headers);
+
+    // We clear the cookie by setting expiration to the past
+    setcookie('cl_voice_test_active', '', time() - 3600, '/');
+
+    wp_send_json_success(array('message' => 'Спасибо! Ваш отзыв отправлен.'));
+}
+add_action('wp_ajax_city_library_voice_feedback', 'city_library_voice_feedback');
+add_action('wp_ajax_nopriv_city_library_voice_feedback', 'city_library_voice_feedback');
 
 /**
  * AJAX Handler for Book Renewal

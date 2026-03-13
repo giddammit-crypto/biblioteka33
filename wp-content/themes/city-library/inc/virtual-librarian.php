@@ -284,10 +284,20 @@ function city_library_handle_ai_chat() {
 
     // Security Check: Enforce test mode strictly on the server-side
     // Allow request if EITHER the chat widget test mode is disabled OR the voice assistant test mode is disabled (and thus accessible to guests).
-    // If BOTH are in test mode, block guests.
+    // Also allow if the special voice test cookie is set and its 24h timestamp hasn't expired.
     $chat_test_mode = get_theme_mod('ai_librarian_test_mode', true);
     $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
-    if ($chat_test_mode && $voice_test_mode && !is_user_logged_in()) {
+    $has_valid_test_cookie = false;
+
+    if (isset($_COOKIE['cl_voice_test_active'])) {
+        $cookie_timestamp = (int)$_COOKIE['cl_voice_test_active'];
+        $current_timestamp_ms = time() * 1000;
+        if ($cookie_timestamp > $current_timestamp_ms) {
+            $has_valid_test_cookie = true;
+        }
+    }
+
+    if ($chat_test_mode && $voice_test_mode && !is_user_logged_in() && !$has_valid_test_cookie) {
         wp_send_json_error(array('reply' => 'Виртуальная помощница в данный момент доступна только для авторизованных пользователей.'));
     }
 

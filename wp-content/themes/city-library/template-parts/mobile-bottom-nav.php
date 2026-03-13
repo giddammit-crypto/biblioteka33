@@ -263,16 +263,79 @@ if ($bar_style === 'text-only') {
 <?php
 // Floating Voice Assistant Button for Mobile/Kiosk
 $enable_voice = get_theme_mod('enable_voice_control', false);
-$voice_test_mode = get_theme_mod('voice_control_test_mode', true);
 
-if ($enable_voice && (!$voice_test_mode || is_user_logged_in())) :
+// In order for the #voicetest link logic to work on the client side, we must render the button HTML
+// but hide it initially using inline styles if test_mode is active and the user is not logged in.
+// The JS script will unhide it if the cookie or hash is present.
+$is_hidden_by_default = (get_theme_mod('voice_control_test_mode', true) && !is_user_logged_in());
+$button_style = $is_hidden_by_default ? 'display: none;' : '';
+
+if ($enable_voice) :
 ?>
-<button id="mobile-voice-assistant-btn" class="lg:landscape:hidden fixed z-[60] bottom-24 right-4 w-14 h-14 bg-white text-primary rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-all duration-300 active:scale-95 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
+<button id="mobile-voice-assistant-btn" style="<?php echo esc_attr($button_style); ?>" class="lg:landscape:hidden fixed z-[60] bottom-24 right-4 w-14 h-14 bg-white text-primary rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-all duration-300 active:scale-95 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
     <span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform duration-300">mic</span>
 
     <!-- Radar pulse effect behind icon -->
     <span class="absolute inset-0 rounded-full border border-primary/30 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] opacity-0 group-hover:opacity-100"></span>
 </button>
+
+<!-- Voice Test Welcome Modal -->
+<div id="voice-test-welcome-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-test-welcome-title">
+    <div class="bg-white rounded-[2rem] w-full max-w-sm shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative test-modal-content">
+        <div class="p-8 text-center space-y-4">
+            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span class="material-symbols-outlined text-primary text-3xl">mic</span>
+            </div>
+            <h3 id="voice-test-welcome-title" class="text-2xl font-display font-bold text-slate-900 leading-tight">
+                Тест Голосового Ассистента
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Вы получили доступ к тестированию интеллектуального голосового помощника. Тест автоматически завершится через <strong>24 часа</strong>.
+            </p>
+            <div class="bg-slate-50 rounded-xl p-4 text-xs text-slate-500 text-left border border-slate-100">
+                <span class="block font-bold text-slate-700 mb-1">Как использовать:</span>
+                Нажмите на появившуюся кнопку микрофона и скажите <strong>«Что ты умеешь»</strong> или <strong>«Команды»</strong>, чтобы узнать о возможностях.
+            </div>
+            <button id="voice-test-start-btn" class="w-full mt-4 py-3.5 bg-primary hover:bg-yellow-600 text-white font-bold rounded-xl transition-all duration-300 shadow-md shadow-primary/20 active:scale-95">
+                Хорошо, понятно
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Voice Test Feedback Modal -->
+<div id="voice-test-feedback-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-test-feedback-title">
+    <div class="bg-white rounded-[2rem] w-full max-w-sm shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative test-modal-content">
+        <div class="p-8 text-center space-y-5">
+            <h3 id="voice-test-feedback-title" class="text-2xl font-display font-bold text-slate-900 leading-tight">
+                Время теста вышло!
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Спасибо за участие в тестировании голосового ассистента. Пожалуйста, оцените его работу и опишите найденные ошибки, если они были.
+            </p>
+
+            <form id="voice-test-feedback-form" class="space-y-4">
+                <!-- Star Rating -->
+                <div class="flex justify-center gap-2" id="voice-feedback-stars">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="1">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="2">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="3">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="4">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="5">star</span>
+                </div>
+                <input type="hidden" name="rating" id="voice-feedback-rating-input" value="0">
+
+                <textarea name="feedback" rows="3" placeholder="Опишите ошибки или пожелания..." class="w-full bg-slate-50 border border-slate-200 rounded-xl text-sm p-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"></textarea>
+
+                <div id="voice-feedback-message" class="hidden text-xs font-bold text-center mt-2 rounded-lg p-2"></div>
+
+                <button type="submit" id="voice-feedback-submit-btn" class="w-full py-3.5 bg-primary hover:bg-yellow-600 text-white font-bold rounded-xl transition-all duration-300 shadow-md shadow-primary/20 active:scale-95 disabled:opacity-50">
+                    Отправить отчет
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Voice Commands Modal -->
 <div id="voice-commands-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-commands-title">
