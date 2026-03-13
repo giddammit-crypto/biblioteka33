@@ -365,6 +365,7 @@ if ($enable_voice) :
 </div>
 
 <!-- Voice Commands Modal -->
+<div id="voice-commands-modal" class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-commands-title">
     <div class="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative max-h-[90vh] flex flex-col border border-slate-100 ring-1 ring-black/5 voice-modal-content">
         <!-- Header -->
         <div class="relative bg-white px-8 py-6 shrink-0 border-b border-slate-100 flex items-center justify-between z-10">

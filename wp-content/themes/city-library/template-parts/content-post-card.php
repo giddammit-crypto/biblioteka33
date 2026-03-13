@@ -4,7 +4,7 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#0f172a');
 $text_color = get_theme_mod('news_card_grid_text_color', '#1e293b');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>; --card-title: <?php echo esc_attr($title_color); ?>; --card-text: <?php echo esc_attr($text_color); ?>; --card-link: <?php echo esc_attr($link_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
     <!-- Image Container -->
     <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
@@ -28,7 +28,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         $categories = get_the_category();
         if (!empty($categories)) : ?>
             <div class="absolute top-4 left-4 z-10">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-sm text-slate-900 shadow-sm border border-white/20 lg:shadow-none lg:border-none lg:bg-slate-100 lg:text-[var(--card-text)]">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/90 backdrop-blur-sm text-slate-900 shadow-sm border border-white/20 lg:shadow-none lg:border-none lg:bg-slate-100 lg:text-slate-700">
                     <?php echo esc_html($categories[0]->name); ?>
                 </span>
             </div>
@@ -49,27 +49,27 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
 
         <!-- Desktop Date -->
-        <div class="hidden lg:flex items-center text-[var(--card-text)] text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
+        <div class="hidden lg:flex items-center text-slate-500 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
             <span class="material-symbols-outlined text-sm mr-1.5">calendar_month</span>
             <?php echo get_the_date(); ?>
         </div>
 
         <!-- Title -->
         <h3 class="text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-[var(--card-title)] line-clamp-2 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-slate-900 line-clamp-2 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:text-[var(--card-text)] [&>p]:text-white lg:[&>p]:text-[var(--card-text)] pointer-events-auto drop-shadow-md lg:drop-shadow-none font-medium">
+        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:text-slate-700 [&>p]:text-white lg:[&>p]:text-slate-700 pointer-events-auto drop-shadow-md lg:drop-shadow-none font-medium">
             <?php the_excerpt(); ?>
         </div>
 
         <!-- Footer / Link -->
         <div class="pt-4 lg:mt-auto border-t border-white/20 lg:border-slate-200 flex items-center justify-between pointer-events-auto">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:text-[var(--card-link)] lg:hover:text-[var(--card-link)]/80 drop-shadow-md lg:drop-shadow-none group-hover:text-primary lg:group-hover:text-[var(--card-link)]/80">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:text-primary drop-shadow-md lg:drop-shadow-none group-hover:text-primary lg:group-hover:text-primary/80">
                 <?php _e('Читать полностью', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
             </a>
