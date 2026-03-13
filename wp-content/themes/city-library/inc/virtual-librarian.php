@@ -402,7 +402,17 @@ function city_library_handle_ai_chat() {
         $reply = wp_kses_post(nl2br($data['choices'][0]['message']['content']));
         wp_send_json_success(array('reply' => $reply));
     } else {
-        wp_send_json_error(array('reply' => 'Извините, я затрудняюсь ответить на этот вопрос.'));
+        // Fallback for API errors (e.g., rate limits, invalid keys)
+        $error_msg = 'Извините, я затрудняюсь ответить на этот вопрос.';
+        if (isset($data['error']['message'])) {
+            // Include actual API error for debugging if needed, but translate common ones for users
+            if (strpos(strtolower($data['error']['message']), 'rate') !== false || strpos(strtolower($data['error']['message']), 'limit') !== false) {
+                 $error_msg = 'К сожалению, сервис перегружен. Пожалуйста, повторите попытку позже.';
+            } else if (strpos(strtolower($data['error']['message']), 'key') !== false || strpos(strtolower($data['error']['message']), 'auth') !== false) {
+                 $error_msg = 'Ошибка авторизации. Пожалуйста, проверьте API ключ в настройках.';
+            }
+        }
+        wp_send_json_error(array('reply' => $error_msg));
     }
 }
 add_action('wp_ajax_city_library_ai_chat', 'city_library_handle_ai_chat');

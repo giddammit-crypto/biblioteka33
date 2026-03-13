@@ -131,11 +131,14 @@ function city_library_scripts() {
             for ($i = 1; $i <= 20; $i++) {
                 $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
                 $url = get_theme_mod("voice_cmd_url_$i", '');
-                if (!empty($phrases) && !empty($url)) {
-                    $custom_commands[] = array(
-                        'phrases' => array_map('trim', explode(',', strtolower($phrases))),
-                        'url' => esc_url($url)
-                    );
+                if (!empty(trim($phrases)) && !empty(trim($url))) {
+                    $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
+                    if (!empty($phrases_array)) {
+                        $custom_commands[] = array(
+                            'phrases' => array_values($phrases_array),
+                            'url' => esc_url($url)
+                        );
+                    }
                 }
             }
 
