@@ -46,6 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     document.head.appendChild(style);
 
+    // Create live region for announcements
+    const liveRegion = document.createElement('div');
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.classList.add('sr-only');
+    document.body.appendChild(liveRegion);
+
+
     const modes = ['normal', 'large-text', 'high-contrast'];
     let currentModeIndex = 0;
 
@@ -70,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'large-text': 'Крупный текст',
             'high-contrast': 'Высокая контрастность'
         };
-        alert(messages[newMode]); // Simple feedback
+        liveRegion.textContent = messages[newMode]; // Non-disruptive feedback
     });
 
     function applyMode(mode) {
