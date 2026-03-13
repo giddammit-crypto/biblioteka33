@@ -126,13 +126,27 @@ function city_library_scripts() {
     if ($enable_voice) {
         if (!$voice_test_mode || is_user_logged_in()) {
             wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery'), wp_get_theme()->get('Version'), true);
+
+            $custom_commands = array();
+            for ($i = 1; $i <= 20; $i++) {
+                $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
+                $url = get_theme_mod("voice_cmd_url_$i", '');
+                if (!empty($phrases) && !empty($url)) {
+                    $custom_commands[] = array(
+                        'phrases' => array_map('trim', explode(',', strtolower($phrases))),
+                        'url' => esc_url($url)
+                    );
+                }
+            }
+
             wp_localize_script('city-library-voice', 'cl_voice_control', array(
                 'enabled' => true,
                 'home_url' => home_url(),
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
                 'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
-                'voice_rate' => get_theme_mod('voice_rate', '1.05')
+                'voice_rate' => get_theme_mod('voice_rate', '1.05'),
+                'custom_commands' => $custom_commands
             ));
         }
     }

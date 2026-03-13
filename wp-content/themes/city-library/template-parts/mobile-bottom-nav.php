@@ -261,13 +261,13 @@ if ($bar_style === 'text-only') {
 </nav>
 
 <?php
-// Floating Voice Assistant Button for Mobile (Logged-in only)
+// Floating Voice Assistant Button for Mobile/Kiosk
 $enable_voice = get_theme_mod('enable_voice_control', false);
 $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
 
 if ($enable_voice && (!$voice_test_mode || is_user_logged_in())) :
 ?>
-<button id="mobile-voice-assistant-btn" class="lg:hidden fixed z-[60] bottom-24 right-4 w-14 h-14 bg-white text-primary rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-all duration-300 active:scale-95 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
+<button id="mobile-voice-assistant-btn" class="lg:landscape:hidden fixed z-[60] bottom-24 right-4 w-14 h-14 bg-white text-primary rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-all duration-300 active:scale-95 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
     <span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform duration-300">mic</span>
 
     <!-- Radar pulse effect behind icon -->

@@ -77,7 +77,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем.', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую.', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
         'description' => __('Инструкция для ИИ, определяющая его характер.', 'city-library'),
@@ -100,6 +100,29 @@ function city_library_ai_customizer($wp_customize) {
         'section' => 'voice_assistant_section',
         'type' => 'text',
     ));
+
+    // --- Section: Custom Voice Commands ---
+    $wp_customize->add_section('custom_voice_commands_section', array(
+        'title' => __('Пользовательские голосовые команды', 'city-library'),
+        'priority' => 162,
+        'description' => __('Настройте до 20 собственных голосовых команд. В первом поле укажите фразы через запятую (например: библиотека 2, филиал 2). Во втором поле — ссылку, куда перейдет ассистент.', 'city-library'),
+    ));
+
+    for ($i = 1; $i <= 20; $i++) {
+        $wp_customize->add_setting("voice_cmd_phrases_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("voice_cmd_phrases_$i", array(
+            'label' => sprintf(__('Команда %d (фразы через запятую)', 'city-library'), $i),
+            'section' => 'custom_voice_commands_section',
+            'type' => 'text',
+        ));
+
+        $wp_customize->add_setting("voice_cmd_url_$i", array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control("voice_cmd_url_$i", array(
+            'label' => sprintf(__('Ссылка для команды %d', 'city-library'), $i),
+            'section' => 'custom_voice_commands_section',
+            'type' => 'url',
+        ));
+    }
 }
 add_action('customize_register', 'city_library_ai_customizer');
 
@@ -260,12 +283,16 @@ function city_library_handle_ai_chat() {
     }
 
     // Security Check: Enforce test mode strictly on the server-side
-    if (get_theme_mod('ai_librarian_test_mode', true) && !is_user_logged_in()) {
-        wp_send_json_error(array('reply' => 'Виртуальный библиотекарь в данный момент доступен только для авторизованных пользователей.'));
+    // Allow request if EITHER the chat widget test mode is disabled OR the voice assistant test mode is disabled (and thus accessible to guests).
+    // If BOTH are in test mode, block guests.
+    $chat_test_mode = get_theme_mod('ai_librarian_test_mode', true);
+    $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
+    if ($chat_test_mode && $voice_test_mode && !is_user_logged_in()) {
+        wp_send_json_error(array('reply' => 'Виртуальная помощница в данный момент доступна только для авторизованных пользователей.'));
     }
 
     // Build Context (Simulated RAG)
-    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем.');
+    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую.');
 
     $context = $base_persona . " Ты работаешь в Центральной городской библиотеке города Владимира (сокращенно МБУК ЦГБ г. Владимира), которая находится по адресу: Суздальский проспект, д. 2 (сайт: biblioteka33.ru). Говори о себе в женском роде (например, 'я нашла', 'я могу подсказать').
     КАТЕГОРИЧЕСКИ ВАЖНО: Ты НЕ Владимирская Областная Научная Библиотека. Если спросят про областную библиотеку - вежливо отвечай, что ты представляешь городскую библиотеку. Данные запросов по библиотекам-филиалам касаются ТОЛЬКО библиотек-филиалов МБУК ЦГБ г. Владимира.

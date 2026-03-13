@@ -39,35 +39,23 @@ if ($footer_style === 'light-clean') {
                 $map_width_desktop = get_theme_mod('footer_map_width_desktop', '100%');
             ?>
                 <style>
-                    /* Force Map Visibility on All Devices */
+                    /* Simplified, foolproof Map Visibility logic */
                     .yandex-map-mobile-wrapper {
                         display: block !important;
                         width: 100% !important;
-                        min-height: 250px !important;
-                        height: <?php echo esc_attr($map_height); ?> !important;
-                        position: relative;
-                        z-index: 10;
+                        min-height: 250px;
                     }
                     #footer-yandex-map {
                         width: 100% !important;
-                        height: 100% !important;
+                        height: <?php echo esc_attr($map_height); ?> !important;
                         display: block !important;
                         min-height: 250px !important;
-                        position: absolute !important;
-                        top: 0; left: 0;
                         overflow: hidden;
-                        opacity: 1 !important;
-                        visibility: visible !important;
                     }
-                    /* Yandex Maps sometimes injects generic classes that break layout, we force 100% */
-                    #footer-yandex-map > ymaps {
+                    #footer-yandex-map > ymaps, #footer-yandex-map ymaps[class*="map"] {
                         width: 100% !important;
                         height: 100% !important;
                         display: block !important;
-                    }
-                    #footer-yandex-map ymaps[class*="map"] {
-                        width: 100% !important;
-                        height: 100% !important;
                     }
                     @media (min-width: 1024px) {
                         .yandex-map-mobile-wrapper {
@@ -76,9 +64,9 @@ if ($footer_style === 'light-clean') {
                         }
                     }
                 </style>
-                <!-- Added explicit wrapper and inline styles as fallback to prevent flex/grid collapse -->
-                <div class="yandex-map-mobile-wrapper bg-slate-200 rounded-2xl shadow-inner border border-slate-200 overflow-hidden">
-                    <div id="footer-yandex-map"></div>
+                <!-- Simplfied DOM for map to prevent framework collision -->
+                <div class="yandex-map-mobile-wrapper">
+                    <div id="footer-yandex-map" class="bg-slate-200 rounded-2xl shadow-inner border border-slate-200"></div>
                 </div>
             <?php else : ?>
                 <?php

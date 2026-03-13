@@ -115,6 +115,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const cmd = command.toLowerCase().trim();
         console.log('Voice Command Received:', cmd);
 
+        // Check Custom Commands from Customizer
+        if (cl_voice_control.custom_commands && cl_voice_control.custom_commands.length > 0) {
+            for (let i = 0; i < cl_voice_control.custom_commands.length; i++) {
+                const customCmd = cl_voice_control.custom_commands[i];
+                // Check if any of the phrases match the spoken command
+                const matched = customCmd.phrases.some(phrase => cmd.includes(phrase));
+                if (matched) {
+                    speak('Открываю ' + customCmd.phrases[0]); // Use the first phrase as the friendly name
+                    setTimeout(() => {
+                        window.open(customCmd.url, '_blank');
+                    }, 1500);
+                    return; // Stop processing further
+                }
+            }
+        }
+
         // Predefined Commands Map
         if (cmd.includes('открой последние новости') || cmd.includes('открой последнюю новость')) {
             speak('Открываю последнюю новость');
