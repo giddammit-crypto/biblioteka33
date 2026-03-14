@@ -365,9 +365,9 @@ if ($enable_voice) :
 </div>
 
 <!-- Voice Yandex Map Modal (Full Screen Mobile) -->
-<div id="voice-map-modal" class="fixed inset-0 z-[130] bg-black/90 hidden flex-col transition-all duration-300 opacity-0 lg:hidden" role="dialog" aria-modal="true" aria-labelledby="voice-map-title">
+<div id="voice-map-modal" class="fixed inset-0 z-[130] bg-black/90 hidden flex-col transition-all duration-300 opacity-0 lg:landscape:hidden" role="dialog" aria-modal="true" aria-labelledby="voice-map-title">
     <!-- Header with Close Button -->
-    <div class="flex items-center justify-between px-4 py-3 bg-white shadow-md z-10 shrink-0">
+    <div class="flex items-center justify-between px-4 py-3 safe-area-top bg-white shadow-md z-10 shrink-0">
         <h3 id="voice-map-title" class="text-lg font-bold text-slate-900 truncate flex-1">Карта филиалов</h3>
         <button type="button" id="voice-map-close" class="p-2 -mr-2 text-slate-500 hover:text-slate-900 focus:outline-none" aria-label="Закрыть карту">
             <span class="material-symbols-outlined text-2xl">close</span>

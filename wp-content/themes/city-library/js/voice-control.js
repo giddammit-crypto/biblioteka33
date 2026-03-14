@@ -340,50 +340,75 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Voice Command Received:', cmd);
 
         // --- 1. LOCAL BRANCH DIRECTORY (Instant Mobile Response) ---
-        // Match specific library branches using regex (e.g., "библиотека номер 2", "филиал 5", "центральная")
-        const branchRegex = /(библиотека|филиал)(?:\s+(?:номер|№|номера))?\s+(\d+)/i;
-        const branchMatch = cmd.match(branchRegex);
+        // Normalize text numbers to digits for parsing
+        const textNumbers = { 'один': 1, 'первая': 1, 'первый': 1, 'два': 2, 'вторая': 2, 'второй': 2, 'три': 3, 'третья': 3, 'третий': 3, 'четыре': 4, 'четвертая': 4, 'пять': 5, 'пятая': 5, 'шесть': 6, 'шестая': 6, 'семь': 7, 'седьмая': 7, 'восемь': 8, 'восьмая': 8, 'девять': 9, 'девятая': 9, 'десять': 10, 'десятая': 10, 'одиннадцать': 11, 'одиннадцатая': 11, 'двенадцать': 12, 'двенадцатая': 12, 'тринадцать': 13, 'тринадцатая': 13, 'четырнадцать': 14, 'четырнадцатая': 14, 'пятнадцать': 15, 'пятнадцатая': 15, 'шестнадцать': 16, 'шестнадцатая': 16 };
 
-        let targetBranch = null;
-        let branchName = '';
+        let normalizedCmd = cmd;
+        for (const [word, digit] of Object.entries(textNumbers)) {
+            normalizedCmd = normalizedCmd.replace(new RegExp(`\\b${word}\\b`, 'gi'), digit);
+        }
 
         const branchDB = {
             "цгб": { name: "Центральная городская библиотека", address: "г. Владимир, Суздальский пр-кт, д. 2" },
             "цдб": { name: "Центральная детская библиотека", address: "г. Владимир, ул. Белоконской, д. 10-а" },
             "1": { name: "Библиотека-филиал № 1", address: "г. Владимир, пр-кт Строителей, д. 23" },
             "2": { name: "Библиотека-филиал № 2", address: "г. Владимир, пр-кт Ленина, д. 12" },
-            "3": { name: "Библиотека-филиал № 3", address: "г. Владимир, ул. Добросельская, д. 2-в" },
+            "3": { name: "Библиотека-филиал № 3 (детская)", address: "г. Владимир, ул. Добросельская, д. 2-в" },
             "4": { name: "Библиотека-филиал № 4", address: "г. Владимир, ул. Комиссарова, д. 69" },
             "5": { name: "Библиотека-филиал № 5", address: "г. Владимир, пр-кт Суздальский, д. 2" },
-            "6": { name: "Библиотека-филиал № 6", address: "г. Владимир, ул. Мира, д. 37" },
-            "7": { name: "Библиотека-филиал № 7", address: "г. Владимир, ул. Добросельская, д. 189-б" },
-            "8": { name: "Библиотека-филиал № 8", address: "г. Владимир, ул. Диктора Левитана, д. 36" },
-            "9": { name: "Библиотека-филиал № 9", address: "г. Владимир, ул. Горького, д. 85" },
-            "10": { name: "Библиотека-филиал № 10", address: "г. Владимир, ул. Егорова, д. 10" },
-            "11": { name: "Библиотека-филиал № 11", address: "г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4" },
+            "6": { name: "Библиотека-филиал № 6 (детская)", address: "г. Владимир, ул. Мира, д. 37" },
+            "7": { name: "Библиотека-филиал № 7 (библиотека Музей)", address: "г. Владимир, ул. Добросельская, д. 189-б" },
+            "8": { name: "Библиотека-филиал № 8 (экологическая)", address: "г. Владимир, ул. Диктора Левитана, д. 36" },
+            "9": { name: "Библиотека-филиал № 9 (детская)", address: "г. Владимир, ул. Горького, д. 85" },
+            "10": { name: "Библиотека-филиал № 10 (Детский информационно-досуговый центр)", address: "г. Владимир, ул. Егорова, д. 10" },
+            "11": { name: "Библиотека-филиал № 11 (детская)", address: "г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4" },
             "13": { name: "Библиотека-филиал № 13", address: "г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а" },
-            "14": { name: "Библиотека-филиал № 14", address: "г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12" },
-            "15": { name: "Библиотека-филиал № 15", address: "г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11" },
-            "16": { name: "Библиотека-филиал № 16", address: "г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а" }
+            "14": { name: "Библиотека-филиал № 14 (детская)", address: "г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12" },
+            "15": { name: "Библиотека-филиал № 15 (Семейного чтения)", address: "г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11" },
+            "16": { name: "Библиотека-филиал № 16 (Историко-духовного возрождения России)", address: "г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а" }
         };
 
-        if (branchMatch && branchMatch[2]) {
-            const num = branchMatch[2];
+        let targetBranch = null;
+        let branchName = '';
+
+        // Match numeric branch queries
+        const branchRegex = /(?:библиотека|филиал)(?:\s+(?:номер|№|номера))?\s+(\d+)/i;
+        const branchMatch = normalizedCmd.match(branchRegex);
+
+        if (branchMatch && branchMatch[1]) {
+            const num = branchMatch[1];
             if (branchDB[num]) {
                 targetBranch = branchDB[num];
                 branchName = targetBranch.name;
             }
-        } else if (cmd.includes('центральная детская')) {
-            targetBranch = branchDB["цдб"];
-            branchName = targetBranch.name;
-        } else if (cmd.includes('центральная') || cmd.includes('цгб') || cmd.includes('суздальский')) {
-            targetBranch = branchDB["цгб"];
-            branchName = targetBranch.name;
+        }
+        // Match specific named libraries based on the site menu structure
+        else if (normalizedCmd.includes('экологическая') || normalizedCmd.includes('левитана')) {
+            targetBranch = branchDB["8"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('музей')) {
+            targetBranch = branchDB["7"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('досуговый центр') || normalizedCmd.includes('егорова')) {
+            targetBranch = branchDB["10"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('семейного чтения') || normalizedCmd.includes('совхозная')) {
+            targetBranch = branchDB["15"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('историко') || normalizedCmd.includes('возрождения') || normalizedCmd.includes('коммунар')) {
+            targetBranch = branchDB["16"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('центральная детская') || normalizedCmd.includes('белоконской')) {
+            targetBranch = branchDB["цдб"]; branchName = targetBranch.name;
+        } else if (normalizedCmd.includes('центральная') || normalizedCmd.includes('цгб') || normalizedCmd.includes('главная библиотека') || normalizedCmd.includes('суздальский')) {
+            targetBranch = branchDB["цгб"]; branchName = targetBranch.name;
         }
 
         if (targetBranch) {
+            // Check if user specifically asks for the map
+            const wantsMap = cmd.includes('карта') || cmd.includes('карте') || cmd.includes('маршрут') || cmd.includes('где');
+
             const spokenAddress = targetBranch.address.replace('г. Владимир, ', '');
-            speak(`${branchName}. Адрес: ${spokenAddress}. Открываю карту.`);
+            if (wantsMap || isMobileOrKiosk) {
+                 speak(`${branchName}. Адрес: ${spokenAddress}. Открываю карту.`);
+            } else {
+                 speak(`${branchName}. Адрес: ${spokenAddress}.`);
+            }
 
             // Wait slightly for voice to start, then open modal
             setTimeout(() => {
