@@ -276,12 +276,123 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Yandex Maps Logic (Mobile specific)
+    function openYandexMapModal(title, query) {
+        if (!isMobileOrKiosk) return;
+
+        const mapModal = document.getElementById('voice-map-modal');
+        const mapTitle = document.getElementById('voice-map-title');
+        const mapIframe = document.getElementById('voice-map-iframe');
+        const mapLoader = document.getElementById('voice-map-loader');
+
+        if (mapModal && mapTitle && mapIframe) {
+            mapTitle.textContent = title;
+            // Clear iframe initially to show loader
+            mapIframe.src = '';
+
+            if (mapLoader) mapLoader.classList.remove('opacity-0');
+
+            mapModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+            requestAnimationFrame(() => {
+                mapModal.classList.remove('opacity-0');
+            });
+
+            // Generate the Yandex Map widget URL (using the ?text= query)
+            // Need to use the widget format for iframe embedding: https://yandex.ru/map-widget/v1/?text=
+            const mapUrl = `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(query)}&z=16`;
+
+            mapIframe.src = mapUrl;
+
+            // Try to fade out loader when iframe loads
+            mapIframe.onload = () => {
+                if (mapLoader) {
+                    mapLoader.classList.add('opacity-0');
+                    setTimeout(() => {
+                        // Keep the DOM element around but hidden after transition
+                    }, 300);
+                }
+            };
+
+            // Handle close
+            const closeBtn = document.getElementById('voice-map-close');
+            if (closeBtn) {
+                // Remove old event listeners if any to prevent duplicates
+                const newBtn = closeBtn.cloneNode(true);
+                closeBtn.parentNode.replaceChild(newBtn, closeBtn);
+
+                newBtn.addEventListener('click', () => {
+                    mapModal.classList.add('opacity-0');
+                    setTimeout(() => {
+                        mapModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                        mapIframe.src = ''; // Stop map processes
+                    }, 300);
+                });
+            }
+        }
+    }
+
     // Command Processing
     function processCommand(command) {
         const cmd = command.toLowerCase().trim();
         console.log('Voice Command Received:', cmd);
 
-        // Check Custom Commands from Customizer
+        // --- 1. LOCAL BRANCH DIRECTORY (Instant Mobile Response) ---
+        // Match specific library branches using regex (e.g., "библиотека номер 2", "филиал 5", "центральная")
+        const branchRegex = /(библиотека|филиал)(?:\s+(?:номер|№|номера))?\s+(\d+)/i;
+        const branchMatch = cmd.match(branchRegex);
+
+        let targetBranch = null;
+        let branchName = '';
+
+        const branchDB = {
+            "цгб": { name: "Центральная городская библиотека", address: "г. Владимир, Суздальский пр-кт, д. 2" },
+            "цдб": { name: "Центральная детская библиотека", address: "г. Владимир, ул. Белоконской, д. 10-а" },
+            "1": { name: "Библиотека-филиал № 1", address: "г. Владимир, пр-кт Строителей, д. 23" },
+            "2": { name: "Библиотека-филиал № 2", address: "г. Владимир, пр-кт Ленина, д. 12" },
+            "3": { name: "Библиотека-филиал № 3", address: "г. Владимир, ул. Добросельская, д. 2-в" },
+            "4": { name: "Библиотека-филиал № 4", address: "г. Владимир, ул. Комиссарова, д. 69" },
+            "5": { name: "Библиотека-филиал № 5", address: "г. Владимир, пр-кт Суздальский, д. 2" },
+            "6": { name: "Библиотека-филиал № 6", address: "г. Владимир, ул. Мира, д. 37" },
+            "7": { name: "Библиотека-филиал № 7", address: "г. Владимир, ул. Добросельская, д. 189-б" },
+            "8": { name: "Библиотека-филиал № 8", address: "г. Владимир, ул. Диктора Левитана, д. 36" },
+            "9": { name: "Библиотека-филиал № 9", address: "г. Владимир, ул. Горького, д. 85" },
+            "10": { name: "Библиотека-филиал № 10", address: "г. Владимир, ул. Егорова, д. 10" },
+            "11": { name: "Библиотека-филиал № 11", address: "г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4" },
+            "13": { name: "Библиотека-филиал № 13", address: "г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а" },
+            "14": { name: "Библиотека-филиал № 14", address: "г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12" },
+            "15": { name: "Библиотека-филиал № 15", address: "г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11" },
+            "16": { name: "Библиотека-филиал № 16", address: "г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а" }
+        };
+
+        if (branchMatch && branchMatch[2]) {
+            const num = branchMatch[2];
+            if (branchDB[num]) {
+                targetBranch = branchDB[num];
+                branchName = targetBranch.name;
+            }
+        } else if (cmd.includes('центральная детская')) {
+            targetBranch = branchDB["цдб"];
+            branchName = targetBranch.name;
+        } else if (cmd.includes('центральная') || cmd.includes('цгб') || cmd.includes('суздальский')) {
+            targetBranch = branchDB["цгб"];
+            branchName = targetBranch.name;
+        }
+
+        if (targetBranch) {
+            const spokenAddress = targetBranch.address.replace('г. Владимир, ', '');
+            speak(`${branchName}. Адрес: ${spokenAddress}. Открываю карту.`);
+
+            // Wait slightly for voice to start, then open modal
+            setTimeout(() => {
+                openYandexMapModal(branchName, targetBranch.address);
+            }, 1000);
+            return; // Intercept before AI
+        }
+
+        // --- 2. Check Custom Commands from Customizer ---
         if (cl_voice_control.custom_commands && cl_voice_control.custom_commands.length > 0) {
             for (let i = 0; i < cl_voice_control.custom_commands.length; i++) {
                 const customCmd = cl_voice_control.custom_commands[i];
@@ -438,25 +549,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     const aiText = document.getElementById('voice-ai-answer-text');
                     if (aiText) aiText.innerHTML = rawHtml;
 
-                    // Open Yandex Maps if an exact address from Vladimir is returned
-                    // Extract strings like "г. Владимир, пр-кт Ленина, д. 12"
+                    // Open Yandex Map full-screen modal if AI returns an exact Vladimir address and we are on mobile
                     const addressMatch = plainText.match(/г\.\s*Владимир,\s*([^.,]+),\s*д\.\s*(\d+[-а-яА-Я]*)/i);
 
                     if (addressMatch) {
                         const extractedAddress = addressMatch[0];
-                        // Check if it's an inquiry about location to show map
-                        if (query.toLowerCase().includes('где') || query.toLowerCase().includes('адрес') || query.toLowerCase().includes('находится') || query.toLowerCase().includes('карта') || query.toLowerCase().includes('маршрут')) {
-                             // Wait a bit so the voice can start, then redirect to yandex maps with the query
-                             setTimeout(() => {
-                                 window.location.href = `https://yandex.ru/maps/?text=${encodeURIComponent(extractedAddress)}`;
-                             }, 1500);
+
+                        if (isMobileOrKiosk) {
+                            setTimeout(() => {
+                                // Extract the branch name if available in the text, otherwise use generic title
+                                let mapTitle = "Адрес библиотеки";
+                                const titleMatch = plainText.match(/(Библиотека-филиал № \d+|Центральная [а-яА-Я\s]+библиотека)/i);
+                                if (titleMatch) mapTitle = titleMatch[0];
+
+                                openYandexMapModal(mapTitle, extractedAddress);
+                            }, 1500);
                         } else if (document.getElementById('footer-yandex-map')) {
-                             // Scroll to the embedded map in footer
+                             // Fallback for Desktop (Kiosk): Scroll to footer map
                              document.getElementById('footer-yandex-map').scrollIntoView({ behavior: 'smooth' });
-                        }
-                    } else if (plainText.toLowerCase().includes('суздальский') || plainText.toLowerCase().includes('улица')) {
-                        if (document.getElementById('branches')) {
-                            document.getElementById('branches').scrollIntoView({ behavior: 'smooth' });
                         }
                     }
                 } else {
