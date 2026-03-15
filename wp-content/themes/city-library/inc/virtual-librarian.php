@@ -455,11 +455,11 @@ function city_library_handle_ai_chat() {
                 array('role' => 'user', 'content' => $user_message)
             )
         )),
-        'timeout' => 15
+        'timeout' => 30
     ));
 
     if (is_wp_error($response)) {
-        wp_send_json_error(array('reply' => 'Произошла ошибка связи. Пожалуйста, попробуйте позже.'));
+        wp_send_json_error(array('reply' => 'Произошла ошибка связи с сервером (' . $response->get_error_message() . '). Пожалуйста, попробуйте позже.'));
     }
 
     $body = wp_remote_retrieve_body($response);
@@ -475,15 +475,21 @@ function city_library_handle_ai_chat() {
         $reply = wp_kses_post(nl2br($data['choices'][0]['message']['content']));
         wp_send_json_success(array('reply' => $reply));
     } else {
-        // Fallback for API errors (e.g., rate limits, invalid keys)
+        // Fallback for API errors (e.g., rate limits, invalid keys, context length)
         $error_msg = 'Извините, я затрудняюсь ответить на этот вопрос.';
         if (isset($data['error']['message'])) {
-            // Include actual API error for debugging if needed, but translate common ones for users
-            if (strpos(strtolower($data['error']['message']), 'rate') !== false || strpos(strtolower($data['error']['message']), 'limit') !== false) {
-                 $error_msg = 'К сожалению, сервис перегружен. Пожалуйста, повторите попытку позже.';
-            } else if (strpos(strtolower($data['error']['message']), 'key') !== false || strpos(strtolower($data['error']['message']), 'auth') !== false) {
-                 $error_msg = 'Ошибка авторизации. Пожалуйста, проверьте API ключ в настройках.';
+            $raw_err = $data['error']['message'];
+            if (strpos(strtolower($raw_err), 'rate') !== false || strpos(strtolower($raw_err), 'limit') !== false) {
+                 $error_msg = 'К сожалению, сервис ИИ перегружен (исчерпан лимит запросов бесплатной модели). Пожалуйста, повторите попытку позже.';
+            } else if (strpos(strtolower($raw_err), 'key') !== false || strpos(strtolower($raw_err), 'auth') !== false || strpos(strtolower($raw_err), 'unauthorized') !== false) {
+                 $error_msg = 'Ошибка авторизации. Пожалуйста, проверьте API ключ OpenRouter в настройках сайта.';
+            } else {
+                 // Expose the raw error from OpenRouter so the admin knows exactly what's failing
+                 $error_msg = 'Ответ от сервера ИИ: ' . esc_html($raw_err);
             }
+        } else {
+             // Fallback for generic JSON response without 'choices' and without 'error' string (e.g., partial outputs, server errors)
+             $error_msg = 'Ответ от сервера ИИ не распознан (Код: ' . $http_code . '). Подробности: ' . esc_html(substr(json_encode($data), 0, 150));
         }
         wp_send_json_error(array('reply' => $error_msg));
     }
