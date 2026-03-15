@@ -405,6 +405,12 @@ function city_library_handle_ai_chat() {
 
     $body = wp_remote_retrieve_body($response);
     $data = json_decode($body, true);
+    $http_code = wp_remote_retrieve_response_code($response);
+
+    // If decoding failed completely (e.g. Cloudflare HTML instead of JSON)
+    if ($data === null) {
+        wp_send_json_error(array('reply' => 'Сервер ИИ недоступен (HTTP ' . $http_code . '). Техническая информация: ' . esc_html(substr(strip_tags($body), 0, 150))));
+    }
 
     if (isset($data['choices'][0]['message']['content'])) {
         $reply = wp_kses_post(nl2br($data['choices'][0]['message']['content']));

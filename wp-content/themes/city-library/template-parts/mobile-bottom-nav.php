@@ -365,7 +365,7 @@ if ($enable_voice) :
 </div>
 
 <!-- Voice Yandex Map Modal (Full Screen Mobile) -->
-<div id="voice-map-modal" class="fixed inset-0 z-[130] bg-black/90 hidden flex-col transition-all duration-300 opacity-0 lg:landscape:hidden" role="dialog" aria-modal="true" aria-labelledby="voice-map-title">
+<div id="voice-map-modal" class="fixed inset-0 z-[130] bg-black/90 hidden flex-col transition-all duration-300 opacity-0 lg:landscape:hidden w-full h-[100dvh]" role="dialog" aria-modal="true" aria-labelledby="voice-map-title">
     <!-- Header with Close Button -->
     <div class="flex items-center justify-between px-4 py-3 safe-area-top bg-white shadow-md z-10 shrink-0">
         <h3 id="voice-map-title" class="text-lg font-bold text-slate-900 truncate flex-1">Карта филиалов</h3>
@@ -374,8 +374,8 @@ if ($enable_voice) :
         </button>
     </div>
     <!-- Yandex Map iframe container -->
-    <div class="flex-1 w-full relative">
-        <iframe id="voice-map-iframe" class="absolute inset-0 w-full h-full border-0" src="" allowfullscreen="true" style="position:relative;"></iframe>
+    <div class="flex-1 w-full h-full relative overflow-hidden flex flex-col">
+        <iframe id="voice-map-iframe" class="absolute inset-0 w-full h-full border-0 object-cover" src="" allowfullscreen="true" style="position:absolute; width:100%; height:100%;"></iframe>
 
         <!-- Loading Spinner -->
         <div id="voice-map-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-white z-0 pointer-events-none transition-opacity duration-300">

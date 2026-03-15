@@ -293,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (mapLoader) mapLoader.classList.remove('opacity-0');
 
             mapModal.classList.remove('hidden');
+            mapModal.classList.add('flex'); // Add flex to force column layout
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
 
             requestAnimationFrame(() => {
@@ -325,6 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newBtn.addEventListener('click', () => {
                     mapModal.classList.add('opacity-0');
                     setTimeout(() => {
+                        mapModal.classList.remove('flex');
                         mapModal.classList.add('hidden');
                         document.body.style.overflow = '';
                         mapIframe.src = ''; // Stop map processes
