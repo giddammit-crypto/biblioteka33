@@ -142,6 +142,32 @@ function city_library_scripts() {
             }
         }
 
+        // Prepare branch addresses for Maps
+        $branch_keys = array('cgb', 'cdb', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16');
+        $branch_addresses = array();
+        foreach ($branch_keys as $key) {
+             $default = '';
+             if ($key === 'cgb') $default = 'г. Владимир, Суздальский пр-кт, д. 2';
+             elseif ($key === 'cdb') $default = 'г. Владимир, ул. Белоконской, д. 10-а';
+             elseif ($key === '1') $default = 'г. Владимир, пр-кт Строителей, д. 23';
+             elseif ($key === '2') $default = 'г. Владимир, пр-кт Ленина, д. 12';
+             elseif ($key === '3') $default = 'г. Владимир, ул. Добросельская, д. 2-в';
+             elseif ($key === '4') $default = 'г. Владимир, ул. Комиссарова, д. 69';
+             elseif ($key === '5') $default = 'г. Владимир, пр-кт Суздальский, д. 2';
+             elseif ($key === '6') $default = 'г. Владимир, ул. Мира, д. 37';
+             elseif ($key === '7') $default = 'г. Владимир, ул. Добросельская, д. 189-б';
+             elseif ($key === '8') $default = 'г. Владимир, ул. Диктора Левитана, д. 36';
+             elseif ($key === '9') $default = 'г. Владимир, ул. Горького, д. 85';
+             elseif ($key === '10') $default = 'г. Владимир, ул. Егорова, д. 10';
+             elseif ($key === '11') $default = 'г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4';
+             elseif ($key === '13') $default = 'г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а';
+             elseif ($key === '14') $default = 'г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12';
+             elseif ($key === '15') $default = 'г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11';
+             elseif ($key === '16') $default = 'г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а';
+
+             $branch_addresses[$key] = get_theme_mod("branch_address_$key", $default);
+        }
+
         wp_localize_script('city-library-voice', 'cl_voice_control', array(
             'enabled' => true,
             'test_mode' => $voice_test_mode,
@@ -151,7 +177,8 @@ function city_library_scripts() {
             'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
             'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
             'voice_rate' => get_theme_mod('voice_rate', '1.05'),
-            'custom_commands' => $custom_commands
+            'custom_commands' => $custom_commands,
+            'branch_addresses' => $branch_addresses
         ));
     }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);

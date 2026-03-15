@@ -99,10 +99,65 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
+    // --- Section: Geolocation for Library Branches (Maps) ---
+    $wp_customize->add_section('voice_geolocation_section', array(
+        'title' => __('Геолокация филиалов (Карты)', 'city-library'),
+        'priority' => 162,
+        'description' => __('Укажите точные адреса для каждого филиала (для Яндекс.Карт).', 'city-library'),
+    ));
+
+    $branches = array(
+        'cgb' => 'Центральная городская библиотека',
+        'cdb' => 'Центральная детская библиотека',
+        '1' => 'Библиотека-филиал № 1',
+        '2' => 'Библиотека-филиал № 2',
+        '3' => 'Библиотека-филиал № 3',
+        '4' => 'Библиотека-филиал № 4',
+        '5' => 'Библиотека-филиал № 5',
+        '6' => 'Библиотека-филиал № 6',
+        '7' => 'Библиотека-филиал № 7 (Музей)',
+        '8' => 'Библиотека-филиал № 8 (Экологическая)',
+        '9' => 'Библиотека-филиал № 9',
+        '10' => 'Библиотека-филиал № 10 (Досуговый центр)',
+        '11' => 'Библиотека-филиал № 11',
+        '13' => 'Библиотека-филиал № 13',
+        '14' => 'Библиотека-филиал № 14',
+        '15' => 'Библиотека-филиал № 15 (Семейного чтения)',
+        '16' => 'Библиотека-филиал № 16 (Историко-духовного)'
+    );
+
+    foreach ($branches as $key => $label) {
+        $default_address = '';
+        if ($key === 'cgb') $default_address = 'г. Владимир, Суздальский пр-кт, д. 2';
+        elseif ($key === 'cdb') $default_address = 'г. Владимир, ул. Белоконской, д. 10-а';
+        elseif ($key === '1') $default_address = 'г. Владимир, пр-кт Строителей, д. 23';
+        elseif ($key === '2') $default_address = 'г. Владимир, пр-кт Ленина, д. 12';
+        elseif ($key === '3') $default_address = 'г. Владимир, ул. Добросельская, д. 2-в';
+        elseif ($key === '4') $default_address = 'г. Владимир, ул. Комиссарова, д. 69';
+        elseif ($key === '5') $default_address = 'г. Владимир, пр-кт Суздальский, д. 2';
+        elseif ($key === '6') $default_address = 'г. Владимир, ул. Мира, д. 37';
+        elseif ($key === '7') $default_address = 'г. Владимир, ул. Добросельская, д. 189-б';
+        elseif ($key === '8') $default_address = 'г. Владимир, ул. Диктора Левитана, д. 36';
+        elseif ($key === '9') $default_address = 'г. Владимир, ул. Горького, д. 85';
+        elseif ($key === '10') $default_address = 'г. Владимир, ул. Егорова, д. 10';
+        elseif ($key === '11') $default_address = 'г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4';
+        elseif ($key === '13') $default_address = 'г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а';
+        elseif ($key === '14') $default_address = 'г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12';
+        elseif ($key === '15') $default_address = 'г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11';
+        elseif ($key === '16') $default_address = 'г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а';
+
+        $wp_customize->add_setting("branch_address_$key", array('default' => $default_address, 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("branch_address_$key", array(
+            'label' => $label,
+            'section' => 'voice_geolocation_section',
+            'type' => 'text',
+        ));
+    }
+
     // --- Section: Custom Voice Commands ---
     $wp_customize->add_section('custom_voice_commands_section', array(
         'title' => __('Пользовательские голосовые команды', 'city-library'),
-        'priority' => 162,
+        'priority' => 163,
         'description' => __('Настройте до 20 собственных голосовых команд. В первом поле укажите фразы через запятую (например: библиотека 2, филиал 2). Во втором поле — ссылку, куда перейдет ассистент.', 'city-library'),
     ));
 
@@ -332,9 +387,13 @@ function city_library_handle_ai_chat() {
 
     // Add File Knowledge Base
     $kb_ids = get_theme_mod('ai_librarian_kb_ids', '');
-    $file_text = city_library_extract_text_from_files($kb_ids);
-    if (!empty($file_text)) {
-        $context .= "ДОПОЛНИТЕЛЬНАЯ БАЗА ЗНАНИЙ (Официальные документы):\n" . $file_text . "\n\n";
+    if (!empty($kb_ids)) {
+        $file_text = city_library_extract_text_from_files($kb_ids);
+        if (!empty($file_text)) {
+            $context .= "ВСТРОЕННАЯ БАЗА ЗНАНИЙ (Используй эти факты в первую очередь):\n" . $file_text . "\n\n";
+        }
+    } else {
+        $context .= "ВНИМАНИЕ: Пользовательская база знаний не предоставлена. Отвечай на вопросы, опираясь исключительно на свою собственную встроенную нейросетевую эрудицию (LLM).\n\n";
     }
 
     // Add library branches info (if configured in customizer)
