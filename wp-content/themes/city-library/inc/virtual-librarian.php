@@ -54,17 +54,17 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemini-2.5-flash:free', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'openrouter/free', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
         'label' => __('Модель нейросети (LLM)', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'select',
         'choices' => array(
-            'google/gemini-2.5-flash:free' => 'Google: Gemini 2.5 Flash (Быстрая)',
-            'google/gemini-2.5-pro:free' => 'Google: Gemini 2.5 Pro (Умная)',
-            'meta-llama/llama-3.3-70b-instruct:free' => 'Meta: Llama 3.3 70B (Мощная)',
-            'deepseek/deepseek-r1:free' => 'DeepSeek: R1 (Логическая)',
-            'mistralai/mistral-7b-instruct:free' => 'Mistral: 7B Instruct (Стабильная)',
+            'openrouter/free' => 'OpenRouter: Автовыбор (Самая надежная)',
+            'google/gemma-3-12b-it:free' => 'Google: Gemma 3 12B (Быстрая)',
+            'mistralai/mistral-small-3.1-24b-instruct:free' => 'Mistral: Small 3.1 24B (Стабильная)',
+            'qwen/qwen3-coder:free' => 'Qwen: Qwen3 Coder (Точная)',
+            'z-ai/glm-4.5-air:free' => 'Z-AI: GLM 4.5 Air (Умная)',
         )
     ));
 
@@ -325,7 +325,7 @@ function city_library_handle_ai_chat() {
     check_ajax_referer('ai_chat_nonce', 'nonce');
 
     $api_key = get_theme_mod('openrouter_api_key', '');
-    $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash:free');
+    $model = get_theme_mod('ai_librarian_model', 'openrouter/free');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
 
     if (empty($api_key)) {
