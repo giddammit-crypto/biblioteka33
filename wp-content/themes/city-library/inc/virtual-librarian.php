@@ -54,16 +54,17 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemma-2-9b-it:free', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemini-2.5-flash:free', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
         'label' => __('Модель нейросети (LLM)', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'select',
         'choices' => array(
-            'google/gemma-2-9b-it:free' => 'Google: Gemma 2 9B (Лучшая / Быстрая)',
-            'google/gemma-7b-it:free' => 'Google: Gemma 7B (Резерв)',
-            'mistralai/mistral-7b-instruct:free' => 'Mistral: 7B Instruct',
-            'qwen/qwen-2-7b-instruct:free' => 'Qwen: 2 7B Instruct',
+            'google/gemini-2.5-flash:free' => 'Google: Gemini 2.5 Flash (Быстрая)',
+            'google/gemini-2.5-pro:free' => 'Google: Gemini 2.5 Pro (Умная)',
+            'meta-llama/llama-3.3-70b-instruct:free' => 'Meta: Llama 3.3 70B (Мощная)',
+            'deepseek/deepseek-r1:free' => 'DeepSeek: R1 (Логическая)',
+            'mistralai/mistral-7b-instruct:free' => 'Mistral: 7B Instruct (Стабильная)',
         )
     ));
 
@@ -324,7 +325,7 @@ function city_library_handle_ai_chat() {
     check_ajax_referer('ai_chat_nonce', 'nonce');
 
     $api_key = get_theme_mod('openrouter_api_key', '');
-    $model = get_theme_mod('ai_librarian_model', 'google/gemma-7b-it:free');
+    $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash:free');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
 
     if (empty($api_key)) {
