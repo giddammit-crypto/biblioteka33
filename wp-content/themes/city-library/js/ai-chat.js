@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputField = document.getElementById('ai-chat-input');
     const sendBtn = document.getElementById('ai-chat-send');
     const messagesContainer = document.getElementById('ai-chat-messages');
+    const fullscreenBtn = document.getElementById('fullscreen-ai-chat');
 
     if (!toggleBtn || !chatWindow) return;
 
@@ -21,11 +22,41 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             chatWindow.classList.add('hidden');
             chatWindow.classList.remove('flex');
+            // Reset fullscreen state if closed
+            if (chatWindow.classList.contains('fixed')) {
+                toggleFullscreen();
+            }
+        }
+    }
+
+    function toggleFullscreen() {
+        chatWindow.classList.toggle('fixed');
+        chatWindow.classList.toggle('inset-0');
+        chatWindow.classList.toggle('z-[1000]');
+        chatWindow.classList.toggle('w-full');
+        chatWindow.classList.toggle('h-[100dvh]');
+        chatWindow.classList.toggle('rounded-none');
+
+        // Remove default fixed width/height when fullscreen
+        chatWindow.classList.toggle('w-80');
+        chatWindow.classList.toggle('sm:w-96');
+        chatWindow.classList.toggle('h-[500px]');
+        chatWindow.classList.toggle('mb-4');
+        chatWindow.classList.toggle('rounded-2xl');
+
+        if (fullscreenBtn) {
+            const icon = fullscreenBtn.querySelector('span');
+            if (chatWindow.classList.contains('fixed')) {
+                icon.textContent = 'fullscreen_exit';
+            } else {
+                icon.textContent = 'fullscreen';
+            }
         }
     }
 
     toggleBtn.addEventListener('click', toggleChat);
     closeBtn.addEventListener('click', toggleChat);
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
 
     // Send Message
     function sendMessage() {

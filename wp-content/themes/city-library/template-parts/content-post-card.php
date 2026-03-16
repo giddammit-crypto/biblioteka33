@@ -4,7 +4,7 @@ $title_color = get_theme_mod('news_card_grid_title_color', '#0f172a');
 $text_color = get_theme_mod('news_card_grid_text_color', '#1e293b');
 $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
-<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 shrink-0 w-[80vw] sm:w-[320px] lg:w-auto snap-center aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>;">
+<article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 w-full lg:w-auto aspect-[4/5] sm:aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
     <!-- Image Container -->
     <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
@@ -55,15 +55,15 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         </div>
 
         <!-- Title -->
-        <h3 class="text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-slate-900 line-clamp-2 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none">
+        <h3 class="text-2xl lg:text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-white lg:text-slate-900 line-clamp-3 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:text-slate-700 [&>p]:text-white lg:[&>p]:text-slate-700 pointer-events-auto drop-shadow-md lg:drop-shadow-none font-medium">
+        <div class="text-[15px] lg:text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white/90 lg:text-slate-700 [&>p]:text-white/90 lg:[&>p]:text-slate-700 pointer-events-auto drop-shadow-sm lg:drop-shadow-none font-medium lg:font-normal">
             <?php the_excerpt(); ?>
         </div>
 

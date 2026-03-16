@@ -240,11 +240,30 @@ if ($bar_style === 'text-only') {
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Главная', 'city-library'); ?></span>
         </a>
 
-        <!-- Events (Afisha) -->
+        <?php
+        // Voice Assistant Button Logic
+        $enable_voice = get_theme_mod('enable_voice_control', false);
+        $is_locked = (get_theme_mod('voice_control_test_mode', true) && !is_user_logged_in());
+        // Note: the `js/voice-control.js` will handle the actual locking logic on click if they aren't authorized via cookie
+        ?>
+        <!-- Voice Assistant (Replaces Afisha) -->
+        <?php if ($enable_voice) : ?>
+        <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group relative" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>" <?php echo $is_locked ? 'data-locked="true"' : ''; ?>>
+            <div class="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <?php if ($is_locked) : ?>
+                <!-- Locked state icon -->
+                <span class="material-symbols-outlined absolute top-2 right-2 text-[10px] text-slate-400">lock</span>
+            <?php endif; ?>
+            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> text-primary <?php echo esc_attr($icon_base_class); ?>">mic</span>
+            <span class="<?php echo esc_attr($text_classes); ?> text-primary font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
+        </button>
+        <?php else: ?>
+         <!-- Fallback Events (Afisha) if voice is disabled -->
         <a href="#afisha" class="<?php echo esc_attr($item_classes); ?> mob-nav-item">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">calendar_month</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Афиша', 'city-library'); ?></span>
         </a>
+        <?php endif; ?>
 
         <!-- Search (Opens Modal) -->
         <button id="search-toggle-mobile" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
@@ -260,24 +279,7 @@ if ($bar_style === 'text-only') {
     </div>
 </nav>
 
-<?php
-// Floating Voice Assistant Button for Mobile/Kiosk
-$enable_voice = get_theme_mod('enable_voice_control', false);
-
-// In order for the #voicetest link logic to work on the client side, we must render the button HTML
-// but hide it initially using inline styles if test_mode is active and the user is not logged in.
-// The JS script will unhide it if the cookie or hash is present.
-$is_hidden_by_default = (get_theme_mod('voice_control_test_mode', true) && !is_user_logged_in());
-$button_style = $is_hidden_by_default ? 'display: none;' : '';
-
-if ($enable_voice) :
-?>
-<button id="mobile-voice-assistant-btn" style="<?php echo esc_attr($button_style); ?>" class="lg:landscape:hidden fixed z-[60] bottom-24 right-4 w-14 h-14 bg-white text-primary rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-all duration-300 active:scale-95 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
-    <span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform duration-300">mic</span>
-
-    <!-- Radar pulse effect behind icon -->
-    <span class="absolute inset-0 rounded-full border border-primary/30 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] opacity-0 group-hover:opacity-100"></span>
-</button>
+<?php if ($enable_voice) : ?>
 
 <!-- Voice Test Welcome Modal -->
 <div id="voice-test-welcome-modal" class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-xl hidden flex items-center justify-center p-4 transition-all duration-500 opacity-0" role="dialog" aria-modal="true" aria-labelledby="voice-test-welcome-title">

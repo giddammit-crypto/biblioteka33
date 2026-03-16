@@ -149,13 +149,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (!hasAccess) {
-        mobileVoiceBtn.style.display = 'none';
-        return;
-    }
-
-    // Ensure button is visible if logic passed and it's hidden by inline style previously
+    // Ensure button is visible for everyone, removing inline "display: none" from PHP
     mobileVoiceBtn.style.display = 'flex';
+    // If user does not have access, we set a data attribute to lock it
+    if (!hasAccess) {
+        mobileVoiceBtn.setAttribute('data-locked', 'true');
+        // Visually add a lock icon if it's missing (should be added by PHP, but just in case)
+        if (!mobileVoiceBtn.querySelector('.text-\\[10px\\]\\.text-slate-400')) {
+             const lockIcon = document.createElement('span');
+             lockIcon.className = "material-symbols-outlined absolute top-2 right-2 text-[10px] text-slate-400";
+             lockIcon.textContent = "lock";
+             mobileVoiceBtn.appendChild(lockIcon);
+        }
+    } else {
+        mobileVoiceBtn.removeAttribute('data-locked');
+        // Remove lock icon if present
+        const lockIcon = mobileVoiceBtn.querySelector('span.text-\\[10px\\].text-slate-400');
+        if (lockIcon) lockIcon.remove();
+    }
 
     // --- END TEST LOGIC ---
 
@@ -358,19 +369,19 @@ document.addEventListener('DOMContentLoaded', () => {
             "цдб": { name: "Центральная детская библиотека", address: addr.cdb || "г. Владимир, ул. Белоконской, д. 10-а" },
             "1": { name: "Библиотека-филиал № 1", address: addr["1"] || "г. Владимир, пр-кт Строителей, д. 23" },
             "2": { name: "Библиотека-филиал № 2", address: addr["2"] || "г. Владимир, пр-кт Ленина, д. 12" },
-            "3": { name: "Библиотека-филиал № 3 (детская)", address: addr["3"] || "г. Владимир, ул. Добросельская, д. 2-в" },
+            "3": { name: "Библиотека-филиал № 3", address: addr["3"] || "г. Владимир, ул. Добросельская, д. 2-в" },
             "4": { name: "Библиотека-филиал № 4", address: addr["4"] || "г. Владимир, ул. Комиссарова, д. 69" },
             "5": { name: "Библиотека-филиал № 5", address: addr["5"] || "г. Владимир, пр-кт Суздальский, д. 2" },
-            "6": { name: "Библиотека-филиал № 6 (детская)", address: addr["6"] || "г. Владимир, ул. Мира, д. 37" },
-            "7": { name: "Библиотека-филиал № 7 (библиотека Музей)", address: addr["7"] || "г. Владимир, ул. Добросельская, д. 189-б" },
-            "8": { name: "Библиотека-филиал № 8 (экологическая)", address: addr["8"] || "г. Владимир, ул. Диктора Левитана, д. 36" },
-            "9": { name: "Библиотека-филиал № 9 (детская)", address: addr["9"] || "г. Владимир, ул. Горького, д. 85" },
-            "10": { name: "Библиотека-филиал № 10 (Детский информационно-досуговый центр)", address: addr["10"] || "г. Владимир, ул. Егорова, д. 10" },
-            "11": { name: "Библиотека-филиал № 11 (детская)", address: addr["11"] || "г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4" },
+            "6": { name: "Библиотека-филиал № 6", address: addr["6"] || "г. Владимир, ул. Мира, д. 37" },
+            "7": { name: "Библиотека-филиал № 7", address: addr["7"] || "г. Владимир, ул. Добросельская, д. 189-б" },
+            "8": { name: "Библиотека-филиал № 8", address: addr["8"] || "г. Владимир, ул. Диктора Левитана, д. 36" },
+            "9": { name: "Библиотека-филиал № 9", address: addr["9"] || "г. Владимир, ул. Горького, д. 85" },
+            "10": { name: "Библиотека-филиал № 10", address: addr["10"] || "г. Владимир, ул. Егорова, д. 10" },
+            "11": { name: "Библиотека-филиал № 11", address: addr["11"] || "г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4" },
             "13": { name: "Библиотека-филиал № 13", address: addr["13"] || "г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а" },
-            "14": { name: "Библиотека-филиал № 14 (детская)", address: addr["14"] || "г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12" },
-            "15": { name: "Библиотека-филиал № 15 (Семейного чтения)", address: addr["15"] || "г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11" },
-            "16": { name: "Библиотека-филиал № 16 (Историко-духовного возрождения России)", address: addr["16"] || "г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а" }
+            "14": { name: "Библиотека-филиал № 14", address: addr["14"] || "г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12" },
+            "15": { name: "Библиотека-филиал № 15", address: addr["15"] || "г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11" },
+            "16": { name: "Библиотека-филиал № 16", address: addr["16"] || "г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а" }
         };
 
         let targetBranch = null;
@@ -539,6 +550,14 @@ document.addEventListener('DOMContentLoaded', () => {
              return;
         }
 
+        if (cmd.includes('как записаться') || cmd.includes('запись в библиотеку') || cmd.includes('записаться в библиотеку')) {
+             const replyText = 'Записаться в библиотеку можно в любом из филиалов имея при себе паспорт.';
+             speak(replyText, true);
+             const aiText = document.getElementById('voice-ai-answer-text');
+             if (aiText) aiText.innerHTML = replyText;
+             return;
+        }
+
         // Fallback: Send to Virtual Librarian AI
         speak('Секундочку, уточняю информацию...');
         askVirtualLibrarian(command);
@@ -564,7 +583,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 action: 'city_library_ai_chat',
                 nonce: cl_voice_control.ai_nonce,
-                message: query
+                message: query,
+                is_voice: 'true'
             },
             success: function(response) {
                 if (response.success && response.data && response.data.reply) {
@@ -572,12 +592,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const rawHtml = response.data.reply;
                     const plainText = rawHtml.replace(/<[^>]*>?/gm, '').trim();
 
-                    // Pass true to show the modal with the HTML formatted text
-                    speak(plainText, true);
-
-                    // Update modal content with original HTML (with line breaks)
+                    // Update modal content with original Markdown/HTML
                     const aiText = document.getElementById('voice-ai-answer-text');
-                    if (aiText) aiText.innerHTML = rawHtml;
+                    if (aiText) {
+                        // Use a simple markdown parser if available, else use raw
+                        aiText.innerHTML = (typeof parseMarkdown === 'function') ? parseMarkdown(rawHtml) : rawHtml;
+                    }
+
+                    // Show modal
+                    const aiModal = document.getElementById('voice-ai-answer-modal');
+                    const aiContent = aiModal?.querySelector('.voice-modal-content');
+                    if (aiModal && aiContent) {
+                        aiModal.classList.remove('hidden');
+                        void aiModal.offsetWidth;
+                        aiModal.classList.remove('opacity-0');
+                        aiContent.classList.remove('scale-90');
+                        aiContent.classList.add('scale-100');
+                    }
+
+                    // Play Audio from API if available, else fallback to browser synthesis
+                    if (response.data.audio_base64) {
+                        const audioWav = "data:audio/wav;base64," + response.data.audio_base64;
+                        const audio = new Audio(audioWav);
+                        audio.play().catch(e => {
+                             console.warn("Failed to play API audio, falling back to speech synthesis", e);
+                             speak(plainText, false);
+                        });
+                    } else {
+                        speak(plainText, false);
+                    }
 
                     // Open Yandex Map full-screen modal if AI returns an exact Vladimir address and we are on mobile
                     const addressMatch = plainText.match(/г\.\s*Владимир,\s*([^.,]+),\s*д\.\s*(\d+[-а-яА-Я]*)/i);
@@ -600,12 +643,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 } else {
+                    // Do not voice errors, just log them
                     const errorMsg = (response.data && response.data.reply) ? response.data.reply : 'Извините, я не смогла найти ответ на этот вопрос.';
-                    speak(errorMsg);
+                    console.error('AI Error: ' + errorMsg);
                 }
             },
             error: function() {
-                speak('Произошла ошибка связи с сервером. Пожалуйста, проверьте подключение к интернету.');
+                console.error('Произошла ошибка связи с сервером. Пожалуйста, проверьте подключение к интернету.');
             },
             complete: function() {
                 if (iconBtn) {
@@ -633,7 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Speech recognition error', event.error);
         isListening = false;
         hideIndicator();
-        speak('Ошибка распознавания голоса. Повторите попытку.');
     };
 
     recognition.onend = function() {
@@ -641,60 +684,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hideIndicator();
     };
 
-    // Dragging Logic
-    let isDragging = false;
-    let dragStartX, dragStartY;
-    let initialX, initialY;
-
-    mobileVoiceBtn.addEventListener('touchstart', (e) => {
-        isDragging = false;
-        dragStartX = e.touches[0].clientX;
-        dragStartY = e.touches[0].clientY;
-
-        const rect = mobileVoiceBtn.getBoundingClientRect();
-        // Calculate offset of touch point from the element's top-left corner
-        initialX = dragStartX - rect.left;
-        initialY = dragStartY - rect.top;
-
-        // Disable CSS transitions during drag for smooth movement
-        mobileVoiceBtn.style.transition = 'none';
-    }, { passive: true });
-
-    mobileVoiceBtn.addEventListener('touchmove', (e) => {
-        const touchX = e.touches[0].clientX;
-        const touchY = e.touches[0].clientY;
-
-        // Calculate distance moved to determine if it's a drag or just a tap
-        const deltaX = Math.abs(touchX - dragStartX);
-        const deltaY = Math.abs(touchY - dragStartY);
-
-        if (deltaX > 5 || deltaY > 5) {
-            isDragging = true;
-            e.preventDefault(); // Prevent scrolling while dragging
-
-            // Calculate new position
-            let newX = touchX - initialX;
-            let newY = touchY - initialY;
-
-            // Constrain to window bounds
-            const maxX = window.innerWidth - mobileVoiceBtn.offsetWidth;
-            const maxY = window.innerHeight - mobileVoiceBtn.offsetHeight;
-
-            newX = Math.max(0, Math.min(newX, maxX));
-            newY = Math.max(0, Math.min(newY, maxY));
-
-            // Apply new position using inline styles (overrides Tailwind classes like bottom-24 right-4)
-            mobileVoiceBtn.style.right = 'auto'; // Disable initial right alignment
-            mobileVoiceBtn.style.bottom = 'auto'; // Disable initial bottom alignment
-            mobileVoiceBtn.style.left = `${newX}px`;
-            mobileVoiceBtn.style.top = `${newY}px`;
-        }
-    }, { passive: false });
-
-    mobileVoiceBtn.addEventListener('touchend', (e) => {
-        // Re-enable hover transitions
-        mobileVoiceBtn.style.transition = '';
-    });
+    // Global variable to hold API audio so we can stop it if the user closes the modal
+    let currentApiAudio = null;
 
     // Generic Voice Modal Close Logic (handles both Commands and AI Answer modals)
     const voiceModals = [
@@ -722,9 +713,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.style.overflow = '';
                 }
 
-                // If it's the AI answer modal, stop speech synthesis on close so it stops talking if dismissed
-                if (modal.id === 'voice-ai-answer-modal' && synth.speaking) {
-                    synth.cancel();
+                // If it's the AI answer modal, stop speech synthesis/audio on close
+                if (modal.id === 'voice-ai-answer-modal') {
+                    if (synth && synth.speaking) {
+                        synth.cancel();
+                    }
+                    if (currentApiAudio) {
+                        currentApiAudio.pause();
+                        currentApiAudio.currentTime = 0;
+                        currentApiAudio = null;
+                    }
                 }
             }, 500);
         }
@@ -744,10 +742,21 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileVoiceBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        // If the user was dragging the button, don't trigger the voice assistant
-        if (isDragging) {
-            isDragging = false;
-            return;
+        // Check for locked state (unauthorized test mode)
+        if (mobileVoiceBtn.getAttribute('data-locked') === 'true') {
+             // Open the voice test welcome modal to enter hash/password if it exists
+             const welcomeModal = document.getElementById('voice-test-welcome-modal');
+             if (welcomeModal) {
+                 welcomeModal.classList.remove('hidden');
+                 requestAnimationFrame(() => {
+                     welcomeModal.classList.remove('opacity-0');
+                     welcomeModal.querySelector('.test-modal-content').classList.remove('scale-90');
+                     welcomeModal.querySelector('.test-modal-content').classList.add('scale-100');
+                 });
+             } else {
+                 alert("Голосовой помощник доступен только авторизованным пользователям или участникам тестирования.");
+             }
+             return; // Stop execution, do not start microphone
         }
 
         if (isListening) {
@@ -764,10 +773,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Also add a keyboard shortcut (Ctrl+Shift+V or Alt+V) as a fallback for accessibility
     document.addEventListener('keydown', (e) => {
         if (e.altKey && e.code === 'KeyV') {
+            // Prevent shortcut if locked
+            if (mobileVoiceBtn.getAttribute('data-locked') === 'true') {
+                alert("Голосовой помощник доступен только авторизованным пользователям или участникам тестирования.");
+                return;
+            }
+
             if (isListening) {
                 recognition.stop();
             } else {
-                recognition.start();
+                try {
+                    recognition.start();
+                } catch(err) {
+                    console.error('Failed to start recognition:', err);
+                }
             }
         }
     });
