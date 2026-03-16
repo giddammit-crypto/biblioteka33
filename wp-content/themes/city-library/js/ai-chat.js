@@ -107,10 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let content = '';
 
+        // Parse markdown only for bot responses. Don't parse the typing indicator.
+        const parsedText = (sender === 'bot' && !text.includes('animate-bounce') && typeof marked !== 'undefined') ? marked.parse(text) : text;
+
         if (sender === 'user') {
+            // Escape user input to prevent XSS
+            const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
             content = `
-                <div class="bg-primary text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%]">
-                    ${text}
+                <div class="bg-primary text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] whitespace-pre-wrap">
+                    ${escapeHtml(text)}
                 </div>
             `;
         } else {
@@ -118,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
                     <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
                 </div>
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-sm shadow-sm text-slate-700 max-w-[85%]">
-                    ${text}
+                <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-sm shadow-sm text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
+                    ${parsedText}
                 </div>
             `;
         }

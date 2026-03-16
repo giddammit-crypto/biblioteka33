@@ -149,23 +149,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ensure button is visible for everyone, removing inline "display: none" from PHP
-    mobileVoiceBtn.style.display = 'flex';
-    // If user does not have access, we set a data attribute to lock it
-    if (!hasAccess) {
-        mobileVoiceBtn.setAttribute('data-locked', 'true');
-        // Visually add a lock icon if it's missing (should be added by PHP, but just in case)
-        if (!mobileVoiceBtn.querySelector('.text-\\[10px\\]\\.text-slate-400')) {
-             const lockIcon = document.createElement('span');
-             lockIcon.className = "material-symbols-outlined absolute top-2 right-2 text-[10px] text-slate-400";
-             lockIcon.textContent = "lock";
-             mobileVoiceBtn.appendChild(lockIcon);
+    // Handle dynamic button swapping in the mobile bottom nav
+    const mobileAfishaBtn = document.getElementById('mobile-afisha-btn');
+    if (hasAccess) {
+        if (mobileVoiceBtn) {
+            mobileVoiceBtn.classList.remove('hidden');
+            mobileVoiceBtn.style.display = ''; // Reset any inline styles
+        }
+        if (mobileAfishaBtn) {
+            mobileAfishaBtn.classList.add('hidden');
         }
     } else {
-        mobileVoiceBtn.removeAttribute('data-locked');
-        // Remove lock icon if present
-        const lockIcon = mobileVoiceBtn.querySelector('span.text-\\[10px\\].text-slate-400');
-        if (lockIcon) lockIcon.remove();
+        if (mobileVoiceBtn) {
+            mobileVoiceBtn.classList.add('hidden');
+        }
+        if (mobileAfishaBtn) {
+            mobileAfishaBtn.classList.remove('hidden');
+        }
+        return; // Stop initialization since they don't have access and the button is hidden
     }
 
     // --- END TEST LOGIC ---
@@ -742,23 +743,6 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileVoiceBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        // Check for locked state (unauthorized test mode)
-        if (mobileVoiceBtn.getAttribute('data-locked') === 'true') {
-             // Open the voice test welcome modal to enter hash/password if it exists
-             const welcomeModal = document.getElementById('voice-test-welcome-modal');
-             if (welcomeModal) {
-                 welcomeModal.classList.remove('hidden');
-                 requestAnimationFrame(() => {
-                     welcomeModal.classList.remove('opacity-0');
-                     welcomeModal.querySelector('.test-modal-content').classList.remove('scale-90');
-                     welcomeModal.querySelector('.test-modal-content').classList.add('scale-100');
-                 });
-             } else {
-                 alert("Голосовой помощник доступен только авторизованным пользователям или участникам тестирования.");
-             }
-             return; // Stop execution, do not start microphone
-        }
-
         if (isListening) {
             recognition.stop();
         } else {
@@ -773,12 +757,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Also add a keyboard shortcut (Ctrl+Shift+V or Alt+V) as a fallback for accessibility
     document.addEventListener('keydown', (e) => {
         if (e.altKey && e.code === 'KeyV') {
-            // Prevent shortcut if locked
-            if (mobileVoiceBtn.getAttribute('data-locked') === 'true') {
-                alert("Голосовой помощник доступен только авторизованным пользователям или участникам тестирования.");
-                return;
-            }
-
             if (isListening) {
                 recognition.stop();
             } else {

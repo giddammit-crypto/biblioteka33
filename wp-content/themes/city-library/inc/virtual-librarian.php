@@ -54,18 +54,20 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'openrouter/free', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemini-2.5-flash-lite', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
-        'label' => __('Модель нейросети (LLM)', 'city-library'),
+        'label' => __('Основная Модель (LLM)', 'city-library'),
+        'description' => __('Например: google/gemini-2.5-flash-lite', 'city-library'),
         'section' => 'voice_assistant_section',
-        'type' => 'select',
-        'choices' => array(
-            'openrouter/free' => 'OpenRouter: Автовыбор (Самая надежная)',
-            'google/gemma-3-12b-it:free' => 'Google: Gemma 3 12B (Быстрая)',
-            'mistralai/mistral-small-3.1-24b-instruct:free' => 'Mistral: Small 3.1 24B (Стабильная)',
-            'qwen/qwen3-coder:free' => 'Qwen: Qwen3 Coder (Точная)',
-            'z-ai/glm-4.5-air:free' => 'Z-AI: GLM 4.5 Air (Умная)',
-        )
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('ai_librarian_model_fallback', array('default' => 'google/gemini-3-flash-preview', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('ai_librarian_model_fallback', array(
+        'label' => __('Запасная Модель (Fallback)', 'city-library'),
+        'description' => __('Используется при сбоях. Например: google/gemini-3-flash-preview', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'text',
     ));
 
     $wp_customize->add_setting('ai_librarian_kb_ids', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
@@ -317,7 +319,10 @@ function city_library_enqueue_ai_script() {
     if (!get_theme_mod('enable_ai_librarian', false)) return;
     if (get_theme_mod('ai_librarian_test_mode', false) && !is_user_logged_in()) return;
 
-    wp_enqueue_script('city-library-ai-chat', get_template_directory_uri() . '/js/ai-chat.js', array('jquery'), wp_get_theme()->get('Version'), true);
+    // Enqueue marked.js for robust markdown parsing
+    wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
+
+    wp_enqueue_script('city-library-ai-chat', get_template_directory_uri() . '/js/ai-chat.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
     wp_localize_script('city-library-ai-chat', 'cl_ai_ajax', array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ai_chat_nonce')
@@ -330,7 +335,8 @@ function city_library_handle_ai_chat() {
     check_ajax_referer('ai_chat_nonce', 'nonce');
 
     $api_key = get_theme_mod('openrouter_api_key', '');
-    $model = get_theme_mod('ai_librarian_model', 'google/gemini-3.1-flash-lite-preview');
+    $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash-lite');
+    $fallback_model = get_theme_mod('ai_librarian_model_fallback', 'google/gemini-3-flash-preview');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
 
     if (empty($api_key)) {
@@ -502,7 +508,6 @@ function city_library_handle_ai_chat() {
     // Check if primary model failed (timeout, 5xx, or specific OpenRouter errors)
     if ($is_error || $http_code >= 400) {
         // Attempt Fallback (text only)
-        $fallback_model = 'qwen/qwen3.5-9b';
         $request_body['model'] = $fallback_model;
         unset($request_body['modalities']);
         unset($request_body['audio']);

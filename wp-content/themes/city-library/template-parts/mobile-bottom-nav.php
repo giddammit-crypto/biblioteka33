@@ -25,7 +25,8 @@ $text_classes = 'text-[10px] font-bold tracking-wide z-10';
 
 switch ($bar_style) {
     case 'default':
-        $nav_classes .= ' bottom-0 left-0 border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]';
+        // Enhance default to be more stylish glassmorphism
+        $nav_classes .= ' bottom-0 left-0 border-t border-white/50 bg-white/85 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.06)]';
         break;
     case 'ios-blur':
         // User asked for "one color", but blur implies translucency. We'll keep the class but the inline style might override if opacity is 1.
@@ -155,7 +156,10 @@ if ($bar_style === 'text-only') {
 <style>
 /* Dynamic Variables */
 .mob-nav-custom {
+    /* Only apply solid background if explicitly not using default transparent styles */
+    <?php if ($bar_style !== 'default' && $bar_style !== 'ios-blur') : ?>
     background-color: var(--mob-menu-bg);
+    <?php endif; ?>
     font-family: var(--mob-menu-font);
 }
 .mob-nav-item {
@@ -243,27 +247,26 @@ if ($bar_style === 'text-only') {
         <?php
         // Voice Assistant Button Logic
         $enable_voice = get_theme_mod('enable_voice_control', false);
-        $is_locked = (get_theme_mod('voice_control_test_mode', true) && !is_user_logged_in());
-        // Note: the `js/voice-control.js` will handle the actual locking logic on click if they aren't authorized via cookie
+        // User requested button should ONLY be visible to those who have access.
+        // We will render BOTH buttons, and toggle visibility via JavaScript based on cookie/hash to avoid PHP caching issues
+        // and to keep the 4-column grid perfectly balanced.
         ?>
-        <!-- Voice Assistant (Replaces Afisha) -->
-        <?php if ($enable_voice) : ?>
-        <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group relative" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>" <?php echo $is_locked ? 'data-locked="true"' : ''; ?>>
-            <div class="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <?php if ($is_locked) : ?>
-                <!-- Locked state icon -->
-                <span class="material-symbols-outlined absolute top-2 right-2 text-[10px] text-slate-400">lock</span>
+        <div id="mob-nav-dynamic-slot" class="flex items-center justify-center relative w-full h-full">
+            <!-- Fallback Events (Afisha) - Shown by default for guests -->
+            <a href="#afisha" id="mobile-afisha-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item absolute inset-0 w-full">
+                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">calendar_month</span>
+                <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Афиша', 'city-library'); ?></span>
+            </a>
+
+            <!-- Voice Assistant - Hidden by default unless JS reveals it -->
+            <?php if ($enable_voice) : ?>
+            <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group absolute inset-0 w-full hidden" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
+                <div class="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> text-primary <?php echo esc_attr($icon_base_class); ?>">mic</span>
+                <span class="<?php echo esc_attr($text_classes); ?> text-primary font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
+            </button>
             <?php endif; ?>
-            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> text-primary <?php echo esc_attr($icon_base_class); ?>">mic</span>
-            <span class="<?php echo esc_attr($text_classes); ?> text-primary font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
-        </button>
-        <?php else: ?>
-         <!-- Fallback Events (Afisha) if voice is disabled -->
-        <a href="#afisha" class="<?php echo esc_attr($item_classes); ?> mob-nav-item">
-            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">calendar_month</span>
-            <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Афиша', 'city-library'); ?></span>
-        </a>
-        <?php endif; ?>
+        </div>
 
         <!-- Search (Opens Modal) -->
         <button id="search-toggle-mobile" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
