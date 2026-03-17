@@ -245,7 +245,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (synth.speaking) synth.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Clean text for speech synthesis
+        let spokenText = text;
+
+        // 1. Remove Markdown image tags entirely: `![alt](url)`
+        spokenText = spokenText.replace(/!\[.*?\]\(.*?\)/g, '');
+
+        // 2. Remove standard Markdown link syntax but KEEP the link text: `[text](url)` -> `text`
+        spokenText = spokenText.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+        // 3. Strip any HTML tags (in case there's raw HTML inside the markdown)
+        spokenText = spokenText.replace(/<[^>]*>?/gm, '');
+
+        // 4. Strip common markdown formatting characters (asterisks, underscores, hashes)
+        spokenText = spokenText.replace(/[*_#`~]/g, '');
+
+        // 5. Clean up multiple spaces and newlines
+        spokenText = spokenText.replace(/\s+/g, ' ').trim();
+
+        // If after stripping it's empty, don't speak
+        if (!spokenText) return;
+
+        const utterance = new SpeechSynthesisUtterance(spokenText);
         utterance.lang = 'ru-RU';
         utterance.rate = 1.0;
 
@@ -591,13 +613,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.success && response.data && response.data.reply) {
                     // Prepare text. We want plain text for speech, but we can allow basic formatting in the modal
                     const rawHtml = response.data.reply;
+
+                    // Note: Instead of doing stripping here, we pass rawHtml to `speak()` directly
+                    // `speak` will handle its own regex stripping of markdown tags for speech synthesis.
                     const plainText = rawHtml.replace(/<[^>]*>?/gm, '').trim();
 
                     // Update modal content with original Markdown/HTML
                     const aiText = document.getElementById('voice-ai-answer-text');
                     if (aiText) {
-                        // Use a simple markdown parser if available, else use raw
-                        aiText.innerHTML = (typeof parseMarkdown === 'function') ? parseMarkdown(rawHtml) : rawHtml;
+                        // Add Tailwind Typography prose classes if not present to correctly style parsed markdown
+                        if (!aiText.classList.contains('prose')) {
+                            aiText.classList.add('prose', 'prose-sm', 'prose-slate');
+                        }
+                        // Use marked.js for reliable markdown parsing
+                        aiText.innerHTML = (typeof marked !== 'undefined') ? marked.parse(rawHtml) : rawHtml;
                     }
 
                     // Show modal
@@ -617,13 +646,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const audio = new Audio(audioWav);
                         audio.play().catch(e => {
                              console.warn("Failed to play API audio, falling back to speech synthesis", e);
-                             speak(plainText, false);
+                             speak(rawHtml, false); // pass raw HTML/Markdown, speak() will handle stripping
                         });
                     } else {
-                        speak(plainText, false);
+                        speak(rawHtml, false); // pass raw HTML/Markdown
                     }
 
                     // Open Yandex Map full-screen modal if AI returns an exact Vladimir address and we are on mobile
+                    // Search in plain text for map extraction
                     const addressMatch = plainText.match(/г\.\s*Владимир,\s*([^.,]+),\s*д\.\s*(\d+[-а-яА-Я]*)/i);
 
                     if (addressMatch) {

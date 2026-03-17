@@ -25,8 +25,10 @@ $text_classes = 'text-[10px] font-bold tracking-wide z-10';
 
 switch ($bar_style) {
     case 'default':
-        // Enhance default to be more stylish glassmorphism
-        $nav_classes .= ' bottom-0 left-0 border-t border-white/50 bg-white/85 backdrop-blur-2xl shadow-[0_-8px_30px_rgb(0,0,0,0.06)]';
+        // Enhanced default matching the dark pill-shaped glassmorphism image
+        $nav_classes .= ' bottom-6 left-4 right-4 w-[calc(100%-2rem)] rounded-[2rem] bg-slate-900/85 backdrop-blur-3xl shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-white/10';
+        $grid_classes = 'grid grid-cols-4 items-center h-[72px] px-2 rounded-[2rem]';
+        $item_base_classes = 'group flex flex-col items-center justify-center h-full transition-all relative overflow-hidden rounded-xl';
         break;
     case 'ios-blur':
         // User asked for "one color", but blur implies translucency. We'll keep the class but the inline style might override if opacity is 1.
@@ -162,6 +164,53 @@ if ($bar_style === 'text-only') {
     <?php endif; ?>
     font-family: var(--mob-menu-font);
 }
+
+<?php if ($bar_style === 'default') : ?>
+/* Custom dark pill styling matching the image */
+.mob-nav-item {
+    color: #64748b; /* slate-500 */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+.mob-nav-item:last-child {
+    border-right: none;
+}
+.mob-nav-item .text-[10px], .mob-nav-item .text-xs, .mob-nav-item .text-sm {
+    color: #94a3b8; /* slate-400 */
+}
+
+/* Gradients for icons */
+.mob-nav-item:hover .material-symbols-outlined,
+.mob-nav-item:active .material-symbols-outlined,
+.mob-nav-item.active .material-symbols-outlined {
+    background: linear-gradient(180deg, #38bdf8, #0ea5e9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+/* Home gets green */
+.mob-nav-item.active-home .material-symbols-outlined,
+.mob-nav-item.active-home .text-\\[10px\\] {
+    background: linear-gradient(180deg, #4ade80, #22c55e) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 4px 12px rgba(34, 197, 94, 0.3) !important;
+    color: transparent !important; /* Override text color */
+}
+
+/* Cyan for Voice Assistant */
+#mobile-voice-assistant-btn .material-symbols-outlined {
+    background: linear-gradient(180deg, #2dd4bf, #06b6d4) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
+}
+#mobile-voice-assistant-btn .text-\\[10px\\] {
+    color: #a5f3fc !important;
+}
+
+<?php else : ?>
+/* Standard Customizer Settings */
 .mob-nav-item {
     color: var(--mob-menu-icon);
 }
@@ -171,6 +220,7 @@ if ($bar_style === 'text-only') {
 .mob-nav-item:hover, .mob-nav-item:active, .mob-nav-item.active {
     color: var(--mob-menu-active);
 }
+<?php endif; ?>
 .mob-nav-item:hover .text-[10px], .mob-nav-item:hover .text-xs {
     color: var(--mob-menu-active);
 }
@@ -239,7 +289,7 @@ if ($bar_style === 'text-only') {
 <nav class="<?php echo esc_attr($nav_classes); ?> mob-nav-custom">
     <div class="<?php echo esc_attr($grid_classes); ?>">
         <!-- Home -->
-        <a href="<?php echo esc_url(home_url('/')); ?>" class="<?php echo esc_attr($item_classes); ?> mob-nav-item <?php echo is_front_page() ? 'active' : ''; ?>">
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="<?php echo esc_attr($item_classes); ?> mob-nav-item <?php echo is_front_page() ? 'active active-home' : ''; ?>">
             <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">home</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Главная', 'city-library'); ?></span>
         </a>
@@ -261,9 +311,9 @@ if ($bar_style === 'text-only') {
             <!-- Voice Assistant - Hidden by default unless JS reveals it -->
             <?php if ($enable_voice) : ?>
             <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group absolute inset-0 w-full hidden" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
-                <div class="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> text-primary <?php echo esc_attr($icon_base_class); ?>">mic</span>
-                <span class="<?php echo esc_attr($text_classes); ?> text-primary font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
+                <div class="absolute inset-0 bg-cyan-400/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">mic</span>
+                <span class="<?php echo esc_attr($text_classes); ?> font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
             </button>
             <?php endif; ?>
         </div>
@@ -362,9 +412,9 @@ if ($bar_style === 'text-only') {
 
         <!-- Body -->
         <div class="px-6 py-5 overflow-y-auto custom-scrollbar bg-slate-50 max-h-[60vh]">
-            <p id="voice-ai-answer-text" class="text-sm text-slate-700 leading-relaxed font-medium">
+            <div id="voice-ai-answer-text" class="text-sm text-slate-700 leading-relaxed font-medium prose prose-sm prose-slate max-w-none">
                 <!-- AI text injected here -->
-            </p>
+            </div>
         </div>
     </div>
 </div>

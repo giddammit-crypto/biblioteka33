@@ -127,14 +127,14 @@ p, li, .entry-content p, .entry-content li {
     max-width: 100%;
 }
 
-/* Custom Markdown Output Styling inside AI Chat */
-#ai-chat-messages .prose p { margin-bottom: 0.5rem; }
-#ai-chat-messages .prose p:last-child { margin-bottom: 0; }
-#ai-chat-messages .prose a { color: var(--primary-color, #0b7930); text-decoration: underline; font-weight: 500; }
-#ai-chat-messages .prose ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.5rem; }
-#ai-chat-messages .prose ol { list-style-type: decimal; margin-left: 1.25rem; margin-bottom: 0.5rem; }
-#ai-chat-messages .prose li { margin-bottom: 0.25rem; }
-#ai-chat-messages .prose img { width: 100%; border-radius: 0.75rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
+/* Custom Markdown Output Styling inside AI Chat & Modals */
+#ai-chat-messages .prose p, #voice-ai-answer-text.prose p { margin-bottom: 0.5rem; }
+#ai-chat-messages .prose p:last-child, #voice-ai-answer-text.prose p:last-child { margin-bottom: 0; }
+#ai-chat-messages .prose a, #voice-ai-answer-text.prose a { color: var(--primary-color, #0b7930); text-decoration: underline; font-weight: 500; }
+#ai-chat-messages .prose ul, #voice-ai-answer-text.prose ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.5rem; }
+#ai-chat-messages .prose ol, #voice-ai-answer-text.prose ol { list-style-type: decimal; margin-left: 1.25rem; margin-bottom: 0.5rem; }
+#ai-chat-messages .prose li, #voice-ai-answer-text.prose li { margin-bottom: 0.25rem; }
+#ai-chat-messages .prose img, #voice-ai-answer-text.prose img { width: 100%; border-radius: 0.75rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
 
 /* Image Alignment Classes (WordPress Standard) */
 .aligncenter {

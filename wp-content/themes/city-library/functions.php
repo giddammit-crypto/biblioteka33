@@ -125,7 +125,12 @@ function city_library_scripts() {
 
     // We now always enqueue the script if voice is globally enabled, so the JS can check for #voicetest and cookies
     if ($enable_voice) {
-        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery'), wp_get_theme()->get('Version'), true);
+        // Enqueue marked.js for voice control markdown parsing
+        if (!wp_script_is('marked-js', 'enqueued')) {
+            wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
+        }
+
+        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
 
         $custom_commands = array();
         for ($i = 1; $i <= 20; $i++) {
