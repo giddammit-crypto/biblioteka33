@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const searchToggle = document.getElementById('search-toggle');
+    const searchToggles = document.querySelectorAll('#search-toggle, #search-toggle-mobile, .search-toggle-btn');
     const searchModal = document.getElementById('search-modal');
     const searchClose = document.getElementById('search-modal-close');
     const searchInput = searchModal ? searchModal.querySelector('input[type="search"]') : null;
+    let lastFocusedElement = null;
 
-    if (!searchToggle || !searchModal || !searchClose) return;
+    if (searchToggles.length === 0 || !searchModal || !searchClose) return;
 
     function openSearch() {
+        lastFocusedElement = document.activeElement;
         searchModal.classList.remove('hidden');
         // Small delay for transition
         requestAnimationFrame(() => {
@@ -28,12 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             searchModal.classList.add('hidden');
             document.body.style.overflow = '';
+            if (lastFocusedElement) {
+                lastFocusedElement.focus();
+            }
         }, 300);
     }
 
-    searchToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        openSearch();
+    searchToggles.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            openSearch();
+        });
     });
 
     searchClose.addEventListener('click', (e) => {
