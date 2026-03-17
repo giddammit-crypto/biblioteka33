@@ -305,8 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
             utterance.voice = premiumVoice ? premiumVoice : ruVoices[0];
 
             // Apply customizer settings
-            utterance.pitch = parseFloat(cl_voice_control.voice_pitch) || 1.0;
-            utterance.rate = parseFloat(cl_voice_control.voice_rate) || 1.05;
+            utterance.pitch = parseFloat(cl_voice_control.voice_pitch) || 1.1; // Slightly higher pitch for softer tone
+            utterance.rate = parseFloat(cl_voice_control.voice_rate) || 0.95;  // Slightly slower for more natural human pacing
         }
     }
 

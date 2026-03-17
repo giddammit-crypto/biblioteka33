@@ -80,14 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.classList.toggle('fixed');
         chatWindow.classList.toggle('inset-0');
         chatWindow.classList.toggle('z-[1000]');
-        chatWindow.classList.toggle('w-full');
         chatWindow.classList.toggle('h-[100dvh]');
         chatWindow.classList.toggle('rounded-none');
 
         // Remove default fixed width/height when fullscreen
-        chatWindow.classList.toggle('w-80');
         chatWindow.classList.toggle('sm:w-96');
-        chatWindow.classList.toggle('h-[500px]');
+        chatWindow.classList.toggle('h-[60vh]');
+        chatWindow.classList.toggle('max-h-[500px]');
+        chatWindow.classList.toggle('sm:max-h-none');
+        chatWindow.classList.toggle('sm:h-[500px]');
         chatWindow.classList.toggle('mb-4');
         chatWindow.classList.toggle('rounded-2xl');
 
