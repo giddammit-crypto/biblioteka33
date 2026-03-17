@@ -347,6 +347,105 @@ function city_library_handle_ai_chat() {
         wp_send_json_error(array('reply' => 'Извините, библиотекарь временно недоступен (API ключ не настроен).'));
     }
 
+    // Direct Stat Command
+    if (strpos(trim(mb_strtolower($user_message)), '/stat') === 0) {
+        $stats = "📊 **Анализ обновлений сайта (Статистика)**\n\n";
+
+        $knowledge = get_option('city_library_ai_knowledge');
+        if ($knowledge && isset($knowledge['last_updated'])) {
+             $stats .= "*Последний раз данные синхронизировались: " . date_i18n('d F Y H:i', strtotime($knowledge['last_updated'])) . "*\n\n";
+        } else {
+             $stats .= "*Данные синхронизируются впервые...*\n\n";
+             city_library_analyze_site_content();
+        }
+
+        // Get latest 5 posts
+        $latest_posts = get_posts(array('numberposts' => 5, 'post_status' => 'publish'));
+        $stats .= "**Новые записи (Новости / Статьи):**\n";
+        if (empty($latest_posts)) {
+            $stats .= "- *Нет новых записей*\n";
+        } else {
+            foreach ($latest_posts as $p) {
+                $stats .= "- [" . esc_html($p->post_title) . "](" . get_permalink($p->ID) . ") (" . get_the_date('d.m.Y', $p->ID) . ")\n";
+            }
+        }
+        $stats .= "\n";
+
+        // Get latest 3 updated pages
+        $latest_pages = get_pages(array('sort_column' => 'post_modified', 'sort_order' => 'DESC', 'number' => 3, 'post_status' => 'publish'));
+        $stats .= "**Недавно обновленные страницы:**\n";
+        if (empty($latest_pages)) {
+            $stats .= "- *Нет данных*\n";
+        } else {
+            foreach ($latest_pages as $p) {
+                $stats .= "- [" . esc_html($p->post_title) . "](" . get_permalink($p->ID) . ") (обн. " . get_the_modified_date('d.m.Y', $p->ID) . ")\n";
+            }
+        }
+        $stats .= "\n_Для более подробной информации Вы можете задать мне конкретный вопрос!_";
+
+        wp_send_json_success(array('reply' => $stats));
+    }
+
+    // Direct Image Generation Logic via Google Gemini
+    $clean_msg = mb_strtolower(trim($user_message));
+    $is_draw_command = false;
+    $draw_prompt = '';
+
+    if (strpos($clean_msg, '/aimg') === 0) {
+        $is_draw_command = true;
+        $draw_prompt = trim(substr(trim($user_message), 5));
+    } else if (preg_match('/^(нарисуй|сгенерируй|создай картинку)\s+(.+)/u', $clean_msg, $matches)) {
+        $is_draw_command = true;
+        $draw_prompt = trim(mb_substr(trim($user_message), mb_strlen($matches[1])));
+    }
+
+    if ($is_draw_command) {
+        if (empty($draw_prompt)) {
+            wp_send_json_error(array('reply' => 'Пожалуйста, опишите, что нужно нарисовать. Пример: Нарисуй уютную библиотеку с камином.'));
+        }
+
+        $image_request_body = array(
+            'model' => 'google/gemini-2.5-flash-image-preview', // The exact string requested by user
+            'messages' => array(
+                array(
+                    'role' => 'user',
+                    'content' => "Generate an image for the following prompt: " . $draw_prompt . ". The topic MUST be related to libraries, books, education or literature. Output ONLY the markdown image code if successful."
+                )
+            )
+        );
+
+        $image_api_args = array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'HTTP-Referer'  => home_url(),
+                'X-Title'       => 'City Library Theme',
+                'Content-Type'  => 'application/json',
+            ),
+            'body' => wp_json_encode($image_request_body),
+            'timeout' => 45 // Image generation takes longer
+        );
+
+        $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $image_api_args);
+
+        if (is_wp_error($response)) {
+            wp_send_json_error(array('reply' => 'Извините, не удалось связаться с сервером для генерации изображения.'));
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        if (isset($data['choices'][0]['message']['content'])) {
+            $reply = "Вот ваш плакат по запросу: *{$draw_prompt}*\n\n" . $data['choices'][0]['message']['content'];
+            wp_send_json_success(array('reply' => $reply));
+        } else {
+            $error_msg = 'Не удалось сгенерировать изображение.';
+            if (isset($data['error']['message'])) {
+                $error_msg = 'Ошибка: ' . esc_html($data['error']['message']);
+            }
+            wp_send_json_error(array('reply' => $error_msg));
+        }
+    }
+
     // Security Check: Enforce test mode strictly on the server-side
     // Allow request if EITHER the chat widget test mode is disabled OR the voice assistant test mode is disabled (and thus accessible to guests).
     // Also allow if the special voice test cookie is set and its 24h timestamp hasn't expired.
@@ -485,9 +584,9 @@ function city_library_handle_ai_chat() {
 
     // If voice, try to use openai audio model
     if ($is_voice) {
-        $request_body['model'] = 'openai/gpt-4o-mini-audio-preview';
+        $request_body['model'] = 'openai/gpt-4o-mini-audio-preview'; // OpenRouter currently accepts this preview name for audio capabilities
         $request_body['modalities'] = array("text", "audio");
-        $request_body['audio'] = array("voice" => "nova", "format" => "wav");
+        $request_body['audio'] = array("voice" => "shimmer", "format" => "wav"); // Ensure feminine, standard openai voice format
     }
 
     $api_args = array(

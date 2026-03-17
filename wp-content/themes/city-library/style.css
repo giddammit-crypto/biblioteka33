@@ -120,6 +120,17 @@ p, li, .entry-content p, .entry-content li {
     height: auto !important;
 }
 
+/* Allow resizing for videos only on desktop */
+@media (min-width: 1024px) {
+    .entry-content .wp-block-video,
+    .entry-content video {
+        max-width: 100% !important;
+        /* Let Gutenberg width/height attributes apply */
+        width: auto;
+        height: auto;
+    }
+}
+
 .entry-content {
     overflow-wrap: anywhere; /* Break unbreakable strings inside content */
     word-break: break-word; /* Safari fallback */
