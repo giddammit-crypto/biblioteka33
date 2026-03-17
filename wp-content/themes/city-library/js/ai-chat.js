@@ -9,6 +9,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!toggleBtn || !chatWindow) return;
 
+
+    // Chat History Management (30 days)
+    const STORAGE_KEY = 'city_library_ai_chat_history';
+    const EXPIRY_DAYS = 30;
+    let chatHistory = [];
+
+    function loadHistory() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                const now = new Date().getTime();
+                if (now - parsed.timestamp > EXPIRY_DAYS * 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    return;
+                }
+
+                chatHistory = parsed.messages || [];
+                if (chatHistory.length > 0) {
+                    if (messagesContainer.querySelector('.prose')) {
+                        messagesContainer.innerHTML = '';
+                    }
+                    chatHistory.forEach(msg => {
+                        addMessageToUI(msg.role, msg.content, null, false);
+                    });
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load chat history', e);
+        }
+    }
+
+    function saveHistory() {
+        try {
+            const historyToSave = chatHistory.slice(-50);
+            const data = {
+                timestamp: new Date().getTime(),
+                messages: historyToSave
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.error('Failed to save chat history', e);
+        }
+    }
+
+    loadHistory();
+
     // Toggle Window
     function toggleChat() {
         if (chatWindow.classList.contains('hidden')) {
@@ -71,6 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingId = 'typing-' + Date.now();
         addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId);
 
+        const contextHistory = chatHistory.slice(-6).map(m => ({
+            role: m.role === 'bot' ? 'assistant' : 'user',
+            content: m.content
+        }));
+
         // 3. Send AJAX Request
         jQuery.ajax({
             url: cl_ai_ajax.url,
@@ -78,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 action: 'city_library_ai_chat',
                 nonce: cl_ai_ajax.nonce,
-                message: message
+                message: message,
+                history: JSON.stringify(contextHistory)
             },
             success: function(response) {
                 // Remove typing indicator
@@ -100,7 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add message helper
-    function addMessageToUI(sender, text, id = null) {
+    function addMessageToUI(sender, text, id = null, save = true) {
+        if (save && !text.includes('animate-bounce')) {
+            chatHistory.push({ role: sender, content: text });
+            saveHistory();
+        }
         const wrapper = document.createElement('div');
         wrapper.className = sender === 'user' ? 'flex justify-end' : 'flex gap-2';
         if (id) wrapper.id = id;

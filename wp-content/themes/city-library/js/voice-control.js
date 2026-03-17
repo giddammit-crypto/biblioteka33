@@ -653,24 +653,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     // Open Yandex Map full-screen modal if AI returns an exact Vladimir address and we are on mobile
-                    // Search in plain text for map extraction
-                    const addressMatch = plainText.match(/г\.\s*Владимир,\s*([^.,]+),\s*д\.\s*(\d+[-а-яА-Я]*)/i);
+                    // ONLY if the user explicitly asked about an address, branch, location, etc.
+                    const userQuery = query.toLowerCase();
+                    const askedForLocation = userQuery.includes('где') ||
+                                             userQuery.includes('адрес') ||
+                                             userQuery.includes('филиал') ||
+                                             userQuery.includes('цгб') ||
+                                             userQuery.includes('цдб') ||
+                                             userQuery.includes('находится') ||
+                                             userQuery.includes('добраться') ||
+                                             userQuery.includes('доехать');
 
-                    if (addressMatch) {
-                        const extractedAddress = addressMatch[0];
+                    if (askedForLocation) {
+                        // Search in plain text for map extraction. Since data comes dynamically from pages,
+                        // "г. Владимир" might be missing. We look for streets, prospekts, etc.
+                        const addressMatch = plainText.match(/(?:г\.\s*Владимир,\s*)?(ул\.|пр-т|мкр\.|пр\.|Школьный пр\.)\s*([^.,]+),\s*(?:д\.\s*)?(\d+[а-яА-Я\-]*)/i);
 
-                        if (isMobileOrKiosk) {
-                            setTimeout(() => {
-                                // Extract the branch name if available in the text, otherwise use generic title
-                                let mapTitle = "Адрес библиотеки";
-                                const titleMatch = plainText.match(/(Библиотека-филиал № \d+|Центральная [а-яА-Я\s]+библиотека)/i);
-                                if (titleMatch) mapTitle = titleMatch[0];
+                        if (addressMatch) {
+                            const extractedAddress = addressMatch[0];
 
-                                openYandexMapModal(mapTitle, extractedAddress);
-                            }, 1500);
-                        } else if (document.getElementById('footer-yandex-map')) {
-                             // Fallback for Desktop (Kiosk): Scroll to footer map
-                             document.getElementById('footer-yandex-map').scrollIntoView({ behavior: 'smooth' });
+                            if (isMobileOrKiosk) {
+                                setTimeout(() => {
+                                    // Extract the branch name if available in the text, otherwise use generic title
+                                    let mapTitle = "Адрес библиотеки";
+                                    const titleMatch = plainText.match(/(Библиотека-филиал № \d+|Центральная [а-яА-Я\s]+библиотека)/i);
+                                    if (titleMatch) mapTitle = titleMatch[0];
+
+                                    openYandexMapModal(mapTitle, extractedAddress);
+                                }, 1500);
+                            } else if (document.getElementById('footer-yandex-map')) {
+                                 // Fallback for Desktop (Kiosk): Scroll to footer map
+                                 document.getElementById('footer-yandex-map').scrollIntoView({ behavior: 'smooth' });
+                            }
                         }
                     }
                 } else {
