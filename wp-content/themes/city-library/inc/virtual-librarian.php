@@ -388,8 +388,48 @@ function city_library_handle_ai_chat() {
         return;
     }
 
-    // Direct Image Generation Logic via Google Gemini
+    // Direct OPAC Search Simulation
     $clean_msg = mb_strtolower(trim($user_message));
+    $is_opac_command = false;
+    $opac_query = '';
+
+    if (strpos($clean_msg, '/opac') === 0 || strpos($clean_msg, 'найди книгу') === 0 || strpos($clean_msg, 'поиск в каталоге') === 0) {
+        $is_opac_command = true;
+        // Extract query
+        if (strpos($clean_msg, '/opac') === 0) {
+            $opac_query = trim(mb_substr(trim($user_message), 5));
+        } else {
+            // Remove trigger words
+            $opac_query = trim(preg_replace('/^(найди книгу|поиск в каталоге)/ui', '', trim($user_message)));
+        }
+    }
+
+    if ($is_opac_command) {
+        if (empty($opac_query)) {
+            wp_send_json_error(array('reply' => 'Пожалуйста, укажите автора или название книги для поиска в каталоге. Пример: "Найди книгу Пушкин Евгений Онегин" или "/opac Достоевский".'));
+        }
+
+        // OPAC systems using opacg/opac.exe heavily rely on JavaScript and Session states (frames, cookies, dynamic forms).
+        // Since a pure server-side cURL cannot easily execute JS, wait 3-4 seconds, and traverse the frame logic without a headless browser,
+        // we provide a constructed smart link and instructions that direct the user to the precise OPAC gateway with their query pre-filled/guided.
+
+        $gateway_url = "http://library.vladimir.ru/rguest_vlad_cgb.htm";
+        $encoded_query = urlencode($opac_query);
+
+        $reply = "📚 **Поиск в Электронном каталоге (OPAC)**\n\n";
+        $reply .= "Вы искали: *{$opac_query}*\n\n";
+        $reply .= "Поскольку наш электронный каталог работает через защищенный шлюз с динамическими сессиями, я подготовила для Вас прямую ссылку для входа в систему:\n\n";
+        $reply .= "[**Открыть каталог МБУК «ЦГБ»**]({$gateway_url})\n\n";
+        $reply .= "1. Перейдите по ссылке (она откроется в новой вкладке).\n";
+        $reply .= "2. Подождите 3-4 секунды (система автоматически создаст сессию и загрузит форму поиска).\n";
+        $reply .= "3. Введите ваш запрос (*{$opac_query}*) в поле «Ключевые слова» или «Автор/Заглавие» и нажмите «Искать».\n\n";
+        $reply .= "_Если Вам нужна помощь с составлением библиографического списка, просто попросите меня об этом!_";
+
+        wp_send_json_success(array('reply' => $reply));
+        return;
+    }
+
+    // Direct Image Generation Logic
     $is_draw_command = false;
     $draw_prompt = '';
 
@@ -469,6 +509,17 @@ function city_library_handle_ai_chat() {
                     }
                 }
 
+                $about_parent_id = 0;
+                // Find the "Библиотеки" and "О нас" parents
+                foreach ($menu_items as $item) {
+                    if (mb_stripos($item->title, 'библиотеки') !== false || mb_stripos($item->title, 'филиалы') !== false) {
+                        $libraries_parent_id = $item->ID;
+                    }
+                    if (mb_stripos($item->title, 'о нас') !== false || mb_stripos($item->title, 'о библиотеке') !== false) {
+                        $about_parent_id = $item->ID;
+                    }
+                }
+
                 if ($libraries_parent_id > 0) {
                     foreach ($menu_items as $item) {
                         if ($item->menu_item_parent == $libraries_parent_id) {
@@ -489,6 +540,24 @@ function city_library_handle_ai_chat() {
                     }
                 } else {
                     $context .= "ВНИМАНИЕ: Пункт меню 'Библиотеки' не найден. Для адресов обращайся к общей информации на сайте.\n";
+                }
+
+                // Add Contact/Leadership info from "О нас -> Контакты"
+                if ($about_parent_id > 0) {
+                    foreach ($menu_items as $item) {
+                        if ($item->menu_item_parent == $about_parent_id && mb_stripos($item->title, 'контакт') !== false) {
+                            $contact_page_id = url_to_postid($item->url);
+                            if ($contact_page_id) {
+                                $contact_page = get_post($contact_page_id);
+                                if ($contact_page) {
+                                    $content = wp_strip_all_tags(strip_shortcodes($contact_page->post_content));
+                                    // Extract first 1500 chars to get leadership roles and numbers
+                                    $summary = mb_substr(preg_replace('/\s+/', ' ', $content), 0, 1500);
+                                    $context .= "\nРУКОВОДСТВО И КОНТАКТЫ МБУК ЦГБ (Директор, замы, отделы):\n{$summary}\n";
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

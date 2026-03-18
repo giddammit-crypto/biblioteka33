@@ -311,19 +311,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Yandex Maps Logic (Mobile specific)
-    function openYandexMapModal(title, query) {
+    function openYandexMapModal(title, query, showAll = false) {
         if (!isMobileOrKiosk) return;
 
         const mapModal = document.getElementById('voice-map-modal');
         const mapTitle = document.getElementById('voice-map-title');
         const mapIframe = document.getElementById('voice-map-iframe');
         const mapLoader = document.getElementById('voice-map-loader');
+        const customMapContainer = document.getElementById('voice-custom-map-container');
 
         if (mapModal && mapTitle && mapIframe) {
             mapTitle.textContent = title;
-            // Clear iframe initially to show loader
-            mapIframe.src = '';
-
             if (mapLoader) mapLoader.classList.remove('opacity-0');
 
             mapModal.classList.remove('hidden');
@@ -334,26 +332,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 mapModal.classList.remove('opacity-0');
             });
 
-            // Generate the Yandex Map widget URL (using the ?text= query)
-            // Need to use the widget format for iframe embedding: https://yandex.ru/map-widget/v1/?text=
-            const mapUrl = `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(query)}&z=16`;
+            if (showAll && customMapContainer) {
+                // Handle "All Branches" view via AJAX
+                mapIframe.classList.add('hidden');
+                mapIframe.src = ''; // Stop any previous process
+                customMapContainer.classList.remove('hidden');
 
-            mapIframe.src = mapUrl;
-
-            // Try to fade out loader when iframe loads
-            mapIframe.onload = () => {
-                if (mapLoader) {
-                    mapLoader.classList.add('opacity-0');
-                    setTimeout(() => {
-                        // Keep the DOM element around but hidden after transition
-                    }, 300);
+                if (customMapContainer.innerHTML.trim() === '') {
+                    // Fetch the map HTML container
+                    fetch(cl_voice_control.ajax_url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'city_library_get_map_shortcode',
+                            nonce: cl_voice_control.ai_nonce
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.data.html) {
+                            customMapContainer.innerHTML = data.data.html;
+                            // Ensure the map container script is executed
+                            const scripts = customMapContainer.querySelectorAll('script');
+                            scripts.forEach(script => {
+                                const newScript = document.createElement('script');
+                                Array.from(script.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                newScript.appendChild(document.createTextNode(script.innerHTML));
+                                script.parentNode.replaceChild(newScript, script);
+                            });
+                        } else {
+                            customMapContainer.innerHTML = '<div class="p-4 text-center text-slate-500">Не удалось загрузить карту.</div>';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Map loading error:', err);
+                        customMapContainer.innerHTML = '<div class="p-4 text-center text-slate-500">Ошибка соединения.</div>';
+                    })
+                    .finally(() => {
+                        if (mapLoader) {
+                            mapLoader.classList.add('opacity-0');
+                        }
+                    });
+                } else {
+                    if (mapLoader) mapLoader.classList.add('opacity-0');
                 }
-            };
+
+            } else {
+                // Single Branch View via Yandex Map Widget iframe
+                if (customMapContainer) customMapContainer.classList.add('hidden');
+                mapIframe.classList.remove('hidden');
+
+                const mapUrl = `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(query)}&z=16`;
+                mapIframe.src = mapUrl;
+
+                mapIframe.onload = () => {
+                    if (mapLoader) {
+                        mapLoader.classList.add('opacity-0');
+                    }
+                };
+            }
 
             // Handle close
             const closeBtn = document.getElementById('voice-map-close');
             if (closeBtn) {
-                // Remove old event listeners if any to prevent duplicates
                 const newBtn = closeBtn.cloneNode(true);
                 closeBtn.parentNode.replaceChild(newBtn, closeBtn);
 
@@ -665,11 +708,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                              userQuery.includes('доехать');
 
                     if (askedForLocation) {
+                        const wantsAllMap = userQuery.includes('все') || userQuery.includes('карта') || userQuery.includes('покажи');
                         // Search in plain text for map extraction. Since data comes dynamically from pages,
                         // "г. Владимир" might be missing. We look for streets, prospekts, etc.
                         const addressMatch = plainText.match(/(?:г\.\s*Владимир,\s*)?(ул\.|пр-т|мкр\.|пр\.|Школьный пр\.)\s*([^.,]+),\s*(?:д\.\s*)?(\d+[а-яА-Я\-]*)/i);
 
-                        if (addressMatch) {
+                        if (wantsAllMap && !addressMatch) {
+                            if (isMobileOrKiosk) {
+                                setTimeout(() => openYandexMapModal('Карта библиотек г. Владимира', 'библиотеки Владимир', true), 1500);
+                            } else if (document.getElementById('footer-yandex-map')) {
+                                document.getElementById('footer-yandex-map').scrollIntoView({ behavior: 'smooth' });
+                            }
+                        } else if (addressMatch) {
                             const extractedAddress = addressMatch[0];
 
                             if (isMobileOrKiosk) {

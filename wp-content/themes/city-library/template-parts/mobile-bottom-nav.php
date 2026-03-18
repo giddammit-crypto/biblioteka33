@@ -429,8 +429,12 @@ if ($bar_style === 'text-only') {
         </button>
     </div>
     <!-- Yandex Map iframe container -->
-    <div class="flex-1 w-full h-full relative overflow-hidden flex flex-col">
+    <div class="flex-1 w-full h-full relative overflow-hidden flex flex-col bg-white">
+        <!-- Single Branch iframe -->
         <iframe id="voice-map-iframe" class="absolute inset-0 w-full h-full border-0 object-cover" src="" allowfullscreen="true" style="position:absolute; width:100%; height:100%;"></iframe>
+
+        <!-- All Branches Custom Container (AJAX loaded) -->
+        <div id="voice-custom-map-container" class="absolute inset-0 w-full h-full hidden overflow-y-auto bg-slate-50 custom-scrollbar pb-16"></div>
 
         <!-- Loading Spinner -->
         <div id="voice-map-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-white z-0 pointer-events-none transition-opacity duration-300">

@@ -2162,3 +2162,31 @@ function city_library_schema_json_ld() {
     }
 }
 add_action('wp_head', 'city_library_schema_json_ld');
+
+/**
+ * AJAX handler for Voice Control: "Все библиотеки" Custom Map Fetch
+ */
+function city_library_get_map_shortcode() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+
+    // We assume there's a custom template part or a known structure that renders the Yandex map.
+
+    ob_start();
+    // Render the `branches-map` template part
+    get_template_part('template-parts/branches-map');
+
+    $html = ob_get_clean();
+
+    // Fallback if template part doesn't exist
+    if (empty(trim($html))) {
+        $html = '<div class="p-8 text-center text-slate-500 bg-slate-50 rounded-2xl">
+            <span class="material-symbols-rounded text-4xl mb-2 text-slate-400">map</span>
+            <p>Карта со всеми филиалами загружается...</p>
+            <p class="text-sm mt-2">Пожалуйста, перейдите в раздел "Контакты" для просмотра.</p>
+        </div>';
+    }
+
+    wp_send_json_success(['html' => $html]);
+}
+add_action('wp_ajax_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
+add_action('wp_ajax_nopriv_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
