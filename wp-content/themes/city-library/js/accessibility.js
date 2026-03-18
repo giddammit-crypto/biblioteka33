@@ -70,7 +70,27 @@ document.addEventListener('DOMContentLoaded', () => {
             'large-text': 'Крупный текст',
             'high-contrast': 'Высокая контрастность'
         };
-        alert(messages[newMode]); // Simple feedback
+
+        // Announce change via aria-live region instead of alert
+        let announcer = document.getElementById('a11y-announcer');
+        if (!announcer) {
+            announcer = document.createElement('div');
+            announcer.id = 'a11y-announcer';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.className = 'sr-only'; // Tailwind utility for visually hidden
+            // Fallback styles if sr-only is not loaded
+            announcer.style.position = 'absolute';
+            announcer.style.width = '1px';
+            announcer.style.height = '1px';
+            announcer.style.padding = '0';
+            announcer.style.margin = '-1px';
+            announcer.style.overflow = 'hidden';
+            announcer.style.clip = 'rect(0, 0, 0, 0)';
+            announcer.style.whiteSpace = 'nowrap';
+            announcer.style.borderWidth = '0';
+            document.body.appendChild(announcer);
+        }
+        announcer.textContent = messages[newMode];
     });
 
     function applyMode(mode) {
