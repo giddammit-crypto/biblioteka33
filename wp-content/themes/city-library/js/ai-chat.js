@@ -10,6 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!toggleBtn || !chatWindow) return;
 
 
+    // Initialize marked.js custom renderer safely for images
+    if (typeof marked !== 'undefined') {
+        const renderer = new marked.Renderer();
+        // Fallback for different marked.js versions (v8+ uses token, older uses arguments)
+        renderer.image = function(href_or_token, title, text) {
+            let href = typeof href_or_token === 'object' ? href_or_token.href : href_or_token;
+            let imgText = typeof href_or_token === 'object' ? href_or_token.text : text;
+
+            return `
+                <div class="generated-image-container relative my-3">
+                    <img src="${href}" alt="${imgText || 'Сгенерированное изображение'}" class="w-full h-auto rounded-lg shadow-md border border-slate-200">
+                    <a href="${href}" target="_blank" download="image.jpg" class="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-sm hover:bg-primary/90 transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        Скачать в полном размере
+                    </a>
+                </div>
+            `;
+        };
+        marked.use({ renderer });
+    }
+
     // Chat History Management (30 days)
     const STORAGE_KEY = 'city_library_ai_chat_history';
     const EXPIRY_DAYS = 30;
@@ -165,8 +186,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let content = '';
 
-        // Parse markdown only for bot responses. Don't parse the typing indicator.
-        const parsedText = (sender === 'bot' && !text.includes('animate-bounce') && typeof marked !== 'undefined') ? marked.parse(text) : text;
+        // Implement /clear command
+        if (sender === 'user' && text.trim().toLowerCase() === '/clear') {
+            chatHistory = [];
+            localStorage.removeItem(STORAGE_KEY);
+            if (messagesContainer.querySelector('.prose')) {
+                messagesContainer.innerHTML = '';
+            }
+            if (!save) return;
+            // Add a confirmation message that doesn't save to history
+            addMessageToUI('bot', 'История чата успешно очищена.', null, false);
+            return;
+        }
+
+        let parsedText = text;
+        if (sender === 'bot' && !text.includes('animate-bounce') && typeof marked !== 'undefined') {
+            parsedText = marked.parse(text);
+        }
 
         if (sender === 'user') {
             // Escape user input to prevent XSS
