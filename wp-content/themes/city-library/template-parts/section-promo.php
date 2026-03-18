@@ -23,12 +23,12 @@ $link = get_theme_mod('promo_link', '#');
     <div class="flex flex-col md:flex-row relative z-10 gap-8">
         <!-- Image Column -->
         <?php if ($image) : ?>
-            <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] relative overflow-hidden group rounded-2xl">
-                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <div class="shrink-0 w-full md:w-[400px] md:h-[300px] relative overflow-hidden group rounded-2xl flex items-center justify-center bg-slate-50">
+                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-auto max-h-[400px] md:absolute md:inset-0 md:h-full object-contain md:object-cover transition-transform duration-700 group-hover:scale-105">
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
-             <div class="shrink-0 w-full md:w-[400px] h-64 md:h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
+             <div class="shrink-0 w-full md:w-[400px] h-48 md:h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
                 <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
              </div>
         <?php endif; ?>

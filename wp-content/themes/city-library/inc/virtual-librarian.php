@@ -492,8 +492,9 @@ function city_library_handle_ai_chat() {
 
     // Dynamic KB for MBUK CGB Vladimir (Extracts from WordPress Menu "Библиотеки" and its subpages)
     $context .= "СТРУКТУРА И ФИЛИАЛЫ МБУК ЦГБ г. ВЛАДИМИРА (Бери адреса строго отсюда!):\n";
+    $context .= "Когда пользователь спрашивает об адресах, контактах, телефонах, режимах работы библиотек или о том, какие библиотеки есть на конкретной улице или в районе, ТЫ ОБЯЗАН брать данные ТОЛЬКО из этого списка ниже. Ничего не выдумывай.\n\n";
 
-    // We fetch the dynamic info from the "Библиотеки" menu items.
+    // We fetch the dynamic info from the "Библиотеки" menu items with deep parsing for accurate data extraction
     $menu_locations = get_nav_menu_locations();
     if (isset($menu_locations['primary'])) {
         $menu = wp_get_nav_menu_object($menu_locations['primary']);
@@ -501,15 +502,8 @@ function city_library_handle_ai_chat() {
             $menu_items = wp_get_nav_menu_items($menu->term_id);
             if ($menu_items) {
                 $libraries_parent_id = 0;
-                // Find the "Библиотеки" parent
-                foreach ($menu_items as $item) {
-                    if (mb_stripos($item->title, 'библиотеки') !== false || mb_stripos($item->title, 'филиалы') !== false) {
-                        $libraries_parent_id = $item->ID;
-                        break;
-                    }
-                }
-
                 $about_parent_id = 0;
+
                 // Find the "Библиотеки" and "О нас" parents
                 foreach ($menu_items as $item) {
                     if (mb_stripos($item->title, 'библиотеки') !== false || mb_stripos($item->title, 'филиалы') !== false) {
@@ -523,18 +517,38 @@ function city_library_handle_ai_chat() {
                 if ($libraries_parent_id > 0) {
                     foreach ($menu_items as $item) {
                         if ($item->menu_item_parent == $libraries_parent_id) {
-                            // This is a branch page. Get its content to extract address/phone if possible
                             $branch_page_id = url_to_postid($item->url);
                             if ($branch_page_id) {
                                 $branch_page = get_post($branch_page_id);
                                 if ($branch_page) {
-                                    $content = wp_strip_all_tags(strip_shortcodes($branch_page->post_content));
-                                    // Extract the first 300 chars, usually contains address/phone/hours
-                                    $summary = mb_substr(preg_replace('/\s+/', ' ', $content), 0, 300);
-                                    $context .= "- {$item->title}: {$summary}\n";
+                                    $raw_content = strip_shortcodes($branch_page->post_content);
+
+                                    // Try to extract highly specific data blocks (Address, Phone, Email, VK, Hours)
+                                    $address = '';
+                                    $phone = '';
+                                    $vk_link = '';
+                                    $hours = '';
+
+                                    // Simple regex-based extractions
+                                    if (preg_match('/(?:адрес|находимся)(?:[:\s]+)?([^\n<]+)/ui', $raw_content, $m)) $address = trim(strip_tags($m[1]));
+                                    if (preg_match('/(?:телефон|тел\.)(?:[:\s]+)?([+0-9\-\(\)\s]+)/ui', $raw_content, $m)) $phone = trim(strip_tags($m[1]));
+                                    if (preg_match('/(?:режим работы|график|часы работы)(?:[:\s]+)?([^\n<]+(?!<br>))/ui', $raw_content, $m)) $hours = trim(strip_tags($m[1]));
+                                    if (preg_match('/href=["\'](https?:\/\/vk\.com\/[^"\']+)["\']/i', $raw_content, $m)) $vk_link = $m[1];
+
+                                    $clean_content = wp_strip_all_tags($raw_content);
+                                    // Fallback: if specific regex missed, grab the first 400 chars, removing excess whitespace
+                                    $summary = mb_substr(preg_replace('/\s+/', ' ', $clean_content), 0, 400);
+
+                                    $context .= "### {$item->title}\n";
+                                    if ($address) $context .= "- Адрес: {$address}\n";
+                                    if ($phone) $context .= "- Телефон: {$phone}\n";
+                                    if ($hours) $context .= "- Режим работы: {$hours}\n";
+                                    if ($vk_link) $context .= "- Группа ВК: {$vk_link}\n";
+                                    if (!$address && !$phone) $context .= "- Описание: {$summary}...\n"; // Fallback
+                                    $context .= "- Ссылка на страницу: {$item->url}\n\n";
                                 }
                             } else {
-                                $context .= "- {$item->title}: Ссылка -> {$item->url}\n";
+                                $context .= "### {$item->title}\n- Ссылка на страницу: {$item->url}\n\n";
                             }
                         }
                     }
@@ -553,7 +567,7 @@ function city_library_handle_ai_chat() {
                                     $content = wp_strip_all_tags(strip_shortcodes($contact_page->post_content));
                                     // Extract first 1500 chars to get leadership roles and numbers
                                     $summary = mb_substr(preg_replace('/\s+/', ' ', $content), 0, 1500);
-                                    $context .= "\nРУКОВОДСТВО И КОНТАКТЫ МБУК ЦГБ (Директор, замы, отделы):\n{$summary}\n";
+                                    $context .= "РУКОВОДСТВО И ОБЩИЕ КОНТАКТЫ МБУК ЦГБ (Директор, замы, отделы):\n{$summary}\n";
                                 }
                             }
                         }
