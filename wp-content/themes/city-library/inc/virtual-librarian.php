@@ -244,14 +244,17 @@ function city_library_extract_text_from_files($ids_string) {
 }
 
 // 1.5. Deep Knowledge Base Scraping (WP Cron)
-function city_library_analyze_site_content() {
+function sync_library_knowledge_base() {
     $knowledge_data = array(
         'last_updated' => current_time('mysql'),
-        'branches_data' => ''
+        'branches_data' => '',
+        'extracted_addresses' => array() // Used for verifying beta status
     );
 
     $branches_text = "";
+    $addresses_list = array();
     $menu_locations = get_nav_menu_locations();
+
     if (isset($menu_locations['primary'])) {
         $menu = wp_get_nav_menu_object($menu_locations['primary']);
         if ($menu) {
@@ -284,21 +287,41 @@ function city_library_analyze_site_content() {
                                     $hours = '';
 
                                     // Deep Regex extraction
-                                    if (preg_match('/(?:адрес|находимся)(?:[:\s]+)?([^\n<]+)/ui', $raw_content, $m)) $address = trim(strip_tags($m[1]));
-                                    if (preg_match('/(?:телефон|тел\.)(?:[:\s]+)?([+0-9\-\(\)\s]+)/ui', $raw_content, $m)) $phone = trim(strip_tags($m[1]));
-                                    if (preg_match('/(?:режим работы|график|часы работы)(?:[:\s]+)?([^\n<]+(?!<br>))/ui', $raw_content, $m)) $hours = trim(strip_tags($m[1]));
-                                    if (preg_match('/href=["\'](https?:\/\/vk\.com\/[^"\']+)["\']/i', $raw_content, $m)) $vk_link = $m[1];
+                                    $clean_text_for_regex = wp_strip_all_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $raw_content));
+
+                                    if (preg_match('/(?:адрес|находимся)(?:[:\s]+)?([^\n]+)/ui', $clean_text_for_regex, $m)) {
+                                        $address = trim($m[1]);
+                                    } elseif (preg_match('/(?:г\.\s*Владимир,\s*)?(ул\.|пр-т|мкр\.|пр\.|Школьный пр\.)\s*([^.,\n]+),\s*(?:д\.\s*)?(\d+[а-яА-Я\-]*)/ui', $clean_text_for_regex, $m)) {
+                                        $address = trim($m[0]); // Fallback: look for actual street format anywhere in text
+                                    }
+
+                                    if (preg_match('/(?:телефон|тел\.)(?:[:\s]+)?([+0-9\-\(\)\s]{7,20})/ui', $clean_text_for_regex, $m)) {
+                                        $phone = trim($m[1]);
+                                    }
+
+                                    if (preg_match('/(?:режим работы|график|часы работы)(?:[:\s]+)?([^\n]+)/ui', $clean_text_for_regex, $m)) {
+                                        $hours = trim($m[1]);
+                                    }
+
+                                    if (preg_match('/href=["\'](https?:\/\/vk\.com\/[^"\']+)["\']/i', $raw_content, $m)) {
+                                        $vk_link = $m[1];
+                                    }
 
                                     // Also extract District/Street if explicit
                                     $district = '';
-                                    if (preg_match('/(?:район|мкр\.|микрорайон)(?:[:\s]+)?([^\n<]+)/ui', $raw_content, $m)) $district = trim(strip_tags($m[1]));
+                                    if (preg_match('/(?:район|мкр\.|микрорайон)(?:[:\s]+)?([^\n]+)/ui', $clean_text_for_regex, $m)) {
+                                        $district = trim($m[1]);
+                                    }
 
                                     $clean_content = wp_strip_all_tags($raw_content);
                                     $summary = mb_substr(preg_replace('/\s+/', ' ', $clean_content), 0, 800);
 
                                     $branches_text .= "### {$item->title}\n";
                                     if ($district) $branches_text .= "- Район: {$district}\n";
-                                    if ($address) $branches_text .= "- Адрес: {$address}\n";
+                                    if ($address) {
+                                        $branches_text .= "- Адрес: {$address}\n";
+                                        $addresses_list[] = mb_strtolower($address);
+                                    }
                                     if ($phone) $branches_text .= "- Телефон: {$phone}\n";
                                     if ($hours) $branches_text .= "- Режим работы: {$hours}\n";
                                     if ($vk_link) $branches_text .= "- Группа ВК: {$vk_link}\n";
@@ -332,9 +355,10 @@ function city_library_analyze_site_content() {
     }
 
     $knowledge_data['branches_data'] = $branches_text;
+    $knowledge_data['extracted_addresses'] = $addresses_list;
     update_option('city_library_ai_knowledge', $knowledge_data);
 }
-add_action('city_library_daily_cron', 'city_library_analyze_site_content');
+add_action('city_library_daily_cron', 'sync_library_knowledge_base');
 
 // Schedule the cron event on theme setup if not already scheduled
 if (!wp_next_scheduled('city_library_daily_cron')) {
@@ -678,13 +702,20 @@ function city_library_handle_ai_chat() {
 
     // Dynamic KB for MBUK CGB Vladimir (Extracts from WP Cron Cached DB Option)
     $context .= "СТРУКТУРА И ФИЛИАЛЫ МБУК ЦГБ г. ВЛАДИМИРА (Бери адреса строго отсюда!):\n";
-    $context .= "Когда пользователь спрашивает об адресах, контактах, телефонах, режимах работы библиотек или о том, какие библиотеки есть на конкретной улице или в районе, ТЫ ОБЯЗАН брать данные ТОЛЬКО из этого списка ниже. Ничего не выдумывай.\n\n";
+    $context .= "Используй ТОЛЬКО данные из предоставленного списка. Если информации нет в базе — отвечай 'Данные уточняются', не выдумывай адреса. Когда пользователь спрашивает об адресах, контактах, телефонах, режимах работы библиотек или о том, какие библиотеки есть на конкретной улице или в районе, ТЫ ОБЯЗАН брать данные ТОЛЬКО из этого списка ниже.\n\n";
 
     $knowledge_base = get_option('city_library_ai_knowledge');
+
+    // Auto-sync if option is completely empty (e.g. first run before cron triggers)
+    if (empty($knowledge_base) || !isset($knowledge_base['branches_data']) || empty($knowledge_base['branches_data'])) {
+        sync_library_knowledge_base();
+        $knowledge_base = get_option('city_library_ai_knowledge');
+    }
+
     if ($knowledge_base && isset($knowledge_base['branches_data'])) {
         $context .= $knowledge_base['branches_data'];
     } else {
-        $context .= "ВНИМАНИЕ: База данных библиотек в данный момент синхронизируется. Пожалуйста, обратитесь к разделу 'Контакты' на сайте.\n";
+        $context .= "ВНИМАНИЕ: База данных библиотек в данный момент недоступна. Пожалуйста, обратитесь к разделу 'Контакты' на сайте.\n";
     }
 
     $context .= "\n";
