@@ -136,9 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessageToUI('user', message);
         inputField.value = '';
 
-        // 2. Show typing indicator
+        // 2. Show typing or drawing indicator
         const typingId = 'typing-' + Date.now();
-        addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId);
+
+        let isDrawCommand = false;
+        const msgLower = message.toLowerCase();
+        if (msgLower.startsWith('/aimg') || msgLower.match(/^(нарисуй|сгенерируй|создай картинку|нарисуй мне|сделай картинку)\s+/)) {
+            isDrawCommand = true;
+        }
+
+        if (isDrawCommand) {
+            addMessageToUI('bot', '<div class="flex items-center gap-2 text-slate-500 font-medium"><span class="material-symbols-outlined animate-spin text-primary">palette</span> Создаю изображение...</div>', typingId, false);
+        } else {
+            addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId, false);
+        }
 
         const contextHistory = chatHistory.slice(-6).map(m => ({
             role: m.role === 'bot' ? 'assistant' : 'user',
@@ -176,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add message helper
     function addMessageToUI(sender, text, id = null, save = true) {
-        if (save && !text.includes('animate-bounce')) {
+        if (save && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
             chatHistory.push({ role: sender, content: text });
             saveHistory();
         }
@@ -200,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let parsedText = text;
-        if (sender === 'bot' && !text.includes('animate-bounce') && typeof marked !== 'undefined') {
+        if (sender === 'bot' && !text.includes('animate-bounce') && !text.includes('Создаю изображение') && typeof marked !== 'undefined') {
             parsedText = marked.parse(text);
         }
 
