@@ -216,21 +216,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (sender === 'user') {
-            // Escape user input to prevent XSS
-            const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-
             content = `
                 <div class="bg-primary text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] whitespace-pre-wrap">
                     ${escapeHtml(text)}
                 </div>
             `;
         } else {
+            let actionButtons = '';
+            // Only add download buttons to substantial bot replies (not loaders or short confirmations)
+            if (save && text.length > 50 && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
+                // Generate a base64 encoded text string for the data URI
+                const encodedText = encodeURIComponent(text);
+                actionButtons = `
+                    <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100/50 justify-end">
+                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-copy-btn" data-text="${escapeHtml(text)}">
+                            <span class="material-symbols-outlined text-[14px]">content_copy</span> Копировать
+                        </button>
+                        <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium">
+                            <span class="material-symbols-outlined text-[14px]">download</span> Скачать (TXT)
+                        </a>
+                    </div>
+                `;
+            }
+
             content = `
-                <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
-                    <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-primary/20">
+                    <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
                 </div>
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-sm shadow-sm text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
+                <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
                     ${parsedText}
+                    ${actionButtons}
                 </div>
             `;
         }
@@ -238,8 +253,30 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.innerHTML = content;
         messagesContainer.appendChild(wrapper);
 
+        // Bind Copy Button if present
+        const copyBtn = wrapper.querySelector('.ai-copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                const rawText = this.getAttribute('data-text');
+                navigator.clipboard.writeText(rawText).then(() => {
+                    const originalHTML = this.innerHTML;
+                    this.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span> Скопировано';
+                    this.classList.add('text-green-600');
+                    setTimeout(() => {
+                        this.innerHTML = originalHTML;
+                        this.classList.remove('text-green-600');
+                    }, 2000);
+                });
+            });
+        }
+
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Escape user input to prevent XSS (Hoisted for reuse)
+    function escapeHtml(unsafe) {
+        return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     // Listeners

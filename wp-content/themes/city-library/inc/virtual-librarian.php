@@ -287,7 +287,8 @@ function sync_library_knowledge_base() {
                         $addresses_list[] = mb_strtolower($address);
                     }
                     if ($phone) $branches_text .= "- Телефон: {$phone}\n";
-                    $branches_text .= "\n";
+                    // Force the link to the actual site section as requested by the user
+                    $branches_text .= "- Страница филиала на сайте: https://biblioteka33.ru/?p=19379\n\n";
                 }
             }
         }
@@ -418,58 +419,59 @@ function city_library_render_ai_librarian() {
     ?>
     <div id="ai-librarian-widget" class="fixed bottom-6 right-4 sm:right-6 z-[100] flex flex-col items-end w-[calc(100%-2rem)] sm:w-auto">
         <!-- Chat Window -->
-        <div id="ai-chat-window" class="hidden w-full sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 mb-4 overflow-hidden flex-col h-[60vh] max-h-[500px] sm:max-h-none sm:h-[500px] transition-all transform origin-bottom-right">
+        <div id="ai-chat-window" class="hidden w-full sm:w-[400px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[550px] sm:max-h-none sm:h-[550px] transition-all transform origin-bottom-right">
             <!-- Header -->
-            <div class="bg-primary text-white p-4 flex justify-between items-center shadow-md z-10">
+            <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-10 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner">
                         <span class="material-symbols-outlined text-2xl">support_agent</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-sm leading-tight">Виртуальный библиотекарь</h4>
-                        <span class="text-[10px] text-white/80 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> В сети
+                        <h4 class="font-bold text-sm leading-tight tracking-wide">Виртуальный библиотекарь</h4>
+                        <span class="text-[10px] text-white/90 flex items-center gap-1.5 uppercase tracking-wider font-medium mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> В сети
                         </span>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white transition-colors flex items-center justify-center w-8 h-8">
+                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
                         <span class="material-symbols-outlined text-[20px]">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/80 hover:text-white transition-colors flex items-center justify-center w-8 h-8">
+                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
                         <span class="material-symbols-outlined text-[20px]">close</span>
                     </button>
                 </div>
             </div>
 
             <!-- Messages Area -->
-            <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-3 text-sm">
+            <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 text-sm custom-scrollbar scroll-smooth">
                 <!-- Welcome Message -->
                 <div class="flex gap-2">
-                    <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-1">
-                        <span class="material-symbols-outlined text-[14px] text-primary">auto_awesome</span>
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-primary/20">
+                        <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
                     </div>
-                    <div class="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-sm shadow-sm text-slate-700">
-                        Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или рассказать о свежих новостях. Чем могу помочь?
+                    <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
+                        Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или помочь вам с написанием сценариев и подбором литературы. Чем могу помочь?
                     </div>
                 </div>
             </div>
 
             <!-- Input Area -->
-            <div class="p-3 bg-white border-t border-slate-100 flex gap-2">
-                <input type="text" id="ai-chat-input" class="w-full bg-slate-100 border-transparent focus:border-primary focus:ring-0 rounded-full text-sm px-4 py-2" placeholder="Введите ваш вопрос...">
-                <button id="ai-chat-send" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-600 transition-colors shrink-0 shadow-md">
-                    <span class="material-symbols-outlined text-xl ml-1">send</span>
+            <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative">
+                <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
+                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
+                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300">send</span>
                 </button>
             </div>
         </div>
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-14 h-14 bg-primary text-slate-900 rounded-full shadow-2xl hover:-translate-y-1 transition-all flex items-center justify-center relative group">
-            <span class="material-symbols-outlined text-2xl group-hover:hidden">support_agent</span>
-            <span class="material-symbols-outlined text-2xl hidden group-hover:block">chat</span>
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
+            <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
+            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10">support_agent</span>
+            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10">chat</span>
             <!-- Notification Dot -->
-            <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse"></span>
+            <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse shadow-sm z-20"></span>
         </button>
     </div>
     <?php
@@ -697,10 +699,14 @@ function city_library_handle_ai_chat() {
         }
 
         // Use OpenRouter Image Models with fallback logic
+        // Standard DALL-E/Flux models on OpenRouter often require specific parameters
+        // or multimodal chat endpoint handling. The user specifically suggested
+        // using google/gemini-3.1-flash-image-preview as an alternative if needed,
+        // but we can try setting the correct tool/parameter to return the image URL directly.
         $image_models = [
-            'black-forest-labs/flux-schnell',      // Fast, excellent quality
-            'black-forest-labs/flux-dev',          // Slower, very high quality
-            'openai/dall-e-3',                     // Reliable standard
+            'google/gemini-3.1-flash-image-preview', // Native image output as requested
+            'black-forest-labs/flux-schnell',        // Fast, excellent quality
+            'openai/dall-e-3',                       // Reliable standard
             'stabilityai/stable-diffusion-3.5-large' // Great fallback
         ];
 
@@ -736,22 +742,22 @@ function city_library_handle_ai_chat() {
                 $body = wp_remote_retrieve_body($response);
                 $data = json_decode($body, true);
 
-                // OpenRouter typically returns the image URL in the content (either raw or markdown)
-                // for image models, or inside a specific image object depending on the provider.
+                // OpenRouter returns images differently based on the provider.
+                // 1. Sometimes it's a direct URL in 'content'
+                // 2. Sometimes it's a base64 string
+                // 3. Sometimes it's in a markdown format
                 if (isset($data['choices'][0]['message']['content'])) {
                     $content = $data['choices'][0]['message']['content'];
 
-                    // Try to extract a URL from the content if it returned markdown
                     if (preg_match('/!\[.*?\]\((.*?)\)/', $content, $matches)) {
                         $image_url = $matches[1];
                     } elseif (filter_var($content, FILTER_VALIDATE_URL)) {
                         $image_url = $content;
-                    } else {
-                        // Sometimes the URL is the entire string, sometimes it's nested
-                        // We do a generic URL extraction as a fallback
-                        if (preg_match('/https?:\/\/[^\s"\'<>]+/', $content, $matches)) {
-                            $image_url = $matches[0];
-                        }
+                    } elseif (preg_match('/https?:\/\/[^\s"\'<>]+/', $content, $matches)) {
+                        $image_url = $matches[0];
+                    } elseif (strpos($content, 'data:image') === 0 || strpos($content, 'iVBORw0KGgo') === 0) {
+                        // It returned a base64 image directly
+                        $image_url = (strpos($content, 'data:image') === 0) ? $content : 'data:image/png;base64,' . $content;
                     }
 
                     if (!empty($image_url)) {
