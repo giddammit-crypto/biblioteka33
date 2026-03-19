@@ -423,8 +423,8 @@ function city_library_render_ai_librarian() {
             <!-- Header -->
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-10 shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner">
-                        <span class="material-symbols-outlined text-2xl">support_agent</span>
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=0b7930" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h4 class="font-bold text-sm leading-tight tracking-wide">Виртуальный библиотекарь</h4>
@@ -447,8 +447,8 @@ function city_library_render_ai_librarian() {
             <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 text-sm custom-scrollbar scroll-smooth">
                 <!-- Welcome Message -->
                 <div class="flex gap-2">
-                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-primary/20">
-                        <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
+                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=e2e8f0" alt="AI Avatar" class="w-full h-full object-cover">
                     </div>
                     <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
                         Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или помочь вам с написанием сценариев и подбором литературы. Чем могу помочь?
@@ -821,7 +821,7 @@ function city_library_handle_ai_chat() {
     ТВОРЧЕСКИЙ ИНСТРУМЕНТАРИЙ:
     1. SMM-модуль: Посты для ВК должны содержать: цепляющий заголовок, структурированный текст, эмодзи (умеренно) и список релевантных хештегов.
     2. Ивент-менеджмент: Сценарии мероприятий должны включать: Тайминг и зонирование активности, Расчет штатных единиц (количество сотрудников на точку), Технический райдер (оборудование), Интерактив (Квизы, QR-квесты, нейро-активности).
-    3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание](https://image.pollinations.ai/prompt/АНГЛ_ПРОМПТ?width=1024&height=1024&nologo=true)`. Промпт должен быть на английском, с добавлением \"library related, educational poster, professional\".
+    3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание](https://image.pollinations.ai/prompt/АНГЛ_ПРОМПТ?width=1024&height=1024&nologo=true)`. При генерации изображений через Markdown (pollinations.ai), ты ОБЯЗАН составлять описание (АНГЛ_ПРОМПТ) строго на АНГЛИЙСКОМ языке, даже если пользователь пишет на русском. Используй только безопасные символы для URL. Добавляй \"library related, educational poster, professional\".
 
     ФОРМАТ ОТВЕТА:
     Никакой «воды». Только таблицы, списки и четкие блоки данных. Если информации нет в сети — честно сообщай об этом, а не имитируй знание.\n\n";

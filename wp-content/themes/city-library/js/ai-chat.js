@@ -10,6 +10,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!toggleBtn || !chatWindow) return;
 
 
+    // Clean and encode Cyrillic URLs specifically for Pollinations.ai issues
+    function safeImageUrl(href) {
+        if (!href) return '';
+        // If the URL already contains a seed, don't append another one.
+        // Also check if it contains Cyrillic. If it does, encodeURI it.
+        let safeHref = href;
+        if (/[а-яА-ЯёЁ]/.test(safeHref)) {
+            safeHref = encodeURI(safeHref);
+        }
+
+        // Append random seed if it's pollinations and doesn't have one to prevent caching
+        if (safeHref.includes('pollinations.ai') && !safeHref.includes('seed=')) {
+            const separator = safeHref.includes('?') ? '&' : '?';
+            safeHref += `${separator}seed=${Math.floor(Math.random() * 1000000)}`;
+        }
+        return safeHref;
+    }
+
     // Initialize marked.js custom renderer safely for images
     if (typeof marked !== 'undefined') {
         const renderer = new marked.Renderer();
@@ -18,12 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let href = typeof href_or_token === 'object' ? href_or_token.href : href_or_token;
             let imgText = typeof href_or_token === 'object' ? href_or_token.text : text;
 
+            const processedHref = safeImageUrl(href);
+
             return `
-                <div class="generated-image-container relative my-3">
-                    <img src="${href}" alt="${imgText || 'Сгенерированное изображение'}" class="w-full h-auto rounded-lg shadow-md border border-slate-200">
-                    <a href="${href}" target="_blank" download="image.jpg" class="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-sm hover:bg-primary/90 transition-colors">
+                <div class="generated-image-container relative my-3 flex flex-col items-start gap-2">
+                    <img src="${processedHref}" alt="${imgText || 'Сгенерированное изображение'}"
+                         class="w-full h-auto max-h-[400px] object-contain rounded-lg shadow-md border border-slate-200 bg-slate-50"
+                         onerror="this.outerHTML='<div class=\\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\\'>⚠️ Изображение создается или сервер перегружен. Пожалуйста, обновите запрос.</div>'">
+                    <a href="${processedHref}" target="_blank" download="library_poster.png" class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-[11px] font-bold uppercase tracking-wider rounded-xl shadow-sm hover:bg-primary/90 transition-colors">
                         <span class="material-symbols-outlined text-[16px]">download</span>
-                        Скачать в полном размере
+                        Скачать плакат
                     </a>
                 </div>
             `;
@@ -101,17 +123,19 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.classList.toggle('fixed');
         chatWindow.classList.toggle('inset-0');
         chatWindow.classList.toggle('z-[1000]');
-        chatWindow.classList.toggle('h-[100dvh]');
-        chatWindow.classList.toggle('rounded-none');
+        chatWindow.classList.toggle('!h-[100dvh]');
+        chatWindow.classList.toggle('!w-[100vw]');
+        chatWindow.classList.toggle('!max-w-none');
+        chatWindow.classList.toggle('!rounded-none');
 
-        // Remove default fixed width/height when fullscreen
-        chatWindow.classList.toggle('sm:w-96');
-        chatWindow.classList.toggle('h-[60vh]');
-        chatWindow.classList.toggle('max-h-[500px]');
+        // Disable default dimensional classes
+        chatWindow.classList.toggle('sm:w-[400px]');
+        chatWindow.classList.toggle('h-[65vh]');
+        chatWindow.classList.toggle('max-h-[550px]');
         chatWindow.classList.toggle('sm:max-h-none');
-        chatWindow.classList.toggle('sm:h-[500px]');
+        chatWindow.classList.toggle('sm:h-[550px]');
         chatWindow.classList.toggle('mb-4');
-        chatWindow.classList.toggle('rounded-2xl');
+        chatWindow.classList.toggle('rounded-3xl');
 
         if (fullscreenBtn) {
             const icon = fullscreenBtn.querySelector('span');
@@ -240,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             content = `
-                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-primary/20">
-                    <span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
+                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=e2e8f0" alt="AI Avatar" class="w-full h-full object-cover">
                 </div>
                 <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
                     ${parsedText}
