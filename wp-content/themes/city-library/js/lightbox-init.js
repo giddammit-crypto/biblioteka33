@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Only target single post content or designated galleries
-    const contentImages = document.querySelectorAll('.entry-content img, .post-content img, .wp-block-image img');
+    const contentImages = document.querySelectorAll('.entry-content img:not(.emoji), .post-content img:not(.emoji), .wp-block-image img:not(.emoji)');
 
     if (contentImages.length > 0) {
         contentImages.forEach(img => {

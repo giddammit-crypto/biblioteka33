@@ -536,6 +536,14 @@ function city_library_handle_ai_chat() {
 
     $clean_msg = trim(mb_strtolower($user_message));
 
+    // Command: /emoji
+    if ($clean_msg === '/emoji') {
+        $emoji_list = "📚 📖 📗 📘 📙 📓 📔 📒 📕 🕮 📜 📄 📃 📑 🔖 🏷️ ✍️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 ✏️ 📏 📐 🧮 🎓 🏫 🏛️ 🏢 🧑‍🎓 👩‍🎓 👨‍🎓 👨‍🏫 👩‍🏫 🧑‍🏫 💡 🧠 👁️ 🤓 🥸 🧐 🤯 🗂️ 📁 📂 🗄️ 📇 📋 📆 📅 ⌚ ⏳ ⌛ 🕰️ 🏆 🏅 🎖️ 🥇 🥈 🥉 🎭 🎨 🖼️ 🧵 🧶 🎼 🎵 🎶 🎤 🎧 📻 📺 📼 📸 📷 📹 📽️ 🎞️ 🎬 🧩 🎲 ♟️ 🎮 🧸 🪀 🪁 🎈 🪄 🔮 💻 🖥️ 🖨️ 🖱️ 🖲️ 💾 💽 💿 📀 📱 ☎️ 📞 📟 📠 ✉️ 📧 📨 📩 📤 📥 📦 📪 📭 📬 📮 📰 🗞️ 📢 📣 📯 🔔 🔕 🔍 🔎 🔬 🔭 📡 💡 🔦 🏮 🕯️";
+        wp_send_json_success(array(
+            'reply' => "### 📚 Библиотечные и канцелярские эмодзи\n\nСкопируйте нужные для ваших постов и афиш:\n\n<div class=\"text-2xl mt-4 leading-loose tracking-widest break-words bg-slate-50 p-4 rounded-xl border border-slate-200\">" . $emoji_list . "</div>"
+        ));
+    }
+
     // Command: /help
     if (strpos($clean_msg, '/help') === 0 || strpos($clean_msg, 'команды') === 0) {
         $commands = "🛠️ **Доступные команды Виртуального библиотекаря:**\n\n";
@@ -545,6 +553,7 @@ function city_library_handle_ai_chat() {
         $commands .= "- `/opac [запрос]` — Умный поиск книги в электронном каталоге\n";
         $commands .= "- `/stat` — Статистика обновлений базы знаний сайта\n";
         $commands .= "- `/aimg [описание]` — Сгенерировать изображение (плакат, афишу)\n";
+        $commands .= "- `/emoji` — 50 тематических эмодзи для соцсетей\n";
         $commands .= "- `/clear` — Очистить историю этого чата\n\n";
 
         $commands .= "🔹 **Аналитика и Данные:**\n";
