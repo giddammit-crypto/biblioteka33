@@ -175,6 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let isListening = false;
     const synth = window.speechSynthesis;
 
+    // TTS State Management (Default OFF on mobile to prevent unwanted reading)
+    let isTTSActive = localStorage.getItem('cl_voice_tts_active') === 'true';
+
+    // Allow user to toggle via button if we ever add one, but mostly via voice commands
+    function toggleTTS(state) {
+        isTTSActive = state;
+        localStorage.setItem('cl_voice_tts_active', isTTSActive);
+        if (!isTTSActive && synth.speaking) {
+            synth.cancel();
+        }
+    }
+
     // Web Speech API Initialization
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -218,19 +230,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function speak(text, showInModal = false) {
+        // Handle TTS Enable/Disable Commands internally before attempting to speak
+        const lowerText = text.toLowerCase().trim();
+        if (lowerText.includes('включи озвуч') || lowerText.includes('включи голос') || lowerText.includes('озвучивай ответы')) {
+            toggleTTS(true);
+            text = 'Голосовое сопровождение включено.';
+            // Proceed to speak this confirmation
+        } else if (lowerText.includes('выключи озвуч') || lowerText.includes('выключи голос') || lowerText.includes('перестань говорить')) {
+            text = 'Голосовое сопровождение выключено.';
+            // We speak this confirmation once, then turn it off
+            setTimeout(() => toggleTTS(false), 2000);
+        }
+
         // As per request: "Вместо этого (Слушаю) для мобильной версии надо сделать всплывающее уведомление"
         // We will skip voice synthesis for the "Слушаю" phrase, but still use it for other responses.
         if (text === 'Слушаю' && isMobileOrKiosk) {
             return;
         }
 
-        // Show AI Answer Modal if requested
-        if (showInModal) {
+        function renderAIModal(modalText) {
             const aiModal = document.getElementById('voice-ai-answer-modal');
             const aiText = document.getElementById('voice-ai-answer-text');
             if (aiModal && aiText) {
-                // Strip markdown-like bold tags for cleaner UI if needed, but innerHTML allows some formatting
-                aiText.innerHTML = text;
+                aiText.innerHTML = modalText;
                 aiModal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
                 requestAnimationFrame(() => {
@@ -242,6 +264,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
+        }
+
+        // Abort speech if user has disabled TTS (unless it's the confirmation message above)
+        if (!isTTSActive && text !== 'Голосовое сопровождение включено.' && text !== 'Голосовое сопровождение выключено.') {
+            // We still want to show modals if requested, so we just skip the synthesis part below
+            if (showInModal) {
+                renderAIModal(text);
+            }
+            return;
+        }
+
+        // Show AI Answer Modal if requested
+        if (showInModal) {
+            renderAIModal(text);
         }
 
         if (synth.speaking) synth.cancel();

@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             content = `
                 <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
-                    <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=e2e8f0" alt="AI Avatar" class="w-full h-full object-cover">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=e2e8f0&accessories=prescription02" alt="AI Avatar" class="w-full h-full object-cover">
                 </div>
                 <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
                     ${parsedText}

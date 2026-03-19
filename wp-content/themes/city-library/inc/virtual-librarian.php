@@ -70,6 +70,29 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
+    $wp_customize->add_setting('ai_librarian_image_model', array('default' => 'google/gemini-3.1-flash-image-preview', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('ai_librarian_image_model', array(
+        'label' => __('Модель для генерации Изображений', 'city-library'),
+        'description' => __('Например: google/gemini-3.1-flash-image-preview, black-forest-labs/flux-schnell или openai/dall-e-3', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'select',
+        'choices' => array(
+            'google/gemini-3.1-flash-image-preview' => 'Gemini 3.1 Flash Image (Native)',
+            'black-forest-labs/flux-schnell' => 'Flux Schnell (Fast)',
+            'openai/dall-e-3' => 'DALL-E 3 (OpenAI)',
+            'stabilityai/stable-diffusion-3.5-large' => 'Stable Diffusion 3.5',
+            'custom' => 'Указать вручную (Custom)'
+        )
+    ));
+
+    $wp_customize->add_setting('ai_librarian_image_model_custom', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('ai_librarian_image_model_custom', array(
+        'label' => __('Пользовательская модель изображений', 'city-library'),
+        'description' => __('Если выше выбрано "Указать вручную", впишите модель OpenRouter здесь.', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'text',
+    ));
+
     $wp_customize->add_setting('ai_librarian_kb_ids', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_kb_ids', array(
         'label' => __('База знаний (ID файлов)', 'city-library'),
@@ -424,7 +447,7 @@ function city_library_render_ai_librarian() {
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-10 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=0b7930" alt="Avatar" class="w-full h-full object-cover">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=0b7930&accessories=prescription02" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h4 class="font-bold text-sm leading-tight tracking-wide">Виртуальный библиотекарь</h4>
@@ -448,7 +471,7 @@ function city_library_render_ai_librarian() {
                 <!-- Welcome Message -->
                 <div class="flex gap-2">
                     <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
-                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=librarian&backgroundColor=e2e8f0" alt="AI Avatar" class="w-full h-full object-cover">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=e2e8f0&accessories=prescription02" alt="AI Avatar" class="w-full h-full object-cover">
                     </div>
                     <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
                         Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или помочь вам с написанием сценариев и подбором литературы. Чем могу помочь?
@@ -698,17 +721,22 @@ function city_library_handle_ai_chat() {
             wp_send_json_error(array('reply' => 'Пожалуйста, опишите, что нужно нарисовать. Пример: Нарисуй уютную библиотеку с камином.'));
         }
 
-        // Use OpenRouter Image Models with fallback logic
-        // Standard DALL-E/Flux models on OpenRouter often require specific parameters
-        // or multimodal chat endpoint handling. The user specifically suggested
-        // using google/gemini-3.1-flash-image-preview as an alternative if needed,
-        // but we can try setting the correct tool/parameter to return the image URL directly.
-        $image_models = [
-            'google/gemini-3.1-flash-image-preview', // Native image output as requested
-            'black-forest-labs/flux-schnell',        // Fast, excellent quality
-            'openai/dall-e-3',                       // Reliable standard
-            'stabilityai/stable-diffusion-3.5-large' // Great fallback
-        ];
+        // Get user preferred image model from customizer
+        $selected_img_model = get_theme_mod('ai_librarian_image_model', 'google/gemini-3.1-flash-image-preview');
+        if ($selected_img_model === 'custom') {
+            $selected_img_model = get_theme_mod('ai_librarian_image_model_custom', '');
+        }
+
+        $image_models = [];
+        if (!empty($selected_img_model)) {
+            $image_models[] = $selected_img_model;
+        }
+        // Always add a reliable fallback chain
+        $image_models = array_unique(array_merge($image_models, [
+            'google/gemini-3.1-flash-image-preview',
+            'black-forest-labs/flux-schnell',
+            'openai/dall-e-3'
+        ]));
 
         $image_url = '';
         $used_model = '';
