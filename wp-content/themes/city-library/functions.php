@@ -2205,3 +2205,11 @@ function city_library_get_map_shortcode() {
 }
 add_action('wp_ajax_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
 add_action('wp_ajax_nopriv_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
+
+// Enqueue Chat Theme CSS
+function city_library_enqueue_chat_themes() {
+    if (get_theme_mod('enable_ai_librarian', false)) {
+        wp_enqueue_style('ai-chat-themes', get_template_directory_uri() . '/css/ai-chat-themes.css', array(), wp_get_theme()->get('Version'));
+    }
+}
+add_action('wp_enqueue_scripts', 'city_library_enqueue_chat_themes', 20);
