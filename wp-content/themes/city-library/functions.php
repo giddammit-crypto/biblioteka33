@@ -393,7 +393,8 @@ function city_library_homepage_query($query) {
         if (isset($_GET['news_archive'])) {
             $query->set('posts_per_page', 8);
         } elseif ($query->is_home()) {
-            $query->set('posts_per_page', 8); // Changed from 10 to 8 as requested
+            $news_count = get_theme_mod('news_count', 8);
+            $query->set('posts_per_page', $news_count);
         } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
             $query->set('posts_per_page', 16);
         }
