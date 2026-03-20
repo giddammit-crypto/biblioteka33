@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 overflow-x-hidden">
     <div id="primary" class="w-full transition-all duration-300">
 
         <?php
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-6 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative overflow-hidden break-words'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -16,18 +16,18 @@
 
                     <!-- Left Column: Image (300x200) -->
                     <?php if (has_post_thumbnail()) : ?>
-                        <div class="flex-shrink-0 mx-auto md:mx-0">
+                        <div class="flex-shrink-0 mx-auto md:mx-0 w-full sm:w-[300px]">
                             <?php
                             $full_image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
                             ?>
-                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-[300px] h-[200px]">
+                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-full h-[200px] sm:w-[300px]">
                                 <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105']); ?>
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                                      <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">zoom_in</span>
                                 </div>
                             </a>
                             <?php if (get_the_post_thumbnail_caption()) : ?>
-                                <figcaption class="text-center text-slate-500 text-xs mt-2 italic w-[300px]">
+                                <figcaption class="text-center text-slate-500 text-xs mt-2 italic w-full sm:w-[300px]">
                                     <?php the_post_thumbnail_caption(); ?>
                                 </figcaption>
                             <?php endif; ?>
@@ -60,7 +60,7 @@
                             </div>
                         </header>
 
-                        <div class="entry-content prose prose-slate max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
+                        <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
                             <?php
                             the_content();
 
@@ -89,42 +89,32 @@
 
                 if ($attachments) : ?>
                     <div class="mt-12 border-t border-slate-200 pt-8">
-                        <h3 class="text-2xl font-bold font-display mb-6 text-slate-900"><?php _e('Галерея', 'city-library'); ?></h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <?php foreach ($attachments as $attachment) :
-                                $img_url = wp_get_attachment_image_src($attachment->ID, 'full');
-                                $thumb_url = wp_get_attachment_image_src($attachment->ID, 'medium');
-                            ?>
-                                <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
-                                    <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-75 group-hover:scale-100">zoom_in</span>
-                                    </div>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
+                        <details class="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-4 cursor-pointer text-xl font-bold font-display text-slate-900 bg-white hover:bg-slate-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-primary text-2xl">photo_library</span>
+                                    <?php _e('Галерея изображений', 'city-library'); ?>
+                                </div>
+                                <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">expand_more</span>
+                            </summary>
+                            <div class="p-6 border-t border-slate-200 bg-white">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <?php foreach ($attachments as $attachment) :
+                                        $img_url = wp_get_attachment_image_src($attachment->ID, 'full');
+                                        $thumb_url = wp_get_attachment_image_src($attachment->ID, 'medium');
+                                    ?>
+                                        <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group/img relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
+                                            <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110">
+                                            <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 transform scale-75 group-hover/img:scale-100">zoom_in</span>
+                                            </div>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </details>
                     </div>
                 <?php endif; ?>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        // Select all links in content that point to images
-                        const contentImages = document.querySelectorAll('.entry-content a[href*=".jpg"], .entry-content a[href*=".jpeg"], .entry-content a[href*=".png"], .entry-content a[href*=".gif"], .entry-content a[href*=".webp"]');
-
-                        contentImages.forEach(link => {
-                            link.classList.add('glightbox');
-                            link.setAttribute('data-gallery', 'post-gallery');
-                        });
-
-                        const lightbox = GLightbox({
-                            selector: '.glightbox',
-                            touchNavigation: true,
-                            loop: true,
-                            autoplayVideos: true,
-                            zoomable: true
-                        });
-                    });
-                </script>
             </article>
 
         <?php

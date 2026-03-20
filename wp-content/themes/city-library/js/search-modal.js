@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const searchToggle = document.getElementById('search-toggle');
+    // Select all potential triggers (ID and Class)
+    const searchToggles = document.querySelectorAll('#search-toggle, #search-toggle-mobile, .search-toggle-btn');
     const searchModal = document.getElementById('search-modal');
     const searchClose = document.getElementById('search-modal-close');
     const searchInput = searchModal ? searchModal.querySelector('input[type="search"]') : null;
 
-    if (!searchToggle || !searchModal || !searchClose) return;
+    if (!searchModal) return;
 
     function openSearch() {
         searchModal.classList.remove('hidden');
@@ -31,15 +32,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    searchToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        openSearch();
+    // Attach listeners to all toggles
+    searchToggles.forEach(toggle => {
+        if (toggle) {
+            toggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                openSearch();
+            });
+        }
     });
 
-    searchClose.addEventListener('click', (e) => {
-        e.preventDefault();
-        closeSearch();
-    });
+    if (searchClose) {
+        searchClose.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeSearch();
+        });
+    }
 
     // Close on Esc
     document.addEventListener('keydown', (e) => {

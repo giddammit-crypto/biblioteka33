@@ -3,6 +3,20 @@
 
         <?php
         $bg_color = get_theme_mod('partners_bg_color', '#FFFFFF');
+        // Logo Size Logic
+        $size_setting = get_theme_mod('partners_logo_size', 'medium');
+        $size_class = 'h-12 md:h-16'; // Default Fallback
+
+        switch ($size_setting) {
+            case 'xs': $size_class = 'h-6 md:h-8'; break;
+            case 'sm': $size_class = 'h-8 md:h-12'; break;
+            case 'medium': $size_class = 'h-12 md:h-16'; break;
+            case 'lg': $size_class = 'h-16 md:h-20'; break;
+            case 'xl': $size_class = 'h-20 md:h-24'; break;
+            case '2xl': $size_class = 'h-24 md:h-32'; break;
+            case '3xl': $size_class = 'h-32 md:h-40'; break;
+            case 'original': $size_class = 'h-auto w-auto max-h-32'; break;
+        }
         ?>
 
         <div class="relative p-0 lg:p-12 md:p-16 rounded-none shadow-none border-0 lg:rounded-[2.5rem] lg:shadow-xl lg:border border-slate-100 bg-pattern-slate overflow-hidden" style="background-color: <?php echo esc_attr($bg_color); ?>;">
@@ -27,7 +41,7 @@
                         <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
                             <div class="swiper-slide group relative !h-auto flex justify-center items-center">
                                 <a href="<?php echo esc_url(get_theme_mod('partner_link_' . $i, '#')); ?>" target="_blank" rel="noopener noreferrer" class="block p-4 transition-all duration-300 transform group-hover:-translate-y-2">
-                                    <img class="h-12 md:h-16 w-auto object-contain transition-all duration-500"
+                                    <img class="<?php echo esc_attr($size_class); ?> w-auto object-contain transition-all duration-500"
                                         src="<?php echo esc_url(get_theme_mod('partner_logo_' . $i)); ?>"
                                         alt="<?php printf(esc_attr__('Partner %d Logo', 'city-library'), $i); ?>">
                                 </a>

@@ -53,10 +53,10 @@ $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 
         <!-- Link -->
         <div class="mt-auto">
-             <span class="inline-flex items-center text-sm font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10" style="color: <?php echo esc_attr($link_color); ?>;">
+             <a href="<?php the_permalink(); ?>" class="read-more-btn inline-flex items-center text-sm font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 px-4 py-2 rounded-full -ml-4">
                 <?php _e('Читать полностью', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
-            </span>
+            </a>
         </div>
     </div>
 </article>
