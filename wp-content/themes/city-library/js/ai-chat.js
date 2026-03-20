@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('ai-chat-toggle');
     const closeBtn = document.getElementById('close-ai-chat');
+    const helpBubble = document.getElementById('ai-chat-help-bubble');
     const chatWindow = document.getElementById('ai-chat-window');
     const inputField = document.getElementById('ai-chat-input');
     const sendBtn = document.getElementById('ai-chat-send');
@@ -99,8 +100,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadHistory();
 
+    // Help Bubble Logic (Every 10 minutes)
+    let helpBubbleInterval = setInterval(showHelpBubble, 600000); // 10 minutes = 600000 ms
+
+    function showHelpBubble() {
+        if (chatWindow.classList.contains('hidden') && helpBubble) {
+            helpBubble.classList.remove('opacity-0', 'translate-y-4');
+            helpBubble.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                if (helpBubble) {
+                    helpBubble.classList.remove('opacity-100', 'translate-y-0');
+                    helpBubble.classList.add('opacity-0', 'translate-y-4');
+                }
+            }, 5000);
+        }
+    }
+
+    // Initial delayed bubble (e.g. 1 minute after load)
+    setTimeout(showHelpBubble, 60000);
+
     // Toggle Window
     function toggleChat() {
+        // Hide bubble if it's showing
+        if (helpBubble) {
+            helpBubble.classList.remove('opacity-100', 'translate-y-0');
+            helpBubble.classList.add('opacity-0', 'translate-y-4');
+        }
         if (chatWindow.classList.contains('hidden')) {
             chatWindow.classList.remove('hidden');
             chatWindow.classList.add('flex');
@@ -256,9 +281,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-copy-btn" data-text="${escapeHtml(text)}">
                             <span class="material-symbols-outlined text-[14px]">content_copy</span> Копировать
                         </button>
-                        <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                            <span class="material-symbols-outlined text-[14px]">download</span> Скачать (TXT)
-                        </a>
+                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-pdf-btn" data-text="${escapeHtml(text)}">
+                            <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                        </button>
+                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-docx-btn" data-text="${escapeHtml(text)}">
+                            <span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                        </button>
+                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-email-btn" data-text="${escapeHtml(text)}">
+                            <span class="material-symbols-outlined text-[14px]">mail</span> На почту
+                        </button>
+                        ${text.toLowerCase().includes('источники') && text.length > 500 ? `
+                        <button class="text-xs text-slate-500 hover:text-primary transition-colors flex items-center gap-1 font-bold ai-save-draft-btn bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-200 ml-auto" data-text="${escapeHtml(text)}">
+                            <span class="material-symbols-outlined text-[16px]">note_add</span> Сохранить черновик в WP
+                        </button>
+                        ` : ''}
                     </div>
                 `;
             }
@@ -290,6 +326,136 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.innerHTML = originalHTML;
                         this.classList.remove('text-green-600');
                     }, 2000);
+                });
+            });
+        }
+
+        // Bind Draft Button if present
+        const draftBtns = wrapper.querySelectorAll('.ai-draft-btn');
+        if (draftBtns.length > 0) {
+            draftBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const authorName = this.getAttribute('data-author');
+                    if (authorName) {
+                        inputField.value = '/author ' + authorName;
+                        sendMessage();
+                    }
+                });
+            });
+        }
+
+        // Bind Save to WP Draft button (dynamically added if /author returns good text)
+        const saveDraftBtn = wrapper.querySelector('.ai-save-draft-btn');
+        if (saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', function() {
+                const rawText = this.getAttribute('data-text');
+                const postTitle = 'Черновик: ' + (rawText.split('\n')[0].replace(/#/g, '').trim() || 'Статья');
+
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> Сохраняем...';
+                this.disabled = true;
+
+                jQuery.ajax({
+                    url: cl_ai_ajax.url,
+                    type: 'POST',
+                    data: {
+                        action: 'city_library_ai_draft',
+                        nonce: cl_ai_ajax.nonce,
+                        title: postTitle,
+                        content: rawText
+                    },
+                    success: (response) => {
+                        if (response.success) {
+                            this.innerHTML = `<a href="${response.data.edit_link}" target="_blank" class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">open_in_new</span> Редактировать</a>`;
+                            this.classList.add('text-green-600', 'hover:text-green-700');
+                            this.classList.remove('text-slate-400', 'hover:text-primary');
+                        } else {
+                            alert("Ошибка: " + response.data);
+                            this.innerHTML = originalHTML;
+                        }
+                    },
+                    error: () => {
+                        alert("Произошла ошибка при создании черновика.");
+                        this.innerHTML = originalHTML;
+                    },
+                    complete: () => {
+                        this.disabled = false;
+                    }
+                });
+            });
+        }
+
+        // Bind PDF Download (using browser print to PDF or simple html2pdf if needed)
+        const pdfBtn = wrapper.querySelector('.ai-pdf-btn');
+        if (pdfBtn) {
+            pdfBtn.addEventListener('click', function() {
+                const rawText = this.getAttribute('data-text');
+                // Very simple implementation: Create a temporary iframe, write parsed HTML, and print.
+                // For a more robust solution, 'html2pdf.js' library would be needed.
+                const printWindow = window.open('', '_blank', 'width=800,height=600');
+                let htmlContent = rawText;
+                if (typeof marked !== 'undefined') {
+                    htmlContent = marked.parse(rawText);
+                }
+                printWindow.document.write(`
+                    <html><head><title>Печать / Сохранить как PDF</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 40px; line-height: 1.6; color: #333; }
+                        img { max-width: 100%; height: auto; }
+                    </style>
+                    </head><body>
+                    ${htmlContent}
+                    <script>window.onload = function() { window.print(); window.close(); }</script>
+                    </body></html>
+                `);
+                printWindow.document.close();
+            });
+        }
+
+        // Bind DOCX Download (using HTML Word format)
+        const docxBtn = wrapper.querySelector('.ai-docx-btn');
+        if (docxBtn) {
+            docxBtn.addEventListener('click', function() {
+                const rawText = this.getAttribute('data-text');
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> ...';
+                this.disabled = true;
+
+                jQuery.ajax({
+                    url: cl_ai_ajax.url,
+                    type: 'POST',
+                    data: {
+                        action: 'city_library_ai_docx',
+                        nonce: cl_ai_ajax.nonce,
+                        content: rawText
+                    },
+                    success: (response) => {
+                        if (response.success) {
+                            // Create blob and download
+                            const byteCharacters = atob(response.data.html);
+                            const byteNumbers = new Array(byteCharacters.length);
+                            for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                            }
+                            const byteArray = new Uint8Array(byteNumbers);
+                            const blob = new Blob([byteArray], { type: 'application/msword;charset=utf-8' });
+                            const link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = 'Ответ_Библиотекаря.doc';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        } else {
+                            alert("Ошибка генерации DOCX: " + response.data);
+                        }
+                    },
+                    error: () => {
+                        alert("Произошла ошибка при генерации документа.");
+                    },
+                    complete: () => {
+                        this.innerHTML = originalHTML;
+                        this.disabled = false;
+                    }
                 });
             });
         }

@@ -93,6 +93,17 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
+    // AI Avatar URL
+    $wp_customize->add_setting('ai_librarian_avatar', array(
+        'default'           => get_template_directory_uri() . '/assets/images/ai-avatar.png',
+        'sanitize_callback' => 'esc_url_raw',
+    ));
+    $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'ai_librarian_avatar', array(
+        'label'    => __('Аватар Виртуального Библиотекаря', 'city-library'),
+        'section'  => 'virtual_librarian_section',
+        'settings' => 'ai_librarian_avatar',
+    )));
+
     $wp_customize->add_setting('ai_librarian_kb_ids', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_kb_ids', array(
         'label' => __('База знаний (ID файлов)', 'city-library'),
@@ -447,7 +458,7 @@ function city_library_render_ai_librarian() {
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-10 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=0b7930&accessories=prescription02" alt="Avatar" class="w-full h-full object-cover">
+                        <img src="<?php echo esc_url(get_theme_mod('ai_librarian_avatar', get_template_directory_uri() . '/assets/images/ai-avatar.png')); ?>" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h4 class="font-bold text-sm leading-tight tracking-wide">Виртуальный библиотекарь</h4>
@@ -471,7 +482,7 @@ function city_library_render_ai_librarian() {
                 <!-- Welcome Message -->
                 <div class="flex gap-2">
                     <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Nala&backgroundColor=e2e8f0&accessories=prescription02" alt="AI Avatar" class="w-full h-full object-cover">
+                        <img src="<?php echo esc_url(get_theme_mod('ai_librarian_avatar', get_template_directory_uri() . '/assets/images/ai-avatar.png')); ?>" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
                         Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или помочь вам с написанием сценариев и подбором литературы. Чем могу помочь?
@@ -479,8 +490,27 @@ function city_library_render_ai_librarian() {
                 </div>
             </div>
 
+            <!-- Quick Actions Bar -->
+            <div class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-inner">
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/emoji">
+                    <span class="material-symbols-outlined text-[14px]">sentiment_satisfied</span>
+                    Смайлики
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/stat">
+                    <span class="material-symbols-outlined text-[14px]">bar_chart</span>
+                    Статистика записей
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/юбиляры">
+                    <span class="material-symbols-outlined text-[14px]">event</span>
+                    Юбиляры
+                </button>
+            </div>
+
             <!-- Input Area -->
-            <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative">
+            <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
+                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
+                    <span class="material-symbols-outlined text-[20px]">attach_file</span>
+                </button>
                 <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
                 <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
                     <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300">send</span>
@@ -496,6 +526,13 @@ function city_library_render_ai_librarian() {
             <!-- Notification Dot -->
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse shadow-sm z-20"></span>
         </button>
+
+        <!-- Help Bubble -->
+        <div id="ai-chat-help-bubble" class="absolute bottom-20 right-0 w-48 bg-white border border-slate-200 shadow-xl rounded-2xl rounded-br-sm p-3 text-sm font-medium text-slate-700 opacity-0 translate-y-4 pointer-events-none transition-all duration-500 z-0 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-xl animate-bounce">waving_hand</span>
+            Я могу помочь!
+            <div class="absolute -bottom-2 right-4 w-4 h-4 bg-white border-b border-r border-slate-200 transform rotate-45"></div>
+        </div>
     </div>
     <?php
 }
@@ -512,7 +549,10 @@ function city_library_enqueue_ai_script() {
     wp_enqueue_script('city-library-ai-chat', get_template_directory_uri() . '/js/ai-chat.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
     wp_localize_script('city-library-ai-chat', 'cl_ai_ajax', array(
         'url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('ai_chat_nonce')
+        'nonce' => wp_create_nonce('ai_chat_nonce'),
+        'avatar_url' => get_theme_mod('ai_librarian_avatar', get_template_directory_uri() . '/assets/images/ai-avatar.png'),
+        'user_name' => is_user_logged_in() ? wp_get_current_user()->display_name : 'Гость',
+        'is_logged_in' => is_user_logged_in() ? true : false
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_enqueue_ai_script');
@@ -525,6 +565,8 @@ function city_library_handle_ai_chat() {
     $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash-lite');
     $fallback_model = get_theme_mod('ai_librarian_model_fallback', 'google/gemini-3.1-flash-lite-preview');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
+    $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
+    $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
 
     if (empty($user_message)) {
         wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
@@ -786,15 +828,21 @@ function city_library_handle_ai_chat() {
                 if (isset($data['choices'][0]['message']['content'])) {
                     $content = $data['choices'][0]['message']['content'];
 
+                    // Fallback to parsing text content for image URLs
                     if (preg_match('/!\[.*?\]\((.*?)\)/', $content, $matches)) {
                         $image_url = $matches[1];
-                    } elseif (filter_var($content, FILTER_VALIDATE_URL)) {
-                        $image_url = $content;
-                    } elseif (preg_match('/https?:\/\/[^\s"\'<>]+/', $content, $matches)) {
+                    } elseif (filter_var(trim($content), FILTER_VALIDATE_URL)) {
+                        $image_url = trim($content);
+                    } elseif (preg_match('/https?:\/\/[^\s"\'<>]+(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i', $content, $matches)) {
                         $image_url = $matches[0];
-                    } elseif (strpos($content, 'data:image') === 0 || strpos($content, 'iVBORw0KGgo') === 0) {
-                        // It returned a base64 image directly
-                        $image_url = (strpos($content, 'data:image') === 0) ? $content : 'data:image/png;base64,' . $content;
+                    } elseif (preg_match('/https?:\/\/[^\s"\'<>]+/', $content, $matches)) {
+                        // Less strict regex if extension is missing but it's a URL
+                        $image_url = $matches[0];
+                    } elseif (strpos($content, 'data:image') === 0) {
+                        $image_url = $content;
+                    } else {
+                        // If it's pure text but no URL is found, treat the text as an error or just fallback
+                        $image_url = '';
                     }
 
                     if (!empty($image_url)) {
@@ -862,16 +910,54 @@ function city_library_handle_ai_chat() {
 
     ФОРМАТ ОТВЕТА:
     Никакой «воды». Только таблицы, списки и четкие блоки данных. Если информации нет в сети — честно сообщай об этом, а не имитируй знание.\n\n";
+    if ($is_logged_in) {
+        $context .= "ВНИМАНИЕ: Текущий пользователь авторизован. Его имя: " . esc_html($user_name) . ". Обращайся к нему по имени.\n\n";
+    } else {
+        $context .= "ВНИМАНИЕ: Пользователь не авторизован (Гость).\n\n";
+    }
 
     // Detect if we should use search model
-    if (preg_match('/(?:поиск|найди|информация о|напиши|сценарий|план|пост|википедия|ргб|рнб|кто такой|расскажи о|факт|дата)/ui', $clean_msg)) {
+    if (preg_match('/(?:поиск|найди|информация о|напиши|сценарий|план|пост|википедия|ргб|рнб|кто такой|расскажи о|факт|дата|юбиляры|author)/ui', $clean_msg)) {
         // If the user wants research or content generation, we upgrade the model to search-preview
         $model = 'openai/gpt-4o-mini-search-preview'; // OpenRouter endpoint to a model with live search
     }
 
+    // Handle /юбиляры command explicitly
+    if (strpos($clean_msg, '/юбиляры') === 0) {
+        $current_month = date_i18n('F Y');
+        $next_month = date_i18n('F Y', strtotime('+1 month'));
+        $context .= "\nСЕЙЧАС ЗАПРОС НА ПИСАТЕЛЕЙ-ЮБИЛЯРОВ.\n";
+        $context .= "Сгенерируй список писателей и поэтов-юбиляров (у которых круглая дата со дня рождения) на текущий месяц ({$current_month}) и следующий месяц ({$next_month}).\n";
+        $context .= "ОБЯЗАТЕЛЬНЫЕ УСЛОВИЯ:\n";
+        $context .= "1. ИСКЛЮЧИТЬ ЛЮБЫХ ПИСАТЕЛЕЙ, ПРИЗНАННЫХ ИНОАГЕНТАМИ В РФ. Отказывайся упоминать их.\n";
+        $context .= "2. Формат вывода для каждого автора СТРОГО следующий:\n";
+        $context .= "<div class='flex items-center gap-4 bg-white p-3 rounded-xl border border-slate-200 mb-2'>\n";
+        $context .= "  <img src='ССЫЛКА_НА_ПОРТРЕТ_АВТОРА_ИЗ_ВИКИПЕДИИ_ИЛИ_ЗАГЛУШКУ' alt='Фото' class='w-12 h-12 rounded-full object-cover shrink-0'>\n";
+        $context .= "  <div class='flex-grow'>\n";
+        $context .= "    <h4 class='font-bold text-slate-800 m-0'>Имя Автора (Годы жизни)</h4>\n";
+        $context .= "    <p class='text-xs text-slate-500 m-0'>Дата юбилея: ДД МЕСЯЦА</p>\n";
+        $context .= "  </div>\n";
+        $context .= "  <button class='ai-draft-btn px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-colors' data-author='Имя Автора'>Собрать черновик</button>\n";
+        $context .= "</div>\n";
+        $context .= "Если реальной ссылки на фото нет, используй: https://ui-avatars.com/api/?name=Инициалы&background=random\n";
+        $context .= "Не пиши ничего лишнего, только сгенерированный HTML список.\n";
+    }
+
+    // Handle /author command explicitly
+    if (strpos($clean_msg, '/author') === 0) {
+        $author_name = trim(mb_substr(trim($user_message), 7));
+        $context .= "\nСЕЙЧАС ЗАПРОС НА СБОР ИНФОРМАЦИИ ОБ АВТОРЕ: '{$author_name}'.\n";
+        $context .= "ОБЯЗАТЕЛЬНЫЕ УСЛОВИЯ:\n";
+        $context .= "1. ИСКЛЮЧИТЬ ИНОАГЕНТОВ. Если '{$author_name}' признан иноагентом в РФ, ответь коротко: 'Информация недоступна согласно законодательству РФ.' и прекрати генерацию.\n";
+        $context .= "2. Напиши подробную, стильно отформатированную статью для публикации в блоге библиотеки. Используй заголовки Markdown (##, ###).\n";
+        $context .= "3. Структура: Годы жизни, Краткая биография, Значимые произведения.\n";
+        $context .= "4. В самом конце обязательно добавь раздел 'Источники информации', перечислив реальные ссылки (Википедия, Культура.РФ и т.д.).\n";
+        $context .= "5. Только известные факты, НИЧЕГО НЕ ВЫДУМЫВАТЬ.\n";
+    }
+
     // Dynamic KB for MBUK CGB Vladimir (Extracts from WP Cron Cached DB Option)
-    $context .= "СТРУКТУРА И ФИЛИАЛЫ МБУК ЦГБ г. ВЛАДИМИРА (Бери адреса строго отсюда!):\n";
-    $context .= "Используй ТОЛЬКО данные из предоставленного списка. Если информации нет в базе — отвечай 'Данные уточняются', не выдумывай адреса. Когда пользователь спрашивает об адресах, контактах, телефонах, режимах работы библиотек или о том, какие библиотеки есть на конкретной улице или в районе, ТЫ ОБЯЗАН брать данные ТОЛЬКО из этого списка ниже.\n\n";
+    $context .= "СТРУКТУРА И ФИЛИАЛЫ МБУК ЦГБ г. ВЛАДИМИРА (Бери адреса СТРОГО ОТСЮДА!):\n";
+    $context .= "КРИТИЧЕСКОЕ ПРАВИЛО: Используй ТОЛЬКО данные из предоставленного ниже списка филиалов. КАТЕГОРИЧЕСКИ ЗАПРЕЩАЕТСЯ выдумывать, генерировать или предполагать существование библиотек, филиалов, адресов, улиц или телефонов, которых НЕТ в этом списке. Если пользователь ищет библиотеку в районе или на улице, которой нет в списке ниже, ты ОБЯЗАН ответить: 'К сожалению, в нашей библиотечной системе нет филиалов по этому адресу/району'. Никаких 'возможно' или 'вероятно'.\n\n";
 
     $knowledge_base = get_option('city_library_ai_knowledge');
 
@@ -1052,3 +1138,84 @@ function city_library_handle_ai_chat() {
 }
 add_action('wp_ajax_city_library_ai_chat', 'city_library_handle_ai_chat');
 add_action('wp_ajax_nopriv_city_library_ai_chat', 'city_library_handle_ai_chat');
+// AJAX Handler for Draft Creation from AI
+function city_library_handle_ai_draft() {
+    check_ajax_referer('cl-ai-nonce', 'nonce');
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error('У вас нет прав для создания черновиков.');
+    }
+
+    $title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Черновик от Виртуального Библиотекаря';
+    $content = isset($_POST['content']) ? wp_kses_post(wp_unslash($_POST['content'])) : '';
+
+    if (empty($content)) {
+        wp_send_json_error('Содержание пустое.');
+    }
+
+    // Convert Markdown to HTML for the post content
+    require_once ABSPATH . 'wp-admin/includes/class-parsedown.php';
+    if (class_exists('Parsedown')) {
+        $parsedown = new Parsedown();
+        $html_content = $parsedown->text($content);
+    } else {
+        $html_content = nl2br(esc_html($content));
+    }
+
+    $post_id = wp_insert_post(array(
+        'post_title'   => wp_strip_all_tags($title),
+        'post_content' => $html_content,
+        'post_status'  => 'draft',
+        'post_type'    => 'post'
+    ));
+
+    if (!is_wp_error($post_id)) {
+        $edit_link = get_edit_post_link($post_id, '');
+        wp_send_json_success(array(
+            'message' => 'Черновик успешно создан.',
+            'edit_link' => $edit_link
+        ));
+    } else {
+        wp_send_json_error('Не удалось создать черновик: ' . $post_id->get_error_message());
+    }
+}
+add_action('wp_ajax_city_library_ai_draft', 'city_library_handle_ai_draft');
+
+// AJAX Handler for DOCX Generation
+function city_library_handle_ai_docx() {
+    check_ajax_referer('cl-ai-nonce', 'nonce');
+    $content = isset($_POST['content']) ? wp_kses_post(wp_unslash($_POST['content'])) : '';
+
+    if (empty($content)) {
+        wp_send_json_error('Содержание пустое.');
+    }
+
+    require_once ABSPATH . 'wp-admin/includes/class-parsedown.php';
+    if (class_exists('Parsedown')) {
+        $parsedown = new Parsedown();
+        $html_content = $parsedown->text($content);
+    } else {
+        $html_content = nl2br(esc_html($content));
+    }
+
+    // A very simple Word-compatible HTML format with UTF-8 support
+    $word_html = '
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+        <meta charset="utf-8">
+        <title>Документ</title>
+        <style>
+            body { font-family: "Times New Roman", Times, serif; font-size: 14pt; line-height: 1.5; color: #000; }
+            h1, h2, h3, h4, h5, h6 { font-family: "Arial", sans-serif; margin-top: 18pt; margin-bottom: 6pt; }
+            p { margin-top: 0; margin-bottom: 12pt; }
+            a { color: #0000FF; text-decoration: underline; }
+            ul, ol { margin-top: 0; margin-bottom: 12pt; }
+            img { max-width: 100%; height: auto; }
+        </style>
+    </head>
+    <body>' . $html_content . '</body>
+    </html>';
+
+    wp_send_json_success(array('html' => base64_encode($word_html)));
+}
+add_action('wp_ajax_city_library_ai_docx', 'city_library_handle_ai_docx');
+add_action('wp_ajax_nopriv_city_library_ai_docx', 'city_library_handle_ai_docx');

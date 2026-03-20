@@ -619,6 +619,20 @@ function city_library_customize_register($wp_customize) {
     ));
 
 
+    // News Settings
+    $wp_customize->add_section('news_section', array(
+        'title'      => __('Новости', 'city-library'),
+        'priority'   => 25,
+    ));
+    $wp_customize->add_setting('news_count', array('default' => 8, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('news_count', array(
+        'label' => __('Количество карточек новостей', 'city-library'),
+        'description' => __('Количество новостей на главной странице.', 'city-library'),
+        'section' => 'news_section',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 48, 'step' => 1)
+    ));
+
     // Layout Settings
     $wp_customize->add_section('layout_section', array(
         'title'    => __('Настройки макета (Layout)', 'city-library'),
