@@ -37,16 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let imgText = typeof href_or_token === 'object' ? href_or_token.text : text;
 
             const processedHref = safeImageUrl(href);
+            const cleanHref = processedHref.replace(/\s/g, '%20');
 
             return `
-                <div class="generated-image-container relative my-3 flex flex-col items-start gap-2">
-                    <img src="${processedHref}" alt="${imgText || 'Сгенерированное изображение'}"
-                         class="w-full h-auto max-h-[400px] object-contain rounded-lg shadow-md border border-slate-200 bg-slate-50"
-                         onerror="this.outerHTML='<div class=\\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\\'>⚠️ Изображение создается или сервер перегружен. Пожалуйста, обновите запрос.</div>'">
-                    <a href="${processedHref}" target="_blank" download="library_poster.png" class="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-[11px] font-bold uppercase tracking-wider rounded-xl shadow-sm hover:bg-primary/90 transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">download</span>
-                        Скачать плакат
-                    </a>
+                <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm">
+                    <img src="${cleanHref}" alt="${imgText || 'Сгенерированное изображение'}" style="max-width:100%; height:auto; display:block;" class="transition-transform duration-500 group-hover:scale-105 bg-slate-50 min-h-[100px] w-full max-h-[350px] object-cover" onerror="this.outerHTML='<div class=\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\'>⚠️ Ошибка загрузки.</div>'">
+                    <div class="image-controls absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
+                        <a href="${cleanHref}" target="_blank" download="Library_Poster.png" class="btn-download flex items-center gap-1.5 px-4 py-2 bg-white/90 text-slate-800 font-bold text-sm rounded-lg hover:bg-white hover:-translate-y-0.5 hover:shadow-lg transition-all shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">download</span> Скачать плакат
+                        </a>
+                    </div>
                 </div>
             `;
         };
@@ -151,6 +151,20 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', toggleChat);
     if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
 
+    // Quick Actions
+    const quickActionBtns = document.querySelectorAll('.ai-quick-action-btn');
+    if (quickActionBtns) {
+        quickActionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const command = this.getAttribute('data-command');
+                if (command) {
+                    inputField.value = command;
+                    sendMessage();
+                }
+            });
+        });
+    }
+
     // Send Message
     function sendMessage() {
         const message = inputField.value.trim();
@@ -188,7 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 action: 'city_library_ai_chat',
                 nonce: cl_ai_ajax.nonce,
                 message: message,
-                history: JSON.stringify(contextHistory)
+                history: JSON.stringify(contextHistory),
+                user_name: cl_ai_ajax.user_name,
+                is_logged_in: cl_ai_ajax.is_logged_in
             },
             success: function(response) {
                 // Remove typing indicator
@@ -496,4 +512,25 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         }
     });
+
+    // File Attachment Logic
+    const attachmentBtn = document.getElementById('ai-chat-attachment');
+    const fileInput = document.getElementById('ai-chat-file-input');
+    if (attachmentBtn && fileInput) {
+        attachmentBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 20 * 1024 * 1024) {
+                    alert('Файл слишком большой. Максимум 20МБ.');
+                    this.value = '';
+                    return;
+                }
+                inputField.value = `[Файл прикреплен: ${file.name}] Проанализируй этот файл.`;
+                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Вы прикрепили файл: ${file.name}. В данный момент полная интеграция парсинга в разработке, файл имитирован.</span>`, null, false);
+                this.value = '';
+            }
+        });
+    }
 });

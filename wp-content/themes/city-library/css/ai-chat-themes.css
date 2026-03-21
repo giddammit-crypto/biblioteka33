@@ -126,3 +126,102 @@
 #ai-chat-window[data-theme="mac"] #ai-chat-toggle {
     background: #0b93f6 !important;
 }
+
+
+/* Additional General Aesthetics (Modern Gemini/ChatGPT Vibe) */
+#ai-chat-window {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+#ai-chat-window .bg-gradient-to-r {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* User Message Bubble Enhancement */
+#ai-chat-messages .bg-primary.text-white {
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 18px 18px 2px 18px !important;
+    font-weight: 500;
+}
+
+/* Bot Message Bubble Enhancement */
+#ai-chat-messages .bg-white.border {
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 18px 18px 18px 2px !important;
+}
+
+/* Input Area Enhancement */
+#ai-chat-input {
+    background: #f8fafc !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+#ai-chat-input:focus {
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(11, 121, 48, 0.1) !important;
+    border-color: #0b7930 !important;
+}
+
+#ai-chat-send {
+    box-shadow: 0 4px 10px rgba(11, 121, 48, 0.3) !important;
+}
+
+/* Scrollbar Enhancement */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Action Buttons Styling */
+.ai-quick-action-btn {
+    font-weight: 600 !important;
+    letter-spacing: -0.01em;
+}
+
+/* Markdown Specific Typography inside Chat */
+.prose-sm p { margin-top: 0.5em !important; margin-bottom: 0.5em !important; }
+.prose-sm h3, .prose-sm h4 { margin-top: 1em !important; margin-bottom: 0.5em !important; color: #1e293b !important; }
+.prose-sm ul { margin-top: 0.5em !important; padding-left: 1.25em !important; list-style-type: disc !important; }
+.prose-sm ol { margin-top: 0.5em !important; padding-left: 1.25em !important; list-style-type: decimal !important; }
+.prose-sm li { margin-top: 0.25em !important; margin-bottom: 0.25em !important; }
+.prose-sm strong { color: #0f172a !important; font-weight: 700 !important; }
+.prose-sm a { color: #0b7930 !important; text-decoration: underline !important; font-weight: 500 !important; }
+.prose-sm code { background-color: #f1f5f9 !important; padding: 2px 4px !important; border-radius: 4px !important; font-size: 0.85em !important; color: #db2777 !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+
+/* Enhanced Draft/Email Action Buttons Area */
+.flex-wrap > button, .flex-wrap > a {
+    background-color: #f8fafc;
+    padding: 6px 10px !important;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+.flex-wrap > button:hover, .flex-wrap > a:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+
+/* Markdown Image Wrapper (Pollinations/OpenRouter Gen) */
+.library-image-wrapper {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.library-image-wrapper:hover .image-controls {
+    opacity: 1;
+}
+.image-controls .btn-download {
+    text-decoration: none !important;
+}

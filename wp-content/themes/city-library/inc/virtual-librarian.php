@@ -111,6 +111,25 @@ function city_library_ai_customizer($wp_customize) {
         ),
     ));
 
+    // AI Avatar Preset Selection
+    $wp_customize->add_setting('ai_librarian_avatar_preset', array(
+        'default'           => 'default',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('ai_librarian_avatar_preset', array(
+        'label'    => __('Готовые Аватары Виртуального Библиотекаря', 'city-library'),
+        'section'  => 'virtual_librarian_section',
+        'type'     => 'select',
+        'choices'  => array(
+            'default' => 'Женщина-Библиотекарь 1 (По умолчанию)',
+            'preset2' => 'Мужчина-Библиотекарь 1',
+            'preset3' => 'Робот-Библиотекарь',
+            'preset4' => 'Сова-Библиотекарь',
+            'preset5' => 'Абстрактный ИИ',
+            'custom'  => 'Своя картинка (ниже)'
+        ),
+    ));
+
     // AI Avatar URL
     $wp_customize->add_setting('ai_librarian_avatar', array(
         'default'           => get_template_directory_uri() . '/assets/images/ai-avatar.png',
@@ -133,7 +152,15 @@ function city_library_ai_customizer($wp_customize) {
     $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую.', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
-        'description' => __('Инструкция для ИИ, определяющая его характер.', 'city-library'),
+        'description' => __('Инструкция для ИИ, определяющая его характер. Не рекомендуется полностью удалять.', 'city-library'),
+        'section' => 'voice_assistant_section',
+        'type' => 'textarea',
+    ));
+
+    $wp_customize->add_setting('ai_persona_prompt_extra', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_control('ai_persona_prompt_extra', array(
+        'label' => __('Дополнительный промпт (Расширение)', 'city-library'),
+        'description' => __('Добавьте свои инструкции, правила и специализации к базовой персоне. Библиотекарь будет неукоснительно соблюдать их.', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'textarea',
     ));
@@ -558,7 +585,9 @@ function city_library_enqueue_ai_script() {
     wp_localize_script('city-library-ai-chat', 'cl_ai_ajax', array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ai_chat_nonce'),
-        'avatar_url' => get_city_library_ai_avatar_url()
+        'avatar_url' => get_city_library_ai_avatar_url(),
+        'user_name' => is_user_logged_in() ? wp_get_current_user()->display_name : 'Гость',
+        'is_logged_in' => is_user_logged_in() ? true : false
     ));
 }
 add_action('wp_enqueue_scripts', 'city_library_enqueue_ai_script');
@@ -571,6 +600,8 @@ function city_library_handle_ai_chat() {
     $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash-lite');
     $fallback_model = get_theme_mod('ai_librarian_model_fallback', 'google/gemini-3.1-flash-lite-preview');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
+    $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
+    $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
 
     if (empty($user_message)) {
         wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
@@ -887,6 +918,13 @@ function city_library_handle_ai_chat() {
 
     // Build Context (Simulated RAG)
     $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Главный библиограф-технолог. Обращайся к пользователю на "Вы", используя идеальный русский литературный язык.');
+    $extra_prompt = get_theme_mod('ai_persona_prompt_extra', '');
+    if (!empty($extra_prompt)) {
+        $base_persona .= "\nДОПОЛНИТЕЛЬНЫЕ ИНСТРУКЦИИ АДМИНИСТРАТОРА (СТРОГО СОБЛЮДАТЬ):\n" . strip_tags($extra_prompt) . "\n";
+    }
+    if ($is_logged_in) {
+        $base_persona .= "\nВНИМАНИЕ: Текущий пользователь авторизован. Его имя: " . esc_html($user_name) . ". Обращайся к нему по имени.\n";
+    }
 
     $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира (Интеллект центр на Суздальском). Отвечай от женского лица.
     Профессиональный профиль: Ты — ведущий эксперт современной библиотечной системы с 20-летним стажем и навыками цифрового продюсера. Твой стиль: академическая точность, структурность и современный креатив. Ты проектируешь смыслы и события.
@@ -904,7 +942,7 @@ function city_library_handle_ai_chat() {
     ТВОРЧЕСКИЙ ИНСТРУМЕНТАРИЙ:
     1. SMM-модуль: Посты для ВК должны содержать: цепляющий заголовок, структурированный текст, эмодзи (умеренно) и список релевантных хештегов.
     2. Ивент-менеджмент: Сценарии мероприятий должны включать: Тайминг и зонирование активности, Расчет штатных единиц (количество сотрудников на точку), Технический райдер (оборудование), Интерактив (Квизы, QR-квесты, нейро-активности).
-    3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание](https://image.pollinations.ai/prompt/АНГЛ_ПРОМПТ?width=1024&height=1024&nologo=true)`. При генерации изображений через Markdown (pollinations.ai), ты ОБЯЗАН составлять описание (АНГЛ_ПРОМПТ) строго на АНГЛИЙСКОМ языке, даже если пользователь пишет на русском. Используй только безопасные символы для URL. Добавляй \"library related, educational poster, professional\".
+    3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание на английском](https://image.pollinations.ai/prompt/STRICTLY_ENGLISH_DESCRIPTION?width=1024&height=1024&nologo=true&seed=RANDOM_NUMBER)`. При генерации изображений через Markdown (pollinations.ai), ты ОБЯЗАН составлять описание (STRICTLY_ENGLISH_DESCRIPTION) строго на АНГЛИЙСКОМ языке, кратко и через знак '+', даже если пользователь пишет на русском. Пример: `Library+Poster+Watercolor+Style`. Используй только безопасные символы для URL.
 
     ФОРМАТ ОТВЕТА:
     Никакой «воды». Только таблицы, списки и четкие блоки данных. Если информации нет в сети — честно сообщай об этом, а не имитируй знание.\n\n";
@@ -988,20 +1026,25 @@ function city_library_handle_ai_chat() {
     }
     $context .= "\n";
 
-    // Add recent pages content to context
-    $context .= "СТРАНИЦЫ САЙТА (Используй ссылки для ответа):\n";
-    $recent_pages = get_pages(array('number' => 10, 'post_status' => 'publish'));
-    foreach ($recent_pages as $page) {
-        $context .= "- [" . $page->post_title . "](" . get_permalink($page->ID) . ")\n";
+    // Add ALL pages content to context (with safe limits)
+    $context .= "ПОЛНЫЙ КАТАЛОГ СТРАНИЦ САЙТА:\n";
+    $all_pages = get_pages(array('number' => 100, 'post_status' => 'publish', 'sort_column' => 'post_title'));
+    foreach ($all_pages as $page) {
+        $context .= "- [" . esc_html($page->post_title) . "](" . get_permalink($page->ID) . ")\n";
     }
     $context .= "\n";
 
-    // Add recent news
-    $context .= "СВЕЖИЕ НОВОСТИ САЙТА (Используй ссылки для ответа):\n";
-    $recent_posts = wp_get_recent_posts(array('numberposts' => 20, 'post_status' => 'publish'));
+    // Add recent news (extended list)
+    $context .= "АРХИВ ПОСЛЕДНИХ НОВОСТЕЙ (Свежие события):\n";
+    $recent_posts = wp_get_recent_posts(array('numberposts' => 50, 'post_status' => 'publish'));
     foreach ($recent_posts as $post) {
-        $context .= "- [" . $post['post_title'] . "](" . get_permalink($post['ID']) . ")\n";
+        $context .= "- [" . esc_html($post['post_title']) . "](" . get_permalink($post['ID']) . ")\n";
     }
+    $context .= "\n";
+
+    // Explicit Instruction on Site Knowledge
+    $context .= "ОБЯЗАТЕЛЬНОЕ ПРАВИЛО: Ты обладаешь идеальным знанием структуры этого сайта. Если пользователь спрашивает, где найти какую-то информацию, услугу или раздел, ты должен выдать ТОЧНУЮ ссылку из предоставленного выше списка меню или каталога страниц. Никогда не придумывай URL-адреса, которых нет в списке.\n";
+
 
     $system_prompt = array(
         "role" => "system",
