@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="w-full max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 overflow-x-hidden">
     <div id="primary" class="w-full transition-all duration-300 max-w-6xl mx-auto">
 
         <?php
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] shadow-xl border border-slate-100 relative overflow-hidden break-words'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -26,7 +26,7 @@
                     <?php endif; ?>
 
                     <!-- Content -->
-                    <div class="entry-content prose prose-slate max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
+                    <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
                         <?php
                         the_content();
 

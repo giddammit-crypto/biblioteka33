@@ -40,23 +40,23 @@ $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 
         <!-- Title -->
         <h3 class="text-2xl font-bold font-display leading-tight mb-3">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline" style="color: <?php echo esc_attr($title_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline text-inherit [&_p]:text-[inherit] news-card-title-link" style="--title-color: <?php echo esc_attr($title_color); ?>;">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 md:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-base leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 flex-grow" style="color: <?php echo esc_attr($text_color); ?>;">
+        <div class="text-base leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 flex-grow text-inherit [&_p]:text-[inherit] news-card-excerpt-text" style="--text-color: <?php echo esc_attr($text_color); ?>;">
             <?php the_excerpt(); ?>
         </div>
 
         <!-- Link -->
         <div class="mt-auto">
-             <span class="inline-flex items-center text-sm font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10" style="color: <?php echo esc_attr($link_color); ?>;">
+             <a href="<?php the_permalink(); ?>" class="read-more-btn inline-flex items-center text-sm font-bold uppercase tracking-wide group-hover:text-primary transition-colors relative z-10 px-4 py-2 rounded-full -ml-4">
                 <?php _e('Читать полностью', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
-            </span>
+            </a>
         </div>
     </div>
 </article>
