@@ -54,32 +54,31 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemini-2.5-flash-lite', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model', array('default' => 'google/gemini-2.0-flash-001', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model', array(
         'label' => __('Основная Модель (LLM)', 'city-library'),
-        'description' => __('Например: google/gemini-2.5-flash-lite', 'city-library'),
+        'description' => __('Например: google/gemini-2.0-flash-001', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_model_fallback', array('default' => 'google/gemini-3.1-flash-lite-preview', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_model_fallback', array('default' => 'openai/gpt-4o-mini', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_model_fallback', array(
         'label' => __('Запасная Модель (Fallback)', 'city-library'),
-        'description' => __('Используется при сбоях. Например: google/gemini-3-flash-preview', 'city-library'),
+        'description' => __('Используется при сбоях. Например: openai/gpt-4o-mini', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_image_model', array('default' => 'google/gemini-3.1-flash-image-preview', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_image_model', array('default' => 'openai/dall-e-3', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_image_model', array(
         'label' => __('Модель для генерации Изображений', 'city-library'),
-        'description' => __('Например: google/gemini-3.1-flash-image-preview, black-forest-labs/flux-schnell или openai/dall-e-3', 'city-library'),
+        'description' => __('Например: openai/dall-e-3, black-forest-labs/flux-schnell', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'select',
         'choices' => array(
-            'google/gemini-3.1-flash-image-preview' => 'Gemini 3.1 Flash Image (Native)',
-            'black-forest-labs/flux-schnell' => 'Flux Schnell (Fast)',
             'openai/dall-e-3' => 'DALL-E 3 (OpenAI)',
+            'black-forest-labs/flux-schnell' => 'Flux Schnell (Fast)',
             'stabilityai/stable-diffusion-3.5-large' => 'Stable Diffusion 3.5',
             'custom' => 'Указать вручную (Custom)'
         )
@@ -515,10 +514,10 @@ function city_library_render_ai_librarian() {
                 </div>
                 <div class="flex items-center gap-1">
                     <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">fullscreen</span>
                     </button>
                     <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">close</span>
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
                     </button>
                 </div>
             </div>
@@ -539,11 +538,11 @@ function city_library_render_ai_librarian() {
             <!-- Quick Actions Bar -->
             <div class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-inner">
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/emoji">
-                    <span class="material-symbols-outlined text-[14px]">sentiment_satisfied</span>
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">sentiment_satisfied</span>
                     Смайлики
                 </button>
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/stat">
-                    <span class="material-symbols-outlined text-[14px]">bar_chart</span>
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
                     Статистика записей
                 </button>
             </div>
@@ -551,11 +550,11 @@ function city_library_render_ai_librarian() {
             <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
                 <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
-                    <span class="material-symbols-outlined text-[20px]">attach_file</span>
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">attach_file</span>
                 </button>
                 <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
                 <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
-                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300">send</span>
+                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">send</span>
                 </button>
             </div>
         </div>
@@ -563,8 +562,8 @@ function city_library_render_ai_librarian() {
         <!-- Toggle Button -->
         <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
-            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10">support_agent</span>
-            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10">chat</span>
+            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10" aria-hidden="true">support_agent</span>
+            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10" aria-hidden="true">chat</span>
             <!-- Notification Dot -->
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse shadow-sm z-20"></span>
         </button>
@@ -597,8 +596,8 @@ function city_library_handle_ai_chat() {
     check_ajax_referer('ai_chat_nonce', 'nonce');
 
     $api_key = get_theme_mod('openrouter_api_key', '');
-    $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.5-flash-lite');
-    $fallback_model = get_theme_mod('ai_librarian_model_fallback', 'google/gemini-3.1-flash-lite-preview');
+    $model = get_theme_mod('ai_librarian_model', 'google/gemini-2.0-flash-001');
+    $fallback_model = get_theme_mod('ai_librarian_model_fallback', 'openai/gpt-4o-mini');
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
     $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
     $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
@@ -1082,6 +1081,72 @@ function city_library_handle_ai_chat() {
 }
 add_action('wp_ajax_city_library_ai_chat', 'city_library_handle_ai_chat');
 add_action('wp_ajax_nopriv_city_library_ai_chat', 'city_library_handle_ai_chat');
+
+/**
+ * Handle DOCX Generation (Simulated as base64 HTML)
+ */
+function city_library_ai_docx() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    $content = isset($_POST['content']) ? $_POST['content'] : '';
+
+    if (empty($content)) wp_send_json_error('Empty content');
+
+    // For a real theme, we'd use a library like PHPWord,
+    // but for this implementation we return a base64 encoded HTML that browser can download as .doc
+    $html = "<html><head><meta charset='utf-8'></head><body>" . wpautop($content) . "</body></html>";
+    wp_send_json_success(array('html' => base64_encode($html)));
+}
+add_action('wp_ajax_city_library_ai_docx', 'city_library_ai_docx');
+
+/**
+ * Handle AI Email Sending
+ */
+function city_library_ai_email() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $content = isset($_POST['content']) ? $_POST['content'] : '';
+
+    if (empty($email) || !is_email($email)) wp_send_json_error('Неверный Email');
+    if (empty($content)) wp_send_json_error('Пустое содержание');
+
+    $subject = 'Ответ от Виртуального Библиотекаря';
+    $message = "Здравствуйте!\n\nВы просили отправить Вам ответ от Виртуального Библиотекаря:\n\n" . $content . "\n\n---\nС уважением, Центральная городская библиотека г. Владимира.";
+
+    $sent = wp_mail($email, $subject, $message);
+
+    if ($sent) {
+        wp_send_json_success();
+    } else {
+        wp_send_json_error('Ошибка отправки почты');
+    }
+}
+add_action('wp_ajax_city_library_ai_email', 'city_library_ai_email');
+
+/**
+ * Handle Save as WordPress Draft
+ */
+function city_library_ai_draft() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    if (!current_user_can('edit_posts')) wp_send_json_error('Нет прав доступа');
+
+    $title = isset($_POST['title']) ? sanitize_text_field($_POST['title']) : 'Черновик ИИ';
+    $content = isset($_POST['content']) ? wp_kses_post($_POST['content']) : '';
+
+    $post_id = wp_insert_post(array(
+        'post_title'   => $title,
+        'post_content' => $content,
+        'post_status'  => 'draft',
+        'post_type'    => 'post'
+    ));
+
+    if ($post_id) {
+        wp_send_json_success(array('edit_link' => get_edit_post_link($post_id, '')));
+    } else {
+        wp_send_json_error('Не удалось создать пост');
+    }
+}
+add_action('wp_ajax_city_library_ai_draft', 'city_library_ai_draft');
+
 // Helper function to get AI avatar URL based on customizer presets
 function get_city_library_ai_avatar_url() {
     $preset = get_theme_mod('ai_librarian_avatar_preset', 'default');

@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     indicator.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-8 rounded-3xl shadow-2xl z-[9999] font-bold text-xl flex flex-col items-center gap-4 transition-all duration-300 opacity-0 scale-90 pointer-events-none text-center border border-white/10';
     indicator.innerHTML = `
         <div class="relative w-16 h-16 flex items-center justify-center bg-primary rounded-full mb-2">
-            <span class="material-symbols-outlined text-4xl animate-pulse">mic</span>
+            <span class="material-symbols-outlined text-4xl animate-pulse" aria-hidden="true">mic</span>
             <div class="absolute inset-0 rounded-full border-[3px] border-primary animate-ping opacity-75"></div>
         </div>
         <span class="tracking-wide text-glow">Слушаю Вас!</span>

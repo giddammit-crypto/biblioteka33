@@ -339,7 +339,7 @@ if ($bar_style === 'text-only') {
     <div class="bg-white rounded-[2rem] w-full max-w-sm shadow-2xl overflow-hidden transform scale-90 transition-all duration-500 relative test-modal-content">
         <div class="p-8 text-center space-y-4">
             <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                <span class="material-symbols-outlined text-primary text-3xl">mic</span>
+                <span class="material-symbols-outlined text-primary text-3xl" aria-hidden="true">mic</span>
             </div>
             <h3 id="voice-test-welcome-title" class="text-2xl font-display font-bold text-slate-900 leading-tight">
                 Тест Голосового Ассистента
@@ -372,11 +372,11 @@ if ($bar_style === 'text-only') {
             <form id="voice-test-feedback-form" class="space-y-4">
                 <!-- Star Rating -->
                 <div class="flex justify-center gap-2" id="voice-feedback-stars">
-                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="1">star</span>
-                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="2">star</span>
-                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="3">star</span>
-                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="4">star</span>
-                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="5">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="1" aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="2" aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="3" aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="4" aria-hidden="true">star</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300 cursor-pointer hover:text-yellow-400 transition-colors" data-value="5" aria-hidden="true">star</span>
                 </div>
                 <input type="hidden" name="rating" id="voice-feedback-rating-input" value="0">
 
@@ -399,14 +399,14 @@ if ($bar_style === 'text-only') {
         <div class="relative bg-white px-6 py-4 shrink-0 border-b border-slate-100 flex items-center justify-between z-10">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+                    <span class="material-symbols-outlined text-primary text-xl" aria-hidden="true">auto_awesome</span>
                 </div>
                 <h3 id="voice-ai-answer-title" class="text-base font-display font-bold text-slate-900 tracking-tight leading-none">
                     Ответ ассистента
                 </h3>
             </div>
             <button type="button" class="voice-ai-answer-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                <span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
             </button>
         </div>
 
@@ -425,7 +425,7 @@ if ($bar_style === 'text-only') {
     <div class="flex items-center justify-between px-4 py-3 safe-area-top bg-white shadow-md z-10 shrink-0">
         <h3 id="voice-map-title" class="text-lg font-bold text-slate-900 truncate flex-1">Карта филиалов</h3>
         <button type="button" id="voice-map-close" class="p-2 -mr-2 text-slate-500 hover:text-slate-900 focus:outline-none" aria-label="Закрыть карту">
-            <span class="material-symbols-outlined text-2xl">close</span>
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
         </button>
     </div>
     <!-- Yandex Map iframe container -->
@@ -456,7 +456,7 @@ if ($bar_style === 'text-only') {
                 <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Доступные команды</p>
             </div>
             <button type="button" class="voice-modal-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
             </button>
         </div>
 
@@ -468,42 +468,42 @@ if ($bar_style === 'text-only') {
 
             <ul class="space-y-3">
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">article</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">article</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«Открой последние новости»</strong>
                         <span class="text-xs text-slate-500">Переход к свежим событиям</span>
                     </div>
                 </li>
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">event</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">event</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«Афиша» или «Мероприятия»</strong>
                         <span class="text-xs text-slate-500">Показать расписание событий</span>
                     </div>
                 </li>
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">auto_stories</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">auto_stories</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«Продление книг»</strong>
                         <span class="text-xs text-slate-500">Открыть форму продления онлайн</span>
                     </div>
                 </li>
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">location_on</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">location_on</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«Контакты» или «Библиотека номер 2»</strong>
                         <span class="text-xs text-slate-500">Информация о филиалах</span>
                     </div>
                 </li>
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">home</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">home</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«На главную»</strong>
                         <span class="text-xs text-slate-500">Вернуться в начало сайта</span>
                     </div>
                 </li>
                 <li class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-3">
-                    <span class="material-symbols-outlined text-primary mt-0.5">menu_book</span>
+                    <span class="material-symbols-outlined text-primary mt-0.5" aria-hidden="true">menu_book</span>
                     <div>
                         <strong class="text-sm text-slate-900 block font-bold">«Электронный каталог»</strong>
                         <span class="text-xs text-slate-500">Открыть каталог книг в новой вкладке</span>

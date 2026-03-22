@@ -107,10 +107,10 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
                     <!-- Enhanced Navigation Buttons (Top Right) -->
                     <div class="flex items-center justify-center xl:justify-end gap-4 shrink-0">
                         <button class="afisha-prev slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_back</span>
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300" aria-hidden="true">arrow_back</span>
                         </button>
                         <button class="afisha-next slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Следующий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_forward</span>
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300" aria-hidden="true">arrow_forward</span>
                         </button>
                     </div>
                 </div>
@@ -140,7 +140,7 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
                                             </div>
                                         <?php else : ?>
                                             <div class="w-full h-3/5 md:h-2/3 bg-slate-200 flex items-center justify-center rounded-t-[3rem] shrink-0">
-                                                <span class="material-symbols-outlined text-6xl text-slate-400">event</span>
+                                                <span class="material-symbols-outlined text-6xl text-slate-400" aria-hidden="true">event</span>
                                             </div>
                                         <?php endif; ?>
                                         <div class="p-6 md:p-8 flex flex-col justify-between flex-grow bg-white rounded-b-[3rem] z-10 pointer-events-none">
@@ -180,7 +180,7 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
                                             </div>
                                         <?php else : ?>
                                             <div class="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-8xl text-slate-300">event</span>
+                                                <span class="material-symbols-outlined text-8xl text-slate-300" aria-hidden="true">event</span>
                                             </div>
                                         <?php endif; ?>
 
@@ -201,7 +201,7 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
                                         <!-- Hover Action (Zoom Icon) -->
                                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 pointer-events-none transform scale-75 group-hover:scale-100">
                                             <div class="bg-white/20 backdrop-blur-md border border-white/40 text-white rounded-full p-4 shadow-2xl">
-                                                <span class="material-symbols-outlined text-4xl drop-shadow-md">visibility</span>
+                                                <span class="material-symbols-outlined text-4xl drop-shadow-md" aria-hidden="true">visibility</span>
                                             </div>
                                         </div>
 
@@ -259,7 +259,7 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
 
     <!-- Close Button -->
     <button id="afisha-modal-close" class="absolute top-6 right-6 z-[110] p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer group rotate-0 hover:rotate-90">
-        <span class="material-symbols-outlined text-4xl drop-shadow-md">close</span>
+        <span class="material-symbols-outlined text-4xl drop-shadow-md" aria-hidden="true">close</span>
         <span class="sr-only"><?php _e('Закрыть', 'city-library'); ?></span>
     </button>
 
@@ -275,7 +275,7 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
         <div class="mt-auto mb-4 pointer-events-auto transform translate-y-4 opacity-0 transition-all duration-500 delay-200" id="afisha-modal-action-wrapper">
             <a id="afisha-modal-link" href="#" class="button inline-flex items-center justify-center px-10 py-4 font-bold text-lg uppercase tracking-wider rounded-full transition-all shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/50 group">
                 <?php _e('Подробнее', 'city-library'); ?>
-                <span class="material-symbols-outlined ml-2 text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                <span class="material-symbols-outlined ml-2 text-2xl group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
             </a>
         </div>
     </div>

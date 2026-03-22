@@ -33,8 +33,8 @@
                 <div class="mt-12 text-center px-4 lg:px-0">
                     <?php the_posts_pagination(array(
                         'mid_size'  => 2,
-                        'prev_text' => '<span class="material-symbols-outlined">chevron_left</span>',
-                        'next_text' => '<span class="material-symbols-outlined">chevron_right</span>',
+                        'prev_text' => '<span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>',
+                        'next_text' => '<span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>',
                         'screen_reader_text' => __('Навигация по записям', 'city-library'),
                     )); ?>
                 </div>

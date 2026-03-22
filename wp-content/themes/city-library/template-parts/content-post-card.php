@@ -13,7 +13,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <?php else : ?>
                 <div class="absolute inset-0 bg-slate-100 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-4xl text-slate-300">image</span>
+                    <span class="material-symbols-outlined text-4xl text-slate-300" aria-hidden="true">image</span>
                 </div>
             <?php endif; ?>
         </a>
@@ -37,7 +37,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
         <!-- Mobile Date (Top Right) -->
         <div class="absolute top-4 right-4 z-20 lg:hidden">
             <div class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/40 backdrop-blur-sm text-white shadow-sm border border-white/10">
-                <span class="material-symbols-outlined text-xs mr-1">calendar_month</span>
+                <span class="material-symbols-outlined text-xs mr-1" aria-hidden="true">calendar_month</span>
                 <?php echo get_the_date(); ?>
             </div>
         </div>
@@ -50,7 +50,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Desktop Date -->
         <div class="hidden lg:flex items-center text-slate-500 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">
-            <span class="material-symbols-outlined text-sm mr-1.5">calendar_month</span>
+            <span class="material-symbols-outlined text-sm mr-1.5" aria-hidden="true">calendar_month</span>
             <?php echo get_the_date(); ?>
         </div>
 

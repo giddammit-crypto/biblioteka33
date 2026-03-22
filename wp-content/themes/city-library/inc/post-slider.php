@@ -93,7 +93,7 @@ function city_library_post_slider_shortcode($atts) {
                         <a href="<?php echo esc_url($img_full[0]); ?>" class="glightbox block w-full <?php echo $is_auto ? 'h-auto flex items-center' : 'h-full'; ?> cursor-zoom-in relative">
                             <img src="<?php echo esc_url($img_large[0]); ?>" alt="<?php echo esc_attr($alt_text); ?>" class="<?php echo $img_classes; ?>">
                             <div class="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 hover:opacity-100 pointer-events-none">
-                                <span class="material-symbols-outlined text-white bg-black/50 p-3 rounded-full drop-shadow-md">zoom_in</span>
+                                <span class="material-symbols-outlined text-white bg-black/50 p-3 rounded-full drop-shadow-md" aria-hidden="true">zoom_in</span>
                             </div>
                         </a>
                     </div>

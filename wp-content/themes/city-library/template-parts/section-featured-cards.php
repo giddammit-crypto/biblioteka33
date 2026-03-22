@@ -153,7 +153,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                         </div>
                                         <div class="mt-6 flex items-center text-primary font-bold text-sm uppercase tracking-wider">
                                             <?php _e('Подробнее', 'city-library'); ?>
-                                            <span class="material-symbols-outlined ml-2 transform group-hover:translate-x-2 transition-transform">arrow_forward</span>
+                                            <span class="material-symbols-outlined ml-2 transform group-hover:translate-x-2 transition-transform" aria-hidden="true">arrow_forward</span>
                                         </div>
                                     </div>
                                     <?php
@@ -184,7 +184,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                             <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
                                         <?php else : ?>
                                             <div class="absolute inset-0 bg-slate-300 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-white text-4xl">image</span>
+                                                <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">image</span>
                                             </div>
                                         <?php endif; ?>
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none"></div>
@@ -263,7 +263,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                         <h3 class="text-2xl font-bold font-serif italic mb-4 border-b border-white/20 group-hover:border-black/20 pb-4 transition-colors"><?php echo esc_html($title); ?></h3>
                                         <p class="text-sm text-slate-400 group-hover:text-slate-600 line-clamp-5 transition-colors leading-relaxed flex-grow"><?php echo esc_html($desc); ?></p>
                                         <div class="mt-6 font-bold uppercase tracking-widest text-xs flex items-center justify-end group-hover:text-primary">
-                                            <span class="material-symbols-outlined transition-transform transform group-hover:translate-x-2">arrow_right_alt</span>
+                                            <span class="material-symbols-outlined transition-transform transform group-hover:translate-x-2" aria-hidden="true">arrow_right_alt</span>
                                         </div>
                                     </div>
                                     <?php
@@ -352,7 +352,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                             <p class="text-sm text-slate-600 line-clamp-3 mb-4"><?php echo esc_html($desc); ?></p>
                                             <div class="mt-auto flex items-center text-primary font-bold text-sm">
                                                 <?php _e('Узнать больше', 'city-library'); ?>
-                                                <span class="material-symbols-outlined ml-1 text-lg transform transition-transform group-hover:translate-x-1">arrow_right_alt</span>
+                                                <span class="material-symbols-outlined ml-1 text-lg transform transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_right_alt</span>
                                             </div>
                                         </div>
                                     </div>

@@ -23,7 +23,7 @@
                             <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block rounded-2xl overflow-hidden shadow-lg relative group w-full h-[200px] sm:w-[300px]">
                                 <?php the_post_thumbnail('medium', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105']); ?>
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                                     <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">zoom_in</span>
+                                     <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-hidden="true">zoom_in</span>
                                 </div>
                             </a>
                             <?php if (get_the_post_thumbnail_caption()) : ?>
@@ -50,11 +50,11 @@
 
                             <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium border-b border-slate-100 pb-4 mb-6">
                                 <span class="flex items-center">
-                                    <span class="material-symbols-outlined text-base mr-1 text-primary">calendar_today</span>
+                                    <span class="material-symbols-outlined text-base mr-1 text-primary" aria-hidden="true">calendar_today</span>
                                     <?php echo esc_html(get_the_date()); ?>
                                 </span>
                                 <span class="flex items-center">
-                                    <span class="material-symbols-outlined text-base mr-1 text-primary">person</span>
+                                    <span class="material-symbols-outlined text-base mr-1 text-primary" aria-hidden="true">person</span>
                                     <?php the_author(); ?>
                                 </span>
                             </div>
@@ -92,10 +92,10 @@
                         <details class="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden [&_summary::-webkit-details-marker]:hidden">
                             <summary class="flex items-center justify-between p-4 cursor-pointer text-xl font-bold font-display text-slate-900 bg-white hover:bg-slate-50 transition-colors">
                                 <div class="flex items-center gap-3">
-                                    <span class="material-symbols-outlined text-primary text-2xl">photo_library</span>
+                                    <span class="material-symbols-outlined text-primary text-2xl" aria-hidden="true">photo_library</span>
                                     <?php _e('Галерея изображений', 'city-library'); ?>
                                 </div>
-                                <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">expand_more</span>
+                                <span class="material-symbols-outlined transition-transform duration-300 group-open:rotate-180" aria-hidden="true">expand_more</span>
                             </summary>
                             <div class="p-6 border-t border-slate-200 bg-white">
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -106,7 +106,7 @@
                                         <a href="<?php echo esc_url($img_url[0]); ?>" class="glightbox group/img relative overflow-hidden rounded-xl aspect-square shadow-md border border-slate-100 cursor-zoom-in">
                                             <img src="<?php echo esc_url($thumb_url[0]); ?>" alt="<?php echo esc_attr($attachment->post_title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-110">
                                             <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 transform scale-75 group-hover/img:scale-100">zoom_in</span>
+                                                <span class="material-symbols-outlined text-white opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 transform scale-75 group-hover/img:scale-100" aria-hidden="true">zoom_in</span>
                                             </div>
                                         </a>
                                     <?php endforeach; ?>
