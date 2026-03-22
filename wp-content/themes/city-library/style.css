@@ -120,3 +120,93 @@ html, body {
     color: var(--btn-hover-text, #ffffff) !important;
     transform: scale(1.05);
 }
+
+/* WordPress Core Alignment Classes */
+.alignleft {
+    float: left;
+    margin: 0.5rem 1.5rem 1rem 0;
+}
+
+.alignright {
+    float: right;
+    margin: 0.5rem 0 1rem 1.5rem;
+}
+
+.aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+}
+
+.alignnone {
+    margin: 0.5rem 0 1rem 0;
+}
+
+.wp-caption {
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+}
+
+.wp-caption img {
+    display: block;
+    margin: 0 auto;
+}
+
+.wp-caption-text {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.875rem;
+    color: #64748b; /* slate-500 */
+    margin-top: 0.5rem;
+}
+
+/* Entry Content Improvements */
+.entry-content {
+    overflow-wrap: anywhere;
+}
+
+.entry-content * {
+    box-sizing: border-box;
+}
+
+.entry-content img,
+.entry-content iframe,
+.entry-content video {
+    max-width: 100%;
+    height: auto;
+}
+
+.entry-content iframe {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+/* Responsive Tables */
+.entry-content table {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+}
+
+@media (max-width: 767px) {
+    .entry-content table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+}
+
+.entry-content th,
+.entry-content td {
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0; /* slate-200 */
+    text-align: left;
+}
+
+.entry-content th {
+    background-color: #f8fafc; /* slate-50 */
+    font-weight: 700;
+}

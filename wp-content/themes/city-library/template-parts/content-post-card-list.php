@@ -40,14 +40,14 @@ $link_color = get_theme_mod('news_card_list_link_color', '#0b7930');
 
         <!-- Title -->
         <h3 class="text-2xl font-bold font-display leading-tight mb-3">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline" style="color: <?php echo esc_attr($title_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-primary focus:outline-none focus:underline lg:text-slate-900" style="color: <?php echo esc_attr($title_color); ?>;">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 md:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-base leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 flex-grow" style="color: <?php echo esc_attr($text_color); ?>;">
+        <div class="text-base leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 flex-grow lg:text-slate-700 [&_p]:text-[inherit]" style="color: <?php echo esc_attr($text_color); ?>;">
             <?php the_excerpt(); ?>
         </div>
 
