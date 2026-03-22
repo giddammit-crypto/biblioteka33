@@ -4,7 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const closeBtn = modal.querySelector('.modal-close');
     const modalContent = modal.querySelector('.modal-content');
-    const delay = parseInt(modal.dataset.delay) || 3000;
+    // Logic: If delay is 0, show "on load" (via small timeout for DOM stability).
+    // Otherwise use delay.
+    let delay = parseInt(modal.dataset.delay);
+    if (isNaN(delay)) delay = 3000;
+
+    // Force faster load if user requested '0' or very short
+    if (delay < 100) delay = 100;
 
     // Check sessionStorage to see if already shown in this session
     if (sessionStorage.getItem('city_library_modal_shown')) {
@@ -12,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showModal() {
+        // Accessibility Check: Do not open if High Contrast Mode is active
+        if (document.body.classList.contains('a11y-high-contrast')) {
+            return;
+        }
+
         modal.classList.remove('hidden');
         // Prevent body scroll
         document.body.style.overflow = 'hidden';

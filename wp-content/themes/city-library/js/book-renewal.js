@@ -1,18 +1,84 @@
 document.addEventListener('DOMContentLoaded', function() {
     const params = window.renewal_params || {};
+    const settings = params.settings || {};
+
+    // Visibility Check
+    const isMobile = window.innerWidth < 1024;
+    const visibility = settings.btn_visibility || 'mobile-only';
+
+    if (visibility === 'hidden') return;
+    if (visibility === 'mobile-only' && !isMobile) return;
+    if (visibility === 'desktop-only' && isMobile) return;
 
     // 1. Create Floating Button (Stylish & Accessible)
     const renewBtn = document.createElement('button');
     renewBtn.id = 'book-renewal-btn';
-    // Raised to bottom-[151px] on mobile (+55px), restored to bottom-24 on Kiosk, standard bottom-6 on landscape desktop
-    renewBtn.className = 'fixed bottom-[151px] lg:bottom-24 lg:landscape:bottom-6 left-6 z-50 px-6 py-4 rounded-full bg-primary hover:bg-green-700 text-white font-bold shadow-xl hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm';
-    renewBtn.setAttribute('aria-label', 'Открыть форму продления книг');
+
+    // Base Classes
+    let btnClasses = 'fixed z-50 px-6 py-4 font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 group active:scale-95 border border-white/20 backdrop-blur-sm transform translate-y-0';
+
+    // Position Classes
+    const position = settings.btn_position || 'bottom-right';
+
+    // Logic: Desktop (lg+) landscape follows strict corners.
+    // Mobile/Kiosk (< lg OR portrait) snaps to right-center or left-center (vertical middle).
+
+    // Common desktop base: lg:landscape:bottom-6
+    if (position === 'bottom-left') {
+        // Mobile/Kiosk: Left Center (top-1/2 -translate-y-1/2)
+        // Desktop Landscape: Bottom Left (bottom-6)
+        btnClasses += ' left-0 top-1/2 -translate-y-1/2 rounded-l-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:left-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
+    } else {
+        // Mobile/Kiosk: Right Center (top-1/2 -translate-y-1/2)
+        // Desktop Landscape: Bottom Right (bottom-6)
+        btnClasses += ' right-0 top-1/2 -translate-y-1/2 rounded-r-none lg:landscape:top-auto lg:landscape:bottom-6 lg:landscape:right-6 lg:landscape:translate-y-0 lg:landscape:rounded-full';
+    }
+
+    // Radius Classes
+    const radius = settings.btn_radius || 'circle';
+    if (radius === 'circle') btnClasses += ' rounded-full';
+    else if (radius === 'medium') btnClasses += ' rounded-xl';
+    else if (radius === 'small') btnClasses += ' rounded-md';
+    else if (radius === 'square') btnClasses += ' rounded-none';
+
+    renewBtn.className = btnClasses;
+
+    // Apply Colors inline
+    renewBtn.style.backgroundColor = settings.btn_bg || '#0b7930';
+    renewBtn.style.color = settings.btn_text_color || '#ffffff';
+
+    renewBtn.setAttribute('aria-label', settings.btn_text || 'Открыть форму продления книг');
     renewBtn.innerHTML = `
         <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform duration-300">auto_stories</span>
-        <span class="hidden md:inline-block font-display tracking-wide text-sm uppercase">Продление книг</span>
+        <span class="hidden md:inline-block font-display tracking-wide text-sm uppercase">${settings.btn_text || 'Продление книг'}</span>
     `;
-    renewBtn.title = "Продление книг онлайн";
+    renewBtn.title = settings.btn_text || "Продление книг онлайн";
     document.body.appendChild(renewBtn);
+
+    // Smart Hiding Logic (Scroll)
+    // The user requested: "If site scrolled to footer -> hide, else -> show".
+    // Removed "Hide at Top" logic.
+
+    function checkVisibility() {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        const scrollBottom = currentScroll + windowHeight;
+
+        // Hide ONLY if at Bottom of page (Footer Zone)
+        if (scrollBottom >= docHeight - 50) {
+            renewBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-x-full'); // Hide off-screen
+        } else {
+            renewBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-x-full');
+        }
+    }
+
+    // Initial check
+    checkVisibility();
+
+    window.addEventListener('scroll', () => {
+        checkVisibility();
+    }, { passive: true });
 
     // 2. Create Modal Structure (Ultra Design: White, Clean, Adaptive)
     const modalOverlay = document.createElement('div');

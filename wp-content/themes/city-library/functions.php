@@ -2,6 +2,21 @@
 /**
  * Theme setup.
  */
+// Include Branches Map Shortcode
+require_once get_template_directory() . '/inc/branches-map.php';
+
+// Include Inline Post Slider Shortcode
+require_once get_template_directory() . '/inc/post-slider.php';
+
+// Include Hero Custom Meta Box
+require_once get_template_directory() . '/inc/hero-meta-box.php';
+
+// Include Presentation Embed Shortcode
+require_once get_template_directory() . '/inc/presentation-embed.php';
+
+// Include Virtual Librarian AI
+require_once get_template_directory() . '/inc/virtual-librarian.php';
+
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');
@@ -71,7 +86,8 @@ add_filter('upload_mimes', 'city_library_add_mime_types');
  */
 function city_library_scripts() {
     // Main stylesheet.
-    wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+    // Use filemtime for version to force cache clear on update
+    wp_enqueue_style('city-library-style', get_stylesheet_uri(), array(), filemtime(get_stylesheet_directory() . '/style.css'));
 
     // Scrollbar Fix
     wp_enqueue_style('city-library-scrollbar-fix', get_template_directory_uri() . '/css/scrollbar-fix.css', array(), wp_get_theme()->get('Version'));
@@ -95,12 +111,81 @@ function city_library_scripts() {
     // GLightbox CSS & JS
     wp_enqueue_style('glightbox-css', 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css', array(), '3.3.0');
     wp_enqueue_script('glightbox-js', 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js', array(), '3.3.0', true);
+    wp_enqueue_script('city-library-lightbox-init', get_template_directory_uri() . '/js/lightbox-init.js', array('glightbox-js'), wp_get_theme()->get('Version'), true);
 
     // Custom JS files
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-sidebar', get_template_directory_uri() . '/js/sidebar.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
+
+    // Voice Control Enqueue
+    $enable_voice = get_theme_mod('enable_voice_control', false);
+    $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
+
+    // We now always enqueue the script if voice is globally enabled, so the JS can check for #voicetest and cookies
+    if ($enable_voice) {
+        // Enqueue marked.js for voice control markdown parsing
+        if (!wp_script_is('marked-js', 'enqueued')) {
+            wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
+        }
+
+        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
+
+        $custom_commands = array();
+        for ($i = 1; $i <= 20; $i++) {
+            $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
+            $url = get_theme_mod("voice_cmd_url_$i", '');
+            if (!empty(trim($phrases)) && !empty(trim($url))) {
+                $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
+                if (!empty($phrases_array)) {
+                    $custom_commands[] = array(
+                        'phrases' => array_values($phrases_array),
+                        'url' => esc_url($url)
+                    );
+                }
+            }
+        }
+
+        // Prepare branch addresses for Maps
+        $branch_keys = array('cgb', 'cdb', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16');
+        $branch_addresses = array();
+        foreach ($branch_keys as $key) {
+             $default = '';
+             if ($key === 'cgb') $default = 'г. Владимир, Суздальский пр-кт, д. 2';
+             elseif ($key === 'cdb') $default = 'г. Владимир, ул. Белоконской, д. 10-а';
+             elseif ($key === '1') $default = 'г. Владимир, пр-кт Строителей, д. 23';
+             elseif ($key === '2') $default = 'г. Владимир, пр-кт Ленина, д. 12';
+             elseif ($key === '3') $default = 'г. Владимир, ул. Добросельская, д. 2-в';
+             elseif ($key === '4') $default = 'г. Владимир, ул. Комиссарова, д. 69';
+             elseif ($key === '5') $default = 'г. Владимир, пр-кт Суздальский, д. 2';
+             elseif ($key === '6') $default = 'г. Владимир, ул. Мира, д. 37';
+             elseif ($key === '7') $default = 'г. Владимир, ул. Добросельская, д. 189-б';
+             elseif ($key === '8') $default = 'г. Владимир, ул. Диктора Левитана, д. 36';
+             elseif ($key === '9') $default = 'г. Владимир, ул. Горького, д. 85';
+             elseif ($key === '10') $default = 'г. Владимир, ул. Егорова, д. 10';
+             elseif ($key === '11') $default = 'г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4';
+             elseif ($key === '13') $default = 'г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а';
+             elseif ($key === '14') $default = 'г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12';
+             elseif ($key === '15') $default = 'г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11';
+             elseif ($key === '16') $default = 'г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а';
+
+             $branch_addresses[$key] = get_theme_mod("branch_address_$key", $default);
+        }
+
+        wp_localize_script('city-library-voice', 'cl_voice_control', array(
+            'enabled' => true,
+            'test_mode' => $voice_test_mode,
+            'is_logged_in' => is_user_logged_in(),
+            'home_url' => home_url(),
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
+            'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
+            'voice_rate' => get_theme_mod('voice_rate', '1.05'),
+            'custom_commands' => $custom_commands,
+            'branch_addresses' => $branch_addresses
+        ));
+    }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-sliders', get_template_directory_uri() . '/js/mobile-sliders.js', array('swiper-js'), wp_get_theme()->get('Version'), true);
@@ -111,6 +196,23 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-book-renewal', get_template_directory_uri() . '/js/book-renewal.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-cookie-consent', get_template_directory_uri() . '/js/cookie-consent.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-search-modal', get_template_directory_uri() . '/js/search-modal.js', array(), wp_get_theme()->get('Version'), true);
+
+    // Yandex Map
+    if (get_theme_mod('footer_show_map', false)) {
+        $apikey = get_theme_mod('footer_map_apikey', '');
+        $api_url = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+        if ($apikey) {
+            $api_url .= '&apikey=' . esc_attr($apikey);
+        }
+        wp_enqueue_script('yandex-maps-api', $api_url, array(), null, true);
+        wp_enqueue_script('city-library-yandex-map', get_template_directory_uri() . '/js/yandex-map-init.js', array('yandex-maps-api'), wp_get_theme()->get('Version'), true);
+
+        wp_localize_script('city-library-yandex-map', 'yandex_map_params', array(
+            'lat' => get_theme_mod('footer_map_lat', '56.162458'),
+            'lon' => get_theme_mod('footer_map_lon', '40.470598'),
+            'zoom' => get_theme_mod('footer_map_zoom', 15),
+        ));
+    }
 
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
@@ -123,11 +225,30 @@ function city_library_scripts() {
         'ajax_url' => admin_url('admin-ajax.php')
     ));
 
+    // Prepare Renewal Button Settings for JS
+    $renewal_settings = array(
+        'btn_text' => get_theme_mod('renewal_btn_text', 'Продлить книгу'),
+        'btn_bg' => get_theme_mod('renewal_btn_bg_color', '#0b7930'),
+        'btn_text_color' => get_theme_mod('renewal_btn_text_color', '#ffffff'),
+        'btn_radius' => get_theme_mod('renewal_btn_radius', 'circle'),
+        'btn_visibility' => get_theme_mod('renewal_btn_visibility', 'mobile-only'),
+        'btn_position' => get_theme_mod('renewal_btn_position', 'bottom-right'),
+    );
+
     wp_localize_script('city-library-book-renewal', 'renewal_params', array(
         'ajax_url' => admin_url('admin-ajax.php'),
         'nonce'    => wp_create_nonce('book_renewal_nonce'),
-        'branches' => city_library_get_branches_list() // Helper to pass branch list if needed JS side, though we just need IDs
+        'branches' => city_library_get_branches_list(), // Helper to pass branch list if needed JS side, though we just need IDs
+        'settings' => $renewal_settings
     ));
+
+    // Sticky Header
+    wp_enqueue_script('city-library-sticky-header', get_template_directory_uri() . '/js/sticky-header.js', array(), wp_get_theme()->get('Version'), true);
+
+    $sticky_css = file_get_contents(get_template_directory() . '/css/sticky-header.css');
+    if ($sticky_css) {
+        wp_add_inline_style('city-library-style', $sticky_css);
+    }
 }
 add_action('wp_enqueue_scripts', 'city_library_scripts');
 
@@ -144,6 +265,31 @@ function city_library_get_branches_list() {
     }
     return $branches;
 }
+
+/**
+ * AJAX Handler for Voice Test Feedback
+ */
+function city_library_voice_feedback() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+
+    $rating = intval($_POST['rating']);
+    $feedback = sanitize_textarea_field($_POST['feedback']);
+
+    $to = 'xxoleg6@yandex.ru';
+    $subject = 'Отчет о тестировании Голосового Ассистента (Оценка: ' . $rating . '/5)';
+    $message = "Оценка: $rating из 5\n\nОтзыв/Ошибки:\n$feedback";
+    $headers = array('Content-Type: text/plain; charset=UTF-8');
+
+    // Attempt to send email
+    wp_mail($to, $subject, $message, $headers);
+
+    // We clear the cookie by setting expiration to the past
+    setcookie('cl_voice_test_active', '', time() - 3600, '/');
+
+    wp_send_json_success(array('message' => 'Спасибо! Ваш отзыв отправлен.'));
+}
+add_action('wp_ajax_city_library_voice_feedback', 'city_library_voice_feedback');
+add_action('wp_ajax_nopriv_city_library_voice_feedback', 'city_library_voice_feedback');
 
 /**
  * AJAX Handler for Book Renewal
@@ -190,7 +336,7 @@ function city_library_send_book_renewal() {
     ";
 
     $headers = array('Content-Type: text/html; charset=UTF-8');
-    $headers[] = 'From: City Library Site <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
+    $headers[] = 'From: Продление книг онлайн <wordpress@' . $_SERVER['SERVER_NAME'] . '>';
     $headers[] = 'Reply-To: ' . $fio . ' <' . $email . '>';
 
     $sent = wp_mail($branch_email, $subject, $message, $headers);
@@ -247,7 +393,8 @@ function city_library_homepage_query($query) {
         if (isset($_GET['news_archive'])) {
             $query->set('posts_per_page', 8);
         } elseif ($query->is_home()) {
-            $query->set('posts_per_page', 10);
+            $news_count = get_theme_mod('news_count', 8);
+            $query->set('posts_per_page', $news_count);
         } elseif ($query->is_archive() || $query->is_post_type_archive('post')) {
             $query->set('posts_per_page', 16);
         }
@@ -294,14 +441,71 @@ function city_library_widgets_init() {
             'after_title'   => '</h4>',
         ));
     }
+
+    // Custom Widget Area for Shortcode
+    register_sidebar( array(
+        'name'          => esc_html__( 'Content Widgets (Shortcode)', 'city-library' ),
+        'id'            => 'content-widgets',
+        'description'   => esc_html__( 'Widgets added here can be displayed inside any page or post using the shortcode [city_library_widgets]', 'city-library' ),
+        'before_widget' => '<div id="%1$s" class="widget %2$s mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-200">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h3 class="widget-title text-xl font-bold font-display mb-4 text-slate-800">',
+        'after_title'   => '</h3>',
+    ) );
 }
 add_action('widgets_init', 'city_library_widgets_init');
+
+/**
+ * Shortcode to output the 'Content Widgets' sidebar anywhere in content.
+ */
+function city_library_widgets_shortcode() {
+    ob_start();
+    if ( is_active_sidebar( 'content-widgets' ) ) {
+        echo '<div class="city-library-content-widgets-wrapper my-8">';
+        dynamic_sidebar( 'content-widgets' );
+        echo '</div>';
+    }
+    return ob_get_clean();
+}
+add_shortcode( 'city_library_widgets', 'city_library_widgets_shortcode' );
 
 
 /**
  * Customizer additions.
  */
 function city_library_customize_register($wp_customize) {
+    // Global Colors (AAA WYSIWYG)
+    $wp_customize->add_section('global_colors_section', array(
+        'title'    => __('Глобальные цвета (Theme)', 'city-library'),
+        'priority' => 10,
+    ));
+
+    $wp_customize->add_setting('primary_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color', array(
+        'label' => __('Основной цвет (Primary)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('secondary_color', array('default' => '#1A3C34', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color', array(
+        'label' => __('Вторичный цвет (Secondary)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('bg_body_color', array('default' => '#f6f8f6', 'sanitize_callback' => 'sanitize_hex_color', 'transport' => 'postMessage'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'bg_body_color', array(
+        'label' => __('Цвет фона страницы', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    // Global Link Colors
+    $wp_customize->add_setting('global_link_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_link_color', array(
+        'label' => __('Глобальный цвет ссылок', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
+    $wp_customize->add_setting('global_link_hover_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'global_link_hover_color', array(
+        'label' => __('Глобальный цвет ссылок (при наведении)', 'city-library'), 'section' => 'global_colors_section',
+    )));
+
     // Global Button Settings
     $wp_customize->add_section('global_buttons_section', array(
         'title'    => __('Глобальные настройки кнопок', 'city-library'),
@@ -328,17 +532,145 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет текста при наведении', 'city-library'), 'section' => 'global_buttons_section',
     )));
 
+    // Slider Buttons Settings (Navigation)
+    $wp_customize->add_section('slider_buttons_section', array(
+        'title'    => __('Кнопки слайдера (Навигация)', 'city-library'),
+        'priority' => 18,
+    ));
+
+    $wp_customize->add_setting('slider_btn_bg_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_icon_color', array('default' => '#334155', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_icon_color', array(
+        'label' => __('Цвет иконки/стрелки', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_hover_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_hover_bg_color', array(
+        'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_hover_icon_color', array('default' => '#FFFFFF', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'slider_btn_hover_icon_color', array(
+        'label' => __('Цвет иконки при наведении', 'city-library'), 'section' => 'slider_buttons_section',
+    )));
+
+    $wp_customize->add_setting('slider_btn_radius', array('default' => '9999px', 'sanitize_callback' => 'sanitize_text_field')); // Default circle
+    $wp_customize->add_control('slider_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'slider_buttons_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => 'Квадратные (0)',
+            '0.5rem' => 'Скругленные (Small)',
+            '1rem' => 'Скругленные (Medium)',
+            '9999px' => 'Круглые (Circle)',
+        ),
+    ));
+
+
+    // "Read More" / "Details" Buttons Settings
+    $wp_customize->add_section('read_more_buttons_section', array(
+        'title'    => __('Кнопки "Подробнее" / "Читать далее"', 'city-library'),
+        'priority' => 18,
+    ));
+
+    $wp_customize->add_setting('read_more_btn_bg_color', array('default' => 'transparent', 'sanitize_callback' => 'sanitize_text_field')); // Can be transparent
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_bg_color', array(
+        'label' => __('Цвет фона кнопки', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_text_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_text_color', array(
+        'label' => __('Цвет текста', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_hover_bg_color', array('default' => 'transparent', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_hover_bg_color', array(
+        'label' => __('Цвет фона при наведении', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_btn_hover_text_color', array('default' => '#096328', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'read_more_btn_hover_text_color', array(
+        'label' => __('Цвет текста при наведении', 'city-library'), 'section' => 'read_more_buttons_section',
+    )));
+
+    $wp_customize->add_setting('read_more_show_underline', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('read_more_show_underline', array(
+        'label' => __('Подчеркивание ссылки', 'city-library'),
+        'section' => 'read_more_buttons_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('read_more_btn_radius', array('default' => '9999px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('read_more_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'read_more_buttons_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => 'Квадратные (0)',
+            '0.5rem' => 'Скругленные (Small)',
+            '1rem' => 'Скругленные (Medium)',
+            '9999px' => 'Круглые (Circle)',
+        ),
+    ));
+
+
+    // News Settings
+    $wp_customize->add_section('news_section', array(
+        'title'      => __('Новости', 'city-library'),
+        'priority'   => 25,
+    ));
+    $wp_customize->add_setting('news_count', array('default' => 8, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('news_count', array(
+        'label' => __('Количество карточек новостей', 'city-library'),
+        'description' => __('Количество новостей на главной странице.', 'city-library'),
+        'section' => 'news_section',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 48, 'step' => 1)
+    ));
+
     // Layout Settings
     $wp_customize->add_section('layout_section', array(
         'title'    => __('Настройки макета (Layout)', 'city-library'),
         'priority' => 19,
     ));
 
+    // Default sidebar to false as requested
     $wp_customize->add_setting('show_sidebar', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('show_sidebar', array(
         'label' => __('Показать сайдбар', 'city-library'),
         'section' => 'layout_section',
         'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('global_border_radius', array('default' => '2rem', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('global_border_radius', array(
+        'label' => __('Скругление углов (Global Border Radius)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '0' => '0 (Sharp)',
+            '0.5rem' => 'Small (0.5rem)',
+            '1rem' => 'Medium (1rem)',
+            '2rem' => 'Large (2rem - Default)',
+        ),
+    ));
+
+    $wp_customize->add_setting('global_container_width', array('default' => '80%', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('global_container_width', array(
+        'label' => __('Ширина контента (Desktop)', 'city-library'),
+        'section' => 'layout_section',
+        'type' => 'select',
+        'choices' => array(
+            '100%' => 'Full Width (100%)',
+            '90%' => 'Wide (90%)',
+            '80%' => 'Standard (80%)',
+            '1280px' => 'Fixed (1280px)',
+        ),
     ));
 
     // Branch Emails Section
@@ -358,10 +690,200 @@ function city_library_customize_register($wp_customize) {
         ));
     }
 
+    // Book Renewal Button Settings
+    $wp_customize->add_section('renewal_button_section', array(
+        'title' => __('Кнопка продления книг', 'city-library'),
+        'priority' => 145,
+        'description' => __('Настройки внешнего вида и поведения кнопки продления книг.', 'city-library'),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_text', array('default' => 'Продлить книгу', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_text', array(
+        'label' => __('Текст кнопки', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('renewal_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'renewal_btn_bg_color', array(
+        'label' => __('Цвет фона', 'city-library'),
+        'section' => 'renewal_button_section',
+    )));
+
+    $wp_customize->add_setting('renewal_btn_text_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'renewal_btn_text_color', array(
+        'label' => __('Цвет текста/иконки', 'city-library'),
+        'section' => 'renewal_button_section',
+    )));
+
+    $wp_customize->add_setting('renewal_btn_radius', array('default' => 'circle', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_radius', array(
+        'label' => __('Скругление углов', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'square' => 'Square (0)',
+            'small' => 'Small (Rounded-md)',
+            'medium' => 'Medium (Rounded-xl)',
+            'circle' => 'Circle (Full)',
+        ),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_visibility', array('default' => 'mobile-only', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_visibility', array(
+        'label' => __('Видимость кнопки', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'mobile-only' => 'Только на мобильных',
+            'desktop-only' => 'Только на ПК',
+            'all' => 'На всех устройствах',
+            'hidden' => 'Скрыть полностью',
+        ),
+    ));
+
+    $wp_customize->add_setting('renewal_btn_position', array('default' => 'bottom-right', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('renewal_btn_position', array(
+        'label' => __('Позиция на экране', 'city-library'),
+        'section' => 'renewal_button_section',
+        'type' => 'select',
+        'choices' => array(
+            'bottom-right' => 'Справа внизу',
+            'bottom-left' => 'Слева внизу',
+        ),
+    ));
+
+    // Mobile Bottom Menu Section
+    $wp_customize->add_section('mobile_menu_section', array(
+        'title'    => __('Нижнее мобильное меню', 'city-library'),
+        'priority' => 21,
+    ));
+
+    $wp_customize->add_setting('mobile_menu_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_bg_color', array(
+        'label' => __('Цвет фона', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_icon_color', array('default' => '#64748b', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_icon_color', array(
+        'label' => __('Цвет иконок', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_active_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_active_color', array(
+        'label' => __('Цвет активного элемента', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_font_color', array('default' => '#64748b', 'sanitize_callback' => 'sanitize_hex_color'));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'mobile_menu_font_color', array(
+        'label' => __('Цвет шрифта (текст)', 'city-library'), 'section' => 'mobile_menu_section',
+    )));
+
+    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_font_family', array(
+        'label' => __('Шрифт меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'Inter' => 'Inter',
+            'Montserrat' => 'Montserrat',
+            'Playfair Display' => 'Playfair Display',
+            'Merriweather' => 'Merriweather',
+        ),
+    ));
+
+    $wp_customize->add_setting('mobile_menu_icon_set', array('default' => 'outlined', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_icon_set', array(
+        'label' => __('Набор иконок', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'outlined' => 'Material Outlined (Контурные)',
+            'rounded' => 'Material Rounded (Скругленные)',
+            'sharp' => 'Material Sharp (Острые)',
+        ),
+    ));
+
+    $wp_customize->add_setting('mobile_menu_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_style', array(
+        'label' => __('Стиль меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Fixed Bottom)',
+            'ios-blur' => 'iOS Blur (Translucent)',
+            'material-pill' => 'Material Pill (Floating)',
+            'neon-glow' => 'Neon Glow (Dark Mode)',
+            'minimal-border' => 'Minimal Border (Top Line)',
+            'floating-island' => 'Floating Island (Rounded)',
+            'glassmorphism' => 'Glassmorphism (Frosted Glass)',
+            'gradient-bar' => 'Gradient Bar (Color Flow)',
+            'tab-bar' => 'Tab Bar (Android Style)',
+            'floating-dock' => 'Floating Dock (macOS Style)',
+            'minimal-icons' => 'Minimal Icons (No Text)',
+            'text-only' => 'Text Only (No Icons)',
+            'cyberpunk' => 'Cyberpunk (Futuristic)',
+            'neumorphism' => 'Neumorphism (Soft UI)',
+            'retro-pixel' => 'Retro Pixel (8-bit Vibe)',
+            'sidebar-drawer' => 'Bottom Drawer (Slide Up)',
+        ),
+    ));
+
+    $wp_customize->add_setting('mobile_menu_btn_style', array('default' => 'classic', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('mobile_menu_btn_style', array(
+        'label' => __('Стиль кнопок меню', 'city-library'),
+        'section' => 'mobile_menu_section',
+        'type' => 'select',
+        'choices' => array(
+            'classic' => 'Classic (Icon + Text)',
+            'minimal' => 'Minimal (Icon Only)',
+            'bold' => 'Bold (Thick Icons)',
+            'soft' => 'Soft (Pastel Colors)',
+            'bubble' => 'Bubble (Circle BG)',
+            'square' => 'Square (Rounded-md BG)',
+            'underline' => 'Underline (Active State)',
+            'glow' => 'Glow (Text Shadow)',
+            'floating' => 'Floating (Lift on Hover)',
+            'glass-btn' => 'Glass Button (Blur)',
+        ),
+    ));
+
     // Header Section
     $wp_customize->add_section('header_section', array(
         'title'    => __('Настройки шапки (Header)', 'city-library'),
         'priority' => 20,
+    ));
+
+    // Header Style
+    $wp_customize->add_setting('header_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('header_style', array(
+        'label' => __('Стиль шапки (Header Style)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Left Logo, Right Menu)',
+            'centered' => 'Centered (Logo Top, Menu Bottom)',
+            'minimal' => 'Minimal (Logo Left, Menu Hidden/Hamburger)',
+            'full-width' => 'Full Width (No Container)',
+            'transparent-overlay' => 'Transparent Overlay (Absolute)',
+            'floating' => 'Floating (Rounded, Detached)',
+            'dark-mode' => 'Dark Mode (Inverted Colors)',
+        ),
+    ));
+
+    // Menu Style
+    $wp_customize->add_setting('menu_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('menu_style', array(
+        'label' => __('Стиль меню (Menu Style)', 'city-library'),
+        'section' => 'header_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Simple Hover)',
+            'underline' => 'Underline Animation',
+            'pill' => 'Pill Background',
+            'bracket' => 'Brackets [ Link ]',
+            'bold' => 'Bold on Hover',
+        ),
     ));
 
     $wp_customize->add_setting('header_bg_color', array('default' => '#ffffff', 'sanitize_callback' => 'sanitize_hex_color'));
@@ -441,8 +963,50 @@ function city_library_customize_register($wp_customize) {
         'section' => 'hero_section',
     )));
 
+    $wp_customize->add_setting('hero_bg_opacity', array('default' => '0.5', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_bg_opacity', array(
+        'label' => __('Прозрачность наложения (Overlay Opacity)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'range',
+        'input_attrs' => array('min' => 0, 'max' => 1, 'step' => 0.1),
+    ));
+
+    $wp_customize->add_setting('hero_align', array('default' => 'center', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_align', array(
+        'label' => __('Выравнивание текста (Alignment)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'select',
+        'choices' => array('left' => 'Left', 'center' => 'Center', 'right' => 'Right'),
+    ));
+
+    $wp_customize->add_setting('hero_title_size', array('default' => 'text-5xl md:text-7xl lg:text-8xl', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('hero_title_size', array(
+        'label' => __('Размер заголовка (Title Size)', 'city-library'),
+        'section' => 'hero_section',
+        'type' => 'select',
+        'choices' => array(
+            'text-4xl md:text-6xl lg:text-7xl' => 'Small',
+            'text-5xl md:text-7xl lg:text-8xl' => 'Medium (Default)',
+            'text-6xl md:text-8xl lg:text-9xl' => 'Large',
+        ),
+    ));
+
     // Footer Section
     $wp_customize->add_section('footer_section', array('title' => __('Footer', 'city-library'), 'priority' => 120));
+
+    $wp_customize->add_setting('footer_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_style', array(
+        'label' => __('Стиль футера (Footer Style)', 'city-library'),
+        'section' => 'footer_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Dark Simple)',
+            'light-clean' => 'Light Clean (White BG)',
+            'centered' => 'Centered Layout',
+            'multi-column' => 'Multi-Column (Grid)',
+            'minimal' => 'Minimal (Copyright Only)',
+        ),
+    ));
 
     $wp_customize->add_setting('footer_copyright', array('default' => '© 2024 Центральная городская библиотека. Все права защищены.', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_copyright', array('label' => __('Copyright Text', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
@@ -474,6 +1038,77 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('footer_address', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_address', array('label' => __('Адрес', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
+
+    // Social Links
+    $wp_customize->add_setting('footer_social_vk', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_vk', array('label' => __('VKontakte URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_telegram', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_telegram', array('label' => __('Telegram URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_ok', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_ok', array('label' => __('Odnoklassniki URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_social_youtube', array('default' => '', 'sanitize_callback' => 'esc_url_raw'));
+    $wp_customize->add_control('footer_social_youtube', array('label' => __('YouTube URL', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    // Footer Map Section
+    $wp_customize->add_section('footer_map_section', array(
+        'title' => __('Яндекс Карта', 'city-library'),
+        'priority' => 125,
+        'description' => __('Настройки карты в футере.', 'city-library'),
+    ));
+
+    $wp_customize->add_setting('footer_show_map', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_map', array(
+        'label' => __('Показать карту', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('footer_map_apikey', array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_apikey', array(
+        'label' => __('API Key (Optional for basic use)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_lat', array('default' => '56.162458', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_lat', array(
+        'label' => __('Широта (Latitude)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_lon', array('default' => '40.470598', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_lon', array(
+        'label' => __('Долгота (Longitude)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_zoom', array('default' => 15, 'sanitize_callback' => 'absint'));
+    $wp_customize->add_control('footer_map_zoom', array(
+        'label' => __('Масштаб (Zoom)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'number',
+        'input_attrs' => array('min' => 1, 'max' => 19, 'step' => 1),
+    ));
+
+    $wp_customize->add_setting('footer_map_height', array('default' => '300px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_height', array(
+        'label' => __('Высота карты (например, 300px)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+    ));
+
+    $wp_customize->add_setting('footer_map_width_desktop', array('default' => '250px', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('footer_map_width_desktop', array(
+        'label' => __('Ширина карты на ПК (Desktop Width)', 'city-library'),
+        'section' => 'footer_map_section',
+        'type' => 'text',
+        'description' => 'Например: 250px, 300px, 100%'
+    ));
 
     // Hero Button Colors
     $wp_customize->add_setting('hero_primary_btn_bg_color', array('default' => '#0b7930', 'sanitize_callback' => 'sanitize_hex_color'));
@@ -526,6 +1161,24 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'partners_bg_color', array(
         'label' => __('Цвет фона блока', 'city-library'), 'section' => 'partners_section',
     )));
+
+    // Partner Logo Size Settings
+    $wp_customize->add_setting('partners_logo_size', array('default' => 'medium', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('partners_logo_size', array(
+        'label' => __('Размер логотипов партнеров', 'city-library'),
+        'section' => 'partners_section',
+        'type' => 'select',
+        'choices' => array(
+            'xs' => 'XS (Very Small - h-8)',
+            'sm' => 'S (Small - h-12)',
+            'medium' => 'M (Medium - h-16) [Default]',
+            'lg' => 'L (Large - h-20)',
+            'xl' => 'XL (Extra Large - h-24)',
+            '2xl' => '2XL (Huge - h-32)',
+            '3xl' => '3XL (Gigantic - h-40)',
+            'original' => 'Original (Auto)',
+        ),
+    ));
 
     for ($i = 1; $i <= 8; $i++) {
         $wp_customize->add_setting("partner_logo_$i", array('sanitize_callback' => 'esc_url_raw'));
@@ -638,6 +1291,9 @@ function city_library_customize_register($wp_customize) {
 
         $wp_customize->add_setting("afisha_badge_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
         $wp_customize->add_control("afisha_badge_$i", array('label' => sprintf(__('Badge Text %d (e.g. Featured)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("afisha_date_$i", array('default' => '', 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("afisha_date_$i", array('label' => sprintf(__('Event Date %d (e.g. 12 OCT)', 'city-library'), $i), 'section' => 'afisha_section', 'type' => 'text'));
     }
 
     $wp_customize->add_setting('afisha_bg_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
@@ -648,6 +1304,25 @@ function city_library_customize_register($wp_customize) {
         'choices' => array(
             'default' => 'Default (SVG Pattern)',
             'gradient' => 'Modern Gradient',
+        ),
+    ));
+
+    $wp_customize->add_setting('afisha_card_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('afisha_card_style', array(
+        'label' => __('Стиль карточек слайдера (Card Style)', 'city-library'),
+        'section' => 'afisha_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Rounded, Shadow)',
+            'card' => 'Classic Card (White Border)',
+            'clean' => 'Clean (No Shadow, Minimal)',
+            'overlay' => 'Full Overlay (Text on Image)',
+            'glass' => 'Glassmorphism (Blur)',
+            'gradient' => 'Gradient Overlay (Dark)',
+            'brutalism' => 'Brutalism (Hard Borders)',
+            'minimal-text' => 'Minimal Text Focus',
+            'cyberpunk' => 'Cyberpunk (Neon Accents)',
+            'rounded-image' => 'Circular Image (Portrait style)',
         ),
     ));
 
@@ -713,6 +1388,44 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('important_inter_block_text', array('default' => '', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('important_inter_block_text', array('label' => __('Текст между блоками', 'city-library'), 'section' => 'important_section', 'type' => 'textarea'));
 
+    $wp_customize->add_setting('important_link_radius', array('default' => 'medium', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_link_radius', array(
+        'label' => __('Скругление изображений ссылок', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'none' => 'Square (None)',
+            'small' => 'Small',
+            'medium' => 'Medium (Default)',
+            'full' => 'Circle (Full)',
+        ),
+    ));
+
+    $wp_customize->add_setting('important_link_style', array('default' => 'default', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_link_style', array(
+        'label' => __('Стиль изображений ссылок', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'default' => 'Default (Simple)',
+            'shadow' => 'Drop Shadow',
+            'border' => 'Bordered',
+            'grayscale' => 'Grayscale Hover',
+        ),
+    ));
+
+    $wp_customize->add_setting('important_links_image_orientation', array('default' => 'square', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('important_links_image_orientation', array(
+        'label' => __('Ориентация изображений', 'city-library'),
+        'description' => __('Выберите пропорции для 8 изображений ссылок ниже.', 'city-library'),
+        'section' => 'important_section',
+        'type' => 'select',
+        'choices' => array(
+            'square' => 'Квадратные (1:1)',
+            'horizontal' => 'Горизонтальные (16:9)',
+        ),
+    ));
+
     // Important Section Links (8 items)
     for ($i = 1; $i <= 8; $i++) {
         $wp_customize->add_setting("important_link_image_$i", array('sanitize_callback' => 'esc_url_raw'));
@@ -763,6 +1476,68 @@ function city_library_customize_register($wp_customize) {
 
     $wp_customize->add_setting('modal_delay', array('default' => 3000, 'sanitize_callback' => 'absint'));
     $wp_customize->add_control('modal_delay', array('label' => __('Задержка (мс)', 'city-library'), 'section' => 'modal_section', 'type' => 'number'));
+
+    // Featured Cards Section
+    $wp_customize->add_section('featured_cards_section', array(
+        'title' => __('Выделенные карточки (Featured Cards)', 'city-library'),
+        'priority' => 103,
+    ));
+
+    $wp_customize->add_setting('show_featured_cards', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('show_featured_cards', array(
+        'label' => __('Показать блок', 'city-library'),
+        'section' => 'featured_cards_section',
+        'type' => 'checkbox',
+    ));
+
+    $wp_customize->add_setting('featured_cards_title', array('default' => 'Наши направления', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('featured_cards_title', array('label' => __('Заголовок блока', 'city-library'), 'section' => 'featured_cards_section', 'type' => 'text'));
+
+    $wp_customize->add_setting('featured_cards_design', array('default' => 'design-1', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_control('featured_cards_design', array(
+        'label' => __('Дизайн карточек', 'city-library'),
+        'section' => 'featured_cards_section',
+        'type' => 'select',
+        'choices' => array(
+            'design-1' => 'Дизайн 1 (Стандартный с рамкой)',
+            'design-2' => 'Дизайн 2 (Текст поверх изображения)',
+            'design-3' => 'Дизайн 3 (Минималистичный без фона)',
+            'design-4' => 'Дизайн 4 (С тенью и скруглением)',
+            'design-5' => 'Дизайн 5 (Градиентный фон)',
+            'design-6' => 'Дизайн 6 (Glassmorphism)',
+            'design-7' => 'Дизайн 7 (Тонкая линия сверху)',
+            'design-8' => 'Дизайн 8 (Сплошная заливка, иконки)',
+            'design-9' => 'Дизайн 9 (Крупный заголовок, без фото)',
+            'design-10' => 'Дизайн 10 (Стиль Polaroid)',
+            'design-11' => 'Дизайн 11 (Только фото, адаптивное)',
+            'design-12' => 'Дизайн 12 (Двухцветный Duotone)',
+            'design-13' => 'Дизайн 13 (Неоморфизм / Выпуклый)',
+            'design-14' => 'Дизайн 14 (Брутализм / Журнальный)',
+            'design-15' => 'Дизайн 15 (Круглые блоки)',
+            'design-16' => 'Дизайн 16 (Черно-белый контраст)',
+            'design-17' => 'Дизайн 17 (Абстрактные формы)',
+            'design-18' => 'Дизайн 18 (Элегантная типографика)',
+            'design-19' => 'Дизайн 19 (Киберпанк / Неон)',
+            'design-20' => 'Дизайн 20 (Смещенные блоки)'
+        ),
+    ));
+
+    for ($i = 1; $i <= 4; $i++) {
+        $wp_customize->add_setting("fc_image_$i", array('sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, "fc_image_$i", array(
+            'label' => sprintf(__('Картинка карточки %d', 'city-library'), $i),
+            'section' => 'featured_cards_section',
+        )));
+
+        $wp_customize->add_setting("fc_title_$i", array('default' => sprintf('Карточка %d', $i), 'sanitize_callback' => 'sanitize_text_field'));
+        $wp_customize->add_control("fc_title_$i", array('label' => sprintf(__('Заголовок карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'text'));
+
+        $wp_customize->add_setting("fc_desc_$i", array('default' => 'Краткое описание карточки.', 'sanitize_callback' => 'sanitize_textarea_field'));
+        $wp_customize->add_control("fc_desc_$i", array('label' => sprintf(__('Описание карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'textarea'));
+
+        $wp_customize->add_setting("fc_link_$i", array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
+        $wp_customize->add_control("fc_link_$i", array('label' => sprintf(__('Ссылка карточки %d', 'city-library'), $i), 'section' => 'featured_cards_section', 'type' => 'url'));
+    }
 
     // Promo Section
     $wp_customize->add_section('promo_section', array(
@@ -901,18 +1676,52 @@ add_action('init', 'city_library_disable_comments_admin_bar');
  */
 class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
     function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
-        $classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4';
-        $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($classes) . '">' . esc_html($item->title) . '</a>';
+        // Base classes for the link
+        $link_classes = 'text-sm font-semibold hover:text-primary transition-all whitespace-nowrap hover:underline decoration-2 underline-offset-4 flex items-center justify-between w-full';
+
+        // Add parent wrapper li
+        // Changed 'group' to 'group/menuitem' to isolate hover state
+        $li_classes = 'group/menuitem relative py-2 lg:py-0';
+        if ($args->has_children) {
+            $li_classes .= ' has-children';
+        }
+        $output .= '<li class="' . esc_attr($li_classes) . '">';
+
+        // Check if item has children to add toggle button logic
+        if ($args->has_children) {
+            $output .= '<div class="flex items-center justify-between w-full">';
+            $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
+            // Mobile Toggle Button (Visible on mobile, hidden on desktop hover)
+            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
+            // Desktop Arrow (Visual only, handled by group-hover/menuitem)
+            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
+            $output .= '</div>';
+        } else {
+            $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
+        }
     }
+
     function end_el(&$output, $item, $depth = 0, $args = null) {
-        $output .= "";
+        $output .= "</li>";
     }
+
     function start_lvl(&$output, $depth = 0, $args = null) {
-        $output .= "";
+        // Submenu UL classes
+        // Desktop: absolute, top-full, opacity-0/invisible by default, fade in on group-hover/menuitem
+        // Mobile: hidden by default, block when toggled (via JS), relative/indented
+        $ul_classes = 'submenu hidden lg:block lg:absolute lg:top-full lg:left-0 lg:min-w-[200px] lg:bg-white lg:shadow-xl lg:rounded-xl lg:border lg:border-slate-100 lg:p-2 z-50 transition-all duration-300 ease-in-out origin-top bg-transparent lg:bg-white mt-2 lg:mt-4 space-y-1';
+
+        // Desktop Transitions
+        $ul_classes .= ' lg:opacity-0 lg:invisible lg:translate-y-2';
+        $ul_classes .= ' lg:group-hover/menuitem:opacity-100 lg:group-hover/menuitem:visible lg:group-hover/menuitem:translate-y-0';
+
+        $output .= '<ul class="' . esc_attr($ul_classes) . '">';
     }
+
     function end_lvl(&$output, $depth = 0, $args = null) {
-        $output .= "";
+        $output .= "</ul>";
     }
+
     function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output) {
         $id_field = $this->db_fields['id'];
         if (is_object($args[0])) {
@@ -1046,13 +1855,108 @@ function city_library_dynamic_styles() {
     $btn_text = get_theme_mod('global_btn_text_color', '#FFFFFF');
     $btn_hover_bg = get_theme_mod('global_btn_hover_bg_color', '#096328');
     $btn_hover_text = get_theme_mod('global_btn_hover_text_color', '#FFFFFF');
+
+    // Slider Buttons
+    $slider_btn_bg = get_theme_mod('slider_btn_bg_color', '#FFFFFF');
+    $slider_btn_icon = get_theme_mod('slider_btn_icon_color', '#334155');
+    $slider_btn_hover_bg = get_theme_mod('slider_btn_hover_bg_color', '#0b7930');
+    $slider_btn_hover_icon = get_theme_mod('slider_btn_hover_icon_color', '#FFFFFF');
+    $slider_btn_radius = get_theme_mod('slider_btn_radius', '9999px');
+
+    // Read More Buttons
+    $read_more_bg = get_theme_mod('read_more_btn_bg_color', 'transparent');
+    $read_more_text = get_theme_mod('read_more_btn_text_color', '#0b7930');
+    $read_more_hover_bg = get_theme_mod('read_more_btn_hover_bg_color', 'transparent');
+    $read_more_hover_text = get_theme_mod('read_more_btn_hover_text_color', '#096328');
+    $read_more_underline = get_theme_mod('read_more_show_underline', true) ? 'underline' : 'none';
+    $read_more_radius = get_theme_mod('read_more_btn_radius', '9999px');
+
+    $primary_color = get_theme_mod('primary_color', '#0b7930');
+    $secondary_color = get_theme_mod('secondary_color', '#1A3C34');
+    $bg_body = get_theme_mod('bg_body_color', '#f6f8f6');
+    $link_color = get_theme_mod('global_link_color', '#0b7930');
+    $link_hover_color = get_theme_mod('global_link_hover_color', '#096328');
+    $radius = get_theme_mod('global_border_radius', '2rem');
+    $width = get_theme_mod('global_container_width', '80%');
+
+    // Mobile Menu
+    $mob_menu_bg = get_theme_mod('mobile_menu_bg_color', '#ffffff');
+    $mob_menu_icon = get_theme_mod('mobile_menu_icon_color', '#64748b');
+    $mob_menu_active = get_theme_mod('mobile_menu_active_color', '#0b7930');
+    $mob_menu_font_color = get_theme_mod('mobile_menu_font_color', '#64748b');
+    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Inter');
     ?>
     <style type="text/css">
         :root {
+            --primary-color: <?php echo esc_attr($primary_color); ?>;
+            --secondary-color: <?php echo esc_attr($secondary_color); ?>;
+            --bg-body: <?php echo esc_attr($bg_body); ?>;
+
+            --global-link-color: <?php echo esc_attr($link_color); ?>;
+            --global-link-hover-color: <?php echo esc_attr($link_hover_color); ?>;
+
+            --mob-menu-bg: <?php echo esc_attr($mob_menu_bg); ?>;
+            --mob-menu-icon: <?php echo esc_attr($mob_menu_icon); ?>;
+            --mob-menu-active: <?php echo esc_attr($mob_menu_active); ?>;
+            --mob-menu-font-color: <?php echo esc_attr($mob_menu_font_color); ?>;
+            --mob-menu-font: "<?php echo esc_js($mob_menu_font); ?>", sans-serif;
+
             --btn-bg: <?php echo esc_attr($btn_bg); ?>;
             --btn-text: <?php echo esc_attr($btn_text); ?>;
             --btn-hover-bg: <?php echo esc_attr($btn_hover_bg); ?>;
             --btn-hover-text: <?php echo esc_attr($btn_hover_text); ?>;
+
+            --slider-btn-bg: <?php echo esc_attr($slider_btn_bg); ?>;
+            --slider-btn-icon: <?php echo esc_attr($slider_btn_icon); ?>;
+            --slider-btn-hover-bg: <?php echo esc_attr($slider_btn_hover_bg); ?>;
+            --slider-btn-hover-icon: <?php echo esc_attr($slider_btn_hover_icon); ?>;
+            --slider-btn-radius: <?php echo esc_attr($slider_btn_radius); ?>;
+
+            --read-more-bg: <?php echo esc_attr($read_more_bg); ?>;
+            --read-more-text: <?php echo esc_attr($read_more_text); ?>;
+            --read-more-hover-bg: <?php echo esc_attr($read_more_hover_bg); ?>;
+            --read-more-hover-text: <?php echo esc_attr($read_more_hover_text); ?>;
+            --read-more-underline: <?php echo esc_attr($read_more_underline); ?>;
+            --read-more-radius: <?php echo esc_attr($read_more_radius); ?>;
+
+            --global-radius: <?php echo esc_attr($radius); ?>;
+        }
+
+        /* Global Color Override for Tailwind Config (via CSS Var) */
+        .text-primary { color: var(--primary-color) !important; }
+        .bg-primary { background-color: var(--primary-color) !important; }
+        .border-primary { border-color: var(--primary-color) !important; }
+        .hover\:bg-primary:hover { background-color: var(--primary-color) !important; }
+        .focus\:ring-primary:focus { --tw-ring-color: var(--primary-color) !important; }
+
+        body {
+            background-color: var(--bg-body) !important;
+        }
+
+        /* Global Links */
+        /* Applying to general content areas to avoid breaking specific navs */
+        .content-area a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn),
+        .entry-content a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn),
+        .text-link {
+            color: var(--global-link-color);
+            transition: color 0.3s ease;
+        }
+        .content-area a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn):hover,
+        .entry-content a:not(.btn):not(.button):not(.read-more-btn):not(.slider-nav-btn):not(.wp-block-button__link):not(.important-btn):not(.promo-btn):hover,
+        .text-link:hover {
+            color: var(--global-link-hover-color);
+        }
+
+        /* Global Radius Apply */
+        .rounded-\[2rem\], .rounded-\[2\.5rem\], .rounded-2xl {
+            border-radius: var(--global-radius) !important;
+        }
+
+        /* Container Width Apply */
+        @media (min-width: 1024px) {
+            .lg\:max-w-\[80\%\] {
+                max-width: <?php echo esc_attr($width); ?> !important;
+            }
         }
 
         /* Global Buttons */
@@ -1063,6 +1967,36 @@ function city_library_dynamic_styles() {
         button:hover, .button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .wp-block-button__link:hover {
             background-color: var(--btn-hover-bg) !important;
             color: var(--btn-hover-text) !important;
+        }
+
+        /* Slider Navigation Buttons */
+        .slider-nav-btn {
+            background-color: var(--slider-btn-bg) !important;
+            color: var(--slider-btn-icon) !important;
+            border-radius: var(--slider-btn-radius) !important;
+        }
+        .slider-nav-btn:hover {
+            background-color: var(--slider-btn-hover-bg) !important;
+            color: var(--slider-btn-hover-icon) !important;
+        }
+        .slider-nav-btn span {
+            color: inherit !important;
+        }
+
+        /* Read More / Details Buttons */
+        .read-more-btn {
+            background-color: var(--read-more-bg) !important;
+            color: var(--read-more-text) !important;
+            text-decoration: var(--read-more-underline) !important;
+            border-radius: var(--read-more-radius) !important;
+            padding: 0.5rem 1rem !important; /* py-2 px-4 */
+        }
+        .read-more-btn:hover {
+            background-color: var(--read-more-hover-bg) !important;
+            color: var(--read-more-hover-text) !important;
+        }
+        .read-more-btn span { /* For arrows */
+             color: inherit !important;
         }
 
         /* Header Settings */
@@ -1116,6 +2050,49 @@ function city_library_dynamic_styles() {
         /* Afisha Font */
         .afisha-custom-title {
             font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Inter')); ?>", sans-serif !important;
+        }
+
+        /* Pagination Styling */
+        .navigation.pagination {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .page-numbers {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0 0.5rem;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            color: var(--primary-color);
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .page-numbers:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .page-numbers.current {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .page-numbers.dots {
+            border: none;
+            background: transparent;
+            color: #64748b;
         }
     </style>
     <?php
@@ -1200,3 +2177,39 @@ function city_library_schema_json_ld() {
     }
 }
 add_action('wp_head', 'city_library_schema_json_ld');
+
+/**
+ * AJAX handler for Voice Control: "Все библиотеки" Custom Map Fetch
+ */
+function city_library_get_map_shortcode() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+
+    // We assume there's a custom template part or a known structure that renders the Yandex map.
+
+    ob_start();
+    // Render the `branches-map` template part
+    get_template_part('template-parts/branches-map');
+
+    $html = ob_get_clean();
+
+    // Fallback if template part doesn't exist
+    if (empty(trim($html))) {
+        $html = '<div class="p-8 text-center text-slate-500 bg-slate-50 rounded-2xl">
+            <span class="material-symbols-rounded text-4xl mb-2 text-slate-400">map</span>
+            <p>Карта со всеми филиалами загружается...</p>
+            <p class="text-sm mt-2">Пожалуйста, перейдите в раздел "Контакты" для просмотра.</p>
+        </div>';
+    }
+
+    wp_send_json_success(['html' => $html]);
+}
+add_action('wp_ajax_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
+add_action('wp_ajax_nopriv_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
+
+// Enqueue Chat Theme CSS
+function city_library_enqueue_chat_themes() {
+    if (get_theme_mod('enable_ai_librarian', false)) {
+        wp_enqueue_style('ai-chat-themes', get_template_directory_uri() . '/css/ai-chat-themes.css', array(), wp_get_theme()->get('Version'));
+    }
+}
+add_action('wp_enqueue_scripts', 'city_library_enqueue_chat_themes', 20);
