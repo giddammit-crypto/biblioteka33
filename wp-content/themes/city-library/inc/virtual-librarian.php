@@ -11,7 +11,7 @@ function city_library_ai_customizer($wp_customize) {
         'priority' => 160,
     ));
 
-    $wp_customize->add_setting('enable_ai_librarian', array('default' => false, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_setting('enable_ai_librarian', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
     $wp_customize->add_control('enable_ai_librarian', array(
         'label' => __('Включить текстовый виджет чата ИИ', 'city-library'),
         'section' => 'virtual_librarian_section',
@@ -487,20 +487,23 @@ if (!wp_next_scheduled('city_library_daily_cron')) {
 
 // 2. Render Frontend Chat Widget
 function city_library_render_ai_librarian() {
-    if (!get_theme_mod('enable_ai_librarian', false)) {
-        return;
-    }
-
-    // Force strict authorized only check
+    // Force strict authorized only check - ONLY visible to logged in users
     if (!is_user_logged_in()) {
         return;
     }
 
+    // If enabled in customizer. Default to true.
+    // We use a more robust check to ensure it's not blocked by missing settings.
+    $is_enabled = get_theme_mod('enable_ai_librarian', true);
+    if ($is_enabled === false || $is_enabled === '0' || $is_enabled === 0) {
+        return;
+    }
+
     ?>
-    <div id="ai-librarian-widget" class="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 z-[9999] flex flex-col items-end w-[calc(100%-2rem)] sm:w-auto">
+    <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-80 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
-        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?>">
+        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
             <!-- Header -->
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-20 shrink-0">
                 <div class="flex items-center gap-3">
@@ -627,10 +630,12 @@ function city_library_render_ai_librarian() {
             <div class="px-4 pb-3 bg-white text-[10px] text-slate-400 text-center leading-tight">
                 ИИ может ошибаться! Всегда проверяйте полученные от ИИ данные!
             </div>
-        </div>
+                </div> <!-- Close Main Chat Area (DIV 6) -->
+            </div> <!-- Close flex flex-grow container (DIV 4) -->
+        </div> <!-- Close ai-chat-window (DIV 2) -->
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden shrink-0 pointer-events-auto" aria-label="Чат с Виртуальным библиотекарем">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
             <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10" aria-hidden="true">support_agent</span>
             <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10" aria-hidden="true">chat</span>
@@ -644,10 +649,14 @@ add_action('wp_footer', 'city_library_render_ai_librarian');
 
 // 3. Enqueue Script
 function city_library_enqueue_ai_script() {
-    if (!get_theme_mod('enable_ai_librarian', false)) return;
-
     // Force strict authorized only check
     if (!is_user_logged_in()) return;
+
+    // If disabled in customizer. Default to true.
+    $is_enabled = get_theme_mod('enable_ai_librarian', true);
+    if ($is_enabled === false || $is_enabled === '0' || $is_enabled === 0) {
+        return;
+    }
 
     // Enqueue marked.js for robust markdown parsing
     wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
