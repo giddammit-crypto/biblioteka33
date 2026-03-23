@@ -178,8 +178,11 @@ p, li, .entry-content p, .entry-content li {
 
 /* Ensure images inside post content don't overflow */
 .entry-content img,
+.news-content img,
 .entry-content iframe,
-.entry-content video {
+.news-content iframe,
+.entry-content video,
+.news-content video {
     max-width: 100% !important;
     height: auto !important;
     border-radius: 0.75rem;
@@ -235,7 +238,8 @@ p, li, .entry-content p, .entry-content li {
 #ai-chat-messages .prose img, #voice-ai-answer-text.prose img { width: 100%; border-radius: 0.75rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
 
 /* Image Alignment Classes (WordPress Standard) */
-.aligncenter, .wp-block-image.aligncenter, .wp-block-video.aligncenter, .wp-block-embed.aligncenter {
+.aligncenter, .wp-block-image.aligncenter, .wp-block-video.aligncenter, .wp-block-embed.aligncenter,
+.news-content .aligncenter {
     display: block !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -243,13 +247,15 @@ p, li, .entry-content p, .entry-content li {
     text-align: center;
 }
 
-.alignleft, .wp-block-image.alignleft, .wp-block-video.alignleft, .wp-block-embed.alignleft {
+.alignleft, .wp-block-image.alignleft, .wp-block-video.alignleft, .wp-block-embed.alignleft,
+.news-content .alignleft {
     float: left;
     margin-right: 1.5rem !important;
     margin-bottom: 1.5rem !important;
 }
 
-.alignright, .wp-block-image.alignright, .wp-block-video.alignright, .wp-block-embed.alignright {
+.alignright, .wp-block-image.alignright, .wp-block-video.alignright, .wp-block-embed.alignright,
+.news-content .alignright {
     float: right;
     margin-left: 1.5rem !important;
     margin-bottom: 1.5rem !important;

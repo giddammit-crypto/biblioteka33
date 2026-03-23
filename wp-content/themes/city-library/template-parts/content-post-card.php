@@ -56,20 +56,20 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Title -->
         <h3 class="text-2xl lg:text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-yellow-400 lg:hover:text-primary focus:outline-none focus:underline text-white lg:landscape:text-inherit line-clamp-3 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none z-20 [&_p]:text-[inherit] news-card-title-link" style="--title-color: <?php echo esc_attr($title_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-yellow-400 lg:text-inherit focus:outline-none focus:underline text-white line-clamp-3 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none z-20 [&_p]:text-[inherit] news-card-title-link" style="--title-color: <?php echo esc_attr($title_color); ?>;">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-[15px] lg:text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:landscape:text-inherit pointer-events-auto drop-shadow-sm lg:drop-shadow-none font-medium lg:font-normal relative z-20 [&_p]:text-[inherit] news-card-excerpt-text" style="--text-color: <?php echo esc_attr($text_color); ?>;">
+        <div class="text-[15px] lg:text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:text-inherit pointer-events-auto drop-shadow-sm lg:drop-shadow-none font-medium lg:font-normal relative z-20 [&_p]:text-[inherit] news-card-excerpt-text" style="--text-color: <?php echo esc_attr($text_color); ?>;">
             <?php the_excerpt(); ?>
         </div>
 
         <!-- Footer / Link -->
         <div class="pt-4 lg:mt-auto border-t border-white/20 lg:border-slate-200 flex items-center justify-between pointer-events-auto relative z-20">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:landscape:text-inherit drop-shadow-md lg:drop-shadow-none hover:text-yellow-400 lg:hover:text-primary/80 news-card-link" style="--link-color: <?php echo esc_attr($link_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:text-inherit drop-shadow-md lg:drop-shadow-none hover:text-yellow-400 lg:hover:text-primary/80 news-card-link" style="--link-color: <?php echo esc_attr($link_color); ?>;">
                 <?php _e('Читать полностью', 'city-library'); ?>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
             </a>

@@ -40,11 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const cleanHref = processedHref.replace(/\s/g, '%20');
 
             return `
-                <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm">
-                    <img src="${cleanHref}" alt="${imgText || 'Сгенерированное изображение'}" style="max-width:100%; height:auto; display:block;" class="transition-transform duration-500 group-hover:scale-105 bg-slate-50 min-h-[100px] w-full max-h-[350px] object-cover" onerror="this.outerHTML='<div class=\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\'>⚠️ Ошибка загрузки.</div>'">
-                    <div class="image-controls absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
-                        <a href="${cleanHref}" target="_blank" download="Library_Poster.png" class="btn-download flex items-center gap-1.5 px-4 py-2 bg-white/90 text-slate-800 font-bold text-sm rounded-lg hover:bg-white hover:-translate-y-0.5 hover:shadow-lg transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">download</span> Скачать плакат
+                <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm bg-slate-100">
+                    <a href="${cleanHref}" class="glightbox block" data-gallery="ai-chat-gallery" data-title="${imgText || 'Сгенерированное изображение'}">
+                        <img src="${cleanHref}" alt="${imgText || 'Сгенерированное изображение'}" style="max-width:100%; height:auto; display:block;" class="transition-transform duration-500 group-hover:scale-105 bg-slate-50 min-h-[200px] w-full max-h-[450px] object-contain mx-auto" onerror="this.outerHTML='<div class=\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\'>⚠️ Ошибка загрузки.</div>'">
+                        <div class="image-controls absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
+                             <span class="material-symbols-outlined text-white text-4xl drop-shadow-md" aria-hidden="true">zoom_in</span>
+                        </div>
+                    </a>
+                    <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                        <a href="${cleanHref}" target="_blank" download="Library_Poster.png" class="btn-download flex items-center gap-1.5 px-3 py-1.5 bg-white/90 text-slate-800 font-bold text-xs rounded-lg hover:bg-white hover:shadow-lg transition-all shadow-sm">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span> Скачать
                         </a>
                     </div>
                 </div>
@@ -328,6 +333,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Re-initialize GLightbox if a new message was added with images
+        if (typeof GLightbox !== 'undefined') {
+            GLightbox({
+                selector: '.glightbox',
+                touchNavigation: true,
+                loop: true,
+                zoomable: true
+            });
+        }
     }
 
     // Escape user input to prevent XSS (Hoisted for reuse)

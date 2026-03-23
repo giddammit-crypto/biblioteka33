@@ -878,9 +878,36 @@ function city_library_handle_ai_chat() {
         $image_url = '';
         $used_model = '';
 
-        // Translate prompt to English for better results (simulated by appending English context)
-        $english_hint = " (Style: high quality, library related, educational poster, professional)";
-        $final_prompt = $draw_prompt . $english_hint;
+        // Improved Prompt Refinement via LLM
+        $refine_body = array(
+            'model' => $model, // Use the primary LLM to refine the prompt
+            'messages' => array(
+                array('role' => 'system', 'content' => 'You are a prompt engineer for stable diffusion. Your task is to translate the user\'s Russian image request into a detailed, professional English prompt for high-quality library-related art or posters. Return ONLY the English prompt, no extra text.'),
+                array('role' => 'user', 'content' => $draw_prompt)
+            )
+        );
+
+        $refine_args = array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $api_key,
+                'HTTP-Referer'  => home_url(),
+                'Content-Type'  => 'application/json',
+            ),
+            'body' => wp_json_encode($refine_body),
+            'timeout' => 15
+        );
+
+        $refine_response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $refine_args);
+        $final_prompt = $draw_prompt; // Fallback
+
+        if (!is_wp_error($refine_response) && wp_remote_retrieve_response_code($refine_response) === 200) {
+            $refine_data = json_decode(wp_remote_retrieve_body($refine_response), true);
+            if (!empty($refine_data['choices'][0]['message']['content'])) {
+                $final_prompt = trim($refine_data['choices'][0]['message']['content']);
+                // Ensure common library quality keywords are present
+                $final_prompt .= ", professional library poster style, highly detailed, 4k, educational context";
+            }
+        }
 
         foreach ($image_models as $img_model) {
             $request_body = array(
