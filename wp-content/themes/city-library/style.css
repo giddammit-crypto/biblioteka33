@@ -16,14 +16,16 @@ html, body {
 }
 
 /* News Card Responsive Visibility Helpers */
-.news-card-title-link {
-    color: white !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
+@media (max-width: 1023px) {
+    .news-card-title-link {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
 
-.news-card-excerpt-text {
-    color: white !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    .news-card-excerpt-text {
+        color: white !important;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
 }
 
 .news-card-excerpt-text p {
@@ -32,15 +34,34 @@ html, body {
 
 /* Firefox Specific Layout & Visibility Fixes */
 @-moz-document url-prefix() {
+    /* Broadly disable will-change in Firefox to prevent rendering bugs on scroll */
+    .animate-on-scroll,
+    .news-card-excerpt-text,
+    .news-card-title-link,
+    .news-card-link {
+        will-change: auto !important;
+        backface-visibility: visible !important;
+    }
+
     .news-card-excerpt-text,
     .news-card-title-link,
     .news-card-link {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        backface-visibility: hidden !important;
-        transform: translate3d(0, 0, 0) !important;
-        will-change: auto !important; /* Disable will-change to prevent flicker */
+        /* Remove 3D transform that might trigger rendering lag in some FF versions */
+        transform: none !important;
+        /* Ensure text is always on top */
+        position: relative;
+        z-index: 20;
+    }
+
+    /* Force AOS elements to be visible if they are causing issues in FF */
+    .animate-on-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
     }
 
     /* Support for line-clamp in Firefox */

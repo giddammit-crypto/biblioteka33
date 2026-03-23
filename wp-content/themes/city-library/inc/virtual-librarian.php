@@ -944,7 +944,8 @@ function city_library_handle_ai_chat() {
                 'messages' => array(
                     array('role' => 'user', 'content' => $final_prompt)
                 ),
-                'modalities' => array('image', 'text')
+                'modalities' => array('image', 'text'),
+                'response_format' => array('type' => 'url') // Explicitly request URL if supported by the provider
             );
 
             $api_args = array(

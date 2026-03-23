@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveHistory() {
         try {
+            // Keep only the last 50 messages to stay within storage limits
             const historyToSave = chatHistory.slice(-50);
             const data = {
                 timestamp: new Date().getTime(),
@@ -98,6 +99,18 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                // If we hit the limit, try saving only the last 10 messages (emergency cleanup)
+                try {
+                    const criticalHistory = chatHistory.slice(-10);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                        timestamp: new Date().getTime(),
+                        messages: criticalHistory
+                    }));
+                } catch (innerE) {
+                    localStorage.removeItem(STORAGE_KEY);
+                }
+            }
             console.error('Failed to save chat history', e);
         }
     }
