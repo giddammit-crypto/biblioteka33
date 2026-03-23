@@ -79,7 +79,7 @@ function city_library_block_editor_assets() {
     wp_enqueue_script(
         'city-library-editor-ai',
         get_template_directory_uri() . '/js/editor-librarian.js',
-        array('wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'jquery'),
+        array('wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-rich-text', 'wp-i18n', 'jquery'),
         filemtime(get_template_directory() . '/js/editor-librarian.js'),
         true
     );

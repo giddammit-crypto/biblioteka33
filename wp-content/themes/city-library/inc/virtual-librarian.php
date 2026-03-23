@@ -911,7 +911,7 @@ function city_library_handle_ai_chat() {
         $refine_body = array(
             'model' => $model, // Use the primary LLM to refine the prompt
             'messages' => array(
-                array('role' => 'system', 'content' => 'You are a prompt engineer for stable diffusion. Your task is to translate the user\'s Russian image request into a detailed, professional English prompt for high-quality library-related art or posters. Return ONLY the English prompt, no extra text.'),
+                array('role' => 'system', 'content' => 'You are a professional prompt engineer for AI image generators (like Flux) that can render text correctly. Your task is to transform Russian requests into high-quality English prompts. MANDATORY: You must explicitly instruct the model to write any text, titles, or inscriptions on the image in the RUSSIAN language (Cyrillic), using quotes like "Text in Russian". Example: "a poster with the Russian text: КНИГА". Return ONLY the refined English prompt, no extra text.'),
                 array('role' => 'user', 'content' => $draw_prompt)
             )
         );
@@ -1038,6 +1038,7 @@ function city_library_handle_ai_chat() {
     }
 
     $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Виртуальный библиотекарь. Отвечай от женского лица.
+    ВАЖНО: Если пользователь просит сгенерировать изображение (афишу, плакат, открытку), ты должен составить запрос так, чтобы текст на этом изображении был на РУССКОМ ЯЗЫКЕ.
     Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
     НЕ НАДО постоянно здороваться в каждом сообщении. Отвечай по существу запроса.

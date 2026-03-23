@@ -80,9 +80,9 @@ html, body {
 
     /* Stacking Context Fixes */
     article.group .news-card-image-container {
-        z-index: 1 !important; /* Low but positive */
+        z-index: 0 !important;
         position: absolute !important;
-        filter: blur(0); /* Known Firefox fix for rendering layers */
+        filter: blur(0) !important; /* Known Firefox fix for rendering layers */
     }
 
     article.group .news-card-content-wrapper {
@@ -90,7 +90,14 @@ html, body {
         position: relative !important;
         background: transparent !important;
         opacity: 0.999 !important; /* Force its own stacking context */
-        filter: blur(0);
+        filter: blur(0) !important;
+    }
+
+    /* Article structure fix for rounded overflows in Firefox */
+    article.group {
+        background-clip: padding-box !important;
+        -moz-appearance: none;
+        isolation: isolate !important;
     }
 
     /* Reliable Line Clamping for Firefox - avoiding display:block conflicts */
