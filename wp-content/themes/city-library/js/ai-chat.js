@@ -134,11 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
         chatWindow.classList.toggle('!rounded-none');
 
         // Disable default dimensional classes
-        chatWindow.classList.toggle('sm:w-[400px]');
+        chatWindow.classList.toggle('sm:w-[650px]');
         chatWindow.classList.toggle('h-[65vh]');
-        chatWindow.classList.toggle('max-h-[550px]');
+        chatWindow.classList.toggle('max-h-[600px]');
         chatWindow.classList.toggle('sm:max-h-none');
-        chatWindow.classList.toggle('sm:h-[550px]');
+        chatWindow.classList.toggle('sm:h-[600px]');
         chatWindow.classList.toggle('mb-4');
         chatWindow.classList.toggle('rounded-3xl');
 

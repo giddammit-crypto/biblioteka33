@@ -499,9 +499,9 @@ function city_library_render_ai_librarian() {
     <div id="ai-librarian-widget" class="fixed bottom-6 right-4 sm:right-6 z-[100] flex flex-col items-end w-[calc(100%-2rem)] sm:w-auto">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
-        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[400px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[550px] sm:max-h-none sm:h-[550px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?>">
+        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?>">
             <!-- Header -->
-            <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-10 shrink-0">
+            <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-20 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
                         <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
@@ -523,76 +523,94 @@ function city_library_render_ai_librarian() {
                 </div>
             </div>
 
-            <!-- Messages Area -->
-            <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto bg-slate-50 flex flex-col gap-4 text-sm custom-scrollbar scroll-smooth">
-                <!-- Welcome Message -->
-                <div class="flex gap-2">
-                    <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
-                        <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
+            <div class="flex flex-grow overflow-hidden relative">
+                <!-- Sidebar (Desktop only or Drawer style) -->
+                <div id="ai-chat-sidebar" class="hidden sm:flex flex-col w-[200px] bg-slate-900 text-slate-300 border-r border-slate-800 shrink-0 overflow-y-auto custom-scrollbar p-2 py-4 gap-1 z-10 shadow-xl">
+                    <div class="px-3 mb-4 flex flex-col gap-1">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Библиотекарь</span>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/80 transition-all text-left shadow-lg shadow-primary/20 group" data-command="/help">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">help</span> Справка / Гид
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-900 bg-yellow-400 hover:bg-yellow-500 transition-all text-left shadow-lg shadow-yellow-500/10" data-command="/aimg">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">palette</span> Генератор фото
+                        </button>
                     </div>
-                    <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
-                        Здравствуйте! Я виртуальный помощник Центральной городской библиотеки. Я могу подсказать, как к нам проехать, узнать часы работы, или помочь вам с написанием сценариев и подбором литературы. Чем могу помочь?
+
+                    <div class="px-3 flex flex-col gap-0.5">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 mt-2">Инструменты</span>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/anniversaries">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">cake</span> Юбиляры
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/work_plan">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">calendar_today</span> План работы
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/social_post">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">share</span> Пост ВК
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/script">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">movie_edit</span> Сценарий
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/bib_list">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">format_list_bulleted</span> Библ. список
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/inventory">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">inventory</span> Фонд
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/gost">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">gavel</span> ГОСТ 7.0.100
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/exhibitions">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">stars</span> Выставки
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/vladimir_history">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">castle</span> Краеведение
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] hover:bg-white/5 hover:text-white transition-all text-left" data-command="/prof_resources">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">school</span> Ресурсы
+                        </button>
+                    </div>
+
+                    <div class="mt-auto px-3 pt-4 border-t border-slate-800 flex flex-col gap-0.5">
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-primary transition-all text-left" data-command="/emoji">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">sentiment_satisfied</span> Смайлики
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-primary transition-all text-left" data-command="/stat">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">bar_chart</span> Статистика
+                        </button>
+                        <button class="ai-quick-action-btn w-full flex items-center gap-3 px-3 py-2 rounded-lg text-[11px] text-red-400 hover:bg-red-500/10 transition-all text-left" data-command="/clear">
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span> Очистить чат
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Quick Actions Bar -->
-            <div class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-inner">
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/anniversaries">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">cake</span>
-                    Писатели юбиляры
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/work_plan">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">calendar_today</span>
-                    План работы
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/social_post">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">share</span>
-                    Пост в соцсети
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/script">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">movie_edit</span>
-                    Сценарий
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/bib_list">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">format_list_bulleted</span>
-                    Библ. список
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/inventory">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">inventory</span>
-                    Проверка фонда
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/emoji">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">sentiment_satisfied</span>
-                    Смайлики
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/stat">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
-                    Статистика
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/gost">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">gavel</span>
-                    ГОСТ 7.0.100
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/exhibitions">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">stars</span>
-                    Идеи выставок
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/vladimir_history">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">castle</span>
-                    Краеведение Владимир
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/prof_resources">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">school</span>
-                    Проф. ресурсы
-                </button>
-                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/method_recs">
-                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">fact_check</span>
-                    Метод. рекомендации
-                </button>
-            </div>
+                <!-- Main Chat Area -->
+                <div class="flex-grow flex flex-col min-w-0 bg-slate-50 relative">
+                    <!-- Mobile Tools Toggle (Horizontal Scroll on Mobile) -->
+                    <div class="sm:hidden px-3 py-2 bg-white border-b border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-sm">
+                        <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white rounded-full transition-all shadow-sm font-bold" data-command="/help">
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">help</span> Инфо
+                        </button>
+                        <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-yellow-400 text-slate-900 rounded-full transition-all shadow-sm font-bold" data-command="/aimg">
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">palette</span> Фото
+                        </button>
+                        <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/anniversaries">Юбиляры</button>
+                        <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/social_post">Пост ВК</button>
+                        <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/clear">Очистить</button>
+                    </div>
 
-            <!-- Input Area -->
+                    <div id="ai-chat-messages" class="flex-grow p-4 sm:p-6 overflow-y-auto flex flex-col gap-6 text-sm custom-scrollbar scroll-smooth">
+                        <!-- Welcome Message -->
+                        <div class="flex gap-2">
+                            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
+                                <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
+                                Здравствуйте! Я Вероника, ваш виртуальный библиотекарь. 📚 Слева расположены быстрые инструменты для работы. Чем могу помочь?
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
                 <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx">
                 <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
@@ -671,34 +689,33 @@ function city_library_handle_ai_chat() {
         ));
     }
 
-    // Command: /help
-    if (strpos($clean_msg, '/help') === 0 || strpos($clean_msg, 'команды') === 0) {
-        $commands = "🛠️ **Доступные команды Виртуального библиотекаря:**\n\n";
+    // Command: /help (Enhanced User Guide)
+    if (strpos($clean_msg, '/help') === 0 || strpos($clean_msg, 'справка') === 0) {
+        $guide = "📖 **Гид пользователя: Как работать с Виртуальным библиотекарем**\n\n";
 
-        $commands .= "🔹 **Общие и Поиск:**\n";
-        $commands .= "- `/help` — Показать этот список команд\n";
-        $commands .= "- `/opac [запрос]` — Умный поиск книги в электронном каталоге\n";
-        $commands .= "- `/stat` — Статистика обновлений базы знаний сайта\n";
-        $commands .= "- `/aimg [описание]` — Сгенерировать изображение (плакат, афишу)\n";
-        $commands .= "- `/emoji` — 50 тематических эмодзи для соцсетей\n";
-        $commands .= "- `/clear` — Очистить историю этого чата\n\n";
+        $guide .= "### 🚀 Как пользоваться кнопками?\n";
+        $guide .= "Кнопки в боковой панели — это ваши «горячие клавиши». \n";
+        $guide .= "1. **Просто нажать:** Нажмите на «Юбиляры», чтобы сразу получить список писателей.\n";
+        $guide .= "2. **Написать + Нажать:** Введите тему (например, *«Пушкин»*) в поле ввода и нажмите кнопку «Пост ВК». Я напишу пост именно про Пушкина.\n\n";
 
-        $commands .= "🔹 **Инструменты Библиотекаря:**\n";
-        $commands .= "- `/anniversaries` — Список писателей-юбиляров на ближайшее время\n";
-        $commands .= "- `/work_plan` — Помощь в составлении плана работы\n";
-        $commands .= "- `/social_post` — Написать черновик поста для соцсетей\n";
-        $commands .= "- `/script` — Создать сценарий мероприятия\n";
-        $commands .= "- `/bib_list` — Составить библиографический список\n";
-        $commands .= "- `/inventory` — Методическая помощь в проверке фонда\n";
-        $commands .= "- `/gost` — Оформление по ГОСТ 7.0.100\n";
-        $commands .= "- `/exhibitions` — Идеи для книжных выставок\n";
-        $commands .= "- `/vladimir_history` — Краеведческая справка (Владимир)\n";
-        $commands .= "- `/prof_resources` — Профессиональные ресурсы\n";
-        $commands .= "- `/method_recs` — Методические рекомендации\n\n";
+        $guide .= "### 🖼️ Генерация изображений (`/aimg`)\n";
+        $guide .= "Вы можете создавать плакаты и афиши для мероприятий.\n";
+        $guide .= "**Пример:** Нажмите кнопку «Фото» или введите: `/aimg Кот в библиотеке, акварель`. \n";
+        $guide .= "_Совет: Описывайте стиль (фото, рисунок, 3D) для лучшего результата._\n\n";
 
-        $commands .= "_Также вы можете общаться со мной на свободные темы, связанные с литературой и работой библиотеки!_";
+        $guide .= "### 🛠️ Команды и возможности:\n";
+        $guide .= "- **Библ. список:** Помогу оформить литературу. Введите тему и жмите кнопку.\n";
+        $guide .= "- **Сценарий:** Составлю план праздника или вечера.\n";
+        $guide .= "- **ГОСТ:** Проверю оформление по правилам.\n";
+        $guide .= "- **Статистика:** Узнаете, что нового появилось на нашем сайте.\n";
+        $guide .= "- **Файлы:** Скрепка слева позволяет прикрепить ваш текст (.txt, .docx), чтобы я его проанализировала.\n\n";
 
-        wp_send_json_success(array('reply' => $commands));
+        $guide .= "### 📂 Экспорт ответа\n";
+        $guide .= "Под моим ответом вы увидите кнопки: **PDF, DOCX, Почта**. Вы можете сохранить результат работы в файл или отправить себе на Email.\n\n";
+
+        $guide .= "--- \n_Я всегда готова помочь! Просто напишите свой вопрос в свободной форме._";
+
+        wp_send_json_success(array('reply' => $guide));
         return;
     }
 
