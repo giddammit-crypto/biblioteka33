@@ -34,40 +34,66 @@ html, body {
 
 /* Firefox Specific Layout & Visibility Fixes */
 @-moz-document url-prefix() {
-    /* Broadly disable will-change in Firefox to prevent rendering bugs on scroll */
+    /* Broadly disable will-change and force hardware acceleration off for problematic elements in Firefox */
     .animate-on-scroll,
     .news-card-excerpt-text,
     .news-card-title-link,
-    .news-card-link {
+    .news-card-link,
+    article.group,
+    .swiper-slide {
         will-change: auto !important;
         backface-visibility: visible !important;
+        perspective: none !important;
     }
 
+    /* Force visibility and stability for news card text */
     .news-card-excerpt-text,
     .news-card-title-link,
     .news-card-link {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        /* Remove 3D transform that might trigger rendering lag in some FF versions */
         transform: none !important;
-        /* Ensure text is always on top */
         position: relative;
-        z-index: 20;
+        z-index: 50; /* Higher z-index to stay above any misbehaving overlays */
+        /* Disable filters that cause flickering in clipped containers */
+        filter: none !important;
     }
 
-    /* Force AOS elements to be visible if they are causing issues in FF */
+    /* Disable all AOS logic for Firefox to ensure immediate content display */
     .animate-on-scroll {
         opacity: 1 !important;
+        visibility: visible !important;
         transform: none !important;
         filter: none !important;
         transition: none !important;
     }
 
-    /* Support for line-clamp in Firefox */
-    .line-clamp-3 {
-        display: -moz-box !important;
-        -moz-box-orient: vertical !important;
+    /* Fix for articles with overflow:hidden and border-radius in Firefox */
+    article.group, .news-card-content-wrapper, .news-card-image-container {
+        overflow: visible !important; /* Allow content to be seen if clipping is buggy */
+        transform: none !important; /* Disable hover movement if it triggers flickering */
+        transition: none !important; /* Disable transitions to prevent flicker during state changes */
+        isolation: isolate;
+    }
+
+    /* Ensure image container doesn't obscure text */
+    article.group .news-card-image-container {
+        z-index: -1 !important;
+        position: absolute !important;
+    }
+
+    article.group .news-card-content-wrapper {
+        z-index: 50 !important;
+        position: relative !important;
+        background: transparent !important;
+    }
+
+    /* Firefox supports standard line-clamp; custom hacks often cause flickering */
+    .line-clamp-3, .line-clamp-2, .line-clamp-4 {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
     }
 }
 
