@@ -569,6 +569,26 @@ function city_library_render_ai_librarian() {
                     <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
                     Статистика
                 </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/gost">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">gavel</span>
+                    ГОСТ 7.0.100
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/exhibitions">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">stars</span>
+                    Идеи выставок
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/vladimir_history">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">castle</span>
+                    Краеведение Владимир
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/prof_resources">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">school</span>
+                    Проф. ресурсы
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/method_recs">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">fact_check</span>
+                    Метод. рекомендации
+                </button>
             </div>
 
             <!-- Input Area -->
@@ -581,6 +601,11 @@ function city_library_render_ai_librarian() {
                 <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
                     <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">send</span>
                 </button>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="px-4 pb-3 bg-white text-[10px] text-slate-400 text-center leading-tight">
+                ИИ может ошибаться! Всегда проверяйте полученные от ИИ данные!
             </div>
         </div>
 
@@ -663,7 +688,12 @@ function city_library_handle_ai_chat() {
         $commands .= "- `/social_post` — Написать черновик поста для соцсетей\n";
         $commands .= "- `/script` — Создать сценарий мероприятия\n";
         $commands .= "- `/bib_list` — Составить библиографический список\n";
-        $commands .= "- `/inventory` — Методическая помощь в проверке фонда\n\n";
+        $commands .= "- `/inventory` — Методическая помощь в проверке фонда\n";
+        $commands .= "- `/gost` — Оформление по ГОСТ 7.0.100\n";
+        $commands .= "- `/exhibitions` — Идеи для книжных выставок\n";
+        $commands .= "- `/vladimir_history` — Краеведческая справка (Владимир)\n";
+        $commands .= "- `/prof_resources` — Профессиональные ресурсы\n";
+        $commands .= "- `/method_recs` — Методические рекомендации\n\n";
 
         $commands .= "_Также вы можете общаться со мной на свободные темы, связанные с литературой и работой библиотеки!_";
 
@@ -700,6 +730,25 @@ function city_library_handle_ai_chat() {
     }
     if (strpos($clean_msg, '/inventory') === 0) {
         $user_message = "Дай методические рекомендации по проведению плановой проверки библиотечного фонда. На что обратить внимание и какие документы подготовить?";
+    }
+    if (strpos($clean_msg, '/gost') === 0) {
+        $subject = trim(mb_substr($user_message, 5));
+        $user_message = "Составь правильное библиографическое описание" . ($subject ? " для: '{$subject}'" : " книги") . " согласно ГОСТ Р 7.0.100–2018. Разбери основные элементы описания.";
+    }
+    if (strpos($clean_msg, '/exhibitions') === 0) {
+        $subject = trim(mb_substr($user_message, 12));
+        $user_message = "Предложи 5-10 креативных и названий и идей для книжных выставок" . ($subject ? " на тему: '{$subject}'" : "") . ". Укажи целевую аудиторию и формы работы с выставкой.";
+    }
+    if (strpos($clean_msg, '/vladimir_history') === 0) {
+        $subject = trim(mb_substr($user_message, 17));
+        $user_message = "Предоставь интересную краеведческую справку" . ($subject ? " о: '{$subject}'" : " об истории города Владимира") . ". Используй только проверенные исторические факты.";
+    }
+    if (strpos($clean_msg, '/prof_resources') === 0) {
+        $user_message = "Подготовь список полезных профессиональных интернет-ресурсов для сотрудников библиотек (методические порталы, профессиональные СМИ, базы данных).";
+    }
+    if (strpos($clean_msg, '/method_recs') === 0) {
+        $subject = trim(mb_substr($user_message, 12));
+        $user_message = "Подготовь краткие методические рекомендации" . ($subject ? " по теме: '{$subject}'" : " по организации библиотечного обслуживания") . ". Структурируй ответ по пунктам.";
     }
 
     // Handle interactive Author Draft command
