@@ -149,7 +149,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Вероника.', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь.', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
         'description' => __('Инструкция для ИИ, определяющая его характер. Не рекомендуется полностью удалять.', 'city-library'),
@@ -500,10 +500,10 @@ function city_library_render_ai_librarian() {
     }
 
     ?>
-    <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-80 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
+    <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-8 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
-        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
+        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[92vw] sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
             <!-- Header -->
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-20 shrink-0">
                 <div class="flex items-center gap-3">
@@ -609,7 +609,7 @@ function city_library_render_ai_librarian() {
                                 <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
                             </div>
                             <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
-                                Здравствуйте! Я Вероника, ваш виртуальный библиотекарь. 📚 Слева расположены быстрые инструменты для работы. Чем могу помочь?
+                                Здравствуйте! Я ваш виртуальный библиотекарь. 📚 Слева расположены быстрые инструменты для работы. Чем могу помочь?
                             </div>
                         </div>
                     </div>
@@ -1036,7 +1036,7 @@ function city_library_handle_ai_chat() {
         $base_persona .= "\nВНИМАНИЕ: Текущий пользователь авторизован. Его имя: " . esc_html($user_name) . ". Обращайся к нему по имени.\n";
     }
 
-    $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Вероника. Отвечай от женского лица.
+    $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Виртуальный библиотекарь. Отвечай от женского лица.
     Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
     НЕ НАДО постоянно здороваться в каждом сообщении. Отвечай по существу запроса.

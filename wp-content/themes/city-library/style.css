@@ -32,14 +32,21 @@ html, body {
 
 /* Firefox Specific Layout & Visibility Fixes */
 @-moz-document url-prefix() {
-    .news-card-excerpt-text {
+    .news-card-excerpt-text,
+    .news-card-title-link,
+    .news-card-link {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        backface-visibility: hidden !important;
+        transform: translate3d(0, 0, 0) !important;
+        will-change: auto !important; /* Disable will-change to prevent flicker */
     }
-    .news-card-title-link {
-        display: block !important;
-        color: white !important;
+
+    /* Support for line-clamp in Firefox */
+    .line-clamp-3 {
+        display: -moz-box !important;
+        -moz-box-orient: vertical !important;
     }
 }
 
@@ -154,6 +161,38 @@ html, body {
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure Prose (Tailwind Typography) works perfectly with WordPress blocks */
+.prose {
+    max-width: none !important; /* Allow full width for aligned blocks */
+    color: #334155 !important;
+}
+
+.prose p, .prose li {
+    color: #334155 !important;
+    line-height: 1.8 !important;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 1.25rem !important;
+}
+
+.prose img {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.prose blockquote {
+    font-style: italic;
+    border-left-width: 4px;
+    border-left-color: var(--primary-color, #0b7930) !important;
+    background-color: #f8fafc;
+    padding: 1.5rem !important;
+    border-radius: 0 1rem 1rem 0;
 }
 
 p, li, .entry-content p, .entry-content li {

@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         '.news-content',
         '.wp-block-image',
         '.wp-block-gallery',
-        '.featured-cards-section',
         '.promo-section-content',
         '.important-section-link',
         '.library-branch-image-wrapper'
