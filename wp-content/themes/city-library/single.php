@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 
-<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 overflow-x-hidden relative z-0">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 relative z-0">
     <div id="primary" class="w-full transition-all duration-300 relative z-10">
 
         <?php
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative overflow-hidden break-words'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative break-words'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
