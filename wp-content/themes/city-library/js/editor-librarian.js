@@ -1,13 +1,12 @@
 (function(wp) {
     const { registerPlugin } = wp.plugins;
-    const { PluginBlockSettingsMenuItem } = wp.editPost;
     const { select, dispatch } = wp.data;
     const { useState } = wp.element;
-    const { Modal, Button, TextareaControl, Icon, Popover } = wp.components;
-    const { RichTextToolbarButton } = wp.blockEditor;
+    const { Modal, Button, TextareaControl, Icon, Popover, ToolbarGroup, ToolbarButton } = wp.components;
+    const { RichTextToolbarButton, BlockControls } = wp.blockEditor;
     const { registerFormatType, insertObject } = wp.richText;
 
-    // 1. AI Text Analysis Plugin
+    // 1. AI Text Analysis Component
     const LibrarianEditorPlugin = () => {
         const [isOpen, setIsOpen] = useState(false);
         const [originalText, setOriginalText] = useState('');
@@ -19,8 +18,12 @@
             const selectedBlock = select('core/block-editor').getSelectedBlock();
             if (!selectedBlock) return;
 
+            // Target common text-based attributes
             const content = selectedBlock.attributes.content || selectedBlock.attributes.value || '';
-            if (!content) return;
+            if (!content) {
+                alert('Сначала введите текст в блок, чтобы я могла его проанализировать.');
+                return;
+            }
 
             setOriginalText(content);
             setIsOpen(true);
@@ -34,16 +37,16 @@
                 data: {
                     action: 'city_library_ai_chat',
                     nonce: cityLibraryEditorAI.nonce,
-                    message: `Ты — литературный редактор. Улучши этот текст для сайта библиотеки, сделай его более официальным, но дружелюбным. Верни ТОЛЬКО исправленный текст без вступлений:\n\n${content}`
+                    message: `Ты — профессиональный редактор. Улучши этот текст для сайта библиотеки. Сделай его стилистически правильным, вдохновляющим и грамотным. Верни ТОЛЬКО улучшенный текст без лишних фраз:\n\n${content}`
                 },
                 success: (response) => {
                     if (response.success) {
                         setImprovedText(response.data.reply);
                     } else {
-                        setError(response.data.reply || 'Ошибка анализа');
+                        setError(response.data.reply || 'Библиотекарь сейчас занят, попробуйте позже.');
                     }
                 },
-                error: () => setError('Ошибка связи с сервером'),
+                error: () => setError('Ошибка связи с сервером. Проверьте интернет.'),
                 complete: () => setIsLoading(false)
             });
         };
@@ -59,41 +62,69 @@
             }
         };
 
+        // Determine if the currently selected block is a text block
+        const selectedBlockType = select('core/block-editor').getSelectedBlock()?.name;
+        const isTextBlock = selectedBlockType && ['core/paragraph', 'core/heading', 'core/list', 'core/quote'].includes(selectedBlockType);
+
         return (
             <>
-                <PluginBlockSettingsMenuItem
-                    icon="admin-appearance"
-                    label="Улучшить (ИИ Библиотекарь)"
-                    onClick={analyzeText}
-                />
+                {isTextBlock && (
+                    <BlockControls>
+                        <ToolbarGroup>
+                            <ToolbarButton
+                                icon="admin-appearance"
+                                label="Улучшить текст (ИИ)"
+                                onClick={analyzeText}
+                                className="ai-librarian-toolbar-btn"
+                            />
+                        </ToolbarGroup>
+                    </BlockControls>
+                )}
 
                 {isOpen && (
-                    <Modal title="Анализ текста Виртуальным библиотекарем" onRequestClose={() => setIsOpen(false)} className="ai-editor-modal">
-                        <div style={{ padding: '20px', minWidth: '400px' }}>
+                    <Modal
+                        title="✨ Анализ текста Виртуальным библиотекарем"
+                        onRequestClose={() => setIsOpen(false)}
+                        className="ai-editor-modal"
+                    >
+                        <div style={{ padding: '20px', minWidth: '450px' }}>
                             {isLoading ? (
-                                <div style={{ textAlign: 'center', padding: '40px' }}>
-                                    <Icon icon="update" className="animate-spin" style={{ fontSize: '32px' }} />
-                                    <p>Библиотекарь изучает текст...</p>
+                                <div style={{ textAlign: 'center', padding: '50px' }}>
+                                    <Icon icon="update" className="animate-spin" style={{ fontSize: '40px', color: '#0b7930' }} />
+                                    <p style={{ marginTop: '15px', fontWeight: 'bold' }}>Библиотекарь изучает ваш текст...</p>
                                 </div>
                             ) : error ? (
-                                <p style={{ color: 'red' }}>{error}</p>
+                                <div style={{ padding: '20px', textAlign: 'center' }}>
+                                    <p style={{ color: '#d32f2f' }}>{error}</p>
+                                    <Button isSecondary onClick={() => setIsOpen(false)}>Закрыть</Button>
+                                </div>
                             ) : (
                                 <>
                                     <div style={{ marginBottom: '20px' }}>
-                                        <strong>Оригинал:</strong>
-                                        <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', fontSize: '13px', border: '1px solid #e2e8f0', marginTop: '8px' }}>{originalText}</div>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase', color: '#64748b' }}>Ваш оригинал:</label>
+                                        <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '12px', fontSize: '14px', border: '1px solid #e2e8f0', color: '#475569', fontStyle: 'italic' }}>
+                                            {originalText}
+                                        </div>
                                     </div>
-                                    <div style={{ marginBottom: '20px' }}>
-                                        <strong>Предложение библиотекаря:</strong>
+                                    <div style={{ marginBottom: '25px' }}>
+                                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase', color: '#0b7930' }}>Версия библиотекаря:</label>
                                         <TextareaControl
                                             value={improvedText}
                                             onChange={(val) => setImprovedText(val)}
-                                            rows={8}
+                                            rows={10}
+                                            style={{ borderRadius: '12px', borderColor: '#0b7930', padding: '12px' }}
                                         />
+                                        <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '5px' }}>Вы можете отредактировать предложенный текст перед заменой.</p>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                        <Button isSecondary onClick={() => setIsOpen(false)}>Отмена</Button>
-                                        <Button isPrimary onClick={replaceContent}>Заменить текст</Button>
+                                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
+                                        <Button isTertiary onClick={() => setIsOpen(false)}>Оставить как есть</Button>
+                                        <Button
+                                            isPrimary
+                                            onClick={replaceContent}
+                                            style={{ background: '#0b7930', borderColor: '#0b7930', borderRadius: '8px', fontWeight: 'bold' }}
+                                        >
+                                            Применить изменения
+                                        </Button>
                                     </div>
                                 </>
                             )}
@@ -106,13 +137,12 @@
 
     registerPlugin('city-library-librarian-editor', {
         render: LibrarianEditorPlugin,
-        icon: 'admin-appearance',
     });
 
-    // 2. Emoji Inserter RichText Format
+    // 2. Emoji Inserter RichText Format (Stays in the text selection toolbar)
     const EmojiFormat = ({ isActive, onChange, value }) => {
         const [ isVisible, setIsVisible ] = useState( false );
-        const emojis = ['📚', '📖', '📗', '📘', '📙', '📓', '📔', '📒', '📕', '✍️', '📝', '💡', '🏛️', '🎓', '✨', '📅', '📍', '📞', '👋', '😊'];
+        const emojis = ['📚', '📖', '📗', '📘', '📙', '📓', '📔', '📒', '📕', '✍️', '📝', '💡', '🏛️', '🎓', '✨', '📅', '📍', '📞', '👋', '😊', '🎭', '🎨', '🔍', '📌', '🤝'];
 
         return (
             <RichTextToolbarButton
@@ -120,25 +150,40 @@
                 title="Вставить эмодзи"
                 onClick={ () => setIsVisible( true ) }
                 isActive={ isActive }
-            >
+            />
+        );
+    };
+
+    // Need a separate component for the popover to handle its state correctly inside FormatType
+    const EmojiPicker = ( props ) => {
+        const [ isVisible, setIsVisible ] = useState( false );
+        const emojis = ['📚', '📖', '📗', '📘', '📙', '📓', '📔', '📒', '📕', '✍️', '📝', '💡', '🏛️', '🎓', '✨', '📅', '📍', '📞', '👋', '😊', '🎭', '🎨', '🔍', '📌', '🤝'];
+
+        return (
+            <>
+                <RichTextToolbarButton
+                    icon="smiley"
+                    title="Вставить эмодзи"
+                    onClick={ () => setIsVisible( ! isVisible ) }
+                />
                 { isVisible && (
                     <Popover
                         onClose={ () => setIsVisible( false ) }
                         position="bottom center"
                     >
-                        <div style={{ padding: '10px', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '5px', background: '#fff' }}>
+                        <div style={{ padding: '12px', display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px', background: '#fff', borderRadius: '8px', shadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}>
                             {emojis.map(emoji => (
                                 <Button
                                     key={emoji}
                                     isTertiary
                                     onClick={() => {
-                                        onChange(insertObject(value, {
+                                        props.onChange(insertObject(props.value, {
                                             type: 'city-library/emoji',
                                             attributes: { content: emoji }
                                         }));
                                         setIsVisible(false);
                                     }}
-                                    style={{ fontSize: '20px', padding: '5px' }}
+                                    style={{ fontSize: '24px', padding: '8px', lineHeight: '1' }}
                                 >
                                     {emoji}
                                 </Button>
@@ -146,7 +191,7 @@
                         </div>
                     </Popover>
                 ) }
-            </RichTextToolbarButton>
+            </>
         );
     };
 
@@ -154,7 +199,7 @@
         title: 'Emoji',
         tagName: 'span',
         className: 'emoji-span',
-        edit: EmojiFormat,
+        edit: EmojiPicker,
     });
 
 })(window.wp);
