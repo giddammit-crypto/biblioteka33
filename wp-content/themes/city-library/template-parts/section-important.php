@@ -31,7 +31,7 @@ if ($link_style === 'grayscale') $link_style_class = 'grayscale hover:grayscale-
 $image_orientation = get_theme_mod('important_links_image_orientation', 'square');
 $aspect_class = ($image_orientation === 'horizontal') ? 'aspect-video' : 'aspect-square';
 
-$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 w-full h-full $aspect_class $link_radius_class $link_style_class";
+$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 w-full h-full $aspect_class $link_radius_class $link_style_class important-section-link";
 ?>
 
 <section class="py-16 bg-white <?php echo city_library_get_animation_class(); ?>">

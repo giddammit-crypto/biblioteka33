@@ -191,7 +191,7 @@ function city_library_branches_map_shortcode($atts) {
 
             // Image
             if ($thumbnail) {
-                $list_html .= '<div class="w-full md:w-1/3 shrink-0">';
+                $list_html .= '<div class="w-full md:w-1/3 shrink-0 library-branch-image-wrapper">';
                 $list_html .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
                 $list_html .= '</div>';
             }
@@ -292,7 +292,7 @@ function city_library_branch_shortcode($atts) {
 
     // Image
     if ($thumbnail) {
-        $output .= '<div class="w-full md:w-1/3 shrink-0">';
+        $output .= '<div class="w-full md:w-1/3 shrink-0 library-branch-image-wrapper">';
         $output .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
         $output .= '</div>';
     }

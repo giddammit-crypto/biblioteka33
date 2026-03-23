@@ -1,33 +1,54 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Only target single post content or designated galleries
-    const contentImages = document.querySelectorAll('.entry-content img:not(.emoji), .post-content img:not(.emoji), .wp-block-image img:not(.emoji)');
+    /**
+     * Robust Lightbox Initialization
+     * Targets images in posts, pages, and news content.
+     */
+    const contentContainers = '.entry-content, .post-content, .page-content, .news-content, .featured-cards-section, .promo-section-content, .featured-cards-image-only, .promo-section-image-wrapper, .important-section-link, .library-branch-image-wrapper';
+    const contentImages = document.querySelectorAll(`${contentContainers} img:not(.emoji)`);
 
     if (contentImages.length > 0) {
         contentImages.forEach(img => {
-            // Skip if already linked or no source
-            if (img.parentElement.tagName === 'A' || !img.src) return;
+            const parent = img.parentElement;
+
+            // 1. Handle already linked images
+            if (parent.tagName === 'A') {
+                const href = parent.getAttribute('href');
+                // If it links to an image but doesn't have the class, add it
+                if (href && href.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)) {
+                    if (!parent.classList.contains('glightbox')) {
+                        parent.classList.add('glightbox');
+                    }
+                    if (!parent.dataset.gallery) {
+                        parent.dataset.gallery = 'post-gallery';
+                    }
+                }
+                return;
+            }
+
+            // 2. Wrap unlinked images
+            if (!img.src) return;
 
             const link = document.createElement('a');
             link.href = img.src;
             link.classList.add('glightbox');
-            link.dataset.gallery = 'post-gallery'; // Group images in one gallery
+            link.dataset.gallery = 'post-gallery';
 
-            // Wrap image
+            // Special handling for Gutenberg captions/figures
+            const target = (parent.tagName === 'FIGURE') ? img : img;
+
             img.parentNode.insertBefore(link, img);
             link.appendChild(img);
         });
-
-        // Initialize GLightbox for any .glightbox elements (including those we just wrapped and existing ones)
-        const lightbox = GLightbox({
-            selector: '.glightbox',
-            touchNavigation: true,
-            loop: true,
-            zoomable: true
-        });
-    } else {
-        // Init anyway for other potential galleries
-        const lightbox = GLightbox({
-            selector: '.glightbox'
-        });
     }
+
+    // Global Initialization for all .glightbox elements
+    // This handles images wrapped above, plus hardcoded ones in templates
+    const lightbox = GLightbox({
+        selector: '.glightbox',
+        touchNavigation: true,
+        loop: true,
+        zoomable: true,
+        autoplayVideos: true,
+        moreLength: 0 // Show full caption
+    });
 });

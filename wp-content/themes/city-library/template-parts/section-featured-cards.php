@@ -179,7 +179,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
 
                                 case 'design-11': // Only Photo, completely adaptive
                                     ?>
-                                    <div class="relative w-full h-full aspect-square lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500 border-4 border-white flex-grow">
+                                    <div class="relative w-full h-full aspect-square lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500 border-4 border-white flex-grow featured-cards-image-only">
                                         <?php if ($image) : ?>
                                             <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
                                         <?php else : ?>

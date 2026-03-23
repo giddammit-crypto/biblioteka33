@@ -21,7 +21,12 @@
                     <!-- Featured Image (Full Width for Pages if exists) -->
                     <?php if (has_post_thumbnail()) : ?>
                         <div class="w-full h-64 md:h-96 rounded-2xl overflow-hidden shadow-lg relative mb-8">
-                            <?php the_post_thumbnail('full', ['class' => 'w-full h-full object-cover']); ?>
+                            <?php
+                            $full_image_url = wp_get_attachment_image_src(get_post_thumbnail_id(), 'full');
+                            ?>
+                            <a href="<?php echo esc_url($full_image_url[0]); ?>" class="glightbox block w-full h-full">
+                                <?php the_post_thumbnail('full', ['class' => 'w-full h-full object-cover transform transition-transform duration-700 hover:scale-105']); ?>
+                            </a>
                         </div>
                     <?php endif; ?>
 

@@ -164,8 +164,12 @@ if ($footer_style === 'light-clean') {
         </div>
 
         <div class="flex space-x-6 mt-4 md:mt-0">
-            <a href="<?php echo esc_url(get_theme_mod('footer_privacy_link', '#')); ?>" class="hover:text-white transition-colors"><?php _e('Политика конфиденциальности', 'city-library'); ?></a>
-            <a href="<?php echo esc_url(get_theme_mod('footer_sitemap_link', '#')); ?>" class="hover:text-white transition-colors"><?php _e('Карта сайта', 'city-library'); ?></a>
+            <?php if (get_theme_mod('footer_show_privacy', true)) : ?>
+                <a href="<?php echo esc_url(get_theme_mod('footer_privacy_link', '#')); ?>" class="hover:text-white transition-colors"><?php _e('Политика конфиденциальности', 'city-library'); ?></a>
+            <?php endif; ?>
+            <?php if (get_theme_mod('footer_show_sitemap', true)) : ?>
+                <a href="<?php echo esc_url(get_theme_mod('footer_sitemap_link', '#')); ?>" class="hover:text-white transition-colors"><?php _e('Карта сайта', 'city-library'); ?></a>
+            <?php endif; ?>
         </div>
     </div>
 </footer>

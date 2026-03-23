@@ -70,16 +70,17 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_librarian_image_model', array('default' => 'openai/dall-e-3', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('ai_librarian_image_model', array('default' => 'black-forest-labs/flux-schnell', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('ai_librarian_image_model', array(
         'label' => __('Модель для генерации Изображений', 'city-library'),
-        'description' => __('Например: openai/dall-e-3, black-forest-labs/flux-schnell', 'city-library'),
+        'description' => __('Выберите модель для команды /aimg. Модели Flux более бюджетные и качественные.', 'city-library'),
         'section' => 'voice_assistant_section',
         'type' => 'select',
         'choices' => array(
+            'black-forest-labs/flux-schnell' => 'Flux Schnell (Высокое качество, бюджетно)',
+            'black-forest-labs/flux-dev' => 'Flux Dev (Максимальное качество)',
             'openai/dall-e-3' => 'DALL-E 3 (OpenAI)',
-            'black-forest-labs/flux-schnell' => 'Flux Schnell (Fast)',
-            'stabilityai/stable-diffusion-3.5-large' => 'Stable Diffusion 3.5',
+            'stabilityai/stable-diffusion-xl-base-1.0' => 'SDXL 1.0 (Очень дешево)',
             'custom' => 'Указать вручную (Custom)'
         )
     ));
@@ -148,7 +149,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую.', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальная Помощница - библиограф-библиотекарь (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Вероника.', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
         'description' => __('Инструкция для ИИ, определяющая его характер. Не рекомендуется полностью удалять.', 'city-library'),
@@ -857,7 +858,7 @@ function city_library_handle_ai_chat() {
         }
 
         // Get user preferred image model from customizer
-        $selected_img_model = get_theme_mod('ai_librarian_image_model', 'google/gemini-3.1-flash-image-preview');
+        $selected_img_model = get_theme_mod('ai_librarian_image_model', 'black-forest-labs/flux-schnell');
         if ($selected_img_model === 'custom') {
             $selected_img_model = get_theme_mod('ai_librarian_image_model_custom', '');
         }
@@ -868,9 +869,10 @@ function city_library_handle_ai_chat() {
         }
         // Always add a reliable fallback chain
         $image_models = array_unique(array_merge($image_models, [
-            'google/gemini-3.1-flash-image-preview',
             'black-forest-labs/flux-schnell',
-            'openai/dall-e-3'
+            'black-forest-labs/flux-dev',
+            'openai/dall-e-3',
+            'stabilityai/stable-diffusion-xl-base-1.0'
         ]));
 
         $image_url = '';
@@ -885,7 +887,8 @@ function city_library_handle_ai_chat() {
                 'model' => $img_model,
                 'messages' => array(
                     array('role' => 'user', 'content' => $final_prompt)
-                )
+                ),
+                'modalities' => array('image', 'text')
             );
 
             $api_args = array(
@@ -906,10 +909,12 @@ function city_library_handle_ai_chat() {
                 $data = json_decode($body, true);
 
                 // OpenRouter returns images differently based on the provider.
-                // 1. Sometimes it's a direct URL in 'content'
-                // 2. Sometimes it's a base64 string
-                // 3. Sometimes it's in a markdown format
-                if (isset($data['choices'][0]['message']['content'])) {
+                // 1. Newer native multimodal response (images array)
+                if (isset($data['choices'][0]['message']['images'][0]['image_url']['url'])) {
+                    $image_url = $data['choices'][0]['message']['images'][0]['image_url']['url'];
+                }
+                // 2. Fallback to parsing 'content' (Legacy/Markdown format)
+                elseif (isset($data['choices'][0]['message']['content'])) {
                     $content = $data['choices'][0]['message']['content'];
 
                     if (preg_match('/!\[.*?\]\((.*?)\)/', $content, $matches)) {
@@ -922,11 +927,11 @@ function city_library_handle_ai_chat() {
                         // It returned a base64 image directly
                         $image_url = (strpos($content, 'data:image') === 0) ? $content : 'data:image/png;base64,' . $content;
                     }
+                }
 
-                    if (!empty($image_url)) {
-                        $used_model = $img_model;
-                        break; // Success! Exit the loop.
-                    }
+                if (!empty($image_url)) {
+                    $used_model = $img_model;
+                    break; // Success! Exit the loop.
                 }
             }
         }
@@ -975,7 +980,7 @@ function city_library_handle_ai_chat() {
         $base_persona .= "\nВНИМАНИЕ: Текущий пользователь авторизован. Его имя: " . esc_html($user_name) . ". Обращайся к нему по имени.\n";
     }
 
-    $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Виртуальная помощница. Отвечай от женского лица.
+    $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Вероника. Отвечай от женского лица.
     Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
     НЕ НАДО постоянно здороваться в каждом сообщении. Отвечай по существу запроса.

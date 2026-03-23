@@ -1011,8 +1011,14 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('footer_copyright', array('default' => '© 2024 Центральная городская библиотека. Все права защищены.', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_copyright', array('label' => __('Copyright Text', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
 
+    $wp_customize->add_setting('footer_show_privacy', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_privacy', array('label' => __('Показать Политику конфиденциальности', 'city-library'), 'section' => 'footer_section', 'type' => 'checkbox'));
+
     $wp_customize->add_setting('footer_privacy_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_privacy_link', array('label' => __('Privacy Policy Link', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_show_sitemap', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_sitemap', array('label' => __('Показать Карту сайта', 'city-library'), 'section' => 'footer_section', 'type' => 'checkbox'));
 
     $wp_customize->add_setting('footer_sitemap_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_sitemap_link', array('label' => __('Sitemap Link', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
