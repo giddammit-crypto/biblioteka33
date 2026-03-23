@@ -491,7 +491,8 @@ function city_library_render_ai_librarian() {
         return;
     }
 
-    if (get_theme_mod('ai_librarian_test_mode', false) && !is_user_logged_in()) {
+    // Force strict authorized only check
+    if (!is_user_logged_in()) {
         return;
     }
 
@@ -644,7 +645,9 @@ add_action('wp_footer', 'city_library_render_ai_librarian');
 // 3. Enqueue Script
 function city_library_enqueue_ai_script() {
     if (!get_theme_mod('enable_ai_librarian', false)) return;
-    if (get_theme_mod('ai_librarian_test_mode', false) && !is_user_logged_in()) return;
+
+    // Force strict authorized only check
+    if (!is_user_logged_in()) return;
 
     // Enqueue marked.js for robust markdown parsing
     wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
