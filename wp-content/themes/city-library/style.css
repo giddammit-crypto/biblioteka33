@@ -51,12 +51,13 @@ html, body {
     .news-card-title-link,
     .news-card-link {
         visibility: visible !important;
-        opacity: 1 !important;
+        opacity: 0.999 !important; /* Forcing a stacking context in FF */
         transform: none !important;
         position: relative;
         z-index: 100; /* Extremely high to beat any sibling overlays */
         filter: none !important;
         text-shadow: none !important; /* Shadows can trigger redraw loops in some Gecko builds */
+        -moz-backface-visibility: hidden !important;
     }
 
     /* Ensure AOS elements are fully visible and static in Firefox */
@@ -238,9 +239,23 @@ body {
     margin-bottom: 1.25rem !important;
 }
 
-.prose img {
+.prose img:not(.emoji) {
     margin-top: 2rem !important;
     margin-bottom: 2rem !important;
+}
+
+/* Fix for WordPress Emojis causing line breaks */
+img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 .07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
 }
 
 .prose blockquote {

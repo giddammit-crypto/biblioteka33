@@ -71,6 +71,26 @@ function city_library_setup() {
 add_action('after_setup_theme', 'city_library_setup');
 
 /**
+ * Enqueue Block Editor assets for AI Integration.
+ */
+function city_library_block_editor_assets() {
+    if (!is_user_logged_in() || !current_user_can('edit_posts')) return;
+
+    wp_enqueue_script(
+        'city-library-editor-ai',
+        get_template_directory_uri() . '/js/editor-librarian.js',
+        array('wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'jquery'),
+        filemtime(get_template_directory() . '/js/editor-librarian.js'),
+        true
+    );
+
+    wp_localize_script('city-library-editor-ai', 'cityLibraryEditorAI', array(
+        'nonce' => wp_create_nonce('ai_chat_nonce')
+    ));
+}
+add_action('enqueue_block_editor_assets', 'city_library_block_editor_assets');
+
+/**
  * Allow extra mime types for upload.
  */
 function city_library_add_mime_types($mimes) {
