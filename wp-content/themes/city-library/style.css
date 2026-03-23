@@ -51,13 +51,14 @@ html, body {
     .news-card-title-link,
     .news-card-link {
         visibility: visible !important;
-        opacity: 0.999 !important; /* Forcing a stacking context in FF */
+        opacity: 1 !important;
         transform: none !important;
         position: relative;
-        z-index: 100; /* Extremely high to beat any sibling overlays */
-        filter: none !important;
-        text-shadow: none !important; /* Shadows can trigger redraw loops in some Gecko builds */
-        -moz-backface-visibility: hidden !important;
+        z-index: 100;
+        filter: blur(0) !important; /* Forces layer rendering in Firefox */
+        text-shadow: none !important;
+        -moz-backface-visibility: visible !important;
+        backface-visibility: visible !important;
     }
 
     /* Ensure AOS elements are fully visible and static in Firefox */
@@ -81,6 +82,7 @@ html, body {
     article.group .news-card-image-container {
         z-index: 1 !important; /* Low but positive */
         position: absolute !important;
+        filter: blur(0); /* Known Firefox fix for rendering layers */
     }
 
     article.group .news-card-content-wrapper {
@@ -88,6 +90,7 @@ html, body {
         position: relative !important;
         background: transparent !important;
         opacity: 0.999 !important; /* Force its own stacking context */
+        filter: blur(0);
     }
 
     /* Reliable Line Clamping for Firefox - avoiding display:block conflicts */

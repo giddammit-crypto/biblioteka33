@@ -1170,16 +1170,31 @@ function city_library_handle_ai_chat() {
         "content" => $context
     );
 
+    // Context / History Support
+    $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
+    $messages = array($system_prompt);
+
+    // Support up to 100 requests (200 messages)
+    if (!empty($history) && is_array($history)) {
+        // Limit history to last 100 interactions (200 messages) to prevent context overflow while meeting requirements
+        $history = array_slice($history, -200);
+        foreach ($history as $msg) {
+            if (isset($msg['role']) && isset($msg['content'])) {
+                 $messages[] = array('role' => $msg['role'], 'content' => $msg['content']);
+            }
+        }
+    }
+
+    // Add current user message
+    $messages[] = array('role' => 'user', 'content' => $user_message);
+
     // Check if request is from voice assistant
     $is_voice = isset($_POST['is_voice']) && $_POST['is_voice'] === 'true';
 
     // Call OpenRouter API with Fallback Logic
     $request_body = array(
         'model' => $model,
-        'messages' => array(
-            $system_prompt,
-            array('role' => 'user', 'content' => $user_message)
-        )
+        'messages' => $messages
     );
 
     // If voice, try to use openai audio model

@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId, false);
         }
 
-        const contextHistory = chatHistory.slice(-6).map(m => ({
+        const contextHistory = chatHistory.slice(-200).map(m => ({ // Support 100 requests (200 messages)
             role: m.role === 'bot' ? 'assistant' : 'user',
             content: m.content
         }));
