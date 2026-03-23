@@ -56,14 +56,14 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Title -->
         <h3 class="text-2xl lg:text-xl font-bold font-display leading-tight mb-3 pointer-events-auto relative flex items-start">
-            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-yellow-400 lg:text-inherit focus:outline-none focus:underline text-white line-clamp-3 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none z-20 [&_p]:text-[inherit] news-card-title-link" style="--title-color: <?php echo esc_attr($title_color); ?>;">
+            <a href="<?php the_permalink(); ?>" class="transition-colors hover:text-yellow-400 lg:!text-slate-900 focus:outline-none focus:underline text-white line-clamp-3 lg:line-clamp-none drop-shadow-md lg:drop-shadow-none z-20 [&_p]:text-[inherit] news-card-title-link" style="color: <?php echo esc_attr($title_color); ?> !important;">
                 <?php the_title(); ?>
                 <span class="absolute inset-0 lg:hidden" aria-hidden="true"></span>
             </a>
         </h3>
 
         <!-- Excerpt -->
-        <div class="text-[15px] lg:text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:text-inherit pointer-events-auto drop-shadow-sm lg:drop-shadow-none font-medium lg:font-normal relative z-20 [&_p]:text-[inherit] news-card-excerpt-text" style="--text-color: <?php echo esc_attr($text_color); ?>;">
+        <div class="text-[15px] lg:text-sm leading-relaxed line-clamp-3 mb-4 flex-grow-0 lg:flex-grow text-white lg:!text-slate-700 pointer-events-auto drop-shadow-sm lg:drop-shadow-none font-medium lg:font-normal relative z-20 [&_p]:text-[inherit] news-card-excerpt-text" style="color: <?php echo esc_attr($text_color); ?> !important;">
             <?php the_excerpt(); ?>
         </div>
 

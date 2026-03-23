@@ -49,16 +49,19 @@ html, body {
     /* Force rock-solid visibility for news card text */
     .news-card-excerpt-text,
     .news-card-title-link,
-    .news-card-link {
+    .news-card-link,
+    .news-card-content-wrapper {
         visibility: visible !important;
         opacity: 1 !important;
         transform: none !important;
         position: relative;
-        z-index: 100;
+        z-index: 100 !important;
         filter: blur(0) !important; /* Forces layer rendering in Firefox */
         text-shadow: none !important;
         -moz-backface-visibility: visible !important;
         backface-visibility: visible !important;
+        display: block !important;
+        color: inherit !important;
     }
 
     /* Ensure AOS elements are fully visible and static in Firefox */
@@ -76,6 +79,7 @@ html, body {
         transform: none !important;
         transition: none !important;
         isolation: isolate;
+        background-clip: padding-box;
     }
 
     /* Stacking Context Fixes */
@@ -298,6 +302,49 @@ img.emoji {
         margin-right: 0;
         max-width: 100%;
         width: 100%;
+    }
+}
+
+/* Global Prose Fixes for Gutenberg Blocks */
+.prose {
+    max-width: 100% !important;
+}
+
+.prose .wp-block-image.alignwide,
+.prose .wp-block-gallery.alignwide {
+    margin-left: calc(50% - 50vw + 10%);
+    margin-right: calc(50% - 50vw + 10%);
+    max-width: 80vw;
+    width: 80vw;
+}
+
+.prose .wp-block-image.alignfull,
+.prose .wp-block-gallery.alignfull {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+}
+
+.prose img {
+    height: auto !important;
+}
+
+.prose figure {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+@media (min-width: 1024px) {
+    .prose .wp-block-image.alignleft {
+        float: left;
+        margin-right: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .prose .wp-block-image.alignright {
+        float: right;
+        margin-left: 2rem;
+        margin-bottom: 1.5rem;
     }
 }
 

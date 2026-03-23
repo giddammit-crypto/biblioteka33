@@ -682,8 +682,9 @@ function city_library_handle_ai_chat() {
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
     $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
     $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
+    $image_data = isset($_POST['image_data']) ? $_POST['image_data'] : '';
 
-    if (empty($user_message)) {
+    if (empty($user_message) && empty($image_data)) {
         wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
     }
 
@@ -763,7 +764,9 @@ function city_library_handle_ai_chat() {
     }
     if (strpos($clean_msg, '/gost') === 0) {
         $subject = trim(mb_substr($user_message, 5));
-        $user_message = "Составь правильное библиографическое описание" . ($subject ? " для: '{$subject}'" : " книги") . " согласно ГОСТ Р 7.0.100–2018. Разбери основные элементы описания.";
+        // Check if there was an attached file in the history or current context
+        // This is a prompt-level instruction. The LLM will check the provided context.
+        $user_message = "Составь правильное библиографическое описание" . ($subject ? " для: '{$subject}'" : " книги") . " согласно ГОСТ Р 7.0.100–2018. Разбери основные элементы описания. Если в текущем контексте есть текст прикрепленного файла, используй данные из него для составления описания.";
     }
     if (strpos($clean_msg, '/exhibitions') === 0) {
         $subject = trim(mb_substr($user_message, 12));
@@ -908,12 +911,26 @@ function city_library_handle_ai_chat() {
         $used_model = '';
 
         // Improved Prompt Refinement via LLM
+        $refine_messages = array(
+            array('role' => 'system', 'content' => 'You are a professional prompt engineer for AI image generators (like Flux) that can render text correctly. Your task is to transform Russian requests into high-quality English prompts. MANDATORY: You must explicitly instruct the model to write any text, titles, or inscriptions on the image in the RUSSIAN language (Cyrillic), using quotes like "Text in Russian". Example: "a poster with the Russian text: КНИГА". Return ONLY the refined English prompt, no extra text.'),
+        );
+
+        // For refinement, we add the history to the refinement step so the LLM knows what the previous image was
+        if (!empty($history) && is_array($history)) {
+            $history_tail = array_slice($history, -10); // Last 5 interactions
+            foreach ($history_tail as $h_msg) {
+                // Only include text content in prompt refinement context
+                if (isset($h_msg['role']) && isset($h_msg['content']) && is_string($h_msg['content'])) {
+                    $refine_messages[] = array('role' => $h_msg['role'], 'content' => $h_msg['content']);
+                }
+            }
+        }
+
+        $refine_messages[] = array('role' => 'user', 'content' => "Refine this request into an image prompt, considering previous context if this is a modification request: " . $draw_prompt);
+
         $refine_body = array(
             'model' => $model, // Use the primary LLM to refine the prompt
-            'messages' => array(
-                array('role' => 'system', 'content' => 'You are a professional prompt engineer for AI image generators (like Flux) that can render text correctly. Your task is to transform Russian requests into high-quality English prompts. MANDATORY: You must explicitly instruct the model to write any text, titles, or inscriptions on the image in the RUSSIAN language (Cyrillic), using quotes like "Text in Russian". Example: "a poster with the Russian text: КНИГА". Return ONLY the refined English prompt, no extra text.'),
-                array('role' => 'user', 'content' => $draw_prompt)
-            )
+            'messages' => $refine_messages
         );
 
         $refine_args = array(
@@ -1192,6 +1209,17 @@ function city_library_handle_ai_chat() {
     // Check if request is from voice assistant
     $is_voice = isset($_POST['is_voice']) && $_POST['is_voice'] === 'true';
 
+    // Vision support: If image data is provided, use Gemini 2.0 Flash (it's fast and supports vision)
+    if (!empty($image_data)) {
+        $model = 'google/gemini-2.0-flash-001';
+        $content_array = array(
+            array("type" => "text", "text" => $user_message),
+            array("type" => "image_url", "image_url" => array("url" => $image_data))
+        );
+        // Replace the last message content with the array (multimodal)
+        $messages[count($messages) - 1]['content'] = $content_array;
+    }
+
     // Call OpenRouter API with Fallback Logic
     $request_body = array(
         'model' => $model,
@@ -1370,8 +1398,15 @@ function city_library_ai_upload() {
                 }
             }
         }
+    } elseif (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+        $data = file_get_contents($file['tmp_name']);
+        $base64 = 'data:image/' . $ext . ';base64,' . base64_encode($data);
+        wp_send_json_success(array(
+            'data_url' => $base64,
+            'filename' => $file['name']
+        ));
     } else {
-        wp_send_json_error('Неподдерживаемый формат файла. Пожалуйста, используйте .txt или .docx');
+        wp_send_json_error('Неподдерживаемый формат файла. Пожалуйста, используйте .txt, .docx или изображения.');
     }
 
     if (empty($extracted_text)) {

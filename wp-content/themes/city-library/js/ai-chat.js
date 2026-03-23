@@ -40,14 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const cleanHref = processedHref.replace(/\s/g, '%20');
 
             return `
-                <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm bg-slate-100">
+                <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm bg-slate-100 pointer-events-auto">
                     <a href="${cleanHref}" class="glightbox block" data-gallery="ai-chat-gallery" data-title="${imgText || 'Сгенерированное изображение'}">
                         <img src="${cleanHref}" alt="${imgText || 'Сгенерированное изображение'}" style="max-width:100%; height:auto; display:block;" class="transition-transform duration-500 group-hover:scale-105 bg-slate-50 min-h-[200px] w-full max-h-[450px] object-contain mx-auto" onerror="this.outerHTML='<div class=\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\'>⚠️ Ошибка загрузки.</div>'">
                         <div class="image-controls absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
                              <span class="material-symbols-outlined text-white text-4xl drop-shadow-md" aria-hidden="true">zoom_in</span>
                         </div>
                     </a>
-                    <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-auto">
                         <a href="${cleanHref}" target="_blank" download="Library_Poster.png" class="btn-download flex items-center gap-1.5 px-3 py-1.5 bg-white/90 text-slate-800 font-bold text-xs rounded-lg hover:bg-white hover:shadow-lg transition-all shadow-sm">
                             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">download</span> Скачать
                         </a>
@@ -193,10 +193,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Send Message
     function sendMessage() {
         const message = inputField.value.trim();
-        if (!message) return;
+        if (!message && !attachedFileData) return;
 
         // 1. Add User Message to UI
-        addMessageToUI('user', message);
+        if (message) {
+            addMessageToUI('user', message);
+        } else if (attachedFileData) {
+            addMessageToUI('user', `[Отправлено изображение: ${attachedFileName}]`);
+        }
         inputField.value = '';
 
         // 2. Show typing or drawing indicator
@@ -229,12 +233,26 @@ document.addEventListener('DOMContentLoaded', () => {
             is_logged_in: cl_ai_ajax.is_logged_in
         };
 
+        // If an image is attached
+        if (attachedFileData) {
+            requestData.image_data = attachedFileData;
+            requestData.image_name = attachedFileName;
+            // If it's just an image upload without text, set a default prompt
+            if (!message) {
+                requestData.message = "Проанализируй это изображение и опиши его подробно.";
+            }
+        }
+
         // If a file is attached, inject its content into the prompt
-        if (attachedFileText) {
+        if (attachedFileText && !attachedFileData) {
             requestData.message = `[КОНТЕКСТ ПРИКРЕПЛЕННОГО ФАЙЛА "${attachedFileName}"]: \n\n ${attachedFileText} \n\n --- \n\n ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
-            // Reset attachment after one use to prevent bloating history
+        }
+
+        // Reset attachment after sending
+        if (attachedFileName) {
             attachedFileText = "";
             attachedFileName = "";
+            attachedFileData = "";
             attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">attach_file</span>';
             attachmentBtn.title = "Прикрепить файл (до 20МБ)";
         }
@@ -559,6 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('ai-chat-file-input');
     let attachedFileText = "";
     let attachedFileName = "";
+    let attachedFileData = ""; // For images (base64)
 
     if (attachmentBtn && fileInput) {
         attachmentBtn.addEventListener('click', () => fileInput.click());
@@ -572,6 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                const isImage = file.type.startsWith('image/');
                 const formData = new FormData();
                 formData.append('action', 'city_library_ai_upload');
                 formData.append('nonce', cl_ai_ajax.nonce);
@@ -590,13 +610,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     contentType: false,
                     success: (response) => {
                         if (response.success) {
-                            attachedFileText = response.data.text;
+                            attachedFileText = response.data.text || "";
                             attachedFileName = response.data.filename;
+                            attachedFileData = response.data.data_url || "";
 
                             attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] text-green-500">task</span>';
                             attachmentBtn.title = `Файл прикреплен: ${attachedFileName}`;
 
-                            addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Файл «${attachedFileName}» успешно прочитан. Теперь я могу проанализировать его содержимое. Задайте свой вопрос по файлу.</span>`, null, false);
+                            if (isImage) {
+                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">image</span> Изображение «${attachedFileName}» успешно загружено. Я проанализировала его и готова обсудить детали или сгенерировать что-то похожее.</span>`, null, false);
+                            } else {
+                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Файл «${attachedFileName}» успешно прочитан. Теперь я могу проанализировать его содержимое. Задайте свой вопрос по файлу.</span>`, null, false);
+                            }
                         } else {
                             alert("Ошибка загрузки: " + response.data);
                             attachmentBtn.innerHTML = originalIcon;
