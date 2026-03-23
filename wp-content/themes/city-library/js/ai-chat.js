@@ -157,8 +157,15 @@ document.addEventListener('DOMContentLoaded', () => {
         quickActionBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 const command = this.getAttribute('data-command');
+                const userSubject = inputField.value.trim();
+
                 if (command) {
-                    inputField.value = command;
+                    // Combine command and current input text if present
+                    if (userSubject) {
+                        inputField.value = `${command} ${userSubject}`;
+                    } else {
+                        inputField.value = command;
+                    }
                     sendMessage();
                 }
             });
@@ -195,17 +202,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
 
         // 3. Send AJAX Request
+        const requestData = {
+            action: 'city_library_ai_chat',
+            nonce: cl_ai_ajax.nonce,
+            message: message,
+            history: JSON.stringify(contextHistory),
+            user_name: cl_ai_ajax.user_name,
+            is_logged_in: cl_ai_ajax.is_logged_in
+        };
+
+        // If a file is attached, inject its content into the prompt
+        if (attachedFileText) {
+            requestData.message = `[КОНТЕКСТ ПРИКРЕПЛЕННОГО ФАЙЛА "${attachedFileName}"]: \n\n ${attachedFileText} \n\n --- \n\n ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
+            // Reset attachment after one use to prevent bloating history
+            attachedFileText = "";
+            attachedFileName = "";
+            attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">attach_file</span>';
+            attachmentBtn.title = "Прикрепить файл (до 20МБ)";
+        }
+
         jQuery.ajax({
             url: cl_ai_ajax.url,
             type: 'POST',
-            data: {
-                action: 'city_library_ai_chat',
-                nonce: cl_ai_ajax.nonce,
-                message: message,
-                history: JSON.stringify(contextHistory),
-                user_name: cl_ai_ajax.user_name,
-                is_logged_in: cl_ai_ajax.is_logged_in
-            },
+            data: requestData,
             success: function(response) {
                 // Remove typing indicator
                 const typingEl = document.getElementById(typingId);
@@ -510,20 +529,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // File Attachment Logic
     const attachmentBtn = document.getElementById('ai-chat-attachment');
     const fileInput = document.getElementById('ai-chat-file-input');
+    let attachedFileText = "";
+    let attachedFileName = "";
+
     if (attachmentBtn && fileInput) {
         attachmentBtn.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 20 * 1024 * 1024) {
-                    alert('Файл слишком большой. Максимум 20МБ.');
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('Файл слишком большой. Максимум 10МБ.');
                     this.value = '';
                     return;
                 }
-                inputField.value = `[Файл прикреплен: ${file.name}] Проанализируй этот файл.`;
-                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1" aria-hidden="true">attach_file</span> Вы прикрепили файл: ${file.name}. В данный момент полная интеграция парсинга в разработке, файл имитирован.</span>`, null, false);
-                this.value = '';
+
+                const formData = new FormData();
+                formData.append('action', 'city_library_ai_upload');
+                formData.append('nonce', cl_ai_ajax.nonce);
+                formData.append('file', file);
+
+                // Show loading state
+                const originalIcon = attachmentBtn.innerHTML;
+                attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>';
+                attachmentBtn.disabled = true;
+
+                jQuery.ajax({
+                    url: cl_ai_ajax.url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: (response) => {
+                        if (response.success) {
+                            attachedFileText = response.data.text;
+                            attachedFileName = response.data.filename;
+
+                            attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] text-green-500">task</span>';
+                            attachmentBtn.title = `Файл прикреплен: ${attachedFileName}`;
+
+                            addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Файл «${attachedFileName}» успешно прочитан. Теперь я могу проанализировать его содержимое. Задайте свой вопрос по файлу.</span>`, null, false);
+                        } else {
+                            alert("Ошибка загрузки: " + response.data);
+                            attachmentBtn.innerHTML = originalIcon;
+                        }
+                    },
+                    error: () => {
+                        alert("Произошла ошибка при загрузке файла.");
+                        attachmentBtn.innerHTML = originalIcon;
+                    },
+                    complete: () => {
+                        attachmentBtn.disabled = false;
+                        this.value = '';
+                    }
+                });
             }
         });
     }

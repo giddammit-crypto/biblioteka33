@@ -573,6 +573,7 @@ function city_library_render_ai_librarian() {
 
             <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
+                <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx">
                 <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">attach_file</span>
                 </button>
@@ -680,18 +681,22 @@ function city_library_handle_ai_chat() {
         После списка добавь текст: 'Нажмите на имя писателя, чтобы я подготовила черновик статьи или сценария мероприятия о нём.'";
     }
 
-    // Librarian Tools Shortcuts
+    // Librarian Tools Shortcuts with Subject Support
     if (strpos($clean_msg, '/work_plan') === 0) {
-        $user_message = "Помоги мне составить план работы библиотеки на следующий месяц. Предложи интересные темы выставок, мероприятий и онлайн-активностей.";
+        $subject = trim(mb_substr($user_message, 10));
+        $user_message = "Помоги мне составить план работы библиотеки на следующий месяц" . ($subject ? " на тему: '{$subject}'" : "") . ". Предложи интересные темы выставок, мероприятий и онлайн-активностей.";
     }
     if (strpos($clean_msg, '/social_post') === 0) {
-        $user_message = "Напиши интересный и вовлекающий пост для группы библиотеки ВКонтакте о пользе чтения в современном мире. Используй эмодзи и хештеги.";
+        $subject = trim(mb_substr($user_message, 12));
+        $user_message = "Напиши интересный и вовлекающий пост для группы библиотеки ВКонтакте" . ($subject ? " про: '{$subject}'" : " о пользе чтения в современном мире") . ". Используй эмодзи и хештеги.";
     }
     if (strpos($clean_msg, '/script') === 0) {
-        $user_message = "Составь подробный сценарий литературного вечера, посвященного современной поэзии. Включи тайминг, список оборудования и идеи для интерактива.";
+        $subject = trim(mb_substr($user_message, 7));
+        $user_message = "Составь подробный сценарий литературного вечера" . ($subject ? ", посвященного теме: '{$subject}'" : ", посвященного современной поэзии") . ". Включи тайминг, список оборудования и идеи для интерактива.";
     }
     if (strpos($clean_msg, '/bib_list') === 0) {
-        $user_message = "Помоги составить библиографический список литературы по теме 'История города Владимира'. Укажи 5-7 основных источников с правильным оформлением.";
+        $subject = trim(mb_substr($user_message, 9));
+        $user_message = "Помоги составить библиографический список литературы" . ($subject ? " по теме: '{$subject}'" : " по теме 'История города Владимира'") . ". Укажи 5-7 основных источников с правильным оформлением.";
     }
     if (strpos($clean_msg, '/inventory') === 0) {
         $user_message = "Дай методические рекомендации по проведению плановой проверки библиотечного фонда. На что обратить внимание и какие документы подготовить?";
@@ -925,6 +930,9 @@ function city_library_handle_ai_chat() {
     Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
     НЕ НАДО постоянно здороваться в каждом сообщении. Отвечай по существу запроса.
+
+    КРИТИЧЕСКОЕ ПРАВИЛО ПРАВДИВОСТИ:
+    Ты — профессионал. Ты НИКОГДА не врешь, не придумываешь факты и не галлюцинируешь. Если ты не знаешь ответа на 100% или информации нет в предоставленном контексте — ты ОБЯЗАН ответить: «К сожалению, у меня нет точной информации по этому вопросу. Рекомендую обратиться к сотрудникам библиотеки напрямую или уточнить на нашем сайте».
 
     ПРАВИЛА ОТВЕТОВ:
     1. Если тебя спрашивают про адреса или контакты библиотек — бери их ТОЛЬКО из раздела «СТРУКТУРА И ФИЛИАЛЫ» ниже. Если информации нет — пиши «Данные уточняются».
@@ -1206,6 +1214,52 @@ function city_library_ai_draft() {
     }
 }
 add_action('wp_ajax_city_library_ai_draft', 'city_library_ai_draft');
+
+/**
+ * Handle Temporary File Analysis (Text Extraction)
+ */
+function city_library_ai_upload() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+
+    if (empty($_FILES['file'])) {
+        wp_send_json_error('Файл не получен');
+    }
+
+    $file = $_FILES['file'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $extracted_text = "";
+
+    if ($ext === 'txt') {
+        $extracted_text = file_get_contents($file['tmp_name']);
+    } elseif ($ext === 'docx') {
+        if (class_exists('ZipArchive')) {
+            $zip = new ZipArchive();
+            if ($zip->open($file['tmp_name']) === true) {
+                if (($index = $zip->locateName('word/document.xml')) !== false) {
+                    $xml_content = $zip->getFromIndex($index);
+                    $zip->close();
+                    $clean_text = strip_tags(str_replace(['<', '>'], [' <', '> '], $xml_content));
+                    $extracted_text = preg_replace('/\s+/', ' ', $clean_text);
+                }
+            }
+        }
+    } else {
+        wp_send_json_error('Неподдерживаемый формат файла. Пожалуйста, используйте .txt или .docx');
+    }
+
+    if (empty($extracted_text)) {
+        wp_send_json_error('Не удалось извлечь текст из файла или файл пуст.');
+    }
+
+    // Limit text size for AI context safety
+    $extracted_text = mb_substr(trim($extracted_text), 0, 15000);
+
+    wp_send_json_success(array(
+        'text' => $extracted_text,
+        'filename' => $file['name']
+    ));
+}
+add_action('wp_ajax_city_library_ai_upload', 'city_library_ai_upload');
 
 // Helper function to get AI avatar URL based on customizer presets
 function get_city_library_ai_avatar_url() {
