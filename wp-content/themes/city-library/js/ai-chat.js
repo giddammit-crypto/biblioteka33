@@ -307,195 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.innerHTML = content;
         messagesContainer.appendChild(wrapper);
 
-        // Bind Copy Button if present
-        const copyBtn = wrapper.querySelector('.ai-copy-btn');
-        if (copyBtn) {
-            copyBtn.addEventListener('click', function() {
-                const rawText = this.getAttribute('data-text');
-                navigator.clipboard.writeText(rawText).then(() => {
-                    const originalHTML = this.innerHTML;
-                    this.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Скопировано';
-                    this.classList.add('text-green-600');
-                    setTimeout(() => {
-                        this.innerHTML = originalHTML;
-                        this.classList.remove('text-green-600');
-                    }, 2000);
-                });
-            });
-        }
-
-        // Bind PDF Download (using browser print to PDF)
-        const pdfBtn = wrapper.querySelector('.ai-pdf-btn');
-        if (pdfBtn) {
-            pdfBtn.addEventListener('click', function() {
-                const rawText = this.getAttribute('data-text');
-                const printWindow = window.open('', '_blank', 'width=800,height=600');
-                let htmlContent = rawText;
-                if (typeof marked !== 'undefined') {
-                    htmlContent = marked.parse(rawText);
-                }
-                printWindow.document.write(`
-                    <html><head><title>Печать / Сохранить как PDF</title>
-                    <style>
-                        body { font-family: sans-serif; padding: 40px; line-height: 1.6; color: #333; }
-                        img { max-width: 100%; height: auto; }
-                    </style>
-                    </head><body>
-                    ${htmlContent}
-                    <script>window.onload = function() { window.print(); window.close(); }</script>
-                    </body></html>
-                `);
-                printWindow.document.close();
-            });
-        }
-
-        // Bind DOCX Download
-        const docxBtn = wrapper.querySelector('.ai-docx-btn');
-        if (docxBtn) {
-            docxBtn.addEventListener('click', function() {
-                const rawText = this.getAttribute('data-text');
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
-                this.disabled = true;
-
-                jQuery.ajax({
-                    url: cl_ai_ajax.url,
-                    type: 'POST',
-                    data: {
-                        action: 'city_library_ai_docx',
-                        nonce: cl_ai_ajax.nonce,
-                        content: rawText
-                    },
-                    success: (response) => {
-                        if (response.success) {
-                            const byteCharacters = atob(response.data.html);
-                            const byteNumbers = new Array(byteCharacters.length);
-                            for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            const byteArray = new Uint8Array(byteNumbers);
-                            const blob = new Blob([byteArray], { type: 'application/msword;charset=utf-8' });
-                            const link = document.createElement('a');
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = 'Ответ_Библиотекаря.doc';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        } else {
-                            alert("Ошибка генерации DOCX: " + response.data);
-                        }
-                    },
-                    error: () => {
-                        alert("Произошла ошибка при генерации документа.");
-                    },
-                    complete: () => {
-                        this.innerHTML = originalHTML;
-                        this.disabled = false;
-                    }
-                });
-            });
-        }
-
-        // Bind Email Button
-        const emailBtn = wrapper.querySelector('.ai-email-btn');
-        if (emailBtn) {
-            emailBtn.addEventListener('click', function() {
-                const rawText = this.getAttribute('data-text');
-                const userEmail = prompt("Введите ваш email адрес для отправки ответа:");
-                if (userEmail && userEmail.trim() !== '') {
-                    const originalHTML = this.innerHTML;
-                    this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
-                    this.disabled = true;
-
-                    jQuery.ajax({
-                        url: cl_ai_ajax.url,
-                        type: 'POST',
-                        data: {
-                            action: 'city_library_ai_email',
-                            nonce: cl_ai_ajax.nonce,
-                            email: userEmail,
-                            content: rawText
-                        },
-                        success: (response) => {
-                            if (response.success) {
-                                this.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Отправлено';
-                                this.classList.add('text-green-600');
-                                setTimeout(() => {
-                                    this.innerHTML = originalHTML;
-                                    this.classList.remove('text-green-600');
-                                }, 3000);
-                            } else {
-                                alert("Ошибка: " + response.data);
-                                this.innerHTML = originalHTML;
-                            }
-                        },
-                        error: () => {
-                            alert("Произошла ошибка при отправке.");
-                            this.innerHTML = originalHTML;
-                        },
-                        complete: () => {
-                            this.disabled = false;
-                        }
-                    });
-                }
-            });
-        }
-
-        // Bind Draft Button if present
-        const draftBtns = wrapper.querySelectorAll('.ai-draft-btn');
-        if (draftBtns.length > 0) {
-            draftBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const authorName = this.getAttribute('data-author');
-                    if (authorName) {
-                        inputField.value = '/author ' + authorName;
-                        sendMessage();
-                    }
-                });
-            });
-        }
-
-        // Bind Save to WP Draft button
-        const saveDraftBtn = wrapper.querySelector('.ai-save-draft-btn');
-        if (saveDraftBtn) {
-            saveDraftBtn.addEventListener('click', function() {
-                const rawText = this.getAttribute('data-text');
-                const postTitle = 'Черновик: ' + (rawText.split('\n')[0].replace(/#/g, '').trim() || 'Статья');
-
-                const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> Сохраняем...';
-                this.disabled = true;
-
-                jQuery.ajax({
-                    url: cl_ai_ajax.url,
-                    type: 'POST',
-                    data: {
-                        action: 'city_library_ai_draft',
-                        nonce: cl_ai_ajax.nonce,
-                        title: postTitle,
-                        content: rawText
-                    },
-                    success: (response) => {
-                        if (response.success) {
-                            this.innerHTML = `<a href="${response.data.edit_link}" target="_blank" class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" aria-hidden="true">open_in_new</span> Редактировать</a>`;
-                            this.classList.add('text-green-600', 'hover:text-green-700');
-                            this.classList.remove('text-slate-500', 'hover:text-primary', 'bg-slate-100');
-                        } else {
-                            alert("Ошибка: " + response.data);
-                            this.innerHTML = originalHTML;
-                        }
-                    },
-                    error: () => {
-                        alert("Произошла ошибка при создании черновика.");
-                        this.innerHTML = originalHTML;
-                    },
-                    complete: () => {
-                        this.disabled = false;
-                    }
-                });
-            });
-        }
-
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -504,6 +315,189 @@ document.addEventListener('DOMContentLoaded', () => {
     function escapeHtml(unsafe) {
         return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
+
+    // --- Event Delegation for Chat Actions ---
+    messagesContainer.addEventListener('click', function(e) {
+        // 1. Copy Button
+        const copyBtn = e.target.closest('.ai-copy-btn');
+        if (copyBtn) {
+            const rawText = copyBtn.getAttribute('data-text');
+            navigator.clipboard.writeText(rawText).then(() => {
+                const originalHTML = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Скопировано';
+                copyBtn.classList.add('text-green-600');
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.classList.remove('text-green-600');
+                }, 2000);
+            });
+            return;
+        }
+
+        // 2. PDF Button
+        const pdfBtn = e.target.closest('.ai-pdf-btn');
+        if (pdfBtn) {
+            const rawText = pdfBtn.getAttribute('data-text');
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            let htmlContent = rawText;
+            if (typeof marked !== 'undefined') {
+                htmlContent = marked.parse(rawText);
+            }
+            printWindow.document.write(`
+                <html><head><title>Печать / Сохранить как PDF</title>
+                <style>
+                    body { font-family: sans-serif; padding: 40px; line-height: 1.6; color: #333; }
+                    img { max-width: 100%; height: auto; }
+                </style>
+                </head><body>
+                ${htmlContent}
+                <script>window.onload = function() { window.print(); window.close(); }</script>
+                </body></html>
+            `);
+            printWindow.document.close();
+            return;
+        }
+
+        // 3. DOCX Button
+        const docxBtn = e.target.closest('.ai-docx-btn');
+        if (docxBtn) {
+            const rawText = docxBtn.getAttribute('data-text');
+            const originalHTML = docxBtn.innerHTML;
+            docxBtn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
+            docxBtn.disabled = true;
+
+            jQuery.ajax({
+                url: cl_ai_ajax.url,
+                type: 'POST',
+                data: {
+                    action: 'city_library_ai_docx',
+                    nonce: cl_ai_ajax.nonce,
+                    content: rawText
+                },
+                success: (response) => {
+                    if (response.success) {
+                        const byteCharacters = atob(response.data.html);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], { type: 'application/msword;charset=utf-8' });
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'Ответ_Библиотекаря.doc';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        alert("Ошибка генерации DOCX: " + response.data);
+                    }
+                },
+                error: () => {
+                    alert("Произошла ошибка при генерации документа.");
+                },
+                complete: () => {
+                    docxBtn.innerHTML = originalHTML;
+                    docxBtn.disabled = false;
+                }
+            });
+            return;
+        }
+
+        // 4. Email Button
+        const emailBtn = e.target.closest('.ai-email-btn');
+        if (emailBtn) {
+            const rawText = emailBtn.getAttribute('data-text');
+            const userEmail = prompt("Введите ваш email адрес для отправки ответа:");
+            if (userEmail && userEmail.trim() !== '') {
+                const originalHTML = emailBtn.innerHTML;
+                emailBtn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
+                emailBtn.disabled = true;
+
+                jQuery.ajax({
+                    url: cl_ai_ajax.url,
+                    type: 'POST',
+                    data: {
+                        action: 'city_library_ai_email',
+                        nonce: cl_ai_ajax.nonce,
+                        email: userEmail,
+                        content: rawText
+                    },
+                    success: (response) => {
+                        if (response.success) {
+                            emailBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Отправлено';
+                            emailBtn.classList.add('text-green-600');
+                            setTimeout(() => {
+                                emailBtn.innerHTML = originalHTML;
+                                emailBtn.classList.remove('text-green-600');
+                            }, 3000);
+                        } else {
+                            alert("Ошибка: " + response.data);
+                            emailBtn.innerHTML = originalHTML;
+                        }
+                    },
+                    error: () => {
+                        alert("Произошла ошибка при отправке.");
+                        emailBtn.innerHTML = originalHTML;
+                    },
+                    complete: () => {
+                        emailBtn.disabled = false;
+                    }
+                });
+            }
+            return;
+        }
+
+        // 5. Save WP Draft Button
+        const saveDraftBtn = e.target.closest('.ai-save-draft-btn');
+        if (saveDraftBtn) {
+            const rawText = saveDraftBtn.getAttribute('data-text');
+            const postTitle = 'Черновик: ' + (rawText.split('\n')[0].replace(/#/g, '').trim() || 'Статья');
+            const originalHTML = saveDraftBtn.innerHTML;
+            saveDraftBtn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> Сохраняем...';
+            saveDraftBtn.disabled = true;
+
+            jQuery.ajax({
+                url: cl_ai_ajax.url,
+                type: 'POST',
+                data: {
+                    action: 'city_library_ai_draft',
+                    nonce: cl_ai_ajax.nonce,
+                    title: postTitle,
+                    content: rawText
+                },
+                success: (response) => {
+                    if (response.success) {
+                        saveDraftBtn.innerHTML = `<a href="${response.data.edit_link}" target="_blank" class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" aria-hidden="true">open_in_new</span> Редактировать</a>`;
+                        saveDraftBtn.classList.add('text-green-600', 'hover:text-green-700');
+                        saveDraftBtn.classList.remove('text-slate-500', 'hover:text-primary', 'bg-slate-100');
+                    } else {
+                        alert("Ошибка: " + response.data);
+                        saveDraftBtn.innerHTML = originalHTML;
+                    }
+                },
+                error: () => {
+                    alert("Произошла ошибка при создании черновика.");
+                    saveDraftBtn.innerHTML = originalHTML;
+                },
+                complete: () => {
+                    saveDraftBtn.disabled = false;
+                }
+            });
+            return;
+        }
+
+        // 6. Interactive Author Draft Button (from AI response)
+        const authorBtn = e.target.closest('.ai-draft-btn');
+        if (authorBtn) {
+            const authorName = authorBtn.getAttribute('data-author');
+            if (authorName) {
+                inputField.value = '/author ' + authorName;
+                sendMessage();
+            }
+            return;
+        }
+    });
 
     // Listeners
     sendBtn.addEventListener('click', sendMessage);

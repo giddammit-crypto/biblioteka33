@@ -537,13 +537,37 @@ function city_library_render_ai_librarian() {
 
             <!-- Quick Actions Bar -->
             <div class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-inner">
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/anniversaries">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">cake</span>
+                    Писатели юбиляры
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/work_plan">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">calendar_today</span>
+                    План работы
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/social_post">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">share</span>
+                    Пост в соцсети
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/script">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">movie_edit</span>
+                    Сценарий
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/bib_list">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">format_list_bulleted</span>
+                    Библ. список
+                </button>
+                <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/inventory">
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">inventory</span>
+                    Проверка фонда
+                </button>
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/emoji">
                     <span class="material-symbols-outlined text-[14px]" aria-hidden="true">sentiment_satisfied</span>
                     Смайлики
                 </button>
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/stat">
                     <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
-                    Статистика записей
+                    Статистика
                 </button>
             </div>
 
@@ -632,17 +656,51 @@ function city_library_handle_ai_chat() {
         $commands .= "- `/emoji` — 50 тематических эмодзи для соцсетей\n";
         $commands .= "- `/clear` — Очистить историю этого чата\n\n";
 
-        $commands .= "🔹 **Работа с фондом и читателями:**\n";
-        $commands .= "- `/newarrivals` — Список новых поступлений\n";
-        $commands .= "- `/debtors` — Анализ задолженностей читателей\n";
-        $commands .= "- `/recommend` — Создать рекомендательный список для читателя\n";
-        $commands .= "- `/write_post` — Написать черновик для соцсетей\n";
-        $commands .= "- `/write_article` — Подготовить материал для сайта\n\n";
+        $commands .= "🔹 **Инструменты Библиотекаря:**\n";
+        $commands .= "- `/anniversaries` — Список писателей-юбиляров на ближайшее время\n";
+        $commands .= "- `/work_plan` — Помощь в составлении плана работы\n";
+        $commands .= "- `/social_post` — Написать черновик поста для соцсетей\n";
+        $commands .= "- `/script` — Создать сценарий мероприятия\n";
+        $commands .= "- `/bib_list` — Составить библиографический список\n";
+        $commands .= "- `/inventory` — Методическая помощь в проверке фонда\n\n";
 
         $commands .= "_Также вы можете общаться со мной на свободные темы, связанные с литературой и работой библиотеки!_";
 
         wp_send_json_success(array('reply' => $commands));
         return;
+    }
+
+    // Command: /anniversaries
+    if (strpos($clean_msg, '/anniversaries') === 0) {
+        $current_month = date_i18n('F');
+        $next_month = date_i18n('F', strtotime('+1 month'));
+
+        $user_message = "Ты — библиотекарь. Перечисли список известных русских и зарубежных писателей-юбиляров на {$current_month} и {$next_month} 2025 года.
+        ОБЯЗАТЕЛЬНОЕ УСЛОВИЕ: Оформи каждое имя писателя в ответе как интерактивную кнопку HTML: <button class=\"ai-draft-btn bg-primary/10 text-primary px-2 py-1 rounded-md hover:bg-primary/20 transition-all font-bold my-1 block w-full text-left\" data-author=\"ИМЯ ПИСАТЕЛЯ\">ИМЯ ПИСАТЕЛЯ</button>.
+        После списка добавь текст: 'Нажмите на имя писателя, чтобы я подготовила черновик статьи или сценария мероприятия о нём.'";
+    }
+
+    // Librarian Tools Shortcuts
+    if (strpos($clean_msg, '/work_plan') === 0) {
+        $user_message = "Помоги мне составить план работы библиотеки на следующий месяц. Предложи интересные темы выставок, мероприятий и онлайн-активностей.";
+    }
+    if (strpos($clean_msg, '/social_post') === 0) {
+        $user_message = "Напиши интересный и вовлекающий пост для группы библиотеки ВКонтакте о пользе чтения в современном мире. Используй эмодзи и хештеги.";
+    }
+    if (strpos($clean_msg, '/script') === 0) {
+        $user_message = "Составь подробный сценарий литературного вечера, посвященного современной поэзии. Включи тайминг, список оборудования и идеи для интерактива.";
+    }
+    if (strpos($clean_msg, '/bib_list') === 0) {
+        $user_message = "Помоги составить библиографический список литературы по теме 'История города Владимира'. Укажи 5-7 основных источников с правильным оформлением.";
+    }
+    if (strpos($clean_msg, '/inventory') === 0) {
+        $user_message = "Дай методические рекомендации по проведению плановой проверки библиотечного фонда. На что обратить внимание и какие документы подготовить?";
+    }
+
+    // Handle interactive Author Draft command
+    if (strpos($clean_msg, '/author') === 0) {
+        $author = trim(mb_substr($user_message, 7));
+        $user_message = "Подготовь набросок статьи и краткий сценарий мероприятия, посвященного жизни и творчеству писателя: {$author}. Структурируй ответ.";
     }
 
     // Direct Stat Command
@@ -687,11 +745,11 @@ function city_library_handle_ai_chat() {
     }
 
     // Direct OPAC Search Simulation
-    $clean_msg = mb_strtolower(trim($user_message));
+    $original_clean = mb_strtolower(trim(isset($_POST['message']) ? sanitize_text_field($_POST['message']) : ''));
     $is_opac_command = false;
     $opac_query = '';
 
-    if (strpos($clean_msg, '/opac') === 0 || strpos($clean_msg, 'найди книгу') === 0 || strpos($clean_msg, 'поиск в каталоге') === 0) {
+    if (strpos($original_clean, '/opac') === 0 || strpos($original_clean, 'найди книгу') === 0 || strpos($original_clean, 'поиск в каталоге') === 0) {
         $is_opac_command = true;
         // Extract query
         if (strpos($clean_msg, '/opac') === 0) {
@@ -731,12 +789,12 @@ function city_library_handle_ai_chat() {
     $is_draw_command = false;
     $draw_prompt = '';
 
-    if (strpos($clean_msg, '/aimg') === 0) {
+    if (strpos($original_clean, '/aimg') === 0) {
         $is_draw_command = true;
-        $draw_prompt = trim(mb_substr(trim($user_message), 5));
-    } else if (preg_match('/^(нарисуй|сгенерируй|создай картинку|нарисуй мне|сделай картинку)\s+(.+)/u', $clean_msg, $matches)) {
+        $draw_prompt = trim(mb_substr(trim($original_clean), 5));
+    } else if (preg_match('/^(нарисуй|сгенерируй|создай картинку|нарисуй мне|сделай картинку)\s+(.+)/u', $original_clean, $matches)) {
         $is_draw_command = true;
-        $draw_prompt = trim(mb_substr(trim($user_message), mb_strlen($matches[1])));
+        $draw_prompt = trim($matches[2]);
     }
 
     if ($is_draw_command) {
@@ -864,6 +922,7 @@ function city_library_handle_ai_chat() {
     }
 
     $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Виртуальная помощница. Отвечай от женского лица.
+    Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
     НЕ НАДО постоянно здороваться в каждом сообщении. Отвечай по существу запроса.
 
@@ -881,6 +940,7 @@ function city_library_handle_ai_chat() {
 
     ТВОРЧЕСКИЙ ИНСТРУМЕНТАРИЙ:
     1. SMM-модуль: Посты для ВК должны содержать: цепляющий заголовок, структурированный текст, эмодзи (умеренно) и список релевантных хештегов.
+    2. ИНТЕРАКТИВНОСТЬ: Когда ты перечисляешь писателей-юбиляров, ты ДОЛЖЕН оформлять их имена как HTML-кнопки: <button class=\"ai-draft-btn\" data-author=\"Имя\">Имя</button>.
     2. Ивент-менеджмент: Сценарии мероприятий должны включать: Тайминг и зонирование активности, Расчет штатных единиц (количество сотрудников на точку), Технический райдер (оборудование), Интерактив (Квизы, QR-квесты, нейро-активности).
     3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание на английском](https://image.pollinations.ai/prompt/STRICTLY_ENGLISH_DESCRIPTION?width=1024&height=1024&nologo=true&seed=RANDOM_NUMBER)`. При генерации изображений через Markdown (pollinations.ai), ты ОБЯЗАН составлять описание (STRICTLY_ENGLISH_DESCRIPTION) строго на АНГЛИЙСКОМ языке, кратко и через знак '+', даже если пользователь пишет на русском. Пример: `Library+Poster+Watercolor+Style`. Используй только безопасные символы для URL.
 
@@ -1167,6 +1227,7 @@ function get_city_library_ai_avatar_url() {
             return 'https://api.dicebear.com/7.x/identicon/svg?seed=AI&backgroundColor=0b7930'; // Abstract
         case 'default':
         default:
-            return get_template_directory_uri() . '/assets/images/ai-avatar.png'; // Primary default we copied earlier
+            // Use Avery as specified in memory for the female librarian persona
+            return 'https://api.dicebear.com/7.x/avataaars/svg?seed=Avery&backgroundColor=0b7930';
     }
 }
