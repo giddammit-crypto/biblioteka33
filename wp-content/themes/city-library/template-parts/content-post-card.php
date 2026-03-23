@@ -8,7 +8,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
     <!-- Image Container -->
     <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden">
-        <a href="<?php the_permalink(); ?>" class="block w-full h-full" tabindex="-1" aria-hidden="true">
+        <div class="block w-full h-full pointer-events-auto">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
             <?php else : ?>
@@ -16,7 +16,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
                     <span class="material-symbols-outlined text-4xl text-slate-300" aria-hidden="true">image</span>
                 </div>
             <?php endif; ?>
-        </a>
+        </div>
 
         <!-- Mobile Gradient Overlay (Top) -->
         <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent lg:hidden pointer-events-none"></div>
@@ -46,7 +46,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     <!-- Content -->
     <div class="relative z-10 flex flex-col h-full p-6 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto">
         <!-- Make links clickable on mobile (overlay) -->
-        <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto" aria-hidden="true"></a>
+        <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto z-10" aria-hidden="true"></a>
 
         <!-- Desktop Date -->
         <div class="hidden lg:flex items-center text-slate-500 text-[11px] font-bold tracking-widest uppercase mb-3 pointer-events-auto">

@@ -496,7 +496,7 @@ function city_library_render_ai_librarian() {
     }
 
     ?>
-    <div id="ai-librarian-widget" class="fixed bottom-6 right-4 sm:right-6 z-[100] flex flex-col items-end w-[calc(100%-2rem)] sm:w-auto">
+    <div id="ai-librarian-widget" class="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 z-[9999] flex flex-col items-end w-[calc(100%-2rem)] sm:w-auto">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
         <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-full sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?>">

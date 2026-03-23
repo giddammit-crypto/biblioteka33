@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 
-<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 overflow-x-hidden">
-    <div id="primary" class="w-full transition-all duration-300">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 overflow-x-hidden relative z-0">
+    <div id="primary" class="w-full transition-all duration-300 relative z-10">
 
         <?php
         while (have_posts()) :

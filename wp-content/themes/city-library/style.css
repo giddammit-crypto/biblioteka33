@@ -30,6 +30,19 @@ html, body {
     color: inherit !important;
 }
 
+/* Firefox Specific Layout & Visibility Fixes */
+@-moz-document url-prefix() {
+    .news-card-excerpt-text {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    .news-card-title-link {
+        display: block !important;
+        color: white !important;
+    }
+}
+
 .news-card-link {
     color: white !important;
 }

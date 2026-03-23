@@ -3,12 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
      * Robust Lightbox Initialization
      * Targets images in posts, pages, and news content.
      */
-    const contentContainers = '.entry-content, .post-content, .page-content, .news-content, .featured-cards-section, .promo-section-content, .featured-cards-image-only, .promo-section-image-wrapper, .important-section-link, .library-branch-image-wrapper';
+    const contentContainers = '.entry-content, .prose, .post-content, .page-content, .news-content, .featured-cards-section, .promo-section-content, .featured-cards-image-only, .promo-section-image-wrapper, .important-section-link, .library-branch-image-wrapper';
     const contentImages = document.querySelectorAll(`${contentContainers} img:not(.emoji)`);
 
     if (contentImages.length > 0) {
         contentImages.forEach(img => {
             const parent = img.parentElement;
+
+            // Extract alignment classes to transfer them
+            const alignmentClasses = Array.from(img.classList).filter(c =>
+                c.startsWith('align') || c.startsWith('wp-image-')
+            );
 
             // 1. Handle already linked images
             if (parent.tagName === 'A') {
@@ -21,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!parent.dataset.gallery) {
                         parent.dataset.gallery = 'post-gallery';
                     }
+                    // Ensure parent has alignment classes for proper layout
+                    alignmentClasses.forEach(c => parent.classList.add(c));
                 }
                 return;
             }
@@ -33,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.add('glightbox');
             link.dataset.gallery = 'post-gallery';
 
-            // Special handling for Gutenberg captions/figures
-            const target = (parent.tagName === 'FIGURE') ? img : img;
+            // Transfer alignment classes to link
+            alignmentClasses.forEach(c => link.classList.add(c));
 
             img.parentNode.insertBefore(link, img);
             link.appendChild(img);
