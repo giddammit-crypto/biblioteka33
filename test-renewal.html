@@ -1,0 +1,33 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test Book Renewal Modal</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <script>
+            window.renewal_params = {
+                settings: {
+                    btn_visibility: 'always',
+                    btn_position: 'bottom-right',
+                    btn_text: 'Продление книг'
+                },
+                branches: {
+                    'branch1': 'Центральная библиотека',
+                    'branch2': 'Детская библиотека'
+                },
+                ajax_url: '/mock-ajax'
+            };
+        </script>
+        <!-- The button gets hidden if it thinks it's at the bottom of the page -->
+        <style>
+            body { min-height: 200vh; } /* Make sure it's tall enough to not hide the button */
+        </style>
+        <script src="wp-content/themes/city-library/js/book-renewal.js"></script>
+    </head>
+    <body class="bg-gray-100 p-8">
+        <h1>Book Renewal Script Test Page</h1>
+    </body>
+    </html>

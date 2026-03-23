@@ -119,52 +119,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     <!-- FIO Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Ф.И.О. читателя *</label>
+                        <label for="renewal_fio" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Ф.И.О. читателя *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">person</span>
-                            <input type="text" name="fio" required placeholder="Иванов Иван Иванович"
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">person</span>
+                            <input type="text" id="renewal_fio" name="fio" required placeholder="Иванов Иван Иванович"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Card Number Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Номер читательского билета *</label>
+                        <label for="renewal_card_number" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Номер читательского билета *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">badge</span>
-                            <input type="text" name="card_number" required placeholder="№ 12345"
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">badge</span>
+                            <input type="text" id="renewal_card_number" name="card_number" required placeholder="№ 12345"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Branch Select -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Филиал *</label>
+                        <label for="renewal_branch" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Филиал *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">store</span>
-                            <select name="branch" required
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">store</span>
+                            <select id="renewal_branch" name="branch" required
                                     class="w-full pl-12 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm appearance-none cursor-pointer">
                                 ${branchOptions}
                             </select>
-                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">expand_more</span>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl" aria-hidden="true">expand_more</span>
                         </div>
                     </div>
 
                     <!-- Email Input -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Email для связи *</label>
+                        <label for="renewal_email" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Email для связи *</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">mail</span>
-                            <input type="email" name="email" required placeholder="example@mail.ru"
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors" aria-hidden="true">mail</span>
+                            <input type="email" id="renewal_email" name="email" required placeholder="example@mail.ru"
                                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm">
                         </div>
                     </div>
 
                     <!-- Books Textarea -->
                     <div class="group">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Список книг (автор, название) *</label>
+                        <label for="renewal_books" class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 transition-colors group-focus-within:text-primary">Список книг (автор, название) *</label>
                         <div class="relative">
-                            <textarea name="books" rows="3" required placeholder="Пример: Пушкин А.С. - Евгений Онегин..."
+                            <textarea id="renewal_books" name="books" rows="3" required placeholder="Пример: Пушкин А.С. - Евгений Онегин..."
                                       class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 hover:bg-slate-50/80 font-medium text-sm resize-none"></textarea>
                         </div>
                     </div>
