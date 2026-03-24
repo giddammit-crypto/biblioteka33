@@ -147,8 +147,13 @@
 /* Bot Message Bubble Enhancement */
 #ai-chat-messages .bg-white.border {
     border: 1px solid rgba(226, 232, 240, 0.8) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-    border-radius: 18px 18px 18px 2px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 20px 20px 20px 4px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#ai-chat-messages .bg-white.border:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Input Area Enhancement */
@@ -204,10 +209,14 @@
 /* Enhanced Draft/Email Action Buttons Area */
 .flex-wrap > button, .flex-wrap > a {
     background-color: #f8fafc;
-    padding: 6px 10px !important;
-    border-radius: 8px;
+    padding: 6px 12px !important;
+    border-radius: 10px;
     border: 1px solid #e2e8f0;
     transition: all 0.2s ease;
+    font-size: 11px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 .flex-wrap > button:hover, .flex-wrap > a:hover {
     background-color: #f1f5f9;
@@ -216,6 +225,33 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
+
+/* Book Shelf Styling */
+.ai-book-shelf {
+    scrollbar-width: none; /* Firefox */
+}
+.ai-book-shelf::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Typing Indicator Animation */
+@keyframes typing-dot {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-4px); }
+}
+.typing-dot {
+    animation: typing-dot 1.4s infinite;
+}
+
+/* Selection Mode Visuals */
+#ai-chat-window.selection-active .ai-selectable-message {
+    opacity: 0.7;
+    transform: scale(0.98);
+}
+#ai-chat-window.selection-active .ai-selectable-message.ring-indigo-500 {
+    opacity: 1;
+    transform: scale(1);
+}
 
 /* Markdown Image Wrapper (Pollinations/OpenRouter Gen) */
 .library-image-wrapper {

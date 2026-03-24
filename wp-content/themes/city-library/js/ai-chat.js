@@ -65,6 +65,84 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSelectionMode = false;
     let selectedMessages = new Set();
 
+    // Cache for Google Books covers to avoid redundant API calls
+    const bookCoverCache = new Map();
+
+    async function fetchBookCover(query) {
+        if (!query) return null;
+        if (bookCoverCache.has(query)) return bookCoverCache.get(query);
+
+        try {
+            const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=1`);
+            const data = await response.json();
+            if (data.items && data.items[0]?.volumeInfo?.imageLinks?.thumbnail) {
+                const cover = data.items[0].volumeInfo.imageLinks.thumbnail.replace('http:', 'https:');
+                bookCoverCache.set(query, cover);
+                return cover;
+            }
+        } catch (e) {
+            console.error('Error fetching book cover:', e);
+        }
+        return null;
+    }
+
+    function extractBooksFromText(text) {
+        // Regex to find "Author - Title" patterns or quoted titles
+        // Matches patterns like: "А.С. Пушкин - Евгений Онегин" or "Лев Толстой «Война и мир»"
+        const books = [];
+        const patterns = [
+            /(?:^|\n|\d\.\s+)([А-ЯA-Z][а-яa-z\.]+\s+[А-ЯA-Z][а-яa-z\.]*(?:\s+[А-ЯA-Z][а-яa-z\.]*)?)\s+[-—]\s+([«"']?[А-ЯA-Z][^«"'\n\r]+[»"']?)/g,
+            /([А-ЯA-Z][а-яa-z\.]+(?:\s+[А-ЯA-Z][а-яa-z\.]*)*)\s+([«"'][^»"']+([»"']))/g
+        ];
+
+        patterns.forEach(regex => {
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                const author = match[1].trim();
+                const title = match[2].trim().replace(/[«»"']/g, '');
+                books.push(`${author} ${title}`);
+            }
+        });
+
+        return [...new Set(books)]; // Unique items
+    }
+
+    async function injectBookCovers(container, text) {
+        const books = extractBooksFromText(text);
+        if (books.length === 0) return;
+
+        const shelf = document.createElement('div');
+        shelf.className = 'ai-book-shelf mt-4 flex gap-3 overflow-x-auto pb-2 scrollbar-hide py-1';
+
+        let hasCovers = false;
+        for (const book of books) {
+            const coverUrl = await fetchBookCover(book);
+            if (coverUrl) {
+                hasCovers = true;
+                const bookEl = document.createElement('div');
+                bookEl.className = 'flex-shrink-0 group relative cursor-pointer';
+                bookEl.innerHTML = `
+                    <div class="w-[80px] h-[120px] rounded-lg overflow-hidden shadow-md border border-slate-200 transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg">
+                        <a href="${coverUrl}" class="glightbox-book block w-full h-full" data-title="${escapeHtml(book)}">
+                            <img src="${coverUrl}" alt="${escapeHtml(book)}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                <span class="material-symbols-outlined text-white text-xl">zoom_in</span>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                shelf.appendChild(bookEl);
+            }
+        }
+
+        if (hasCovers) {
+            container.appendChild(shelf);
+            if (typeof GLightbox !== 'undefined') {
+                GLightbox({ selector: '.glightbox-book' });
+            }
+        }
+    }
+
     function loadHistory() {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -215,9 +293,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (isDrawCommand) {
-            addMessageToUI('bot', '<div class="flex items-center gap-2 text-slate-500 font-medium"><span class="material-symbols-outlined animate-spin text-primary" aria-hidden="true">palette</span> Создаю изображение...</div>', typingId, false);
+            addMessageToUI('bot', `<div class="flex items-center gap-3 text-slate-500 font-medium">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden">
+                    <img src="${cl_ai_ajax.avatar_url}" alt="AI" class="w-full h-full object-cover opacity-50">
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined animate-spin text-primary" aria-hidden="true" style="font-size: 18px;">sync</span>
+                    <span class="text-xs">Библиотекарь создаёт изображение...</span>
+                </div>
+            </div>`, typingId, false);
         } else {
-            addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId, false);
+            addMessageToUI('bot', `<div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden">
+                    <img src="${cl_ai_ajax.avatar_url}" alt="AI" class="w-full h-full object-cover opacity-50">
+                </div>
+                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 bg-primary/40 rounded-full typing-dot"></span>
+                    <span class="w-1.5 h-1.5 bg-primary/60 rounded-full typing-dot" style="animation-delay: 0.2s"></span>
+                    <span class="w-1.5 h-1.5 bg-primary/80 rounded-full typing-dot" style="animation-delay: 0.4s"></span>
+                </div>
+            </div>`, typingId, false);
         }
 
         const contextHistory = chatHistory.slice(-200).map(m => ({ // Support 100 requests (200 messages)
@@ -283,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add message helper
-    function addMessageToUI(sender, text, id = null, save = true) {
+    async function addMessageToUI(sender, text, id = null, save = true) {
         if (save && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
             chatHistory.push({ role: sender, content: text });
             saveHistory();
@@ -378,6 +473,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         messagesContainer.appendChild(wrapper);
+
+        // Inject Book Covers if it's a bot message
+        if (sender === 'bot' && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
+            const proseContainer = wrapper.querySelector('.prose');
+            if (proseContainer) {
+                injectBookCovers(proseContainer, text);
+            }
+        }
 
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -583,6 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Selection Mode Logic ---
     const collectDraftBtn = document.getElementById('ai-collect-draft-btn');
+    const collectDraftBtnMobile = document.getElementById('ai-collect-draft-btn-mobile');
     const selectionToolbar = document.getElementById('ai-selection-toolbar');
     const selectedCountEl = document.getElementById('ai-selected-count');
     const cancelSelectionBtn = document.getElementById('ai-cancel-selection');
@@ -637,6 +741,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (collectDraftBtn) {
         collectDraftBtn.addEventListener('click', () => toggleSelectionMode(true));
+    }
+    if (collectDraftBtnMobile) {
+        collectDraftBtnMobile.addEventListener('click', () => toggleSelectionMode(true));
     }
 
     if (cancelSelectionBtn) {

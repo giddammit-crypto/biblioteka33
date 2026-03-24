@@ -605,6 +605,9 @@ function city_library_render_ai_librarian() {
                         </button>
                         <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/anniversaries">Юбиляры</button>
                         <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/social_post">Пост ВК</button>
+                        <button id="ai-collect-draft-btn-mobile" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-full text-indigo-600 transition-all font-bold">
+                            <span class="material-symbols-outlined text-[14px]">library_add_check</span> Собрать
+                        </button>
                         <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/clear">Очистить</button>
                     </div>
 
@@ -795,7 +798,7 @@ function city_library_handle_ai_chat() {
     }
     if (strpos($clean_msg, '/exhibitions') === 0) {
         $subject = trim(mb_substr($user_message, 12));
-        $user_message = "Предложи 5-10 креативных и названий и идей для книжных выставок" . ($subject ? " на тему: '{$subject}'" : "") . ". Укажи целевую аудиторию и формы работы с выставкой.";
+        $user_message = "Предложи 5-10 креативных названий и идей для книжных выставок" . ($subject ? " на тему: '{$subject}'" : "") . ". Укажи целевую аудиторию и формы работы с выставкой. ОБЯЗАТЕЛЬНО: Для каждой выставки приведи список из 3-5 рекомендуемых книг в формате: 'Автор - Название'.";
     }
     if (strpos($clean_msg, '/vladimir_history') === 0) {
         $subject = trim(mb_substr($user_message, 17));
