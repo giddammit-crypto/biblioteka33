@@ -33,7 +33,17 @@
                     <!-- Content -->
                     <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
                         <?php
-                        the_content();
+                            // Fix LearningApps iframes before rendering
+                            $content = get_the_content();
+                            $content = preg_replace('/<iframe([^>]+)src=["\']http:\/\/learningapps\.org\/([^"\']+)["\']([^>]*)>/i', '<iframe$1src="https://learningapps.org/$2"$3>', $content);
+                            $content = preg_replace_callback('/<iframe([^>]+)src=["\']https:\/\/learningapps\.org\/([^"\']+)["\']([^>]*)>/i', function($m) {
+                                $attrs = $m[1] . $m[3];
+                                $w_val = '100%'; $h_val = '500px';
+                                if (preg_match('/width=["\']([^"\']+)["\']/', $attrs, $w)) $w_val = (is_numeric($w[1]) ? $w[1].'px' : $w[1]);
+                                if (preg_match('/height=["\']([^"\']+)["\']/', $attrs, $h)) $h_val = (is_numeric($h[1]) ? $h[1].'px' : $h[1]);
+                                return "<iframe{$m[1]}src=\"https://learningapps.org/{$m[2]}\"{$m[3]} style=\"width:{$w_val} !important; height:{$h_val} !important; border:0; min-height:400px;\">";
+                            }, $content);
+                            echo apply_filters('the_content', $content);
 
                         wp_link_pages(array(
                             'before' => '<div class="page-links">' . esc_html__('Pages:', 'city-library'),

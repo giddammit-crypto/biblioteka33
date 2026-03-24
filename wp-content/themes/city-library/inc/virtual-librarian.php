@@ -637,15 +637,15 @@ function city_library_render_ai_librarian() {
                                 <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
                             </div>
                             <div class="bg-white border border-slate-200/80 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 text-[14.5px] leading-relaxed">
-                                Здравствуйте! Я ваш виртуальный библиотекарь. 📚 Слева расположены быстрые инструменты для работы. Чем могу помочь?
+                                Здравствуйте! Я ваш виртуальный библиотекарь. 📚 Слева расположены быстрые инструменты для работы. Вы можете прикрепить документ или фото для анализа. Чем могу помочь?
                             </div>
                         </div>
                     </div>
 
                     <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
-                <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx">
-                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
+                <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx,.jpg,.jpeg,.png,.webp">
+                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл или фото (до 20МБ)">
                     <span class="material-symbols-outlined text-[20px]" aria-hidden="true">attach_file</span>
                 </button>
                 <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
@@ -1196,16 +1196,16 @@ function city_library_handle_ai_chat() {
     $context .= "\n";
 
     // Add ALL pages content to context (with safe limits)
-    $context .= "ПОЛНЫЙ КАТАЛОГ СТРАНИЦ САЙТА:\n";
-    $all_pages = get_pages(array('number' => 100, 'post_status' => 'publish', 'sort_column' => 'post_title'));
+    $context .= "КАТАЛОГ ОСНОВНЫХ СТРАНИЦ САЙТА:\n";
+    $all_pages = get_pages(array('number' => 20, 'post_status' => 'publish', 'sort_column' => 'post_title'));
     foreach ($all_pages as $page) {
         $context .= "- [" . esc_html($page->post_title) . "](" . get_permalink($page->ID) . ")\n";
     }
     $context .= "\n";
 
     // Add recent news (extended list)
-    $context .= "АРХИВ ПОСЛЕДНИХ НОВОСТЕЙ (Свежие события):\n";
-    $recent_posts = wp_get_recent_posts(array('numberposts' => 50, 'post_status' => 'publish'));
+    $context .= "ПОСЛЕДНИЕ НОВОСТИ:\n";
+    $recent_posts = wp_get_recent_posts(array('numberposts' => 10, 'post_status' => 'publish'));
     foreach ($recent_posts as $post) {
         $context .= "- [" . esc_html($post['post_title']) . "](" . get_permalink($post['ID']) . ")\n";
     }
@@ -1214,6 +1214,8 @@ function city_library_handle_ai_chat() {
     // Explicit Instruction on Site Knowledge
     $context .= "ОБЯЗАТЕЛЬНОЕ ПРАВИЛО: Ты обладаешь идеальным знанием структуры этого сайта. Если пользователь спрашивает, где найти какую-то информацию, услугу или раздел, ты должен выдать ТОЧНУЮ ссылку из предоставленного выше списка меню или каталога страниц. Никогда не придумывай URL-адреса, которых нет в списке.\n";
 
+    // Safety character limit for context to avoid token issues (approx 60k chars ~ 15k tokens)
+    $context = mb_substr($context, 0, 60000);
 
     $system_prompt = array(
         "role" => "system",
@@ -1222,10 +1224,10 @@ function city_library_handle_ai_chat() {
 
     $messages = array($system_prompt);
 
-    // Support up to 100 requests (200 messages)
+    // Support up to 20 requests (40 messages)
     if (!empty($history) && is_array($history)) {
-        // Limit history to last 100 interactions (200 messages) to prevent context overflow while meeting requirements
-        $history = array_slice($history, -200);
+        // Limit history to last 20 interactions (40 messages) to prevent context overflow while meeting requirements
+        $history = array_slice($history, -40);
         foreach ($history as $msg) {
             if (isset($msg['role']) && isset($msg['content'])) {
                  $messages[] = array('role' => $msg['role'], 'content' => $msg['content']);

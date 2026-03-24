@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`, typingId, false);
         }
 
-        const contextHistory = chatHistory.slice(-200).map(m => ({ // Support 100 requests (200 messages)
+        const contextHistory = chatHistory.slice(-40).map(m => ({ // Support 20 requests (40 messages)
             role: m.role === 'bot' ? 'assistant' : 'user',
             content: m.content
         }));

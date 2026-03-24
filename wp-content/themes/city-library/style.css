@@ -385,6 +385,12 @@ p, li, .entry-content p, .entry-content li {
     box-sizing: border-box;
 }
 
+/* LearningApps iframe stability */
+.entry-content iframe[src*="learningapps.org"] {
+    height: attr(height px) !important;
+    min-height: 400px;
+}
+
 .entry-content figure {
     max-width: 100% !important;
     margin-left: 0;
