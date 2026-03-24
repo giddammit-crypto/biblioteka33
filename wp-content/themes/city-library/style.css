@@ -68,6 +68,7 @@ html, body {
     }
 
     /* Bypass problematic AOS animations in Firefox for these cards */
+    article.group,
     article.group .animate-on-scroll {
         opacity: 1 !important;
         transform: none !important;
@@ -76,9 +77,10 @@ html, body {
 
     /* Article Container Fix */
     article.group {
-        overflow: hidden !important;
+        overflow: visible !important; /* Changed from hidden to prevent clipping */
         isolation: isolate !important;
         background-clip: border-box !important;
+        perspective: 1000px;
     }
 
     /* Remove problematic shadows in Firefox */
@@ -90,11 +92,25 @@ html, body {
 
     /* Stacking fix for absolute overlays in Firefox */
     .news-card-image-container {
-        z-index: 0 !important;
+        z-index: 1 !important; /* Force positive z-index */
+        transform: translateZ(0); /* Force hardware acceleration */
     }
     .news-card-content-wrapper {
-        z-index: 10 !important;
+        z-index: 50 !important; /* Significantly higher than image */
         position: relative !important;
+        transform: translateZ(10px); /* Explicit layer separation */
+        backface-visibility: hidden;
+        will-change: transform, opacity;
+    }
+
+    /* Force persistent visibility of text elements */
+    .news-card-title-link,
+    .news-card-excerpt-text,
+    .news-card-link {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
     }
 
     /* Clamping Fix */
