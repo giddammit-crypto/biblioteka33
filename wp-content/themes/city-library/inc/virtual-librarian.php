@@ -941,9 +941,44 @@ function city_library_handle_ai_chat() {
         $used_model = '';
 
         // Improved Prompt Refinement via LLM
+        $refine_system = 'You are a professional prompt engineer for AI image generators (like Flux). Your task is to transform Russian requests into high-quality English prompts. MANDATORY:
+        1. Explicitly instruct the model to write any text in RUSSIAN language (Cyrillic), using quotes.
+        2. If the user request is too vague (less than 3 words or just a generic object like "cat"), start your response with "CLARIFY:" and ask the user for details (style, lighting, background) in Russian.
+        3. If a reference image description is provided, ensure the new prompt maintains its style/objects.
+        4. Return ONLY the refined English prompt (or CLARIFY question), no extra meta-text.';
+
         $refine_messages = array(
-            array('role' => 'system', 'content' => 'You are a professional prompt engineer for AI image generators (like Flux) that can render text correctly. Your task is to transform Russian requests into high-quality English prompts. MANDATORY: You must explicitly instruct the model to write any text, titles, or inscriptions on the image in the RUSSIAN language (Cyrillic), using quotes like "Text in Russian". Example: "a poster with the Russian text: КНИГА". Return ONLY the refined English prompt, no extra text.'),
+            array('role' => 'system', 'content' => $refine_system),
         );
+
+        // Handle Image-as-Reference using Gemini 2.0 Flash
+        if (!empty($image_data)) {
+            $vision_body = array(
+                'model' => 'google/gemini-2.0-flash-001',
+                'messages' => array(
+                    array(
+                        'role' => 'user',
+                        'content' => array(
+                            array("type" => "text", "text" => "Describe this image in detail for an AI image generator prompt. Focus on style, colors, objects, and composition. Return only the description in English."),
+                            array("type" => "image_url", "image_url" => array("url" => $image_data))
+                        )
+                    )
+                )
+            );
+            $vision_args = array(
+                'headers' => array('Authorization' => 'Bearer ' . $api_key, 'Content-Type' => 'application/json'),
+                'body' => wp_json_encode($vision_body),
+                'timeout' => 30
+            );
+            $vision_response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $vision_args);
+            if (!is_wp_error($vision_response) && wp_remote_retrieve_response_code($vision_response) === 200) {
+                $vision_data = json_decode(wp_remote_retrieve_body($vision_response), true);
+                $reference_desc = $vision_data['choices'][0]['message']['content'] ?? '';
+                if ($reference_desc) {
+                    $refine_messages[] = array('role' => 'system', 'content' => "REFERENCE IMAGE CONTEXT (Maintain this style): " . $reference_desc);
+                }
+            }
+        }
 
         // For refinement, we add the history to the refinement step so the LLM knows what the previous image was
         if (!empty($history) && is_array($history)) {
@@ -980,6 +1015,14 @@ function city_library_handle_ai_chat() {
             $refine_data = json_decode(wp_remote_retrieve_body($refine_response), true);
             if (!empty($refine_data['choices'][0]['message']['content'])) {
                 $final_prompt = trim($refine_data['choices'][0]['message']['content']);
+
+                // CLARIFY: Logic if user request is too vague
+                if (strpos($final_prompt, 'CLARIFY:') === 0) {
+                    $clarify_text = trim(substr($final_prompt, 8));
+                    wp_send_json_success(array('reply' => "🤔 {$clarify_text}"));
+                    return;
+                }
+
                 // Ensure common library quality keywords are present
                 $final_prompt .= ", professional library poster style, highly detailed, 4k, educational context";
             }
@@ -1044,13 +1087,8 @@ function city_library_handle_ai_chat() {
             $reply = "🎨 Вот ваше изображение по запросу: *{$draw_prompt}*\n\n![Сгенерированное изображение]({$image_url})\n\n_Вы можете уточнить детали (например, «сделай это в стиле аниме» или «добавь больше книг»), и я обновлю картинку._";
             wp_send_json_success(array('reply' => $reply));
         } else {
-            // Ultimate fallback to Pollinations if all OpenRouter image models fail or timeout
-            $encoded_prompt = urlencode("Library related, professional, " . $draw_prompt);
-            $seed = rand(1, 99999);
-            $fallback_url = "https://image.pollinations.ai/prompt/{$encoded_prompt}?width=1024&height=1024&nologo=true&seed={$seed}";
-
-            $reply = "⚠️ Основные нейросети перегружены. Сгенерировано резервным алгоритмом:\n\n![Сгенерированное изображение]({$fallback_url})";
-            wp_send_json_success(array('reply' => $reply));
+            $reply = "⚠️ К сожалению, в данный момент все нейросети для генерации изображений перегружены или недоступны. Пожалуйста, попробуйте повторить запрос через несколько минут.";
+            wp_send_json_error(array('reply' => $reply));
         }
         return;
     }
@@ -1113,7 +1151,7 @@ function city_library_handle_ai_chat() {
     2. SMM-модуль: Посты для ВК должны содержать: цепляющий заголовок, структурированный текст, эмодзи (умеренно) и список релевантных хештегов.
     2. ИНТЕРАКТИВНОСТЬ: Когда ты перечисляешь писателей-юбиляров, ты ДОЛЖЕН оформлять их имена как HTML-кнопки: <button class=\"ai-draft-btn\" data-author=\"Имя\">Имя</button>.
     2. Ивент-менеджмент: Сценарии мероприятий должны включать: Тайминг и зонирование активности, Расчет штатных единиц (количество сотрудников на точку), Технический райдер (оборудование), Интерактив (Квизы, QR-квесты, нейро-активности).
-    3. Визуализация: При запросе на афишу, плакат (Нарисуй/Сгенерируй /aimg) выдавай Markdown картинку: `![Описание на английском](https://image.pollinations.ai/prompt/STRICTLY_ENGLISH_DESCRIPTION?width=1024&height=1024&nologo=true&seed=RANDOM_NUMBER)`. При генерации изображений через Markdown (pollinations.ai), ты ОБЯЗАН составлять описание (STRICTLY_ENGLISH_DESCRIPTION) строго на АНГЛИЙСКОМ языке, кратко и через знак '+', даже если пользователь пишет на русском. Пример: `Library+Poster+Watercolor+Style`. Используй только безопасные символы для URL.
+    3. Визуализация: При запросе на генерацию изображения (/aimg или просьба нарисовать), ты должен дождаться выполнения функции генерации. Если запрос пользователя слишком короткий или непонятный (например, просто слово 'Библиотека'), ты ДОЛЖЕН ответить строкой, начинающейся с 'CLARIFY:', и вежливо попросить уточнить детали (стиль, объекты, освещение).
 
     ФОРМАТ ОТВЕТА:
     Никакой «воды». Только таблицы, списки и четкие блоки данных. Если информации нет в сети — честно сообщай об этом, а не имитируй знание.\n\n";
@@ -1226,13 +1264,19 @@ function city_library_handle_ai_chat() {
 
     $messages = array($system_prompt);
 
-    // Support up to 20 requests (40 messages)
+    // Helper: Compress and truncate history messages
+    $compress_history = function($text) {
+        $text = preg_replace('/\s+/', ' ', $text); // Strip excessive whitespace
+        return mb_substr(trim($text), 0, 1000); // Truncate to 1000 chars
+    };
+
+    // Support only the last 3 messages as explicitly requested by the user
     if (!empty($history) && is_array($history)) {
-        // Limit history to last 20 interactions (40 messages) to prevent context overflow while meeting requirements
-        $history = array_slice($history, -40);
+        $history = array_slice($history, -3);
         foreach ($history as $msg) {
             if (isset($msg['role']) && isset($msg['content'])) {
-                 $messages[] = array('role' => $msg['role'], 'content' => $msg['content']);
+                 $compressed_content = $compress_history($msg['content']);
+                 $messages[] = array('role' => $msg['role'], 'content' => $compressed_content);
             }
         }
     }
@@ -1282,10 +1326,14 @@ function city_library_handle_ai_chat() {
     $is_invalid_response = function($response) {
         if (is_wp_error($response)) return true;
         $code = wp_remote_retrieve_response_code($response);
-        if ($code >= 400) return true;
 
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body, true);
+
+        // Catch specific context length error or other API errors
+        if ($code >= 400 || (isset($data['error']['message']) && mb_stripos($data['error']['message'], 'context length') !== false)) {
+            return true;
+        }
 
         if (!isset($data['choices'][0]['message']['content'])) return true;
         $content = $data['choices'][0]['message']['content'];
@@ -1306,6 +1354,20 @@ function city_library_handle_ai_chat() {
     $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
 
     if ($is_invalid_response($response)) {
+        // Handle context length overflow by truncating history further
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+        if (isset($data['error']['message']) && mb_stripos($data['error']['message'], 'context length') !== false) {
+            // Cut history by half and try again
+            $reduced_history = array_slice($messages, 0, 1); // Keep system prompt
+            $history_only = array_slice($messages, 1, -1); // Middle part
+            $last_user_msg = end($messages);
+
+            $truncated_history = array_slice($history_only, -(count($history_only) / 2));
+            $new_messages = array_merge($reduced_history, $truncated_history, [$last_user_msg]);
+            $request_body['messages'] = $new_messages;
+        }
+
         // Attempt Fallback 1: Preferred Fallback Model
         $request_body['model'] = $fallback_model;
         unset($request_body['modalities']);
@@ -1318,6 +1380,11 @@ function city_library_handle_ai_chat() {
         if ($is_invalid_response($response)) {
             // Ultimate Fallback: High-availability model (GPT-4o-mini is extremely stable on OpenRouter)
             $request_body['model'] = 'openai/gpt-4o-mini';
+            // Final attempt at truncation if still failing on context
+            $final_messages = array_slice($request_body['messages'], 0, 1); // System only
+            $final_messages[] = end($request_body['messages']); // Plus current message
+            $request_body['messages'] = $final_messages;
+
             $api_args['body'] = wp_json_encode($request_body);
             $api_args['timeout'] = 30;
             $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);

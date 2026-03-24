@@ -16,20 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let attachedFileData = "";
 
 
-    // Clean and encode Cyrillic URLs specifically for Pollinations.ai issues
+    // Clean and encode Cyrillic URLs for generated images
     function safeImageUrl(href) {
         if (!href) return '';
-        // If the URL already contains a seed, don't append another one.
-        // Also check if it contains Cyrillic. If it does, encodeURI it.
         let safeHref = href;
         if (/[а-яА-ЯёЁ]/.test(safeHref)) {
             safeHref = encodeURI(safeHref);
-        }
-
-        // Append random seed if it's pollinations and doesn't have one to prevent caching
-        if (safeHref.includes('pollinations.ai') && !safeHref.includes('seed=')) {
-            const separator = safeHref.includes('?') ? '&' : '?';
-            safeHref += `${separator}seed=${Math.floor(Math.random() * 1000000)}`;
         }
         return safeHref;
     }
