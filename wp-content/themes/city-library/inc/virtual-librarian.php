@@ -770,6 +770,9 @@ function city_library_handle_ai_chat() {
         После списка добавь текст: 'Нажмите на имя писателя, чтобы я подготовила черновик статьи или сценария мероприятия о нём.'";
     }
 
+    // Ensure history is initialized before command checks to allow contextual awareness for tools
+    $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
+
     // Librarian Tools Shortcuts with Subject Support and CONTEXTUAL AWARENESS
     if (strpos($clean_msg, '/work_plan') === 0) {
         $subject = trim(mb_substr($user_message, 10));
@@ -899,9 +902,6 @@ function city_library_handle_ai_chat() {
         wp_send_json_success(array('reply' => $reply));
         return;
     }
-
-    // Context / History Support
-    $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
 
     // Direct Image Generation Logic
     $is_draw_command = false;
@@ -1271,52 +1271,50 @@ function city_library_handle_ai_chat() {
             'Content-Type'  => 'application/json',
         ),
         'body' => wp_json_encode($request_body),
-        'timeout' => 30
+        'timeout' => 20 // Shorter timeout for primary attempt to trigger fallback faster if slow
     );
 
-    $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
-    $is_error = is_wp_error($response);
-    $http_code = $is_error ? 0 : wp_remote_retrieve_response_code($response);
-    $body = !$is_error ? wp_remote_retrieve_body($response) : '';
-    $data = json_decode($body, true);
+    // Helper to check for OpenRouter-specific errors in content or empty responses
+    $is_invalid_response = function($response) {
+        if (is_wp_error($response)) return true;
+        $code = wp_remote_retrieve_response_code($response);
+        if ($code >= 400) return true;
 
-    // Helper to check for OpenRouter-specific errors in content
-    $has_provider_error = function($data) {
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
         if (!isset($data['choices'][0]['message']['content'])) return true;
         $content = $data['choices'][0]['message']['content'];
-        return empty(trim($content)) || strpos($content, 'Provider returned error') !== false || strpos($content, 'upstream error') !== false;
+
+        // OpenRouter often returns "Provider returned error" or similar in the text even on 200 OK
+        if (empty(trim($content)) ||
+            mb_stripos($content, 'Provider returned error') !== false ||
+            mb_stripos($content, 'upstream error') !== false ||
+            mb_stripos($content, 'networks are overloaded') !== false ||
+            mb_stripos($content, 'all providers failed') !== false) {
+            return true;
+        }
+
+        return false;
     };
 
-    // Check if primary model failed
-    $should_fallback = $is_error || $http_code >= 400 || $has_provider_error($data);
+    $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
 
-    if ($should_fallback) {
-        // Attempt Fallback (text only)
+    if ($is_invalid_response($response)) {
+        // Attempt Fallback 1: Preferred Fallback Model
         $request_body['model'] = $fallback_model;
         unset($request_body['modalities']);
         unset($request_body['audio']);
 
-        // If fallback model is different from primary, try it
-        if ($fallback_model !== $model) {
-            $api_args['body'] = wp_json_encode($request_body);
-            $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+        $api_args['body'] = wp_json_encode($request_body);
+        $api_args['timeout'] = 25; // Slightly longer for fallback
+        $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
 
-            $is_error = is_wp_error($response);
-            $http_code = $is_error ? 0 : wp_remote_retrieve_response_code($response);
-            $body = !$is_error ? wp_remote_retrieve_body($response) : '';
-            $data = json_decode($body, true);
-
-            // Check if even the fallback is giving errors
-            if ($is_error || $http_code >= 400 || $has_provider_error($data)) {
-                // Ultimate Fallback to a very stable model (GPT-4o-mini)
-                $request_body['model'] = 'openai/gpt-4o-mini';
-                $api_args['body'] = wp_json_encode($request_body);
-                $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
-            }
-        } else {
-            // If primary was already the fallback, try ultimate fallback immediately
+        if ($is_invalid_response($response)) {
+            // Ultimate Fallback: High-availability model (GPT-4o-mini is extremely stable on OpenRouter)
             $request_body['model'] = 'openai/gpt-4o-mini';
             $api_args['body'] = wp_json_encode($request_body);
+            $api_args['timeout'] = 30;
             $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
         }
     }

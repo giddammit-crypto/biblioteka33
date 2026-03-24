@@ -23,15 +23,31 @@ html, body {
     .news-card-excerpt-text *,
     .news-card-link,
     .news-card-link *,
-    .news-card-content-wrapper .lg\:hidden {
+    .news-card-content-wrapper .lg\:hidden,
+    .news-card-content-wrapper .lg\:hidden * {
         color: white !important;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Force children paragraphs and spans to be white as well */
+    /* Force all children inside the content wrapper to be white on mobile */
+    .news-card-content-wrapper,
     .news-card-content-wrapper p,
-    .news-card-content-wrapper span:not(.bg-white) {
+    .news-card-content-wrapper span,
+    .news-card-content-wrapper a,
+    .news-card-content-wrapper div {
         color: white !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .news-card-title-link {
+        color: var(--title-color, #0f172a) !important;
+    }
+    .news-card-excerpt-text {
+        color: var(--text-color, #1e293b) !important;
+    }
+    .news-card-link {
+        color: var(--link-color, #0b7930) !important;
     }
 }
 
@@ -41,107 +57,51 @@ html, body {
 
 /* Firefox Specific Layout & Visibility Fixes */
 @-moz-document url-prefix() {
-    /* Broadly disable problematic rendering triggers in Firefox */
-    .animate-on-scroll,
-    .news-card-excerpt-text,
+    /* Stabilize Firefox News Cards */
+    .news-card-content-wrapper,
     .news-card-title-link,
-    .news-card-link,
-    article.group,
-    .swiper-slide {
-        will-change: auto !important;
-        perspective: none !important;
-        -moz-backface-visibility: visible !important;
-    }
-
-    /* Force rock-solid visibility for news card text */
     .news-card-excerpt-text,
-    .news-card-title-link,
-    .news-card-link,
-    .news-card-content-wrapper {
+    .news-card-link {
         visibility: visible !important;
         opacity: 1 !important;
-        transform: none !important;
-        position: relative !important;
-        z-index: 100 !important;
-        filter: blur(0) !important; /* Forces layer rendering in Firefox */
-        text-shadow: none !important;
-        -moz-backface-visibility: visible !important;
-        backface-visibility: visible !important;
-        display: block !important;
-        color: inherit !important;
-        overflow: visible !important;
-        isolation: isolate;
-        background-clip: padding-box;
-        /* Stabilize layer */
-        backface-visibility: hidden !important;
-        -moz-backface-visibility: hidden !important;
-    }
-
-    /* Disable hover transforms in Firefox news cards to prevent layer flickering */
-    article.group:hover {
-        transform: none !important;
-    }
-
-    /* Ensure AOS elements are fully visible and static in Firefox */
-    .animate-on-scroll {
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: none !important;
         filter: none !important;
-        transition: none !important;
     }
 
-    /* Fix for articles with overflow:hidden and border-radius in Firefox */
-    article.group, .news-card-content-wrapper, .news-card-image-container {
-        overflow: visible !important;
+    /* Bypass problematic AOS animations in Firefox for these cards */
+    article.group .animate-on-scroll {
+        opacity: 1 !important;
         transform: none !important;
         transition: none !important;
-        isolation: isolate;
-        background-clip: padding-box;
     }
 
-    /* Stacking Context Fixes */
-    article.group .news-card-image-container {
+    /* Article Container Fix */
+    article.group {
+        overflow: hidden !important;
+        isolation: auto !important;
+        background-clip: border-box !important;
+    }
+
+    /* Stacking fix for absolute overlays in Firefox */
+    .news-card-image-container {
         z-index: 0 !important;
-        position: absolute !important;
-        filter: blur(0) !important; /* Known Firefox fix for rendering layers */
     }
-
-    article.group .news-card-content-wrapper {
+    .news-card-content-wrapper {
         z-index: 10 !important;
         position: relative !important;
-        background: transparent !important;
-        opacity: 0.999 !important; /* Force its own stacking context */
-        filter: blur(0) !important;
     }
 
-    /* Article structure fix for rounded overflows in Firefox */
-    article.group {
-        background-clip: padding-box !important;
-        -moz-appearance: none;
-        isolation: isolate !important;
-    }
-
-    /* Reliable Line Clamping for Firefox - avoiding display:block conflicts */
-    .line-clamp-3, .line-clamp-2, .line-clamp-4 {
+    /* Clamping Fix */
+    .line-clamp-3 {
         display: -webkit-box !important;
-        display: -moz-box !important;
-        -moz-box-orient: vertical !important;
         -webkit-box-orient: vertical !important;
         overflow: hidden !important;
-        /* Ensure it doesn't default to block elsewhere in FF */
-        float: none !important;
-    }
-
-    /* If not clamped, ensure it's at least block */
-    .news-card-title-link:not([class*="line-clamp"]),
-    .news-card-link:not([class*="line-clamp"]) {
-        display: block !important;
     }
 }
 
-.news-card-link {
-    color: white !important;
+@media (max-width: 1023px) {
+    .news-card-link {
+        color: white !important;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -255,20 +215,16 @@ body {
 
 /* Ensure Prose (Tailwind Typography) works perfectly with WordPress blocks */
 .prose {
-    max-width: 100% !important;
-    color: #334155;
+    max-width: 100%;
 }
 
 .prose p, .prose li {
-    color: #334155;
-    line-height: 1.8;
+    line-height: 1.75;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
-    color: #0f172a !important;
-    font-weight: 800 !important;
-    margin-top: 2.5rem !important;
-    margin-bottom: 1.25rem !important;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .prose img:not(.emoji) {
@@ -479,7 +435,7 @@ p, li, .entry-content p, .entry-content li {
 
 /* Image Alignment Classes (WordPress Standard) */
 .aligncenter, .wp-block-image.aligncenter, .wp-block-video.aligncenter, .wp-block-embed.aligncenter,
-.news-content .aligncenter {
+.news-content .aligncenter, .prose .aligncenter {
     display: block !important;
     margin-left: auto !important;
     margin-right: auto !important;
