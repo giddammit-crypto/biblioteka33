@@ -1118,8 +1118,8 @@ function city_library_handle_ai_chat() {
 
     // Detect if we should use search model
     if (preg_match('/(?:поиск|найди|информация о|напиши|сценарий|план|пост|википедия|ргб|рнб|кто такой|расскажи о|факт|дата)/ui', $clean_msg)) {
-        // If the user wants research or content generation, we upgrade the model to search-preview
-        $model = 'openai/gpt-4o-mini-search-preview'; // OpenRouter endpoint to a model with live search
+        // If the user wants research or content generation, we upgrade the model to a stable research-capable endpoint
+        $model = 'openai/gpt-4o-mini';
     }
 
     // Dynamic KB for MBUK CGB Vladimir (Extracts from WP Cron Cached DB Option)
@@ -1291,7 +1291,8 @@ function city_library_handle_ai_chat() {
             mb_stripos($content, 'Provider returned error') !== false ||
             mb_stripos($content, 'upstream error') !== false ||
             mb_stripos($content, 'networks are overloaded') !== false ||
-            mb_stripos($content, 'all providers failed') !== false) {
+            mb_stripos($content, 'all providers failed') !== false ||
+            mb_stripos($content, 'rate limit') !== false) {
             return true;
         }
 

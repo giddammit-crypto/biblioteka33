@@ -6,8 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('ai-chat-send');
     const messagesContainer = document.getElementById('ai-chat-messages');
     const fullscreenBtn = document.getElementById('fullscreen-ai-chat');
+    const attachmentBtn = document.getElementById('ai-chat-attachment');
+    const fileInput = document.getElementById('ai-chat-file-input');
 
     if (!toggleBtn || !chatWindow) return;
+
+    let attachedFileText = "";
+    let attachedFileName = "";
+    let attachedFileData = "";
 
 
     // Clean and encode Cyrillic URLs specifically for Pollinations.ai issues
@@ -304,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`, typingId, false);
         } else {
             addMessageToUI('bot', `<div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden relative">
                     <img src="${cl_ai_ajax.avatar_url}" alt="AI" class="w-full h-full object-cover opacity-50">
                 </div>
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex flex-col gap-2">
