@@ -67,6 +67,12 @@ function city_library_setup() {
 
     // Enqueue editor styles.
     add_editor_style('css/editor-style.css');
+
+    // Add support for wide alignment.
+    add_theme_support('align-wide');
+
+    // Add support for responsive embeds.
+    add_theme_support('responsive-embeds');
 }
 add_action('after_setup_theme', 'city_library_setup');
 
@@ -241,7 +247,8 @@ function city_library_scripts() {
     }
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
-        'ajax_url' => admin_url('admin-ajax.php')
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('view_toggle_nonce')
     ));
 
     // Prepare Renewal Button Settings for JS
@@ -1820,6 +1827,7 @@ function city_library_sanitize_html($html) {
  * AJAX handler for post view toggle.
  */
 function load_posts_by_view() {
+    check_ajax_referer('view_toggle_nonce', 'nonce');
     $view = sanitize_text_field($_POST['view']);
     $template_part = ($view === 'list') ? 'template-parts/content-post-card-list' : 'template-parts/content-post-card';
 

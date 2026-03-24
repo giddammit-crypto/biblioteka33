@@ -7,7 +7,7 @@
         while (have_posts()) :
             the_post();
             ?>
-            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative break-words'); ?>>
+            <article id="post-<?php the_ID(); ?>" <?php post_class('bg-white p-4 sm:p-6 md:p-12 rounded-none lg:rounded-[2rem] shadow-none lg:shadow-xl border-x-0 lg:border border-slate-100 relative'); ?>>
 
                 <!-- Decorative Background Blur -->
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -60,7 +60,7 @@
                             </div>
                         </header>
 
-                        <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
+                        <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
                             <?php
                             // Fix LearningApps iframes before rendering
                             $content = get_the_content();
