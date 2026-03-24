@@ -6,8 +6,9 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 ?>
 <article class="group relative flex flex-col h-full bg-white rounded-[2rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border border-slate-200 w-full lg:w-auto aspect-[4/5] sm:aspect-[3/4] lg:aspect-auto" style="background-color: <?php echo esc_attr($bg_color); ?>;">
 
+    <!-- Desktop: Natural flow / Mobile: Overlay approach -->
     <!-- Image Container -->
-    <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-auto shrink-0 overflow-hidden news-card-image-container">
+    <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-10 shrink-0 overflow-hidden news-card-image-container">
         <div class="block w-full h-full pointer-events-auto">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
@@ -44,7 +45,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 flex flex-col h-full p-6 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto news-card-content-wrapper">
+    <div class="relative z-20 flex flex-col h-full p-6 lg:pt-6 justify-end lg:justify-start lg:flex-grow lg:bg-transparent pointer-events-none lg:pointer-events-auto news-card-content-wrapper lg:relative lg:z-30 lg:translate-z-0">
         <!-- Make links clickable on mobile (overlay) -->
         <a href="<?php the_permalink(); ?>" class="absolute inset-0 lg:hidden pointer-events-auto z-10" aria-hidden="true"></a>
 

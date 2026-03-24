@@ -742,22 +742,22 @@ function city_library_handle_ai_chat() {
         После списка добавь текст: 'Нажмите на имя писателя, чтобы я подготовила черновик статьи или сценария мероприятия о нём.'";
     }
 
-    // Librarian Tools Shortcuts with Subject Support
+    // Librarian Tools Shortcuts with Subject Support and CONTEXTUAL AWARENESS
     if (strpos($clean_msg, '/work_plan') === 0) {
         $subject = trim(mb_substr($user_message, 10));
-        $user_message = "Помоги мне составить план работы библиотеки на следующий месяц" . ($subject ? " на тему: '{$subject}'" : "") . ". Предложи интересные темы выставок, мероприятий и онлайн-активностей.";
+        $user_message = "Помоги мне составить план работы библиотеки на следующий месяц" . ($subject ? " на тему: '{$subject}'" : "") . ". Предложи интересные темы выставок, мероприятий и онлайн-активностей. Если тема не указана выше, используй контекст последних сообщений в чате.";
     }
-    if (strpos($clean_msg, '/social_post') === 0) {
+    if (strpos($clean_msg, '/social_post') === 0 || strpos($clean_msg, 'создай пост вк') === 0 || strpos($clean_msg, 'напиши пост для вк') === 0) {
         $subject = trim(mb_substr($user_message, 12));
-        $user_message = "Напиши интересный и вовлекающий пост для группы библиотеки ВКонтакте" . ($subject ? " про: '{$subject}'" : " о пользе чтения в современном мире") . ". Используй эмодзи и хештеги.";
+        $user_message = "Напиши интересный и вовлекающий пост для группы библиотеки ВКонтакте" . ($subject ? " про: '{$subject}'" : "") . ". Используй эмодзи и хештеги. Если тема не указана выше, обязательно используй контекст последних сообщений в чате (например, создай пост о мероприятии или афише, которую мы обсуждали только что).";
     }
     if (strpos($clean_msg, '/script') === 0) {
         $subject = trim(mb_substr($user_message, 7));
-        $user_message = "Составь подробный сценарий литературного вечера" . ($subject ? ", посвященного теме: '{$subject}'" : ", посвященного современной поэзии") . ". Включи тайминг, список оборудования и идеи для интерактива.";
+        $user_message = "Составь подробный сценарий литературного вечера" . ($subject ? ", посвященного теме: '{$subject}'" : "") . ". Включи тайминг, список оборудования и идеи для интерактива. Если тема не указана выше, используй контекст последних сообщений в чате.";
     }
     if (strpos($clean_msg, '/bib_list') === 0) {
         $subject = trim(mb_substr($user_message, 9));
-        $user_message = "Помоги составить библиографический список литературы" . ($subject ? " по теме: '{$subject}'" : " по теме 'История города Владимира'") . ". Укажи 5-7 основных источников с правильным оформлением.";
+        $user_message = "Помоги составить библиографический список литературы" . ($subject ? " по теме: '{$subject}'" : "") . ". Укажи 5-7 основных источников с правильным оформлением. Если тема не указана выше, используй контекст последних сообщений в чате.";
     }
     if (strpos($clean_msg, '/inventory') === 0) {
         $user_message = "Дай методические рекомендации по проведению плановой проверки библиотечного фонда. На что обратить внимание и какие документы подготовить?";
@@ -1011,7 +1011,7 @@ function city_library_handle_ai_chat() {
         }
 
         if (!empty($image_url)) {
-            $reply = "🎨 Вот ваше изображение по запросу: *{$draw_prompt}*\n\n![Сгенерированное изображение]({$image_url})";
+            $reply = "🎨 Вот ваше изображение по запросу: *{$draw_prompt}*\n\n![Сгенерированное изображение]({$image_url})\n\n_Вы можете уточнить детали (например, «сделай это в стиле аниме» или «добавь больше книг»), и я обновлю картинку._";
             wp_send_json_success(array('reply' => $reply));
         } else {
             // Ultimate fallback to Pollinations if all OpenRouter image models fail or timeout
@@ -1274,6 +1274,25 @@ function city_library_handle_ai_chat() {
 
     if (isset($data['choices'][0]['message']['content'])) {
         $reply = $data['choices'][0]['message']['content'];
+
+        // Fix for "Provider returned error" strings in successful 200 responses
+        if (strpos($reply, 'Provider returned error') !== false) {
+             // Fallback to secondary model
+             $request_body['model'] = $fallback_model;
+             unset($request_body['modalities']);
+             unset($request_body['audio']);
+
+             $api_args['body'] = wp_json_encode($request_body);
+             $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+             if (!is_wp_error($response)) {
+                  $body = wp_remote_retrieve_body($response);
+                  $data = json_decode($body, true);
+                  if (isset($data['choices'][0]['message']['content'])) {
+                       $reply = $data['choices'][0]['message']['content'];
+                  }
+             }
+        }
+
         $response_data = array('reply' => $reply);
 
         // Extract audio if requested and available
