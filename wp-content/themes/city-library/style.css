@@ -17,14 +17,21 @@ html, body {
 
 /* News Card Responsive Visibility Helpers */
 @media (max-width: 1023px) {
-    .news-card-title-link {
+    .news-card-title-link,
+    .news-card-title-link *,
+    .news-card-excerpt-text,
+    .news-card-excerpt-text *,
+    .news-card-link,
+    .news-card-link *,
+    .news-card-content-wrapper .lg\:hidden {
         color: white !important;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    .news-card-excerpt-text {
+    /* Force children paragraphs and spans to be white as well */
+    .news-card-content-wrapper p,
+    .news-card-content-wrapper span:not(.bg-white) {
         color: white !important;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 }
 
@@ -248,13 +255,13 @@ body {
 
 /* Ensure Prose (Tailwind Typography) works perfectly with WordPress blocks */
 .prose {
-    max-width: none !important; /* Allow full width for aligned blocks */
-    color: #334155 !important;
+    max-width: 100% !important;
+    color: #334155;
 }
 
 .prose p, .prose li {
-    color: #334155 !important;
-    line-height: 1.8 !important;
+    color: #334155;
+    line-height: 1.8;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
@@ -314,11 +321,6 @@ img.emoji {
         max-width: 100%;
         width: 100%;
     }
-}
-
-/* Global Prose Fixes for Gutenberg Blocks */
-.prose {
-    max-width: 100% !important;
 }
 
 .prose .wp-block-image.alignwide,

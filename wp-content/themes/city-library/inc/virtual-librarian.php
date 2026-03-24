@@ -611,26 +611,26 @@ function city_library_render_ai_librarian() {
                         <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 transition-all" data-command="/clear">Очистить</button>
                     </div>
 
-                    <div id="ai-chat-messages" class="flex-grow p-4 sm:p-6 overflow-y-auto flex flex-col gap-6 text-sm custom-scrollbar scroll-smooth">
-                        <!-- Selection Mode Toolbar -->
-                        <div id="ai-selection-toolbar" class="hidden sticky top-0 z-30 bg-indigo-600 text-white p-3 rounded-xl shadow-lg flex justify-between items-center mb-4 animate-in slide-in-from-top duration-300">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px]">fact_check</span>
-                                <span class="text-xs font-bold"><span id="ai-selected-count">0</span> выбрано</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button id="ai-compile-pdf" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
-                                    <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
-                                </button>
-                                <button id="ai-compile-docx" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
-                                    <span class="material-symbols-outlined text-[14px]">description</span> DOCX
-                                </button>
-                                <button id="ai-cancel-selection" class="text-white/70 hover:text-white p-1">
-                                    <span class="material-symbols-outlined text-[20px]">close</span>
-                                </button>
-                            </div>
+                    <!-- Selection Mode Toolbar (Moved outside to prevent deletion on clear) -->
+                    <div id="ai-selection-toolbar" class="hidden bg-indigo-600 text-white p-3 shadow-lg flex justify-between items-center z-30 animate-in slide-in-from-top duration-300 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[20px]">fact_check</span>
+                            <span class="text-xs font-bold"><span id="ai-selected-count">0</span> выбрано</span>
                         </div>
+                        <div class="flex gap-2">
+                            <button id="ai-compile-pdf" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
+                                <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                            </button>
+                            <button id="ai-compile-docx" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
+                                <span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                            </button>
+                            <button id="ai-cancel-selection" class="text-white/70 hover:text-white p-1">
+                                <span class="material-symbols-outlined text-[20px]">close</span>
+                            </button>
+                        </div>
+                    </div>
 
+                    <div id="ai-chat-messages" class="flex-grow p-4 sm:p-6 overflow-y-auto flex flex-col gap-6 text-sm custom-scrollbar scroll-smooth relative">
                         <!-- Welcome Message -->
                         <div class="flex gap-2">
                             <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
@@ -1086,6 +1086,7 @@ function city_library_handle_ai_chat() {
     }
 
     $context = $base_persona . " Ты работаешь в МБУК «Центральная городская библиотека» города Владимира. Твое имя — Виртуальный библиотекарь. Отвечай от женского лица.
+    ОФИЦИАЛЬНАЯ ГРУППА ВКОНТАКТЕ: https://vk.com/vladcgb (Используй только эту ссылку, когда говоришь про наш ВК).
     ВАЖНО: Если пользователь просит сгенерировать изображение (афишу, плакат, открытку), ты должен составить запрос так, чтобы текст на этом изображении был на РУССКОМ ЯЗЫКЕ.
     Твоя задача — помогать как читателям, так и сотрудникам библиотеки.
     Профессиональный профиль: Ты — ведущий библиограф с глубоким знанием фонда и истории города Владимира. Твой стиль: вежливый, профессиональный, но современный.
@@ -1276,16 +1277,48 @@ function city_library_handle_ai_chat() {
     $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
     $is_error = is_wp_error($response);
     $http_code = $is_error ? 0 : wp_remote_retrieve_response_code($response);
+    $body = !$is_error ? wp_remote_retrieve_body($response) : '';
+    $data = json_decode($body, true);
 
-    // Check if primary model failed (timeout, 5xx, or specific OpenRouter errors)
-    if ($is_error || $http_code >= 400) {
+    // Helper to check for OpenRouter-specific errors in content
+    $has_provider_error = function($data) {
+        if (!isset($data['choices'][0]['message']['content'])) return true;
+        $content = $data['choices'][0]['message']['content'];
+        return empty(trim($content)) || strpos($content, 'Provider returned error') !== false || strpos($content, 'upstream error') !== false;
+    };
+
+    // Check if primary model failed
+    $should_fallback = $is_error || $http_code >= 400 || $has_provider_error($data);
+
+    if ($should_fallback) {
         // Attempt Fallback (text only)
         $request_body['model'] = $fallback_model;
         unset($request_body['modalities']);
         unset($request_body['audio']);
 
-        $api_args['body'] = wp_json_encode($request_body);
-        $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+        // If fallback model is different from primary, try it
+        if ($fallback_model !== $model) {
+            $api_args['body'] = wp_json_encode($request_body);
+            $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+
+            $is_error = is_wp_error($response);
+            $http_code = $is_error ? 0 : wp_remote_retrieve_response_code($response);
+            $body = !$is_error ? wp_remote_retrieve_body($response) : '';
+            $data = json_decode($body, true);
+
+            // Check if even the fallback is giving errors
+            if ($is_error || $http_code >= 400 || $has_provider_error($data)) {
+                // Ultimate Fallback to a very stable model (GPT-4o-mini)
+                $request_body['model'] = 'openai/gpt-4o-mini';
+                $api_args['body'] = wp_json_encode($request_body);
+                $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+            }
+        } else {
+            // If primary was already the fallback, try ultimate fallback immediately
+            $request_body['model'] = 'openai/gpt-4o-mini';
+            $api_args['body'] = wp_json_encode($request_body);
+            $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+        }
     }
 
     if (is_wp_error($response)) {
@@ -1303,25 +1336,6 @@ function city_library_handle_ai_chat() {
 
     if (isset($data['choices'][0]['message']['content'])) {
         $reply = $data['choices'][0]['message']['content'];
-
-        // Fix for "Provider returned error" strings in successful 200 responses
-        if (strpos($reply, 'Provider returned error') !== false) {
-             // Fallback to secondary model
-             $request_body['model'] = $fallback_model;
-             unset($request_body['modalities']);
-             unset($request_body['audio']);
-
-             $api_args['body'] = wp_json_encode($request_body);
-             $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
-             if (!is_wp_error($response)) {
-                  $body = wp_remote_retrieve_body($response);
-                  $data = json_decode($body, true);
-                  if (isset($data['choices'][0]['message']['content'])) {
-                       $reply = $data['choices'][0]['message']['content'];
-                  }
-             }
-        }
-
         $response_data = array('reply' => $reply);
 
         // Extract audio if requested and available

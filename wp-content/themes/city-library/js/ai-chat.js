@@ -159,8 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (messagesContainer.querySelector('.prose')) {
                         messagesContainer.innerHTML = '';
                     }
-                    chatHistory.forEach(msg => {
-                        addMessageToUI(msg.role, msg.content, null, false);
+                    chatHistory.forEach((msg, idx) => {
+                        addMessageToUI(msg.role, msg.content, null, false, idx);
                     });
                 }
             }
@@ -307,10 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden">
                     <img src="${cl_ai_ajax.avatar_url}" alt="AI" class="w-full h-full object-cover opacity-50">
                 </div>
-                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 bg-primary/40 rounded-full typing-dot"></span>
-                    <span class="w-1.5 h-1.5 bg-primary/60 rounded-full typing-dot" style="animation-delay: 0.2s"></span>
-                    <span class="w-1.5 h-1.5 bg-primary/80 rounded-full typing-dot" style="animation-delay: 0.4s"></span>
+                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex flex-col gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-primary/40 rounded-full typing-dot"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/60 rounded-full typing-dot" style="animation-delay: 0.2s"></span>
+                        <span class="w-1.5 h-1.5 bg-primary/80 rounded-full typing-dot" style="animation-delay: 0.4s"></span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest animate-pulse">Думаю...</span>
                 </div>
             </div>`, typingId, false);
         }
@@ -378,11 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add message helper
-    async function addMessageToUI(sender, text, id = null, save = true) {
+    async function addMessageToUI(sender, text, id = null, save = true, forceIndex = null) {
+        let msgIndex = forceIndex;
         if (save && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
             chatHistory.push({ role: sender, content: text });
             saveHistory();
+            msgIndex = chatHistory.length - 1;
         }
+
         const wrapper = document.createElement('div');
         wrapper.className = sender === 'user' ? 'flex justify-end' : 'flex gap-2';
         if (id) wrapper.id = id;
@@ -416,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             let actionButtons = '';
             // Only add download buttons to substantial bot replies (not loaders or short confirmations)
-            if (save && text.length > 50 && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
+            if ((save || forceIndex !== null) && text.length > 50 && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
                 // Generate a base64 encoded text string for the data URI
                 const encodedText = encodeURIComponent(text);
                 actionButtons = `
@@ -460,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sender === 'bot' && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
             wrapper.classList.add('ai-selectable-message', 'cursor-pointer', 'transition-all', 'duration-300', 'rounded-2xl', 'p-1', 'hover:bg-indigo-50/50');
-            wrapper.setAttribute('data-index', chatHistory.length - 1);
+            wrapper.setAttribute('data-index', msgIndex !== null ? msgIndex : (chatHistory.length - 1));
 
             wrapper.addEventListener('click', (e) => {
                 if (!isSelectionMode) return;
@@ -844,12 +850,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // File Attachment Logic
-    const attachmentBtn = document.getElementById('ai-chat-attachment');
-    const fileInput = document.getElementById('ai-chat-file-input');
-    let attachedFileText = "";
-    let attachedFileName = "";
-    let attachedFileData = ""; // For images (base64)
-
     if (attachmentBtn && fileInput) {
         attachmentBtn.addEventListener('click', () => fileInput.click());
 
