@@ -15,7 +15,7 @@ $menu_style = get_theme_mod('menu_style', 'default');
 
 $header_classes = 'hidden lg:landscape:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
-$flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
+$flex_classes = 'flex flex-wrap xl:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
 // Header Style Logic
 if ($header_style === 'centered') {
@@ -56,8 +56,8 @@ $menu_item_classes = 'menu-style-' . $menu_style;
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
             <!-- Site Identity (Logo + Title) - Hides on scroll -->
-            <div id="site-identity" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 group/logo focus:outline-none">
+            <div id="site-identity" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 lg:shrink transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 lg:shrink group/logo focus:outline-none">
                     <?php if (has_custom_logo()) : ?>
                         <div class="custom-logo-wrapper h-8 xl:h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                             <?php the_custom_logo(); ?>
@@ -70,21 +70,21 @@ $menu_item_classes = 'menu-style-' . $menu_style;
 
                     <!-- Text visible on all screens (adapted size) -->
                     <div class="block">
-                        <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                        <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                        <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300 lg:hidden xl:block"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                        <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300 lg:text-[10px] xl:text-sm"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                     </div>
                 </a>
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden lg:landscape:flex items-center flex-grow justify-center transition-all duration-500 mx-2 xl:mx-4">
+            <nav class="hidden lg:landscape:flex items-center flex-grow justify-center transition-all duration-500 mx-1 xl:mx-4">
                  <?php
                     // Wrapped items in <ul class="flex items-center space-x-8 list-none m-0 p-0">
                     // Added list-none explicitly to remove dots. Used fluid gaps and flex-wrap to prevent overflow on square screens.
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
                         'container'      => false,
-                        'items_wrap'     => '<ul id="%1$s" class="flex flex-wrap lg:flex-nowrap justify-center items-center gap-x-3 lg:gap-x-4 xl:gap-x-8 gap-y-1 text-xs lg:text-sm xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
+                        'items_wrap'     => '<ul id="%1$s" class="flex flex-wrap xl:flex-nowrap justify-center items-center gap-x-2 lg:gap-x-2 xl:gap-x-8 gap-y-1 text-[10px] lg:text-[11px] xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
                         'walker'         => new City_Library_Walker_Nav_Menu(),
                     ));
                 ?>

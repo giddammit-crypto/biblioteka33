@@ -197,7 +197,9 @@
 .prose-sm li { margin-top: 0.25em !important; margin-bottom: 0.25em !important; }
 .prose-sm strong { color: #0f172a !important; font-weight: 700 !important; }
 .prose-sm a { color: #0b7930 !important; text-decoration: underline !important; font-weight: 500 !important; }
-.prose-sm code { background-color: #f1f5f9 !important; padding: 2px 4px !important; border-radius: 4px !important; font-size: 0.85em !important; color: #db2777 !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; }
+.prose-sm code { background-color: #f1f5f9 !important; padding: 2px 4px !important; border-radius: 4px !important; font-size: 0.85em !important; color: #db2777 !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; word-break: break-all !important; white-space: pre-wrap !important; }
+.prose-sm pre { background-color: #0f172a !important; color: #f8fafc !important; padding: 1rem !important; border-radius: 0.75rem !important; overflow-x: auto !important; max-width: 100% !important; margin: 1rem 0 !important; }
+.prose-sm table { display: block !important; width: 100% !important; overflow-x: auto !important; border-collapse: collapse !important; margin: 1rem 0 !important; }
 
 /* Enhanced Draft/Email Action Buttons Area */
 .flex-wrap > button, .flex-wrap > a {

@@ -503,7 +503,7 @@ function city_library_render_ai_librarian() {
     <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-8 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
-        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[92vw] sm:w-[650px] bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
+        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[92vw] sm:w-[85vw] md:w-[650px] max-w-full bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
             <!-- Header -->
             <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-20 shrink-0">
                 <div class="flex items-center gap-3">
@@ -585,6 +585,12 @@ function city_library_render_ai_librarian() {
                             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">delete</span> Очистить чат
                         </button>
                     </div>
+
+                    <div class="px-3 mt-4">
+                        <button id="ai-collect-draft-btn" class="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all text-left shadow-lg shadow-indigo-600/20 group">
+                            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">library_add_check</span> Собрать черновик
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Main Chat Area -->
@@ -603,6 +609,25 @@ function city_library_render_ai_librarian() {
                     </div>
 
                     <div id="ai-chat-messages" class="flex-grow p-4 sm:p-6 overflow-y-auto flex flex-col gap-6 text-sm custom-scrollbar scroll-smooth">
+                        <!-- Selection Mode Toolbar -->
+                        <div id="ai-selection-toolbar" class="hidden sticky top-0 z-30 bg-indigo-600 text-white p-3 rounded-xl shadow-lg flex justify-between items-center mb-4 animate-in slide-in-from-top duration-300">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">fact_check</span>
+                                <span class="text-xs font-bold"><span id="ai-selected-count">0</span> выбрано</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="ai-compile-pdf" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
+                                    <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                                </button>
+                                <button id="ai-compile-docx" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-[10px] font-bold flex items-center gap-1 transition-all">
+                                    <span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                                </button>
+                                <button id="ai-cancel-selection" class="text-white/70 hover:text-white p-1">
+                                    <span class="material-symbols-outlined text-[20px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Welcome Message -->
                         <div class="flex gap-2">
                             <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
@@ -871,6 +896,9 @@ function city_library_handle_ai_chat() {
         wp_send_json_success(array('reply' => $reply));
         return;
     }
+
+    // Context / History Support
+    $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
 
     // Direct Image Generation Logic
     $is_draw_command = false;
@@ -1188,8 +1216,6 @@ function city_library_handle_ai_chat() {
         "content" => $context
     );
 
-    // Context / History Support
-    $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
     $messages = array($system_prompt);
 
     // Support up to 100 requests (200 messages)
@@ -1352,9 +1378,43 @@ function city_library_ai_email() {
     if (empty($content)) wp_send_json_error('Пустое содержание');
 
     $subject = 'Ответ от Виртуального Библиотекаря';
+
+    // Extract images from content
+    preg_match_all('/!\[.*?\]\((https?:\/\/.*?)\)/', $content, $matches);
+    $attachments = array();
+    $temp_files = array();
+
+    if (!empty($matches[1])) {
+        $upload_dir = wp_upload_dir();
+        foreach ($matches[1] as $img_url) {
+            // Some URLs might have random seeds or be encoded
+            $clean_url = str_replace(' ', '%20', $img_url);
+            $response = wp_remote_get($clean_url, array('timeout' => 10));
+
+            if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+                $file_content = wp_remote_retrieve_body($response);
+                $ext = pathinfo(parse_url($clean_url, PHP_URL_PATH), PATHINFO_EXTENSION);
+                if (empty($ext) || strlen($ext) > 4) $ext = 'png';
+
+                $temp_filename = 'ai_attachment_' . uniqid() . '.' . $ext;
+                $temp_path = $upload_dir['path'] . '/' . $temp_filename;
+
+                if (file_put_contents($temp_path, $file_content)) {
+                    $attachments[] = $temp_path;
+                    $temp_files[] = $temp_path;
+                }
+            }
+        }
+    }
+
     $message = "Здравствуйте!\n\nВы просили отправить Вам ответ от Виртуального Библиотекаря:\n\n" . $content . "\n\n---\nС уважением, Центральная городская библиотека г. Владимира.";
 
-    $sent = wp_mail($email, $subject, $message);
+    $sent = wp_mail($email, $subject, $message, array('Content-Type: text/plain; charset=UTF-8'), $attachments);
+
+    // Cleanup
+    foreach ($temp_files as $file) {
+        @unlink($file);
+    }
 
     if ($sent) {
         wp_send_json_success();
@@ -1363,6 +1423,62 @@ function city_library_ai_email() {
     }
 }
 add_action('wp_ajax_city_library_ai_email', 'city_library_ai_email');
+
+/**
+ * AJAX Handler for compiling selected messages into a single draft
+ */
+function city_library_ai_compile_draft() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    $selected_content = isset($_POST['content']) ? (array)$_POST['content'] : array();
+    $format = isset($_POST['format']) ? sanitize_text_field($_POST['format']) : 'pdf';
+
+    if (empty($selected_content)) {
+        wp_send_json_error('Ничего не выбрано для сборки.');
+    }
+
+    $combined_html = "
+    <div class='ai-compiled-report' style='font-family: \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; color: #334155;'>
+        <header style='text-align: center; margin-bottom: 40px; border-bottom: 3px solid #0b7930; padding-bottom: 20px;'>
+            <h1 style='color: #0b7930; margin: 0; font-size: 28px;'>Черновик материалов ИИ</h1>
+            <p style='color: #64748b; font-size: 14px; margin-top: 5px;'>Подготовлено Виртуальным Библиотекарем МБУК «ЦГБ» г. Владимира</p>
+            <p style='font-style: italic; font-size: 12px;'>" . date_i18n('d F Y, H:i') . "</p>
+        </header>
+        <main>";
+
+    foreach ($selected_content as $index => $html) {
+        $combined_html .= "
+        <article style='margin-bottom: 40px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);'>
+            <div style='background: #f8fafc; padding: 10px 20px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #0b7930; display: flex; justify-content: space-between;'>
+                <span>Материал №" . ($index + 1) . "</span>
+            </div>
+            <div style='padding: 25px; line-height: 1.7;'>
+                " . $html . "
+            </div>
+        </article>";
+    }
+
+    $combined_html .= "
+        </main>
+        <footer style='text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 12px;'>
+            <p>Данный документ сгенерирован автоматически с помощью технологий искусственного интеллекта.</p>
+            <p>© " . date('Y') . " МБУК «Центральная городская библиотека» г. Владимира. Все права защищены.</p>
+        </footer>
+    </div>";
+
+    if ($format === 'docx') {
+        $full_html = "<html><head><meta charset='utf-8'></head><body style='background-color: #f1f5f9; padding: 20px;'>{$combined_html}</body></html>";
+        wp_send_json_success(array(
+            'base64' => base64_encode($full_html),
+            'filename' => 'Library_Draft_' . date('Y-m-d') . '.doc'
+        ));
+    } else {
+        // Return HTML for PDF printing
+        wp_send_json_success(array(
+            'html' => $combined_html
+        ));
+    }
+}
+add_action('wp_ajax_city_library_ai_compile_draft', 'city_library_ai_compile_draft');
 
 /**
  * Handle Save as WordPress Draft

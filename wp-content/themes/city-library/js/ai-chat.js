@@ -62,6 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const STORAGE_KEY = 'city_library_ai_chat_history';
     const EXPIRY_DAYS = 30;
     let chatHistory = [];
+    let isSelectionMode = false;
+    let selectedMessages = new Set();
 
     function loadHistory() {
         try {
@@ -312,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sender === 'user') {
             content = `
-                <div class="bg-primary text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] whitespace-pre-wrap">
+                <div class="bg-primary text-white p-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] whitespace-pre-wrap break-words overflow-hidden">
                     ${escapeHtml(text)}
                 </div>
             `;
@@ -352,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
                     <img src="${cl_ai_ajax.avatar_url}" alt="AI Avatar" class="w-full h-full object-cover">
                 </div>
-                <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words prose prose-sm prose-slate max-w-none">
+                <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words overflow-hidden prose prose-sm prose-slate !max-w-full">
                     ${parsedText}
                     ${actionButtons}
                 </div>
@@ -360,6 +362,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wrapper.innerHTML = content;
+
+        if (sender === 'bot' && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
+            wrapper.classList.add('ai-selectable-message', 'cursor-pointer', 'transition-all', 'duration-300', 'rounded-2xl', 'p-1', 'hover:bg-indigo-50/50');
+            wrapper.setAttribute('data-index', chatHistory.length - 1);
+
+            wrapper.addEventListener('click', (e) => {
+                if (!isSelectionMode) return;
+
+                // Prevent trigger if clicking on action buttons
+                if (e.target.closest('button') || e.target.closest('a')) return;
+
+                toggleMessageSelection(wrapper);
+            });
+        }
+
         messagesContainer.appendChild(wrapper);
 
         // Scroll to bottom
@@ -563,6 +580,153 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
     });
+
+    // --- Selection Mode Logic ---
+    const collectDraftBtn = document.getElementById('ai-collect-draft-btn');
+    const selectionToolbar = document.getElementById('ai-selection-toolbar');
+    const selectedCountEl = document.getElementById('ai-selected-count');
+    const cancelSelectionBtn = document.getElementById('ai-cancel-selection');
+    const compilePdfBtn = document.getElementById('ai-compile-pdf');
+    const compileDocxBtn = document.getElementById('ai-compile-docx');
+
+    function toggleSelectionMode(active) {
+        isSelectionMode = active;
+        if (active) {
+            selectionToolbar.classList.remove('hidden');
+            chatWindow.classList.add('selection-active');
+            // Highlight existing messages
+            document.querySelectorAll('.ai-selectable-message').forEach(el => {
+                el.classList.add('ring-2', 'ring-indigo-100');
+            });
+        } else {
+            selectionToolbar.classList.add('hidden');
+            chatWindow.classList.remove('selection-active');
+            selectedMessages.clear();
+            updateSelectionUI();
+            document.querySelectorAll('.ai-selectable-message').forEach(el => {
+                el.classList.remove('ring-2', 'ring-indigo-100', 'ring-indigo-500', 'bg-indigo-50');
+            });
+        }
+    }
+
+    function toggleMessageSelection(element) {
+        const index = element.getAttribute('data-index');
+        if (selectedMessages.has(index)) {
+            selectedMessages.delete(index);
+            element.classList.remove('ring-indigo-500', 'bg-indigo-50');
+            element.classList.add('ring-indigo-100');
+        } else {
+            selectedMessages.add(index);
+            element.classList.add('ring-indigo-500', 'bg-indigo-50');
+            element.classList.remove('ring-indigo-100');
+        }
+        updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+        if (!selectedCountEl) return;
+        selectedCountEl.textContent = selectedMessages.size;
+        if (selectedMessages.size > 0) {
+            compilePdfBtn.classList.remove('opacity-50', 'pointer-events-none');
+            compileDocxBtn.classList.remove('opacity-50', 'pointer-events-none');
+        } else {
+            compilePdfBtn.classList.add('opacity-50', 'pointer-events-none');
+            compileDocxBtn.classList.add('opacity-50', 'pointer-events-none');
+        }
+    }
+
+    if (collectDraftBtn) {
+        collectDraftBtn.addEventListener('click', () => toggleSelectionMode(true));
+    }
+
+    if (cancelSelectionBtn) {
+        cancelSelectionBtn.addEventListener('click', () => toggleSelectionMode(false));
+    }
+
+    function compileSelected(format) {
+        if (selectedMessages.size === 0) return;
+
+        const contents = [];
+        // Sort selected indices to maintain conversation order
+        const sortedIndices = Array.from(selectedMessages).sort((a, b) => a - b);
+
+        sortedIndices.forEach(idx => {
+            const msg = chatHistory[idx];
+            if (msg && msg.role === 'bot') {
+                // Better send HTML from UI for better visual fidelity
+                const el = document.querySelector(`.ai-selectable-message[data-index="${idx}"] .prose`);
+                if (el) {
+                    // Clone to remove action buttons before sending
+                    const clone = el.cloneNode(true);
+                    const actions = clone.querySelector('.flex.gap-2.mt-3');
+                    if (actions) actions.remove();
+                    contents.push(clone.innerHTML);
+                }
+            }
+        });
+
+        const btn = format === 'pdf' ? compilePdfBtn : compileDocxBtn;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> ...';
+        btn.disabled = true;
+
+        jQuery.ajax({
+            url: cl_ai_ajax.url,
+            type: 'POST',
+            data: {
+                action: 'city_library_ai_compile_draft',
+                nonce: cl_ai_ajax.nonce,
+                content: contents,
+                format: format
+            },
+            success: (response) => {
+                if (response.success) {
+                    if (format === 'docx') {
+                        const byteCharacters = atob(response.data.base64);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], { type: 'application/msword;charset=utf-8' });
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = response.data.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        // PDF Print
+                        const printWindow = window.open('', '_blank', 'width=1000,height=800');
+                        printWindow.document.write(`
+                            <html><head><title>Черновик ИИ</title>
+                            <style>
+                                body { font-family: sans-serif; background: #f1f5f9; padding: 40px; }
+                                img { max-width: 100%; height: auto; border-radius: 8px; }
+                                .ai-compiled-report { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                            </style>
+                            </head><body>
+                            <div class="ai-compiled-report">${response.data.html}</div>
+                            <script>window.onload = function() { window.print(); }</script>
+                            </body></html>
+                        `);
+                        printWindow.document.close();
+                    }
+                } else {
+                    alert("Ошибка: " + response.data);
+                }
+            },
+            error: () => alert("Ошибка соединения с сервером."),
+            complete: () => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                toggleSelectionMode(false);
+            }
+        });
+    }
+
+    if (compilePdfBtn) compilePdfBtn.addEventListener('click', () => compileSelected('pdf'));
+    if (compileDocxBtn) compileDocxBtn.addEventListener('click', () => compileSelected('docx'));
 
     // Listeners
     sendBtn.addEventListener('click', sendMessage);

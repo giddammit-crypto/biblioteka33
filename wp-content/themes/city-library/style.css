@@ -65,6 +65,14 @@ html, body {
         overflow: visible !important;
         isolation: isolate;
         background-clip: padding-box;
+        /* Stabilize layer */
+        backface-visibility: hidden !important;
+        -moz-backface-visibility: hidden !important;
+    }
+
+    /* Disable hover transforms in Firefox news cards to prevent layer flickering */
+    article.group:hover {
+        transform: none !important;
     }
 
     /* Ensure AOS elements are fully visible and static in Firefox */
