@@ -80,20 +80,14 @@ html, body {
         overflow: hidden !important;
         isolation: isolate !important;
         background-clip: border-box !important;
-        perspective: 1000px;
-        transform-style: preserve-3d !important;
-        backface-visibility: hidden !important;
     }
 
-    /* Remove problematic shadows/filters in Firefox that cause "invisible" text */
+    /* Remove problematic filters in Firefox that can cause invisible text */
     .news-card-title-link,
     .news-card-excerpt-text,
     .news-card-link,
-    .news-card-content-wrapper,
-    .news-card-content-wrapper * {
-        text-shadow: none !important;
+    .news-card-content-wrapper {
         filter: none !important;
-        -webkit-filter: none !important;
         visibility: visible !important;
         opacity: 1 !important;
     }
@@ -101,25 +95,21 @@ html, body {
     /* Stacking fix for absolute overlays in Firefox */
     .news-card-image-container {
         z-index: 1 !important;
-        transform: translate3d(0, 0, 0) !important;
     }
     .news-card-content-wrapper {
-        z-index: 50 !important; /* Significantly higher than image container (z:1) */
+        z-index: 20 !important;
         position: relative !important;
-        transform: translate3d(0, 0, 50px) !important; /* Push forward in 3D space */
-        backface-visibility: visible !important;
         will-change: transform, opacity;
-        pointer-events: auto !important; /* Force interactivity in Firefox */
+        pointer-events: auto !important;
+        transform: translate3d(0,0,0); /* Force redraw without 3D depth issues */
     }
 
     /* Force persistent visibility of text elements */
     .news-card-title-link,
     .news-card-excerpt-text,
     .news-card-link {
-        display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        transform: none !important;
     }
 
     /* Clamping Fix */
@@ -256,8 +246,16 @@ body {
 }
 
 .prose ul, .prose ol {
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
+    margin-bottom: 1.5rem !important;
+    padding-left: 1.5rem !important;
+}
+
+.prose ul {
+    list-style-type: disc !important;
+}
+
+.prose ol {
+    list-style-type: decimal !important;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4 {
@@ -383,15 +381,15 @@ img.emoji {
 .entry-content li,
 .news-content p,
 .news-content li {
-    color: #334155; /* slate-700 for better contrast than standard gray */
-    line-height: 1.85 !important; /* Improved line height for comfortable reading */
-    margin-bottom: 1.75rem !important;
+    color: #334155;
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
 }
 
 /* Ensure consistent spacing for other block types in single view */
 .entry-content > *,
 .news-content > * {
-    margin-bottom: 1.75rem !important;
+    margin-bottom: 1.5rem;
 }
 
 .entry-content > *:last-child,
