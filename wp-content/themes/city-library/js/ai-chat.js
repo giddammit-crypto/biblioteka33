@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return `
                 <div class="library-image-wrapper mt-3 mb-3 relative group overflow-hidden rounded-xl border border-slate-200/60 shadow-sm bg-slate-100 pointer-events-auto">
-                    <a href="${cleanHref}" class="glightbox block" data-gallery="ai-chat-gallery" data-title="${imgText || 'Сгенерированное изображение'}">
+                    <a href="${cleanHref}" class="glightbox block" data-gallery="ai-chat-gallery" data-type="image" data-title="${imgText || 'Сгенерированное изображение'}" data-glightbox="type: image; description: ${imgText || 'Изображение от ИИ'};">
                         <img src="${cleanHref}" alt="${imgText || 'Сгенерированное изображение'}" style="max-width:100%; height:auto; display:block;" class="transition-transform duration-500 group-hover:scale-105 bg-slate-50 min-h-[200px] w-full max-h-[450px] object-contain mx-auto" onerror="this.outerHTML='<div class=\'p-4 text-center text-slate-500 bg-slate-100 rounded-lg border border-dashed border-slate-300 w-full\'>⚠️ Ошибка загрузки.</div>'">
                         <div class="image-controls absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">
                              <span class="material-symbols-outlined text-white text-4xl drop-shadow-md" aria-hidden="true">zoom_in</span>
@@ -554,12 +554,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 loop: true,
                 zoomable: true
             });
-            // Also explicitly handle clicks on dynamic images to ensure they open
+
+            // For dynamic AI images, we need to explicitly refresh or handle the click
             wrapper.querySelectorAll('.glightbox').forEach(el => {
-                el.onclick = (e) => {
+                el.addEventListener('click', (e) => {
                     e.preventDefault();
-                    lightbox.open(el);
-                };
+                    // If it's a dynamic image, sometimes it helps to open directly via the instance
+                    // to ensure the newly added DOM element is recognized
+                    const instance = GLightbox({
+                        elements: [
+                            {
+                                'href': el.getAttribute('href'),
+                                'type': 'image',
+                                'title': el.getAttribute('data-title') || ''
+                            }
+                        ]
+                    });
+                    instance.open();
+                });
             });
         }
 
