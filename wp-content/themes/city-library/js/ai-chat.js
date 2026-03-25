@@ -601,8 +601,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Scroll to bottom with optimized behavior
+        messagesContainer.scrollTo({
+            top: messagesContainer.scrollHeight,
+            behavior: save ? 'smooth' : 'auto'
+        });
 
     // Ensure file input allows PDFs
     if (fileInput && !fileInput.getAttribute('accept').includes('.pdf')) {
@@ -639,7 +642,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     // Scroll to bottom after adding message
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: 'auto'
+    });
     }
 
     // Escape user input to prevent XSS (Hoisted for reuse)

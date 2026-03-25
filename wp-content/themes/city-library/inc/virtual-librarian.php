@@ -500,7 +500,7 @@ function city_library_render_ai_librarian() {
     }
 
     ?>
-    <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-8 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
+    <div id="ai-librarian-widget" class="hidden lg:landscape:flex fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-8 z-[99999] flex-col items-end w-auto" style="visibility: visible !important; opacity: 1 !important; pointer-events: none;">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
         <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[96vw] sm:w-[90vw] md:w-[680px] max-w-full bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] border border-white/40 mb-6 overflow-hidden flex-col h-[70vh] max-h-[750px] sm:max-h-none sm:h-[650px] transition-all duration-500 transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
