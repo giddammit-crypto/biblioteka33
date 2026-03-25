@@ -306,7 +306,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // If after stripping it's empty, don't speak
         if (!spokenText) return;
 
-        const utterance = new SpeechSynthesisUtterance(spokenText);
+        // Truncate long responses to 3 sentences for better UX
+        const sentences = spokenText.match(/[^.!?]+[.!?]+/g) || [spokenText];
+        const utterance = new SpeechSynthesisUtterance(sentences.slice(0, 3).join(" "));
         utterance.lang = 'ru-RU';
         utterance.rate = 1.0;
 

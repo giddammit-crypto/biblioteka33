@@ -5,19 +5,21 @@
  * "AAA" Quality Animation & Visuals Update
  */
 
-if (!get_theme_mod('show_afisha_section', true)) {
+$mods = get_theme_mods() ?: [];
+
+if (!($mods['show_afisha_section'] ?? true)) {
     return;
 }
 
 // Collect events data
 $events = [];
 for ($i = 1; $i <= 5; $i++) {
-    $image = get_theme_mod("afisha_image_$i");
-    $title = get_theme_mod("afisha_title_$i");
-    $link = get_theme_mod("afisha_link_$i");
-    $ribbon = get_theme_mod("afisha_ribbon_$i");
-    $badge = get_theme_mod("afisha_badge_$i");
-    $date = get_theme_mod("afisha_date_$i"); // Assuming this might exist or we use badge as date
+    $image = $mods["afisha_image_$i"] ?? '';
+    $title = $mods["afisha_title_$i"] ?? '';
+    $link = $mods["afisha_link_$i"] ?? '';
+    $ribbon = $mods["afisha_ribbon_$i"] ?? '';
+    $badge = $mods["afisha_badge_$i"] ?? '';
+    $date = $mods["afisha_date_$i"] ?? ''; // Assuming this might exist or we use badge as date
 
     if ($image || $title) {
         $events[] = [
@@ -35,9 +37,9 @@ if (empty($events)) {
     return;
 }
 
-$section_title = get_theme_mod('afisha_title', 'Афиша Мероприятий');
-$bg_style = get_theme_mod('afisha_bg_style', 'default');
-$card_style = get_theme_mod('afisha_card_style', 'default');
+$section_title = $mods['afisha_title'] ?? 'Афиша Мероприятий';
+$bg_style = $mods['afisha_bg_style'] ?? 'default';
+$card_style = $mods['afisha_card_style'] ?? 'default';
 
 // Container Styles - Adaptive: Full width on mobile but with internal padding, rounded on desktop
 $container_classes = "bg-white relative overflow-hidden transition-all duration-500";

@@ -181,7 +181,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                     ?>
                                     <div class="relative w-full h-full aspect-square lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500 border-4 border-white flex-grow featured-cards-image-only">
                                         <?php if ($image) : ?>
-                                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" aria-hidden="true">
                                         <?php else : ?>
                                             <div class="absolute inset-0 bg-slate-300 flex items-center justify-center">
                                                 <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">image</span>
@@ -344,7 +344,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                     <div class="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl border border-slate-200 transition-all duration-300 group-hover:-translate-y-1">
                                         <?php if ($image) : ?>
                                             <div class="w-full aspect-[4/3] overflow-hidden shrink-0 border-b border-slate-100">
-                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" aria-hidden="true">
                                             </div>
                                         <?php endif; ?>
                                         <div class="p-6 flex flex-col flex-grow">

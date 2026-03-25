@@ -175,7 +175,7 @@ function city_library_branches_map_shortcode($atts) {
             $list_html .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300" id="library-item-' . esc_attr($id) . '">';
 
             // Header
-            $list_html .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+            $list_html .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset" onclick="toggleLibraryItem(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleLibraryItem(this);}">';
             $list_html .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
             $list_html .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
             if ($address) {
@@ -276,7 +276,7 @@ function city_library_branch_shortcode($atts) {
     $output .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300 my-4" id="library-item-' . esc_attr($id) . '">';
 
     // Header
-    $output .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+    $output .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset" onclick="toggleLibraryItem(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleLibraryItem(this);}">';
     $output .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
     $output .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
     if ($address) {

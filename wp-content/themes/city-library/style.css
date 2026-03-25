@@ -77,35 +77,39 @@ html, body {
 
     /* Article Container Fix */
     article.group {
-        overflow: visible !important; /* Changed from hidden to prevent clipping */
+        overflow: hidden !important;
         isolation: isolate !important;
         background-clip: border-box !important;
         perspective: 1000px;
         transform-style: preserve-3d !important;
+        backface-visibility: hidden !important;
     }
 
     /* Remove problematic shadows/filters in Firefox that cause "invisible" text */
     .news-card-title-link,
     .news-card-excerpt-text,
     .news-card-link,
+    .news-card-content-wrapper,
     .news-card-content-wrapper * {
         text-shadow: none !important;
         filter: none !important;
         -webkit-filter: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     /* Stacking fix for absolute overlays in Firefox */
     .news-card-image-container {
-        z-index: 1 !important; /* Force positive z-index */
-        transform: translate3d(0, 0, 0) !important; /* Force hardware acceleration */
+        z-index: 1 !important;
+        transform: translate3d(0, 0, 0) !important;
     }
     .news-card-content-wrapper {
-        z-index: 99 !important; /* Significantly higher than image */
+        z-index: 50 !important; /* Significantly higher than image container (z:1) */
         position: relative !important;
-        transform: translate3d(0, 0, 50px) !important; /* Explicit layer separation in 3D space */
+        transform: translate3d(0, 0, 50px) !important; /* Push forward in 3D space */
         backface-visibility: visible !important;
         will-change: transform, opacity;
-        pointer-events: auto !important; /* Ensure content is interactive */
+        pointer-events: auto !important; /* Force interactivity in Firefox */
     }
 
     /* Force persistent visibility of text elements */
@@ -375,13 +379,24 @@ img.emoji {
     margin-top: 0.75rem;
 }
 
-p, li, .entry-content p, .entry-content li {
+.entry-content p,
+.entry-content li,
+.news-content p,
+.news-content li {
     color: #334155; /* slate-700 for better contrast than standard gray */
-    line-height: 1.85; /* Improved line height for comfortable reading */
+    line-height: 1.85 !important; /* Improved line height for comfortable reading */
+    margin-bottom: 1.75rem !important;
 }
 
-.entry-content p, .entry-content li {
-    margin-bottom: 1.75rem;
+/* Ensure consistent spacing for other block types in single view */
+.entry-content > *,
+.news-content > * {
+    margin-bottom: 1.75rem !important;
+}
+
+.entry-content > *:last-child,
+.news-content > *:last-child {
+    margin-bottom: 0 !important;
 }
 
 .entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4 {
@@ -390,15 +405,32 @@ p, li, .entry-content p, .entry-content li {
     line-height: 1.3;
 }
 
-.entry-content blockquote {
-    border-left: 5px solid var(--primary-color, #0b7930);
-    padding: 2rem 2.5rem;
+.entry-content blockquote,
+.news-content blockquote {
+    border-left: 6px solid var(--primary-color, #0b7930) !important;
+    padding: 2.5rem 3rem !important;
     font-style: italic;
     color: #334155;
-    margin: 3rem 0;
+    margin: 3.5rem 0 !important;
     background-color: #f8fafc;
-    border-radius: 0 1.5rem 1.5rem 0;
-    font-size: 1.15rem;
+    border-radius: 0 2rem 2rem 0;
+    font-size: 1.25rem;
+    line-height: 1.75;
+    position: relative;
+    overflow: hidden;
+}
+
+.entry-content blockquote::before,
+.news-content blockquote::before {
+    content: '“';
+    position: absolute;
+    top: -1rem;
+    left: 1rem;
+    font-size: 8rem;
+    color: var(--primary-color, #0b7930);
+    opacity: 0.1;
+    font-family: serif;
+    pointer-events: none;
 }
 
 .entry-content ul, .entry-content ol {

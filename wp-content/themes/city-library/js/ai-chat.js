@@ -58,8 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Chat History Management (30 days)
     const STORAGE_KEY = 'city_library_ai_chat_history';
+    const VERIFIED_STATE_KEY = 'city_library_ai_verified_messages';
     const EXPIRY_DAYS = 30;
     let chatHistory = [];
+    let verifiedMessages = JSON.parse(localStorage.getItem(VERIFIED_STATE_KEY) || '{}');
     let isSelectionMode = false;
     let selectedMessages = new Set();
 
@@ -176,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 messages: historyToSave
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            localStorage.setItem(VERIFIED_STATE_KEY, JSON.stringify(verifiedMessages));
         } catch (e) {
             if (e.name === 'QuotaExceededError') {
                 // If we hit the limit, try saving only the last 10 messages (emergency cleanup)
@@ -218,20 +221,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleFullscreen() {
         chatWindow.classList.toggle('fixed');
         chatWindow.classList.toggle('inset-0');
-        chatWindow.classList.toggle('z-[1000]');
+        chatWindow.classList.toggle('z-[99999]');
         chatWindow.classList.toggle('!h-[100dvh]');
         chatWindow.classList.toggle('!w-[100vw]');
         chatWindow.classList.toggle('!max-w-none');
         chatWindow.classList.toggle('!rounded-none');
+        chatWindow.classList.toggle('!m-0');
 
-        // Disable default dimensional classes
-        chatWindow.classList.toggle('sm:w-[650px]');
-        chatWindow.classList.toggle('h-[65vh]');
-        chatWindow.classList.toggle('max-h-[600px]');
-        chatWindow.classList.toggle('sm:max-h-none');
-        chatWindow.classList.toggle('sm:h-[600px]');
-        chatWindow.classList.toggle('mb-4');
-        chatWindow.classList.toggle('rounded-3xl');
+        // Disable default dimensional classes from PHP
+        chatWindow.classList.toggle('w-[96vw]');
+        chatWindow.classList.toggle('sm:w-[90vw]');
+        chatWindow.classList.toggle('md:w-[680px]');
+        chatWindow.classList.toggle('h-[70vh]');
+        chatWindow.classList.toggle('max-h-[750px]');
+        chatWindow.classList.toggle('sm:h-[650px]');
+        chatWindow.classList.toggle('mb-6');
+        chatWindow.classList.toggle('rounded-[2.5rem]');
 
         if (fullscreenBtn) {
             const icon = fullscreenBtn.querySelector('span');
@@ -378,6 +383,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Scroll to bottom button
+    const scrollToBottomBtn = document.createElement('button');
+    scrollToBottomBtn.id = 'ai-scroll-bottom';
+    scrollToBottomBtn.className = 'fixed bottom-28 right-8 w-10 h-10 bg-white shadow-lg border border-slate-200 rounded-full flex items-center justify-center text-primary opacity-0 pointer-events-none transition-all duration-300 hover:bg-slate-50 z-20 active:scale-90';
+    scrollToBottomBtn.innerHTML = '<span class="material-symbols-outlined">expand_more</span>';
+    scrollToBottomBtn.setAttribute('aria-label', 'Прокрутить вниз');
+    chatWindow.querySelector('.flex-grow.flex.flex-col').appendChild(scrollToBottomBtn);
+
+    messagesContainer.addEventListener('scroll', () => {
+        const diff = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight;
+        if (diff > 200) {
+            scrollToBottomBtn.classList.remove('opacity-0', 'pointer-events-none');
+            scrollToBottomBtn.classList.add('opacity-100');
+        } else {
+            scrollToBottomBtn.classList.add('opacity-0', 'pointer-events-none');
+            scrollToBottomBtn.classList.remove('opacity-100');
+        }
+    });
+
+    scrollToBottomBtn.addEventListener('click', () => {
+        messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: 'smooth' });
+    });
+
     // Add message helper
     async function addMessageToUI(sender, text, id = null, save = true, forceIndex = null) {
         let msgIndex = forceIndex;
@@ -419,29 +447,56 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else {
             let actionButtons = '';
+            let verifiedBadge = '';
+            let inoagentBadge = '';
+
+            // Logic for badges
+            if (sender === 'bot' && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
+                // 1. Verified Badge
+                const isVerified = (verifiedMessages[msgIndex] || text.length > 100) && !text.includes('Данные уточняются');
+                if (isVerified) {
+                    verifiedMessages[msgIndex] = true;
+                    verifiedBadge = `
+                        <div class="absolute -top-2 -right-2 bg-green-500 text-white px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm border border-white flex items-center gap-0.5 z-10 animate-in fade-in zoom-in duration-500">
+                            <span class="material-symbols-outlined text-[11px]">verified</span> Данные проверены
+                        </div>
+                    `;
+                }
+
+                // 2. Foreign Agent Badge (Requirement from Memory)
+                const textLower = text.toLowerCase();
+                if (textLower.includes('иностранный агент') || textLower.includes('иноагент') || text.includes('⚠️')) {
+                    inoagentBadge = `
+                        <div class="absolute -top-2 left-4 bg-orange-600 text-white px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm border border-white flex items-center gap-0.5 z-10 animate-in fade-in slide-in-from-top-1 duration-500">
+                            <span class="material-symbols-outlined text-[11px]">warning</span> Упоминание иноагента
+                        </div>
+                    `;
+                }
+            }
+
             // Only add download buttons to substantial bot replies (not loaders or short confirmations)
             if ((save || forceIndex !== null) && text.length > 50 && !text.includes('animate-bounce') && !text.includes('Создаю изображение')) {
                 // Generate a base64 encoded text string for the data URI
                 const encodedText = encodeURIComponent(text);
                 actionButtons = `
                     <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100/50 justify-end flex-wrap">
-                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-copy-btn" data-text="${escapeHtml(text)}">
+                        <button class="text-xs text-slate-400 hover:text-primary transition-all flex items-center gap-1 font-medium ai-copy-btn hover:scale-105" data-text="${escapeHtml(text)}" aria-label="Копировать текст">
                             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">content_copy</span> Копировать
                         </button>
-                        <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium">
+                        <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-all flex items-center gap-1 font-medium hover:scale-105" aria-label="Скачать TXT">
                             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">download</span> Скачать (TXT)
                         </a>
-                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-pdf-btn" data-text="${escapeHtml(text)}">
+                        <button class="text-xs text-slate-400 hover:text-primary transition-all flex items-center gap-1 font-medium ai-pdf-btn hover:scale-105" data-text="${escapeHtml(text)}" aria-label="Сохранить как PDF">
                             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">picture_as_pdf</span> PDF
                         </button>
-                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-docx-btn" data-text="${escapeHtml(text)}">
+                        <button class="text-xs text-slate-400 hover:text-primary transition-all flex items-center gap-1 font-medium ai-docx-btn hover:scale-105" data-text="${escapeHtml(text)}" aria-label="Скачать как DOCX">
                             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">description</span> DOCX
                         </button>
-                        <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-email-btn" data-text="${escapeHtml(text)}">
+                        <button class="text-xs text-slate-400 hover:text-primary transition-all flex items-center gap-1 font-medium ai-email-btn hover:scale-105" data-text="${escapeHtml(text)}" aria-label="Отправить на почту">
                             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">mail</span> На почту
                         </button>
                         ${text.toLowerCase().includes('источники') && text.length > 500 ? `
-                        <button class="text-xs text-slate-500 hover:text-primary transition-colors flex items-center gap-1 font-bold ai-save-draft-btn bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-200 ml-auto" data-text="${escapeHtml(text)}">
+                        <button class="text-xs text-slate-500 hover:text-primary transition-all flex items-center gap-1 font-bold ai-save-draft-btn bg-slate-100 hover:bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 ml-auto shadow-sm hover:shadow-md active:scale-95" data-text="${escapeHtml(text)}" aria-label="Создать черновик в WordPress">
                             <span class="material-symbols-outlined text-[16px]" aria-hidden="true">note_add</span> Сохранить черновик в WP
                         </button>
                         ` : ''}
@@ -453,7 +508,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mt-1 shadow-sm border border-slate-300 overflow-hidden relative">
                     <img src="${cl_ai_ajax.avatar_url}" alt="AI Avatar" class="w-full h-full object-cover">
                 </div>
-                <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-md transition-shadow text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words overflow-hidden prose prose-sm prose-slate !max-w-full">
+                <div class="bg-white border border-slate-200 p-4 rounded-[1.25rem] rounded-tl-sm shadow-sm hover:shadow-lg transition-all text-slate-800 max-w-[85%] text-[14px] leading-relaxed break-words overflow-visible relative prose prose-sm prose-slate !max-w-full">
+                    ${verifiedBadge}
+                    ${inoagentBadge}
                     ${parsedText}
                     ${actionButtons}
                 </div>
@@ -505,6 +562,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             });
         }
+
+    // Scroll to bottom after adding message
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     // Escape user input to prevent XSS (Hoisted for reuse)

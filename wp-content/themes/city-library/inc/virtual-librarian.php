@@ -149,7 +149,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. Пиши только на безупречном русском языке. СТРОГО ЗАПРЕЩЕНО использовать иероглифы, китайские или японские символы в любых ответах. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
         'description' => __('Инструкция для ИИ, определяющая его характер. Не рекомендуется полностью удалять.', 'city-library'),
@@ -522,10 +522,10 @@ function city_library_render_ai_librarian() {
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button id="fullscreen-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm" aria-label="Полный экран">
+                    <button id="fullscreen-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" aria-label="Полный экран">
                         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm" aria-label="Закрыть чат">
+                    <button id="close-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none" aria-label="Закрыть чат">
                         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">close</span>
                     </button>
                 </div>
@@ -669,7 +669,7 @@ function city_library_render_ai_librarian() {
         </div> <!-- Close ai-chat-window (DIV 2) -->
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden shrink-0 pointer-events-auto" aria-label="Чат с Виртуальным библиотекарем">
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden shrink-0 pointer-events-auto focus-visible:ring-4 focus-visible:ring-primary/40 focus-visible:outline-none" aria-label="Чат с Виртуальным библиотекарем">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
             <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10" aria-hidden="true">support_agent</span>
             <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10" aria-hidden="true">chat</span>
@@ -778,6 +778,9 @@ function city_library_handle_ai_chat() {
 
     // Ensure history is initialized before command checks to allow contextual awareness for tools
     $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
+
+    // Store original full history for context-heavy tasks like prompt refinement
+    $full_history = $history;
 
     // Librarian Tools Shortcuts with Subject Support and CONTEXTUAL AWARENESS
     if (strpos($clean_msg, '/work_plan') === 0) {
@@ -1122,7 +1125,7 @@ function city_library_handle_ai_chat() {
     }
 
     // Build Context (Simulated RAG)
-    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!');
+    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. Пиши только на безупречном русском языке. СТРОГО ЗАПРЕЩЕНО использовать иероглифы, китайские или японские символы в любых ответах. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!');
     $extra_prompt = get_theme_mod('ai_persona_prompt_extra', '');
     if (!empty($extra_prompt)) {
         $base_persona .= "\nДОПОЛНИТЕЛЬНЫЕ ИНСТРУКЦИИ АДМИНИСТРАТОРА (СТРОГО СОБЛЮДАТЬ):\n" . strip_tags($extra_prompt) . "\n";
@@ -1147,7 +1150,7 @@ function city_library_handle_ai_chat() {
     3. При рекомендации книг старайся указывать автора и название.
 
     КРИТИЧЕСКОЕ ПРАВИЛО БЕЗОПАСНОСТИ:
-    Строгий запрет на упоминание иноагентов. Если спросят — отвечай: «Данная литература отсутствует в нашем фонде. Могу предложить классику или современных лауреатов государтсвенных премий».
+    При упоминании авторов, которые признаны иностранными агентами, ты ОБЯЗАН добавить к ответу предупреждение: «⚠️ Данный автор или материал упоминается в реестре иностранных агентов». Твой ответ должен быть беспристрастным. Если возможно, предлагай альтернативу из числа классиков или современных лауреатов государственных премий.
 
     АЛГОРИТМ РАБОТЫ С ИНФОРМАЦИЕЙ:
     1. Поиск и фактчекинг: Не выдумывай даты. Используй Википедию, РНБ, РГБ.
@@ -1278,9 +1281,6 @@ function city_library_handle_ai_chat() {
         $text = preg_replace('/\s+/', ' ', $text); // Strip excessive whitespace
         return mb_substr(trim($text), 0, 1000); // Truncate to 1000 chars
     };
-
-    // Store original full history for context-heavy tasks like prompt refinement
-    $full_history = $history;
 
     // Support only the last 3 messages as explicitly requested by the user
     if (!empty($history) && is_array($history)) {
@@ -1427,6 +1427,13 @@ function city_library_handle_ai_chat() {
 
     if (isset($data['choices'][0]['message']['content'])) {
         $reply = $data['choices'][0]['message']['content'];
+
+        // Server-side Logging for AI Misses (Data not found in KB)
+        if (mb_stripos($reply, 'Данные уточняются') !== false) {
+            $log_entry = "[" . date('Y-m-d H:i:s') . "] MISS: user asked: '" . $user_message . "'\n";
+            file_put_contents(get_template_directory() . '/city-library-ai-misses.log', $log_entry, FILE_APPEND);
+        }
+
         $response_data = array('reply' => $reply);
 
         // Extract audio if requested and available
