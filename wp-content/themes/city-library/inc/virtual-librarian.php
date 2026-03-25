@@ -149,7 +149,7 @@ function city_library_ai_customizer($wp_customize) {
         'type' => 'text',
     ));
 
-    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь.', 'sanitize_callback' => 'sanitize_textarea_field'));
+    $wp_customize->add_setting('ai_persona_prompt', array('default' => 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!', 'sanitize_callback' => 'sanitize_textarea_field'));
     $wp_customize->add_control('ai_persona_prompt', array(
         'label' => __('Системный промпт (Persona)', 'city-library'),
         'description' => __('Инструкция для ИИ, определяющая его характер. Не рекомендуется полностью удалять.', 'city-library'),
@@ -503,26 +503,30 @@ function city_library_render_ai_librarian() {
     <div id="ai-librarian-widget" class="fixed bottom-24 lg:landscape:bottom-8 right-4 sm:right-6 lg:landscape:right-8 z-[99999] flex flex-col items-end w-auto" style="display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: none;">
         <!-- Chat Window -->
         <?php $chat_theme = get_theme_mod('ai_chat_theme', 'default'); ?>
-        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[92vw] sm:w-[85vw] md:w-[650px] max-w-full bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-200/60 mb-4 overflow-hidden flex-col h-[65vh] max-h-[600px] sm:max-h-none sm:h-[600px] transition-all transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
+        <div id="ai-chat-window" data-theme="<?php echo esc_attr($chat_theme); ?>" class="hidden w-[96vw] sm:w-[90vw] md:w-[680px] max-w-full bg-white/95 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.3)] border border-white/40 mb-6 overflow-hidden flex-col h-[70vh] max-h-[750px] sm:max-h-none sm:h-[650px] transition-all duration-500 transform origin-bottom-right theme-<?php echo esc_attr($chat_theme); ?> pointer-events-auto">
             <!-- Header -->
-            <div class="bg-gradient-to-r from-primary to-primary/90 text-white p-4 flex justify-between items-center shadow-sm z-20 shrink-0">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
+            <div class="bg-gradient-to-br from-primary via-primary to-secondary text-white p-5 flex justify-between items-center shadow-lg z-20 shrink-0 border-b border-white/10">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-xl overflow-hidden border border-white/30 rotate-3 hover:rotate-0 transition-transform duration-300">
                         <img src="<?php echo esc_url(get_city_library_ai_avatar_url()); ?>" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div>
-                        <h4 class="font-bold text-sm leading-tight tracking-wide">Виртуальный библиотекарь</h4>
-                        <span class="text-[10px] text-white/90 flex items-center gap-1.5 uppercase tracking-wider font-medium mt-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> В сети
+                        <h4 class="font-black text-base leading-tight tracking-wide">Виртуальный библиотекарь</h4>
+                        <span class="text-[11px] text-white/80 flex items-center gap-2 uppercase tracking-widest font-bold mt-1">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            В сети
                         </span>
                     </div>
                 </div>
-                <div class="flex items-center gap-1">
-                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">fullscreen</span>
+                <div class="flex items-center gap-2">
+                    <button id="fullscreen-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm" aria-label="Полный экран">
+                        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
+                    <button id="close-ai-chat" class="text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition-all flex items-center justify-center w-10 h-10 border border-white/10 shadow-sm" aria-label="Закрыть чат">
+                        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">close</span>
                     </button>
                 </div>
             </div>
@@ -643,14 +647,16 @@ function city_library_render_ai_librarian() {
                     </div>
 
                     <!-- Input Area -->
-            <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
+            <div class="p-4 bg-white border-t border-slate-100 flex gap-3 shadow-[0_-10px_25px_rgba(0,0,0,0.03)] shrink-0 z-10 relative items-end">
                 <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx,.jpg,.jpeg,.png,.webp">
-                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл или фото (до 20МБ)">
-                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">attach_file</span>
+                <button id="ai-chat-attachment" class="w-11 h-11 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl flex items-center justify-center transition-all shrink-0 border border-slate-100 shadow-sm" title="Прикрепить файл или фото (до 20МБ)" aria-label="Прикрепить файл">
+                    <span class="material-symbols-outlined text-[22px]" aria-hidden="true">attach_file</span>
                 </button>
-                <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
-                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
-                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">send</span>
+                <div class="relative flex-grow">
+                    <textarea id="ai-chat-input" rows="1" class="w-full bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 focus:border-primary/50 focus:ring-4 focus:ring-primary/10 rounded-2xl text-[14px] px-5 py-3.5 transition-all duration-300 resize-none min-h-[50px] max-h-[180px] leading-relaxed custom-scrollbar shadow-inner" placeholder="Спросите что-нибудь..." aria-label="Текст запроса"></textarea>
+                </div>
+                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center hover:bg-secondary hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 shrink-0 shadow-lg group active:scale-95 border-b-4 border-primary/20" aria-label="Отправить сообщение">
+                    <span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">keyboard_arrow_up</span>
                 </button>
             </div>
 
@@ -941,11 +947,14 @@ function city_library_handle_ai_chat() {
         $used_model = '';
 
         // Improved Prompt Refinement via LLM
-        $refine_system = 'You are a professional prompt engineer for AI image generators (like Flux). Your task is to transform Russian requests into high-quality English prompts. MANDATORY:
+        $refine_system = 'You are a professional prompt engineer for AI image generators (like Flux). Your task is to transform Russian requests into high-quality English prompts.
+        CRITICAL: If the user is asking to CHANGE or UPDATE an image we discussed previously, analyze the conversation history and incorporate those changes into a NEW complete prompt.
+        MANDATORY:
         1. Explicitly instruct the model to write any text in RUSSIAN language (Cyrillic), using quotes.
-        2. If the user request is too vague (less than 3 words or just a generic object like "cat"), start your response with "CLARIFY:" and ask the user for details (style, lighting, background) in Russian.
-        3. If a reference image description is provided, ensure the new prompt maintains its style/objects.
-        4. Return ONLY the refined English prompt (or CLARIFY question), no extra meta-text.';
+        2. EXTREMELY IMPORTANT: Any text on the image MUST be in perfect Russian, without any errors, typos or mixed languages.
+        3. If the user request is too vague (less than 3 words or just a generic object like "cat") and no context is available, start your response with "CLARIFY:" and ask the user for details in Russian.
+        4. If a reference image description is provided, ensure the new prompt maintains its style/objects.
+        5. Return ONLY the refined English prompt (or CLARIFY question), no extra meta-text.';
 
         $refine_messages = array(
             array('role' => 'system', 'content' => $refine_system),
@@ -980,9 +989,9 @@ function city_library_handle_ai_chat() {
             }
         }
 
-        // For refinement, we add the history to the refinement step so the LLM knows what the previous image was
-        if (!empty($history) && is_array($history)) {
-            $history_tail = array_slice($history, -10); // Last 5 interactions
+        // For refinement, we use the FULL history so the LLM perfectly understands what to change in the previous image
+        if (!empty($full_history) && is_array($full_history)) {
+            $history_tail = array_slice($full_history, -20); // Last 10 interactions for better precision
             foreach ($history_tail as $h_msg) {
                 // Only include text content in prompt refinement context
                 if (isset($h_msg['role']) && isset($h_msg['content']) && is_string($h_msg['content'])) {
@@ -1113,7 +1122,7 @@ function city_library_handle_ai_chat() {
     }
 
     // Build Context (Simulated RAG)
-    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Главный библиограф-технолог. Обращайся к пользователю на "Вы", используя идеальный русский литературный язык.');
+    $base_persona = get_theme_mod('ai_persona_prompt', 'Ты Виртуальный библиотекарь - библиограф (женщина) с 30 летним стажем. Обращайся к пользователю на "Вы", как профессиональный библиотекарь. Не выходи за рамки библиотечной этики и работы, всю информацию по литературе и книгам предоставляй только правдивую. Твое имя - Виртуальный библиотекарь. При генерации изображений весь текст должен быть на идеальном русском языке, без ошибок, опечаток, со всеми правилами русского языка!');
     $extra_prompt = get_theme_mod('ai_persona_prompt_extra', '');
     if (!empty($extra_prompt)) {
         $base_persona .= "\nДОПОЛНИТЕЛЬНЫЕ ИНСТРУКЦИИ АДМИНИСТРАТОРА (СТРОГО СОБЛЮДАТЬ):\n" . strip_tags($extra_prompt) . "\n";
@@ -1270,6 +1279,9 @@ function city_library_handle_ai_chat() {
         return mb_substr(trim($text), 0, 1000); // Truncate to 1000 chars
     };
 
+    // Store original full history for context-heavy tasks like prompt refinement
+    $full_history = $history;
+
     // Support only the last 3 messages as explicitly requested by the user
     if (!empty($history) && is_array($history)) {
         $history = array_slice($history, -3);
@@ -1378,16 +1390,25 @@ function city_library_handle_ai_chat() {
         $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
 
         if ($is_invalid_response($response)) {
-            // Ultimate Fallback: High-availability model (GPT-4o-mini is extremely stable on OpenRouter)
-            $request_body['model'] = 'openai/gpt-4o-mini';
-            // Final attempt at truncation if still failing on context
-            $final_messages = array_slice($request_body['messages'], 0, 1); // System only
-            $final_messages[] = end($request_body['messages']); // Plus current message
-            $request_body['messages'] = $final_messages;
+            // Fallback 2: Stable free models requested by user
+            $stable_fallbacks = [
+                'nvidia/nemotron-3-super-120b-a12b:free',
+                'qwen/qwen3-next-80b-a3b-instruct:free',
+                'openai/gpt-4o-mini' // Ultimate reliability
+            ];
 
-            $api_args['body'] = wp_json_encode($request_body);
-            $api_args['timeout'] = 30;
-            $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+            foreach ($stable_fallbacks as $f_model) {
+                $request_body['model'] = $f_model;
+                // Final attempt at truncation if still failing on context
+                $final_messages = array_slice($request_body['messages'], 0, 1); // System only
+                $final_messages[] = end($request_body['messages']); // Plus current message
+                $request_body['messages'] = $final_messages;
+
+                $api_args['body'] = wp_json_encode($request_body);
+                $api_args['timeout'] = 25;
+                $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $api_args);
+                if (!$is_invalid_response($response)) break;
+            }
         }
     }
 

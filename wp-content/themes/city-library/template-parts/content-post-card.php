@@ -8,7 +8,7 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
     <!-- Desktop: Natural flow / Mobile: Overlay approach -->
     <!-- Image Container -->
-    <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-10 shrink-0 overflow-hidden news-card-image-container">
+    <div class="absolute inset-0 z-0 h-full w-full lg:relative lg:h-56 lg:w-full lg:z-10 shrink-0 overflow-hidden news-card-image-container pointer-events-none lg:pointer-events-auto">
         <div class="block w-full h-full pointer-events-auto">
             <?php if (has_post_thumbnail()) : ?>
                 <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>" alt="<?php the_title_attribute(); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">

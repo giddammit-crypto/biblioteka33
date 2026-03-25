@@ -491,11 +491,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Re-initialize GLightbox if a new message was added with images
         if (typeof GLightbox !== 'undefined') {
-            GLightbox({
+            const lightbox = GLightbox({
                 selector: '.glightbox',
                 touchNavigation: true,
                 loop: true,
                 zoomable: true
+            });
+            // Also explicitly handle clicks on dynamic images to ensure they open
+            wrapper.querySelectorAll('.glightbox').forEach(el => {
+                el.onclick = (e) => {
+                    e.preventDefault();
+                    lightbox.open(el);
+                };
             });
         }
     }
@@ -767,10 +774,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Better send HTML from UI for better visual fidelity
                 const el = document.querySelector(`.ai-selectable-message[data-index="${idx}"] .prose`);
                 if (el) {
-                    // Clone to remove action buttons before sending
+                    // Clone to remove UI noise
                     const clone = el.cloneNode(true);
-                    const actions = clone.querySelector('.flex.gap-2.mt-3');
-                    if (actions) actions.remove();
+
+                    // Remove action buttons (Copy, TXT, PDF etc)
+                    clone.querySelectorAll('.flex.gap-2.mt-3, .ai-copy-btn, .btn-download').forEach(btn => btn.remove());
+
+                    // Cleanup image wrappers for better PDF alignment
+                    clone.querySelectorAll('.library-image-wrapper').forEach(wrapper => {
+                        const img = wrapper.querySelector('img');
+                        if (img) {
+                             // Force absolute URL and clean styling for the PDF compiler
+                             img.style.width = '100%';
+                             img.style.maxWidth = '600px';
+                             img.style.height = 'auto';
+                             img.style.borderRadius = '12px';
+                             wrapper.innerHTML = '';
+                             wrapper.appendChild(img);
+                        }
+                    });
+
                     contents.push(clone.innerHTML);
                 }
             }
@@ -839,11 +862,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (compilePdfBtn) compilePdfBtn.addEventListener('click', () => compileSelected('pdf'));
     if (compileDocxBtn) compileDocxBtn.addEventListener('click', () => compileSelected('docx'));
 
+    // Auto-resize textarea
+    inputField.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+
     // Listeners
-    sendBtn.addEventListener('click', sendMessage);
-    inputField.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+    sendBtn.addEventListener('click', () => {
+        sendMessage();
+        inputField.style.height = 'auto';
+    });
+
+    inputField.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
+            e.preventDefault();
             sendMessage();
+            this.style.height = 'auto';
+        } else if (e.key === 'Enter' && (e.ctrlKey || e.shiftKey)) {
+            // Standard behavior for textarea (new line) is preserved,
+            // but we can explicitly handle it if needed.
         }
     });
 
