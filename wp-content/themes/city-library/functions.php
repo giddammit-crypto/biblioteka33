@@ -14,9 +14,6 @@ require_once get_template_directory() . '/inc/hero-meta-box.php';
 // Include Presentation Embed Shortcode
 require_once get_template_directory() . '/inc/presentation-embed.php';
 
-// Include Virtual Librarian AI
-require_once get_template_directory() . '/inc/virtual-librarian.php';
-
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');
@@ -119,73 +116,6 @@ function city_library_scripts() {
     wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
 
-    // Voice Control Enqueue
-    $enable_voice = get_theme_mod('enable_voice_control', false);
-    $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
-
-    // We now always enqueue the script if voice is globally enabled, so the JS can check for #voicetest and cookies
-    if ($enable_voice) {
-        // Enqueue marked.js for voice control markdown parsing
-        if (!wp_script_is('marked-js', 'enqueued')) {
-            wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
-        }
-
-        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
-
-        $custom_commands = array();
-        for ($i = 1; $i <= 20; $i++) {
-            $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
-            $url = get_theme_mod("voice_cmd_url_$i", '');
-            if (!empty(trim($phrases)) && !empty(trim($url))) {
-                $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
-                if (!empty($phrases_array)) {
-                    $custom_commands[] = array(
-                        'phrases' => array_values($phrases_array),
-                        'url' => esc_url($url)
-                    );
-                }
-            }
-        }
-
-        // Prepare branch addresses for Maps
-        $branch_keys = array('cgb', 'cdb', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16');
-        $branch_addresses = array();
-        foreach ($branch_keys as $key) {
-             $default = '';
-             if ($key === 'cgb') $default = 'г. Владимир, Суздальский пр-кт, д. 2';
-             elseif ($key === 'cdb') $default = 'г. Владимир, ул. Белоконской, д. 10-а';
-             elseif ($key === '1') $default = 'г. Владимир, пр-кт Строителей, д. 23';
-             elseif ($key === '2') $default = 'г. Владимир, пр-кт Ленина, д. 12';
-             elseif ($key === '3') $default = 'г. Владимир, ул. Добросельская, д. 2-в';
-             elseif ($key === '4') $default = 'г. Владимир, ул. Комиссарова, д. 69';
-             elseif ($key === '5') $default = 'г. Владимир, пр-кт Суздальский, д. 2';
-             elseif ($key === '6') $default = 'г. Владимир, ул. Мира, д. 37';
-             elseif ($key === '7') $default = 'г. Владимир, ул. Добросельская, д. 189-б';
-             elseif ($key === '8') $default = 'г. Владимир, ул. Диктора Левитана, д. 36';
-             elseif ($key === '9') $default = 'г. Владимир, ул. Горького, д. 85';
-             elseif ($key === '10') $default = 'г. Владимир, ул. Егорова, д. 10';
-             elseif ($key === '11') $default = 'г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4';
-             elseif ($key === '13') $default = 'г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а';
-             elseif ($key === '14') $default = 'г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12';
-             elseif ($key === '15') $default = 'г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11';
-             elseif ($key === '16') $default = 'г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а';
-
-             $branch_addresses[$key] = get_theme_mod("branch_address_$key", $default);
-        }
-
-        wp_localize_script('city-library-voice', 'cl_voice_control', array(
-            'enabled' => true,
-            'test_mode' => $voice_test_mode,
-            'is_logged_in' => is_user_logged_in(),
-            'home_url' => home_url(),
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
-            'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
-            'voice_rate' => get_theme_mod('voice_rate', '1.05'),
-            'custom_commands' => $custom_commands,
-            'branch_addresses' => $branch_addresses
-        ));
-    }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-sliders', get_template_directory_uri() . '/js/mobile-sliders.js', array('swiper-js'), wp_get_theme()->get('Version'), true);
@@ -266,30 +196,6 @@ function city_library_get_branches_list() {
     return $branches;
 }
 
-/**
- * AJAX Handler for Voice Test Feedback
- */
-function city_library_voice_feedback() {
-    check_ajax_referer('ai_chat_nonce', 'nonce');
-
-    $rating = intval($_POST['rating']);
-    $feedback = sanitize_textarea_field($_POST['feedback']);
-
-    $to = 'xxoleg6@yandex.ru';
-    $subject = 'Отчет о тестировании Голосового Ассистента (Оценка: ' . $rating . '/5)';
-    $message = "Оценка: $rating из 5\n\nОтзыв/Ошибки:\n$feedback";
-    $headers = array('Content-Type: text/plain; charset=UTF-8');
-
-    // Attempt to send email
-    wp_mail($to, $subject, $message, $headers);
-
-    // We clear the cookie by setting expiration to the past
-    setcookie('cl_voice_test_active', '', time() - 3600, '/');
-
-    wp_send_json_success(array('message' => 'Спасибо! Ваш отзыв отправлен.'));
-}
-add_action('wp_ajax_city_library_voice_feedback', 'city_library_voice_feedback');
-add_action('wp_ajax_nopriv_city_library_voice_feedback', 'city_library_voice_feedback');
 
 /**
  * AJAX Handler for Book Renewal
@@ -2178,38 +2084,3 @@ function city_library_schema_json_ld() {
 }
 add_action('wp_head', 'city_library_schema_json_ld');
 
-/**
- * AJAX handler for Voice Control: "Все библиотеки" Custom Map Fetch
- */
-function city_library_get_map_shortcode() {
-    check_ajax_referer('ai_chat_nonce', 'nonce');
-
-    // We assume there's a custom template part or a known structure that renders the Yandex map.
-
-    ob_start();
-    // Render the `branches-map` template part
-    get_template_part('template-parts/branches-map');
-
-    $html = ob_get_clean();
-
-    // Fallback if template part doesn't exist
-    if (empty(trim($html))) {
-        $html = '<div class="p-8 text-center text-slate-500 bg-slate-50 rounded-2xl">
-            <span class="material-symbols-rounded text-4xl mb-2 text-slate-400">map</span>
-            <p>Карта со всеми филиалами загружается...</p>
-            <p class="text-sm mt-2">Пожалуйста, перейдите в раздел "Контакты" для просмотра.</p>
-        </div>';
-    }
-
-    wp_send_json_success(['html' => $html]);
-}
-add_action('wp_ajax_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
-add_action('wp_ajax_nopriv_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
-
-// Enqueue Chat Theme CSS
-function city_library_enqueue_chat_themes() {
-    if (get_theme_mod('enable_ai_librarian', false)) {
-        wp_enqueue_style('ai-chat-themes', get_template_directory_uri() . '/css/ai-chat-themes.css', array(), wp_get_theme()->get('Version'));
-    }
-}
-add_action('wp_enqueue_scripts', 'city_library_enqueue_chat_themes', 20);

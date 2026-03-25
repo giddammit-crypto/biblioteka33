@@ -308,14 +308,8 @@ if ($bar_style === 'text-only') {
                 <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Афиша', 'city-library'); ?></span>
             </a>
 
-            <!-- Voice Assistant - Hidden by default unless JS reveals it -->
-            <?php if ($enable_voice) : ?>
-            <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group absolute inset-0 w-full hidden" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
-                <div class="absolute inset-0 bg-cyan-400/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">mic</span>
-                <span class="<?php echo esc_attr($text_classes); ?> font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
-            </button>
-            <?php endif; ?>
+            <!-- Voice Assistant Placeholder for Plugin Hook -->
+            <?php do_action('virtual_librarian_mobile_button', $item_classes, $icon_classes, $icon_font_class, $icon_base_class, $text_classes); ?>
         </div>
 
         <!-- Search (Opens Modal) -->
