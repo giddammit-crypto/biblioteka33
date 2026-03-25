@@ -514,10 +514,10 @@ function city_library_render_ai_librarian() {
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
+                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="<?php esc_attr_e('На весь экран', 'city-library'); ?>">
                         <span class="material-symbols-outlined text-[20px]">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
+                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="<?php esc_attr_e('Закрыть чат', 'city-library'); ?>">
                         <span class="material-symbols-outlined text-[20px]">close</span>
                     </button>
                 </div>
@@ -550,18 +550,18 @@ function city_library_render_ai_librarian() {
 
             <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
-                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
+                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="<?php esc_attr_e('Прикрепить файл (до 20МБ)', 'city-library'); ?>" aria-label="<?php esc_attr_e('Прикрепить файл', 'city-library'); ?>">
                     <span class="material-symbols-outlined text-[20px]">attach_file</span>
                 </button>
                 <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
-                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
+                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group" aria-label="<?php esc_attr_e('Отправить', 'city-library'); ?>">
                     <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300">send</span>
                 </button>
             </div>
         </div>
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden" aria-label="<?php esc_attr_e('Открыть чат с ИИ', 'city-library'); ?>">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
             <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10">support_agent</span>
             <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10">chat</span>
