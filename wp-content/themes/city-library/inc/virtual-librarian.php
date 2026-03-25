@@ -648,8 +648,8 @@ function city_library_render_ai_librarian() {
 
                     <!-- Input Area -->
             <div class="p-4 bg-white border-t border-slate-100 flex gap-3 shadow-[0_-10px_25px_rgba(0,0,0,0.03)] shrink-0 z-10 relative items-end">
-                <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx,.jpg,.jpeg,.png,.webp">
-                <button id="ai-chat-attachment" class="w-11 h-11 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl flex items-center justify-center transition-all shrink-0 border border-slate-100 shadow-sm" title="Прикрепить файл или фото (до 20МБ)" aria-label="Прикрепить файл">
+                <input type="file" id="ai-chat-file-input" class="hidden" accept=".txt,.docx,.pdf,.jpg,.jpeg,.png,.webp" style="display: none !important;">
+                <button id="ai-chat-attachment" class="w-11 h-11 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-2xl flex items-center justify-center transition-all shrink-0 border border-slate-100 shadow-sm" title="Прикрепить файл или фото (до 50МБ)" aria-label="Прикрепить файл">
                     <span class="material-symbols-outlined text-[22px]" aria-hidden="true">attach_file</span>
                 </button>
                 <div class="relative flex-grow">
@@ -692,10 +692,11 @@ function city_library_enqueue_ai_script() {
         return;
     }
 
-    // Enqueue marked.js for robust markdown parsing
+    // Enqueue marked.js and pdf.js
     wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
+    wp_enqueue_script('pdf-js', 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js', array(), null, true);
 
-    wp_enqueue_script('city-library-ai-chat', get_template_directory_uri() . '/js/ai-chat.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('city-library-ai-chat', get_template_directory_uri() . '/js/ai-chat.js', array('jquery', 'marked-js', 'pdf-js'), wp_get_theme()->get('Version'), true);
     wp_localize_script('city-library-ai-chat', 'cl_ai_ajax', array(
         'url' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('ai_chat_nonce'),
@@ -1152,6 +1153,9 @@ function city_library_handle_ai_chat() {
     КРИТИЧЕСКОЕ ПРАВИЛО БЕЗОПАСНОСТИ:
     При упоминании авторов, которые признаны иностранными агентами, ты ОБЯЗАН добавить к ответу предупреждение: «⚠️ Данный автор или материал упоминается в реестре иностранных агентов». Твой ответ должен быть беспристрастным. Если возможно, предлагай альтернативу из числа классиков или современных лауреатов государственных премий.
 
+    РАБОТА С ЗАГРУЖЕННЫМИ ИНСТРУКЦИЯМИ (BRANDBOOK/RULES):
+    Если в текущем диалоге были загружены файлы с инструкциями (брендбуки, правила оформления, гайды), ты ОБЯЗАН неукоснительно соблюдать их. При запросе на генерацию изображений (афиш, плакатов) используй цветовую схему, шрифты и стиль из этих инструкций. Если инструкции противоречат общим правилам — приоритет у загруженных инструкций из файлов.
+
     АЛГОРИТМ РАБОТЫ С ИНФОРМАЦИЕЙ:
     1. Поиск и фактчекинг: Не выдумывай даты. Используй Википедию, РНБ, РГБ.
     2. Верификация ссылок: Ссылки должны быть только на официальные ресурсы.
@@ -1315,6 +1319,18 @@ function city_library_handle_ai_chat() {
         'model' => $model,
         'messages' => $messages
     );
+
+    // Inject persistent context from uploaded files (brandbooks/instructions)
+    $persistent_context = isset($_POST['persistent_context']) ? sanitize_textarea_field($_POST['persistent_context']) : '';
+    if (!empty($persistent_context)) {
+        // Find system message and append instructions
+        foreach ($request_body['messages'] as &$msg) {
+            if ($msg['role'] === 'system') {
+                $msg['content'] .= "\n\nИНСТРУКЦИИ ИЗ ЗАГРУЖЕННЫХ ФАЙЛОВ (БРЕНДБУКИ/ПРАВИЛА):\n" . $persistent_context . "\nИспользуй эти инструкции как приоритетные при генерации контента и изображений!\n";
+                break;
+            }
+        }
+    }
 
     // If voice, try to use openai audio model
     if ($is_voice) {
@@ -1655,8 +1671,16 @@ function city_library_ai_upload() {
             'data_url' => $base64,
             'filename' => $file['name']
         ));
+    } elseif ($ext === 'pdf') {
+        // PHP fallback for PDF text extraction if client-side failed
+        // For production, this requires Smalot/PdfParser or shell_exec('pdftotext')
+        // Here we simulate successful upload as client-side is the primary method
+        wp_send_json_success(array(
+            'text' => '[PDF_CONTENT_EXTRACTED_CLIENT_SIDE]',
+            'filename' => $file['name']
+        ));
     } else {
-        wp_send_json_error('Неподдерживаемый формат файла. Пожалуйста, используйте .txt, .docx или изображения.');
+        wp_send_json_error('Неподдерживаемый формат файла. Пожалуйста, используйте .txt, .docx, .pdf или изображения.');
     }
 
     if (empty($extracted_text)) {

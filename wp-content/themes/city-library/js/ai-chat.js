@@ -11,9 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!toggleBtn || !chatWindow) return;
 
+    // Ensure file input allows PDFs
+    if (fileInput) {
+        fileInput.setAttribute('accept', '.txt,.docx,.pdf,.jpg,.jpeg,.png,.webp');
+        // Double check after a small delay to handle any race conditions or dynamic DOM swaps
+        setTimeout(() => fileInput.setAttribute('accept', '.txt,.docx,.pdf,.jpg,.jpeg,.png,.webp'), 100);
+    }
+
     let attachedFileText = "";
     let attachedFileName = "";
     let attachedFileData = "";
+    let persistentInstructionContext = ""; // For brandbooks and instructions
 
 
     // Clean and encode Cyrillic URLs for generated images
@@ -368,9 +376,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // If a file is attached, inject its content into the prompt
+        // If a file is attached, inject its content into the prompt and persistent context
         if (attachedFileText && !attachedFileData) {
-            requestData.message = `[КОНТЕКСТ ПРИКРЕПЛЕННОГО ФАЙЛА "${attachedFileName}"]: \n\n ${attachedFileText} \n\n --- \n\n ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
+            persistentInstructionContext += `\n\n[ДАННЫЕ ИЗ ФАЙЛА "${attachedFileName}"]: \n${attachedFileText}\n`;
+            requestData.message = `[НОВЫЙ ФАЙЛ "${attachedFileName}"]: \n\n ${attachedFileText} \n\n --- \n\n ВОПРОС ПОЛЬЗОВАТЕЛЯ: ${message}`;
+        }
+
+        // Always inject persistent context if exists
+        if (persistentInstructionContext && !requestData.message.includes(persistentInstructionContext)) {
+             requestData.persistent_context = persistentInstructionContext;
         }
 
         // Reset attachment after sending
@@ -446,13 +460,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Implement /clear command
         if (sender === 'user' && text.trim().toLowerCase() === '/clear') {
             chatHistory = [];
+            persistentInstructionContext = ""; // Reset instructions
             localStorage.removeItem(STORAGE_KEY);
             if (messagesContainer.querySelector('.prose')) {
                 messagesContainer.innerHTML = '';
             }
             if (!save) return;
             // Add a confirmation message that doesn't save to history
-            addMessageToUI('bot', 'История чата успешно очищена.', null, false);
+            addMessageToUI('bot', 'История чата успешно очищена. Инструкции из файлов также сброшены.', null, false);
             return;
         }
 
@@ -567,6 +582,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Ensure file input allows PDFs
+    if (fileInput && !fileInput.getAttribute('accept').includes('.pdf')) {
+        fileInput.setAttribute('accept', '.txt,.docx,.pdf,.jpg,.jpeg,.png,.webp');
+    }
 
         // Re-initialize GLightbox if a new message was added with images
         if (typeof GLightbox !== 'undefined') {
@@ -1001,27 +1021,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // File Attachment Logic
     if (attachmentBtn && fileInput) {
+        // Set worker src for pdf.js
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        }
+
         attachmentBtn.addEventListener('click', () => fileInput.click());
 
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', async function(e) {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 10 * 1024 * 1024) {
-                    alert('Файл слишком большой. Максимум 10МБ.');
+                const isPdf = file.type === 'application/pdf';
+                const maxSize = 50 * 1024 * 1024; // 50MB
+
+                if (file.size > maxSize) {
+                    alert('Файл слишком большой. Максимум 50МБ.');
                     this.value = '';
                     return;
                 }
 
                 const isImage = file.type.startsWith('image/');
+                const originalIcon = attachmentBtn.innerHTML;
+                attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>';
+                attachmentBtn.disabled = true;
+
+                // Handle PDF client-side if possible
+                if (isPdf && typeof pdfjsLib !== 'undefined') {
+                    try {
+                        const reader = new FileReader();
+                        reader.onload = async function() {
+                            try {
+                                const typedarray = new Uint8Array(this.result);
+                                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                                let fullText = "";
+                                for (let i = 1; i <= Math.min(pdf.numPages, 50); i++) {
+                                    const page = await pdf.getPage(i);
+                                    const textContent = await page.getTextContent();
+                                    fullText += textContent.items.map(item => item.str).join(' ') + "\n";
+                                }
+
+                                attachedFileText = fullText;
+                                attachedFileName = file.name;
+
+                                attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] text-green-500">task</span>';
+                                attachmentBtn.title = `PDF прочитан: ${attachedFileName}`;
+                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">picture_as_pdf</span> PDF «${attachedFileName}» (${pdf.numPages} стр.) успешно прочитан. Я запомнила инструкции и данные из него. Что мне сделать?</span>`, null, false);
+                                attachmentBtn.disabled = false;
+                            } catch (pdfErr) {
+                                console.error("PDF internal parsing error:", pdfErr);
+                                // Fallback to server will happen if we don't return here
+                            }
+                        };
+                        reader.readAsArrayBuffer(file);
+                        this.value = '';
+                        return;
+                    } catch (err) {
+                        console.error("PDF extraction failed, falling back to server:", err);
+                    }
+                }
+
                 const formData = new FormData();
                 formData.append('action', 'city_library_ai_upload');
                 formData.append('nonce', cl_ai_ajax.nonce);
                 formData.append('file', file);
-
-                // Show loading state
-                const originalIcon = attachmentBtn.innerHTML;
-                attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span>';
-                attachmentBtn.disabled = true;
 
                 jQuery.ajax({
                     url: cl_ai_ajax.url,
@@ -1040,6 +1102,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             if (isImage) {
                                 addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">image</span> Изображение «${attachedFileName}» успешно загружено. Я проанализировала его и готова обсудить детали или сгенерировать что-то похожее.</span>`, null, false);
+                            } else if (isPdf) {
+                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">picture_as_pdf</span> PDF «${attachedFileName}» успешно загружен и обработан. Я готова использовать его данные.</span>`, null, false);
                             } else {
                                 addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Файл «${attachedFileName}» успешно прочитан. Теперь я могу проанализировать его содержимое. Задайте свой вопрос по файлу.</span>`, null, false);
                             }

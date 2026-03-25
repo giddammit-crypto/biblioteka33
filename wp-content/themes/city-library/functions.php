@@ -805,14 +805,14 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет шрифта (текст)', 'city-library'), 'section' => 'mobile_menu_section',
     )));
 
-    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('mobile_menu_font_family', array(
         'label' => __('Шрифт меню', 'city-library'),
         'section' => 'mobile_menu_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
         ),
@@ -922,14 +922,14 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет текста шапки', 'city-library'), 'section' => 'header_section',
     )));
 
-     $wp_customize->add_setting('header_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+     $wp_customize->add_setting('header_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('header_font_family', array(
         'label' => __('Шрифт шапки', 'city-library'),
         'section' => 'header_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
         ),
@@ -1267,15 +1267,15 @@ function city_library_customize_register($wp_customize) {
         'title' => __('Typography', 'city-library'),
         'priority' => 20,
     ));
-    $wp_customize->add_setting('heading_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('heading_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('heading_font', array(
         'label' => __('Heading Font', 'city-library'),
         'section' => 'typography_section',
         'type' => 'select',
         'choices' => array(
+            'Montserrat' => 'Montserrat (Geometric)',
             'Inter' => 'Inter (Modern)',
             'Playfair Display' => 'Playfair Display (Journal)',
-            'Montserrat' => 'Montserrat (Geometric)',
             'Merriweather' => 'Merriweather (Serif)',
         ),
     ));
@@ -1358,14 +1358,14 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
-    $wp_customize->add_setting('afisha_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('afisha_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('afisha_font_family', array(
         'label' => __('Шрифт заголовка афиши', 'city-library'),
         'section' => 'afisha_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
             'Cinzel' => 'Cinzel',
@@ -1855,7 +1855,7 @@ add_action('wp_ajax_nopriv_load_posts_by_view', 'load_posts_by_view');
 * Add custom script to head to configure TailwindCSS
 */
 function city_library_tailwind_config() {
-    $heading_font = get_theme_mod('heading_font', 'Inter');
+    $heading_font = get_theme_mod('heading_font', 'Montserrat');
     $body_font = get_theme_mod('body_font', 'Montserrat');
     ?>
     <script>
@@ -1917,7 +1917,7 @@ function city_library_dynamic_styles() {
     $mob_menu_icon = get_theme_mod('mobile_menu_icon_color', '#64748b');
     $mob_menu_active = get_theme_mod('mobile_menu_active_color', '#0b7930');
     $mob_menu_font_color = get_theme_mod('mobile_menu_font_color', '#64748b');
-    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Inter');
+    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Montserrat');
     ?>
     <style type="text/css">
         :root {
@@ -2040,7 +2040,7 @@ function city_library_dynamic_styles() {
             color: <?php echo esc_attr(get_theme_mod('header_text_color', '#1A3C34')); ?> !important;
         }
         #masthead {
-             font-family: "<?php echo esc_js(get_theme_mod('header_font_family', 'Inter')); ?>", sans-serif !important;
+             font-family: "<?php echo esc_js(get_theme_mod('header_font_family', 'Montserrat')); ?>", sans-serif !important;
         }
 
         /* Hero Primary Button */
@@ -2082,7 +2082,7 @@ function city_library_dynamic_styles() {
 
         /* Afisha Font */
         .afisha-custom-title {
-            font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Inter')); ?>", sans-serif !important;
+            font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Montserrat')); ?>", sans-serif !important;
         }
 
         /* Pagination Styling */
