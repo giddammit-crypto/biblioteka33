@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let attachedFileText = "";
     let attachedFileName = "";
     let attachedFileData = "";
+    let attachedPdfImages = []; // To store base64 images of PDF pages
     let persistentInstructionContext = ""; // For brandbooks and instructions
 
 
@@ -335,6 +336,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="text-xs">Библиотекарь создаёт изображение...</span>
                 </div>
             </div>`, typingId, false);
+        } else if (attachedPdfImages.length > 0) {
+            addMessageToUI('bot', `<div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden relative">
+                    <img src="${cl_ai_ajax.avatar_url}" alt="AI" class="w-full h-full object-cover opacity-50">
+                </div>
+                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex flex-col gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full typing-dot"></span>
+                        <span class="w-1.5 h-1.5 bg-indigo-600 rounded-full typing-dot" style="animation-delay: 0.2s"></span>
+                        <span class="w-1.5 h-1.5 bg-indigo-800 rounded-full typing-dot" style="animation-delay: 0.4s"></span>
+                    </div>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest animate-pulse">Анализирую PDF визуально...</span>
+                </div>
+            </div>`, typingId, false);
         } else {
             addMessageToUI('bot', `<div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 shadow-sm border border-slate-300 overflow-hidden relative">
@@ -376,6 +391,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // If PDF images are available
+        if (attachedPdfImages.length > 0) {
+            requestData.pdf_images = JSON.stringify(attachedPdfImages);
+        }
+
         // If a file is attached, inject its content into the prompt and persistent context
         if (attachedFileText && !attachedFileData) {
             persistentInstructionContext += `\n\n[ДАННЫЕ ИЗ ФАЙЛА "${attachedFileName}"]: \n${attachedFileText}\n`;
@@ -392,8 +412,9 @@ document.addEventListener('DOMContentLoaded', () => {
             attachedFileText = "";
             attachedFileName = "";
             attachedFileData = "";
+            attachedPdfImages = [];
             attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px]">attach_file</span>';
-            attachmentBtn.title = "Прикрепить файл (до 20МБ)";
+            attachmentBtn.title = "Прикрепить файл (до 50МБ)";
         }
 
         jQuery.ajax({
@@ -1054,29 +1075,48 @@ document.addEventListener('DOMContentLoaded', () => {
                                 const typedarray = new Uint8Array(this.result);
                                 const pdf = await pdfjsLib.getDocument(typedarray).promise;
                                 let fullText = "";
+                                const images = [];
+
+                                // Render first 5 pages to images for vision analysis
+                                const pagesToRender = Math.min(pdf.numPages, 5);
+
                                 for (let i = 1; i <= Math.min(pdf.numPages, 50); i++) {
                                     const page = await pdf.getPage(i);
+
+                                    // Extract Text
                                     const textContent = await page.getTextContent();
                                     fullText += textContent.items.map(item => item.str).join(' ') + "\n";
+
+                                    // Visual extraction for first few pages
+                                    if (i <= pagesToRender) {
+                                        const viewport = page.getViewport({ scale: 1.5 });
+                                        const canvas = document.createElement('canvas');
+                                        const context = canvas.getContext('2d');
+                                        canvas.height = viewport.height;
+                                        canvas.width = viewport.width;
+
+                                        await page.render({ canvasContext: context, viewport: viewport }).promise;
+                                        images.push(canvas.toDataURL('image/jpeg', 0.8));
+                                    }
                                 }
 
                                 attachedFileText = fullText;
                                 attachedFileName = file.name;
+                                attachedPdfImages = images;
 
                                 attachmentBtn.innerHTML = '<span class="material-symbols-outlined text-[20px] text-green-500">task</span>';
                                 attachmentBtn.title = `PDF прочитан: ${attachedFileName}`;
-                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">picture_as_pdf</span> PDF «${attachedFileName}» (${pdf.numPages} стр.) успешно прочитан. Я запомнила инструкции и данные из него. Что мне сделать?</span>`, null, false);
+                                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">picture_as_pdf</span> PDF «${attachedFileName}» (${pdf.numPages} стр.) прочитан. Я проанализировала текст и визуальный стиль первых страниц. Что мне сделать?</span>`, null, false);
                                 attachmentBtn.disabled = false;
                             } catch (pdfErr) {
                                 console.error("PDF internal parsing error:", pdfErr);
-                                // Fallback to server will happen if we don't return here
                             }
                         };
                         reader.readAsArrayBuffer(file);
                         this.value = '';
                         return;
                     } catch (err) {
-                        console.error("PDF extraction failed, falling back to server:", err);
+                        console.error("PDF extraction failed:", err);
                     }
                 }
 

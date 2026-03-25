@@ -718,8 +718,9 @@ function city_library_handle_ai_chat() {
     $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
     $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
     $image_data = isset($_POST['image_data']) ? $_POST['image_data'] : '';
+    $pdf_images = isset($_POST['pdf_images']) ? json_decode(stripslashes($_POST['pdf_images']), true) : array();
 
-    if (empty($user_message) && empty($image_data)) {
+    if (empty($user_message) && empty($image_data) && empty($pdf_images)) {
         wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
     }
 
@@ -1154,7 +1155,7 @@ function city_library_handle_ai_chat() {
     При упоминании авторов, которые признаны иностранными агентами, ты ОБЯЗАН добавить к ответу предупреждение: «⚠️ Данный автор или материал упоминается в реестре иностранных агентов». Твой ответ должен быть беспристрастным. Если возможно, предлагай альтернативу из числа классиков или современных лауреатов государственных премий.
 
     РАБОТА С ЗАГРУЖЕННЫМИ ИНСТРУКЦИЯМИ (BRANDBOOK/RULES):
-    Если в текущем диалоге были загружены файлы с инструкциями (брендбуки, правила оформления, гайды), ты ОБЯЗАН неукоснительно соблюдать их. При запросе на генерацию изображений (афиш, плакатов) используй цветовую схему, шрифты и стиль из этих инструкций. Если инструкции противоречат общим правилам — приоритет у загруженных инструкций из файлов.
+    Если в текущем диалоге были загружены файлы с инструкциями (брендбуки, правила оформления, гайды) или их визуальные образы (страницы PDF), ты ОБЯЗАН неукоснительно соблюдать их. Ты должен уметь проводить OCR и визуальный анализ страниц: распознавать логотипы, основные цвета (Hex/RGB), шрифты и композицию. При запросе на генерацию изображений (афиш, плакатов) используй цветовую схему, шрифты и стиль из этих визуальных инструкций. Если инструкции противоречат общим правилам — приоритет у загруженных инструкций из файлов.
 
     АЛГОРИТМ РАБОТЫ С ИНФОРМАЦИЕЙ:
     1. Поиск и фактчекинг: Не выдумывай даты. Используй Википедию, РНБ, РГБ.
@@ -1303,13 +1304,23 @@ function city_library_handle_ai_chat() {
     // Check if request is from voice assistant
     $is_voice = isset($_POST['is_voice']) && $_POST['is_voice'] === 'true';
 
-    // Vision support: If image data is provided, use Gemini 2.0 Flash (it's fast and supports vision)
-    if (!empty($image_data)) {
+    // Vision support: If image data or PDF images are provided, use Gemini 2.0 Flash
+    if (!empty($image_data) || !empty($pdf_images)) {
         $model = 'google/gemini-2.0-flash-001';
         $content_array = array(
-            array("type" => "text", "text" => $user_message),
-            array("type" => "image_url", "image_url" => array("url" => $image_data))
+            array("type" => "text", "text" => $user_message)
         );
+
+        if (!empty($image_data)) {
+            $content_array[] = array("type" => "image_url", "image_url" => array("url" => $image_data));
+        }
+
+        if (!empty($pdf_images) && is_array($pdf_images)) {
+            foreach ($pdf_images as $p_img) {
+                $content_array[] = array("type" => "image_url", "image_url" => array("url" => $p_img));
+            }
+        }
+
         // Replace the last message content with the array (multimodal)
         $messages[count($messages) - 1]['content'] = $content_array;
     }
