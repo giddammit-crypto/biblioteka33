@@ -237,7 +237,8 @@
 .prose-sm strong { color: #0f172a !important; font-weight: 700 !important; }
 .prose-sm a { color: #0b7930 !important; text-decoration: underline !important; font-weight: 500 !important; }
 .prose-sm code { background-color: #f1f5f9 !important; padding: 2px 4px !important; border-radius: 4px !important; font-size: 0.85em !important; color: #db2777 !important; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important; word-break: break-all !important; white-space: pre-wrap !important; }
-.prose-sm pre { background-color: #0f172a !important; color: #f8fafc !important; padding: 1rem !important; border-radius: 0.75rem !important; overflow-x: auto !important; max-width: 100% !important; margin: 1rem 0 !important; }
+.prose-sm pre { background-color: #0f172a !important; color: #f8fafc !important; padding: 1rem !important; border-radius: 0.75rem !important; overflow-x: auto !important; max-width: 100% !important; margin: 0 !important; }
+.code-block-wrapper pre code { background-color: transparent !important; color: inherit !important; padding: 0 !important; border-radius: 0 !important; font-size: 0.85em !important; word-break: normal !important; white-space: pre !important; }
 .prose-sm table { display: block !important; width: 100% !important; overflow-x: auto !important; border-collapse: collapse !important; margin: 1rem 0 !important; }
 
 /* Enhanced Draft/Email Action Buttons Area */
@@ -271,6 +272,7 @@
 .verified-badge-element, [class*="verified"], [class*="inoagent"] {
     position: relative;
     overflow: hidden;
+    animation: badge-pulse 2s infinite ease-in-out;
 }
 
 .verified-badge-element::after, [class*="verified"]::after {
@@ -286,6 +288,11 @@
 @keyframes badge-shine {
     0% { transform: translateX(-100%) rotate(45deg); }
     20%, 100% { transform: translateX(100%) rotate(45deg); }
+}
+
+@keyframes badge-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    50% { transform: scale(1.03); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
 }
 
 /* Scroll to Bottom Button Polishing */

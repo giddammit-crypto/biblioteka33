@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return safeHref;
     }
 
-    // Initialize marked.js custom renderer safely for images
+    // Initialize marked.js custom renderer safely for images and code
     if (typeof marked !== 'undefined') {
         const renderer = new marked.Renderer();
         // Fallback for different marked.js versions (v8+ uses token, older uses arguments)
@@ -53,6 +53,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         };
+
+        renderer.code = function(code_or_token, infostring, escaped) {
+            let code = typeof code_or_token === 'object' ? code_or_token.text : code_or_token;
+            let lang = typeof code_or_token === 'object' ? code_or_token.lang : infostring;
+
+            const escapedCode = code.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+
+            return `
+                <div class="relative group code-block-wrapper my-4">
+                    <div class="absolute right-2 top-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="copy-code-btn flex items-center gap-1 px-2 py-1 bg-slate-700/80 hover:bg-slate-600 text-white text-[10px] rounded border border-slate-500/50 transition-all active:scale-95" aria-label="Копировать код">
+                            <span class="material-symbols-outlined text-[14px]">content_copy</span> Копировать
+                        </button>
+                    </div>
+                    ${lang ? `<div class="absolute left-4 top-0 -translate-y-1/2 px-2 py-0.5 bg-slate-800 text-slate-400 text-[9px] font-mono rounded uppercase tracking-wider border border-slate-700">${lang}</div>` : ''}
+                    <pre><code class="language-${lang || 'none'}">${escapedCode}</code></pre>
+                </div>
+            `;
+        };
+
         marked.use({ renderer });
     }
 
@@ -762,6 +784,26 @@ document.addEventListener('DOMContentLoaded', () => {
             if (authorName) {
                 inputField.value = '/author ' + authorName;
                 sendMessage();
+            }
+            return;
+        }
+
+        // 7. Copy Code Button
+        const copyCodeBtn = e.target.closest('.copy-code-btn');
+        if (copyCodeBtn) {
+            const wrapper = copyCodeBtn.closest('.code-block-wrapper');
+            const codeEl = wrapper.querySelector('code');
+            if (codeEl) {
+                const codeText = codeEl.innerText;
+                navigator.clipboard.writeText(codeText).then(() => {
+                    const originalHTML = copyCodeBtn.innerHTML;
+                    copyCodeBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span> Готово';
+                    copyCodeBtn.classList.add('bg-green-600/80');
+                    setTimeout(() => {
+                        copyCodeBtn.innerHTML = originalHTML;
+                        copyCodeBtn.classList.remove('bg-green-600/80');
+                    }, 2000);
+                });
             }
             return;
         }

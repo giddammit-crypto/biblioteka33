@@ -177,6 +177,10 @@ if ($footer_style === 'light-clean') {
 
 <?php get_template_part('template-parts/mobile-bottom-nav'); ?>
 
+<button id="back-to-top" class="fixed bottom-24 right-4 sm:right-6 lg:landscape:right-8 w-12 h-12 bg-white text-primary rounded-full shadow-lg border border-slate-200 hidden items-center justify-center transition-all duration-300 hover:bg-slate-50 hover:-translate-y-1 z-[40]" aria-label="Наверх">
+    <span class="material-symbols-outlined text-[24px]">arrow_upward</span>
+</button>
+
 <?php
 // Modal Popup Logic
 if (get_theme_mod('show_modal', false)) :
