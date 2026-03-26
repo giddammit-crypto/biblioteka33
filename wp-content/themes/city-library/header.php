@@ -15,7 +15,7 @@ $menu_style = get_theme_mod('menu_style', 'default');
 
 $header_classes = 'hidden lg:landscape:block fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group';
 $container_classes = 'w-full px-4 sm:px-6 lg:px-8';
-$flex_classes = 'flex flex-wrap lg:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
+$flex_classes = 'flex flex-wrap xl:flex-nowrap justify-between items-center h-auto min-h-[5rem] py-2 lg:py-0 gap-4';
 
 // Header Style Logic
 if ($header_style === 'centered') {
@@ -56,35 +56,35 @@ $menu_item_classes = 'menu-style-' . $menu_style;
     <div class="<?php echo esc_attr($container_classes); ?>">
         <div class="<?php echo esc_attr($flex_classes); ?>">
             <!-- Site Identity (Logo + Title) - Hides on scroll -->
-            <div id="site-identity" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 group/logo focus:outline-none">
+            <div id="site-identity" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 lg:shrink transition-all duration-500 overflow-hidden max-w-[500px] opacity-100">
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="flex items-center space-x-2 xl:space-x-3 h-full shrink-0 lg:shrink group/logo focus:outline-none">
                     <?php if (has_custom_logo()) : ?>
                         <div class="custom-logo-wrapper h-8 xl:h-10 w-auto flex items-center [&_a]:h-full [&_a]:w-auto [&_img]:h-full [&_img]:w-auto [&_img]:object-contain">
                             <?php the_custom_logo(); ?>
                         </div>
                     <?php else : ?>
                         <div class="w-8 h-8 xl:w-10 xl:h-10 bg-secondary rounded-lg flex items-center justify-center group-hover/logo:bg-primary transition-colors duration-300">
-                            <span class="material-symbols-outlined text-white text-sm xl:text-base">menu_book</span>
+                            <span class="material-symbols-outlined text-white text-sm xl:text-base" aria-hidden="true">menu_book</span>
                         </div>
                     <?php endif; ?>
 
                     <!-- Text visible on all screens (adapted size) -->
                     <div class="block">
-                        <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
-                        <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
+                        <p class="text-[8px] sm:text-[10px] xl:text-xs font-bold uppercase tracking-widest text-secondary text-primary group-hover/logo:text-primary transition-colors duration-300 lg:hidden xl:block"><?php echo esc_html(get_theme_mod('header_subtitle', __('Центральная городская', 'city-library'))); ?></p>
+                        <p class="text-[10px] sm:text-xs xl:text-sm font-display font-bold leading-tight group-hover/logo:text-primary transition-colors duration-300 lg:text-[10px] xl:text-sm"><?php echo esc_html(get_theme_mod('header_title', __('Библиотека', 'city-library'))); ?></p>
                     </div>
                 </a>
             </div>
 
             <?php if ($header_style !== 'minimal') : ?>
-            <nav class="hidden lg:landscape:flex items-center flex-grow justify-center transition-all duration-500 mx-2 xl:mx-4">
+            <nav class="hidden lg:landscape:flex items-center flex-grow justify-center transition-all duration-500 mx-1 xl:mx-4">
                  <?php
                     // Wrapped items in <ul class="flex items-center space-x-8 list-none m-0 p-0">
                     // Added list-none explicitly to remove dots. Used fluid gaps and flex-wrap to prevent overflow on square screens.
                     wp_nav_menu(array(
                         'theme_location' => 'primary',
                         'container'      => false,
-                        'items_wrap'     => '<ul id="%1$s" class="flex flex-wrap lg:flex-nowrap justify-center items-center gap-x-3 lg:gap-x-4 xl:gap-x-8 gap-y-1 text-xs lg:text-sm xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
+                        'items_wrap'     => '<ul id="%1$s" class="flex flex-wrap xl:flex-nowrap justify-center items-center gap-x-2 lg:gap-x-2 xl:gap-x-8 gap-y-1 text-[10px] lg:text-[11px] xl:text-base %2$s list-none m-0 p-0 ' . esc_attr($menu_item_classes) . '">%3$s</ul>',
                         'walker'         => new City_Library_Walker_Nav_Menu(),
                     ));
                 ?>
@@ -94,18 +94,18 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             <!-- Header Actions (Right Side) -->
             <div class="flex items-center space-x-2 shrink-0">
                 <!-- Search Button -->
-                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">search</span>
+                <button id="search-toggle" class="p-2 rounded-full transition-all !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none active:scale-90" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
                 </button>
 
                 <!-- Accessibility Button -->
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">visibility</span>
+                <button id="accessibility-button" class="p-2 rounded-full transition-all !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none active:scale-90" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                 </button>
 
                 <!-- Mobile Menu Toggle (Visible only on mobile) -->
-                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">menu</span>
+                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-all bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none active:scale-90" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
                 </button>
             </div>
         </div>
@@ -138,7 +138,7 @@ if ($mob_menu_style === 'ios-blur') {
         <div class="flex justify-between items-center p-6 shrink-0 border-b border-slate-100/50">
             <div class="flex items-center space-x-3">
                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined">menu_open</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">menu_open</span>
                </div>
                <div>
                    <span class="block text-sm font-bold font-display uppercase tracking-wider text-primary"><?php _e('Меню', 'city-library'); ?></span>
@@ -146,7 +146,7 @@ if ($mob_menu_style === 'ios-blur') {
                </div>
             </div>
             <button id="mobile-menu-close" class="group p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-full transition-all duration-300 transform hover:rotate-90 active:scale-95" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
-                <span class="material-symbols-outlined text-2xl">close</span>
+                <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
             </button>
         </div>
 
@@ -167,11 +167,11 @@ if ($mob_menu_style === 'ios-blur') {
              <!-- Quick Actions -->
              <div class="grid grid-cols-2 gap-3">
                  <a href="<?php echo esc_url(get_theme_mod('hero_primary_button_link', '#events')); ?>" class="flex items-center justify-center space-x-2 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-xs font-bold text-slate-700 hover:border-primary hover:text-primary transition-colors">
-                     <span class="material-symbols-outlined text-lg">event</span>
+                     <span class="material-symbols-outlined text-lg" aria-hidden="true">event</span>
                      <span>Афиша</span>
                  </a>
                  <a href="<?php echo esc_url(home_url('/?s=')); ?>" class="flex items-center justify-center space-x-2 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-xs font-bold text-slate-700 hover:border-primary hover:text-primary transition-colors">
-                     <span class="material-symbols-outlined text-lg">search</span>
+                     <span class="material-symbols-outlined text-lg" aria-hidden="true">search</span>
                      <span>Поиск</span>
                  </a>
              </div>
@@ -280,9 +280,9 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
         <div class="flex flex-col sm:flex-row <?php echo esc_attr($hero_flex_align_class); ?> gap-4 pt-4 <?php echo city_library_get_animation_class(); ?>">
             <?php if (!empty($btn1_text)) : ?>
             <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-primary hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 text-center" href="<?php echo esc_url($btn1_link); ?>">
-                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined text-xl shrink-0">event</span><?php endif; ?>
+                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined text-xl shrink-0" aria-hidden="true">event</span><?php endif; ?>
                 <span class="whitespace-normal sm:whitespace-nowrap"><?php echo esc_html($btn1_text); ?></span>
-                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined shrink-0">arrow_forward</span><?php endif; ?>
+                <?php if (!$is_custom_hero): ?><span class="material-symbols-outlined shrink-0" aria-hidden="true">arrow_forward</span><?php endif; ?>
             </a>
             <?php endif; ?>
 
@@ -295,7 +295,7 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
     </div>
 
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
+        <span class="material-symbols-outlined text-white text-3xl" aria-hidden="true">expand_more</span>
     </div>
 </section>
 <?php endif; ?>

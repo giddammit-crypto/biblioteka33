@@ -44,7 +44,7 @@ function city_library_presentation_shortcode($atts) {
 
             <!-- Loading State Placeholder -->
             <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 z-0 bg-slate-50" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                <span class="material-symbols-outlined text-4xl animate-spin mb-2">sync</span>
+                <span class="material-symbols-outlined text-4xl animate-spin mb-2" aria-hidden="true">sync</span>
                 <span class="text-sm font-medium uppercase tracking-widest"><?php _e('Загрузка презентации...', 'city-library'); ?></span>
             </div>
 
@@ -64,7 +64,7 @@ function city_library_presentation_shortcode($atts) {
             <!-- Fullscreen helper overlay (visible on hover) -->
             <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none hidden md:block">
                 <div class="bg-black/70 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-2 shadow-xl border border-white/10">
-                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
                     <?php _e('Используйте кнопку поп-аута в правом верхнем углу для полного экрана', 'city-library'); ?>
                 </div>
             </div>
@@ -73,7 +73,7 @@ function city_library_presentation_shortcode($atts) {
         <!-- Fallback/Action Link -->
         <div class="mt-3 flex justify-end">
              <a href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-primary transition-colors focus:outline-none focus:underline">
-                 <span class="material-symbols-outlined text-base">download</span>
+                 <span class="material-symbols-outlined text-base" aria-hidden="true">download</span>
                  <?php _e('Скачать / Открыть в новой вкладке', 'city-library'); ?>
              </a>
         </div>

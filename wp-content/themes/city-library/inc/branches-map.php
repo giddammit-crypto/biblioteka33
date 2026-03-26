@@ -175,14 +175,14 @@ function city_library_branches_map_shortcode($atts) {
             $list_html .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300" id="library-item-' . esc_attr($id) . '">';
 
             // Header
-            $list_html .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+            $list_html .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset" onclick="toggleLibraryItem(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleLibraryItem(this);}">';
             $list_html .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
             $list_html .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
             if ($address) {
-                $list_html .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1">location_on</span>' . esc_html($address) . '</span>';
+                $list_html .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1" aria-hidden="true">location_on</span>' . esc_html($address) . '</span>';
             }
             $list_html .= '</div>';
-            $list_html .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400">expand_more</span>';
+            $list_html .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400" aria-hidden="true">expand_more</span>';
             $list_html .= '</div>'; // End Header
 
             // Body (Hidden)
@@ -191,7 +191,7 @@ function city_library_branches_map_shortcode($atts) {
 
             // Image
             if ($thumbnail) {
-                $list_html .= '<div class="w-full md:w-1/3 shrink-0">';
+                $list_html .= '<div class="w-full md:w-1/3 shrink-0 library-branch-image-wrapper">';
                 $list_html .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
                 $list_html .= '</div>';
             }
@@ -201,9 +201,9 @@ function city_library_branches_map_shortcode($atts) {
 
             // Mobile Address/Phone (Visible here too for clarity)
             $list_html .= '<div class="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">';
-            if ($address) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">location_on</span>' . esc_html($address) . '</div>';
-            if ($phone) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">call</span>' . esc_html($phone) . '</div>';
-            if ($email) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
+            if ($address) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">location_on</span>' . esc_html($address) . '</div>';
+            if ($phone) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">call</span>' . esc_html($phone) . '</div>';
+            if ($email) $list_html .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
             $list_html .= '</div>';
 
             $list_html .= '<div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">';
@@ -276,14 +276,14 @@ function city_library_branch_shortcode($atts) {
     $output .= '<div class="library-item border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300 my-4" id="library-item-' . esc_attr($id) . '">';
 
     // Header
-    $output .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none" onclick="toggleLibraryItem(this)">';
+    $output .= '<div class="library-header p-5 bg-slate-50 cursor-pointer flex justify-between items-center select-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-inset" onclick="toggleLibraryItem(this)" role="button" tabindex="0" aria-expanded="false" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();toggleLibraryItem(this);}">';
     $output .= '<div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">';
     $output .= '<h3 class="text-lg font-bold text-slate-800 m-0">' . esc_html($title) . '</h3>';
     if ($address) {
-        $output .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1">location_on</span>' . esc_html($address) . '</span>';
+        $output .= '<span class="text-sm text-slate-500 hidden md:inline-block"><span class="material-symbols-outlined align-middle text-base mr-1" aria-hidden="true">location_on</span>' . esc_html($address) . '</span>';
     }
     $output .= '</div>';
-    $output .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400">expand_more</span>';
+    $output .= '<span class="material-symbols-outlined transform transition-transform duration-300 text-slate-400" aria-hidden="true">expand_more</span>';
     $output .= '</div>'; // End Header
 
     // Body (Hidden)
@@ -292,7 +292,7 @@ function city_library_branch_shortcode($atts) {
 
     // Image
     if ($thumbnail) {
-        $output .= '<div class="w-full md:w-1/3 shrink-0">';
+        $output .= '<div class="w-full md:w-1/3 shrink-0 library-branch-image-wrapper">';
         $output .= '<img src="' . esc_url($thumbnail) . '" alt="' . esc_attr($title) . '" class="w-full h-48 object-cover rounded-xl shadow-sm">';
         $output .= '</div>';
     }
@@ -302,9 +302,9 @@ function city_library_branch_shortcode($atts) {
 
     // Mobile Address/Phone
     $output .= '<div class="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl">';
-    if ($address) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">location_on</span>' . esc_html($address) . '</div>';
-    if ($phone) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">call</span>' . esc_html($phone) . '</div>';
-    if ($email) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
+    if ($address) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">location_on</span>' . esc_html($address) . '</div>';
+    if ($phone) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">call</span>' . esc_html($phone) . '</div>';
+    if ($email) $output .= '<div class="flex items-center"><span class="material-symbols-outlined mr-2 text-primary" aria-hidden="true">mail</span><a href="mailto:'.esc_attr($email).'" class="hover:text-primary transition-colors">' . esc_html($email) . '</a></div>';
     $output .= '</div>';
 
     $output .= '<div class="prose prose-slate max-w-none text-slate-600 leading-relaxed">';

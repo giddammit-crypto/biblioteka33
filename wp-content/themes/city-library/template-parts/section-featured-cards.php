@@ -153,7 +153,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                         </div>
                                         <div class="mt-6 flex items-center text-primary font-bold text-sm uppercase tracking-wider">
                                             <?php _e('Подробнее', 'city-library'); ?>
-                                            <span class="material-symbols-outlined ml-2 transform group-hover:translate-x-2 transition-transform">arrow_forward</span>
+                                            <span class="material-symbols-outlined ml-2 transform group-hover:translate-x-2 transition-transform" aria-hidden="true">arrow_forward</span>
                                         </div>
                                     </div>
                                     <?php
@@ -179,12 +179,12 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
 
                                 case 'design-11': // Only Photo, completely adaptive
                                     ?>
-                                    <div class="relative w-full h-full aspect-square lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500 border-4 border-white flex-grow">
+                                    <div class="relative w-full h-full aspect-square lg:aspect-[3/4] rounded-3xl overflow-hidden shadow-md group-hover:shadow-2xl transition-all duration-500 border-4 border-white flex-grow featured-cards-image-only">
                                         <?php if ($image) : ?>
-                                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                                            <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" aria-hidden="true">
                                         <?php else : ?>
                                             <div class="absolute inset-0 bg-slate-300 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-white text-4xl">image</span>
+                                                <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">image</span>
                                             </div>
                                         <?php endif; ?>
                                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 pointer-events-none"></div>
@@ -263,7 +263,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                         <h3 class="text-2xl font-bold font-serif italic mb-4 border-b border-white/20 group-hover:border-black/20 pb-4 transition-colors"><?php echo esc_html($title); ?></h3>
                                         <p class="text-sm text-slate-400 group-hover:text-slate-600 line-clamp-5 transition-colors leading-relaxed flex-grow"><?php echo esc_html($desc); ?></p>
                                         <div class="mt-6 font-bold uppercase tracking-widest text-xs flex items-center justify-end group-hover:text-primary">
-                                            <span class="material-symbols-outlined transition-transform transform group-hover:translate-x-2">arrow_right_alt</span>
+                                            <span class="material-symbols-outlined transition-transform transform group-hover:translate-x-2" aria-hidden="true">arrow_right_alt</span>
                                         </div>
                                     </div>
                                     <?php
@@ -344,7 +344,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                     <div class="flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl border border-slate-200 transition-all duration-300 group-hover:-translate-y-1">
                                         <?php if ($image) : ?>
                                             <div class="w-full aspect-[4/3] overflow-hidden shrink-0 border-b border-slate-100">
-                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" aria-hidden="true">
                                             </div>
                                         <?php endif; ?>
                                         <div class="p-6 flex flex-col flex-grow">
@@ -352,7 +352,7 @@ $design_style = get_theme_mod('featured_cards_design', 'design-1');
                                             <p class="text-sm text-slate-600 line-clamp-3 mb-4"><?php echo esc_html($desc); ?></p>
                                             <div class="mt-auto flex items-center text-primary font-bold text-sm">
                                                 <?php _e('Узнать больше', 'city-library'); ?>
-                                                <span class="material-symbols-outlined ml-1 text-lg transform transition-transform group-hover:translate-x-1">arrow_right_alt</span>
+                                                <span class="material-symbols-outlined ml-1 text-lg transform transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_right_alt</span>
                                             </div>
                                         </div>
                                     </div>

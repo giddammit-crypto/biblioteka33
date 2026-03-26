@@ -23,13 +23,13 @@ $link = get_theme_mod('promo_link', '#');
     <div class="flex flex-col md:flex-row relative z-10 gap-8">
         <!-- Image Column -->
         <?php if ($image) : ?>
-            <div class="shrink-0 w-full md:w-[400px] md:h-[300px] relative overflow-hidden group rounded-2xl flex items-center justify-center bg-slate-50">
+            <div class="shrink-0 w-full md:w-[400px] md:h-[300px] relative overflow-hidden group rounded-2xl flex items-center justify-center bg-slate-50 promo-section-image-wrapper">
                 <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>" class="w-full h-auto max-h-[400px] md:absolute md:inset-0 md:h-full object-contain md:object-cover transition-transform duration-700 group-hover:scale-105">
             </div>
         <?php else : ?>
             <!-- Placeholder if no image is set but block is enabled -->
              <div class="shrink-0 w-full md:w-[400px] h-48 md:h-[300px] bg-slate-200 flex items-center justify-center relative overflow-hidden rounded-2xl">
-                <span class="material-symbols-outlined text-6xl text-slate-400">image</span>
+                <span class="material-symbols-outlined text-6xl text-slate-400" aria-hidden="true">image</span>
              </div>
         <?php endif; ?>
 
@@ -51,7 +51,7 @@ $link = get_theme_mod('promo_link', '#');
                 <div>
                     <a href="<?php echo esc_url($link); ?>" class="promo-btn inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all shadow-md hover:shadow-lg group text-center max-w-full">
                         <span class="whitespace-normal"><?php echo esc_html($btn_text); ?></span>
-                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        <span class="material-symbols-outlined ml-2 shrink-0 group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>

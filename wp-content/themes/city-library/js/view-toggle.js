@@ -24,6 +24,7 @@ jQuery(document).ready(function($) {
             data: {
                 action: 'load_posts_by_view',
                 view: view,
+                nonce: ajax_params.nonce
             },
             success: function(response) {
                 container.html(response);

@@ -16,18 +16,114 @@ html, body {
 }
 
 /* News Card Responsive Visibility Helpers */
-.news-card-title-link {
-    color: white !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+@media (max-width: 1023px) {
+    .news-card-title-link,
+    .news-card-title-link *,
+    .news-card-excerpt-text,
+    .news-card-excerpt-text *,
+    .news-card-link,
+    .news-card-link *,
+    .news-card-content-wrapper .lg\:hidden,
+    .news-card-content-wrapper .lg\:hidden * {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Force all children inside the content wrapper to be white on mobile */
+    .news-card-content-wrapper,
+    .news-card-content-wrapper p,
+    .news-card-content-wrapper span,
+    .news-card-content-wrapper a,
+    .news-card-content-wrapper div {
+        color: white !important;
+    }
 }
 
-.news-card-excerpt-text {
-    color: white !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+@media (min-width: 1024px) {
+    .news-card-title-link {
+        color: var(--title-color, #0f172a) !important;
+    }
+    .news-card-excerpt-text {
+        color: var(--text-color, #1e293b) !important;
+    }
+    .news-card-link {
+        color: var(--link-color, #0b7930) !important;
+    }
 }
 
-.news-card-link {
-    color: white !important;
+.news-card-excerpt-text p {
+    color: inherit !important;
+}
+
+/* Firefox Specific Layout & Visibility Fixes */
+@-moz-document url-prefix() {
+    /* Stabilize Firefox News Cards */
+    .news-card-content-wrapper,
+    .news-card-title-link,
+    .news-card-excerpt-text,
+    .news-card-link {
+        visibility: visible !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    /* Bypass problematic AOS animations in Firefox for these cards */
+    article.group,
+    article.group .animate-on-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* Article Container Fix */
+    article.group {
+        overflow: hidden !important;
+        isolation: isolate !important;
+        background-clip: border-box !important;
+    }
+
+    /* Remove problematic filters in Firefox that can cause invisible text */
+    .news-card-title-link,
+    .news-card-excerpt-text,
+    .news-card-link,
+    .news-card-content-wrapper {
+        filter: none !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Stacking fix for absolute overlays in Firefox */
+    .news-card-image-container {
+        z-index: 1 !important;
+    }
+    .news-card-content-wrapper {
+        z-index: 20 !important;
+        position: relative !important;
+        will-change: transform, opacity;
+        pointer-events: auto !important;
+        transform: translate3d(0,0,0); /* Force redraw without 3D depth issues */
+    }
+
+    /* Force persistent visibility of text elements */
+    .news-card-title-link,
+    .news-card-excerpt-text,
+    .news-card-link {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Clamping Fix */
+    .line-clamp-3 {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    .news-card-link {
+        color: white !important;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -38,6 +134,9 @@ html, body {
     .news-card-excerpt-text {
         color: var(--text-color, #334155) !important;
         text-shadow: none;
+    }
+    .news-card-excerpt-text p {
+        color: inherit !important;
     }
     .news-card-link {
         color: var(--link-color, #0b7930) !important;
@@ -136,13 +235,166 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-p, li, .entry-content p, .entry-content li {
-    color: #334155; /* slate-700 for better contrast than standard gray */
-    line-height: 1.75; /* Improved line height for comfortable reading */
+/* Ensure Prose (Tailwind Typography) works perfectly with WordPress blocks */
+.prose {
+    max-width: 100%;
 }
 
-.entry-content p, .entry-content li {
+.prose p, .prose li {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.prose ul, .prose ol {
+    margin-bottom: 1.5rem !important;
+    padding-left: 1.5rem !important;
+}
+
+.prose ul {
+    list-style-type: disc !important;
+}
+
+.prose ol {
+    list-style-type: decimal !important;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+    margin-top: 2.5rem;
     margin-bottom: 1.25rem;
+}
+
+.prose img:not(.emoji) {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Fix for WordPress Emojis causing line breaks */
+img.emoji {
+    display: inline !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 1em !important;
+    width: 1em !important;
+    margin: 0 .07em !important;
+    vertical-align: -0.1em !important;
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+.prose blockquote {
+    font-style: italic;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-left-width: 4px;
+    border-left-color: var(--primary-color, #0b7930) !important;
+    background-color: #f8fafc;
+    padding: 1.5rem !important;
+    border-radius: 0 1rem 1rem 0;
+}
+
+/* Gutenberg Editor Consistency Fixes */
+.prose .alignwide {
+    margin-left: -10vw;
+    margin-right: -10vw;
+    max-width: 120%;
+    width: auto;
+}
+
+.prose .alignfull {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+}
+
+@media (max-width: 1023px) {
+    .prose .alignwide, .prose .alignfull {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+.prose .wp-block-image.alignwide,
+.prose .wp-block-gallery.alignwide {
+    margin-left: calc(50% - 50vw + 10%);
+    margin-right: calc(50% - 50vw + 10%);
+    max-width: 80vw;
+    width: 80vw;
+}
+
+.prose .wp-block-image.alignfull,
+.prose .wp-block-gallery.alignfull {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    max-width: 100vw;
+    width: 100vw;
+}
+
+.prose img {
+    height: auto !important;
+}
+
+.prose figure {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+@media (min-width: 1024px) {
+    .prose .wp-block-image.alignleft {
+        float: left;
+        margin-right: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .prose .wp-block-image.alignright {
+        float: right;
+        margin-left: 2rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+.prose ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+}
+
+.prose ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+}
+
+.prose figure {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.prose figcaption {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+}
+
+.entry-content p,
+.entry-content li,
+.news-content p,
+.news-content li {
+    color: #334155;
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure consistent spacing for other block types in single view */
+.entry-content > *,
+.news-content > * {
+    margin-bottom: 1.5rem;
+}
+
+.entry-content > *:last-child,
+.news-content > *:last-child {
+    margin-bottom: 0 !important;
 }
 
 .entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4 {
@@ -151,14 +403,32 @@ p, li, .entry-content p, .entry-content li {
     line-height: 1.3;
 }
 
-.entry-content blockquote {
-    border-left: 4px solid var(--primary-color, #0b7930);
-    padding: 1rem 1.5rem;
+.entry-content blockquote,
+.news-content blockquote {
+    border-left: 6px solid var(--primary-color, #0b7930) !important;
+    padding: 2.5rem 3rem !important;
     font-style: italic;
-    color: #475569; /* slate-600 */
-    margin: 2rem 0;
+    color: #334155;
+    margin: 3.5rem 0 !important;
     background-color: #f8fafc;
-    border-radius: 0 0.75rem 0.75rem 0;
+    border-radius: 0 2rem 2rem 0;
+    font-size: 1.25rem;
+    line-height: 1.75;
+    position: relative;
+    overflow: hidden;
+}
+
+.entry-content blockquote::before,
+.news-content blockquote::before {
+    content: '“';
+    position: absolute;
+    top: -1rem;
+    left: 1rem;
+    font-size: 8rem;
+    color: var(--primary-color, #0b7930);
+    opacity: 0.1;
+    font-family: serif;
+    pointer-events: none;
 }
 
 .entry-content ul, .entry-content ol {
@@ -171,11 +441,21 @@ p, li, .entry-content p, .entry-content li {
 
 /* Ensure images inside post content don't overflow */
 .entry-content img,
+.news-content img,
 .entry-content iframe,
-.entry-content video {
+.news-content iframe,
+.entry-content video,
+.news-content video {
     max-width: 100% !important;
     height: auto !important;
     border-radius: 0.75rem;
+    box-sizing: border-box;
+}
+
+/* LearningApps iframe stability */
+.entry-content iframe[src*="learningapps.org"] {
+    height: attr(height px) !important;
+    min-height: 400px;
 }
 
 .entry-content figure {
@@ -227,7 +507,8 @@ p, li, .entry-content p, .entry-content li {
 #ai-chat-messages .prose img, #voice-ai-answer-text.prose img { width: 100%; border-radius: 0.75rem; margin-top: 0.5rem; margin-bottom: 0.5rem; border: 1px solid #e2e8f0; }
 
 /* Image Alignment Classes (WordPress Standard) */
-.aligncenter {
+.aligncenter, .wp-block-image.aligncenter, .wp-block-video.aligncenter, .wp-block-embed.aligncenter,
+.news-content .aligncenter, .prose .aligncenter {
     display: block !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -235,16 +516,30 @@ p, li, .entry-content p, .entry-content li {
     text-align: center;
 }
 
-.alignleft {
+.alignleft, .wp-block-image.alignleft, .wp-block-video.alignleft, .wp-block-embed.alignleft,
+.news-content .alignleft {
     float: left;
     margin-right: 1.5rem !important;
     margin-bottom: 1.5rem !important;
 }
 
-.alignright {
+.alignright, .wp-block-image.alignright, .wp-block-video.alignright, .wp-block-embed.alignright,
+.news-content .alignright {
     float: right;
     margin-left: 1.5rem !important;
     margin-bottom: 1.5rem !important;
+}
+
+@media (max-width: 640px) {
+    .alignleft, .wp-block-image.alignleft, .wp-block-video.alignleft, .wp-block-embed.alignleft,
+    .alignright, .wp-block-image.alignright, .wp-block-video.alignright, .wp-block-embed.alignright {
+        float: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block !important;
+        width: 100% !important;
+        text-align: center;
+    }
 }
 
 .alignnone {
@@ -334,6 +629,19 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(1.05);
 }
 
+/* Improve focus accessibility for keyboard users */
+:focus-visible {
+    outline: 2px solid var(--primary-color, #0b7930) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(11, 121, 48, 0.2) !important;
+}
+
+/* Specific overrides for buttons and links that might use focus:outline-none */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--primary-color, #0b7930) !important;
+    outline-offset: 2px !important;
+}
+
 /* Mobile Menu Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -347,4 +655,63 @@ h1, h2, h3, h4, h5, h6 {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: rgba(107, 114, 128, 0.8);
+}
+
+/* AI Librarian Sidebar & UI Enhancements */
+#ai-chat-sidebar .ai-quick-action-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#ai-chat-sidebar .ai-quick-action-btn:hover {
+    transform: translateX(4px);
+}
+
+#ai-chat-sidebar .ai-quick-action-btn:active {
+    transform: scale(0.98);
+}
+
+/* Scrollbar Hide for horizontal mobile tools */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Markdown prose overrides for AI Chat */
+#ai-chat-messages .prose {
+    max-width: none;
+    color: #334155;
+}
+
+#ai-chat-messages .prose h1,
+#ai-chat-messages .prose h2,
+#ai-chat-messages .prose h3 {
+    color: #1e293b;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+#ai-chat-messages .prose strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+#ai-chat-messages .prose blockquote {
+    border-left-color: #cbd5e1;
+    background-color: #f1f5f9;
+    font-style: normal;
+    color: #475569;
+}
+
+/* Pulse animation for the AI Toggle when closed but has updates */
+@keyframes pulse-soft {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.ai-notification-dot {
+    animation: pulse-soft 2s infinite;
 }

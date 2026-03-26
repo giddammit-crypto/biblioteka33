@@ -1,10 +1,11 @@
+<?php $mods = get_theme_mods() ?: []; ?>
 <section class="py-24 bg-white <?php echo city_library_get_animation_class(); ?>">
     <div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8">
 
         <?php
-        $bg_color = get_theme_mod('partners_bg_color', '#FFFFFF');
+        $bg_color = $mods['partners_bg_color'] ?? '#FFFFFF';
         // Logo Size Logic
-        $size_setting = get_theme_mod('partners_logo_size', 'medium');
+        $size_setting = $mods['partners_logo_size'] ?? 'medium';
         $size_class = 'h-12 md:h-16'; // Default Fallback
 
         switch ($size_setting) {
@@ -28,21 +29,21 @@
             <div class="text-center space-y-6 mb-8 lg:mb-16 relative z-10 px-6 py-12 lg:px-0 lg:py-0">
                 <div class="h-1.5 w-20 bg-gradient-to-r from-primary to-green-300 mx-auto rounded-full"></div>
                 <h2 class="text-4xl md:text-5xl font-display font-bold text-slate-900 tracking-tight">
-                    <?php echo esc_html(get_theme_mod('partners_title', 'Наши партнеры')); ?>
+                    <?php echo esc_html($mods['partners_title'] ?? 'Наши партнеры'); ?>
                 </h2>
                 <p class="text-slate-500 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
-                    <?php echo esc_html(get_theme_mod('partners_subtitle', 'Мы гордимся сотрудничеством с ведущими организациями')); ?>
+                    <?php echo esc_html($mods['partners_subtitle'] ?? 'Мы гордимся сотрудничеством с ведущими организациями'); ?>
                 </p>
             </div>
 
             <div class="swiper partners-slider w-full px-4 lg:px-0 pb-12 lg:pb-0">
                 <div class="swiper-wrapper flex flex-nowrap md:gap-x-20 lg:!grid lg:grid-cols-4 lg:justify-items-center items-center lg:gap-12 !h-auto">
                     <?php for ($i = 1; $i <= 8; $i++) : ?>
-                        <?php if (get_theme_mod('partner_logo_' . $i)) : ?>
+                        <?php if (!empty($mods['partner_logo_' . $i])) : ?>
                             <div class="swiper-slide group relative !h-auto flex justify-center items-center">
-                                <a href="<?php echo esc_url(get_theme_mod('partner_link_' . $i, '#')); ?>" target="_blank" rel="noopener noreferrer" class="block p-4 transition-all duration-300 transform group-hover:-translate-y-2">
+                                <a href="<?php echo esc_url($mods['partner_link_' . $i] ?? '#'); ?>" target="_blank" rel="noopener noreferrer" class="block p-4 transition-all duration-300 transform group-hover:-translate-y-2">
                                     <img class="<?php echo esc_attr($size_class); ?> w-auto object-contain transition-all duration-500"
-                                        src="<?php echo esc_url(get_theme_mod('partner_logo_' . $i)); ?>"
+                                        src="<?php echo esc_url($mods['partner_logo_' . $i]); ?>"
                                         alt="<?php printf(esc_attr__('Partner %d Logo', 'city-library'), $i); ?>">
                                 </a>
                                 <!-- Subtle Glow on Hover -->

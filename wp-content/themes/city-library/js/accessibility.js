@@ -354,6 +354,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.insertAdjacentHTML('afterbegin', panelHTML);
     const panel = document.getElementById('a11y-panel');
 
+    // ARIA Announcer
+    const announcer = document.createElement("div");
+    announcer.setAttribute("aria-live", "polite");
+    announcer.className = "sr-only";
+    document.body.appendChild(announcer);
+
+    function announce(msg) {
+        announcer.textContent = msg;
+    }
+
     // Function to apply settings to DOM
     function applySettings() {
         if (!currentSettings.active) {
@@ -400,12 +410,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (panel.classList.contains('is-visible')) {
             panel.classList.remove('is-visible');
+            announce("Панель доступности скрыта.");
         } else {
             panel.classList.add('is-visible');
             // If opening panel and settings aren't active, activate defaults
             if (!currentSettings.active) {
                 currentSettings.active = true;
             }
+            announce("Панель доступности открыта.");
         }
         applySettings();
     });
@@ -420,11 +432,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentSettings[action] = val;
         applySettings();
+        announce("Настройки обновлены.");
     });
 
     // Close panel button
     document.getElementById('a11y-close-panel').addEventListener('click', () => {
         panel.classList.remove('is-visible');
+        announce("Панель доступности скрыта.");
         applySettings(); // Will readjust body padding
     });
 
@@ -432,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('a11y-turn-off').addEventListener('click', () => {
         currentSettings = { ...defaultSettings };
         panel.classList.remove('is-visible');
+        announce("Режим для слабовидящих выключен.");
         applySettings();
     });
 
@@ -444,6 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial apply
     if (currentSettings.active) {
-        applySettings();
+        applySettings(); announce("Настройки доступности обновлены.");
     }
 });

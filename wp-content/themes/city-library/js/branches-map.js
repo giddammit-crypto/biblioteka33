@@ -8,10 +8,12 @@ window.toggleLibraryItem = function(header) {
         body.classList.remove('hidden');
         body.classList.add('block');
         if (icon) icon.classList.add('rotate-180');
+        header.setAttribute('aria-expanded', 'true');
     } else {
         body.classList.add('hidden');
         body.classList.remove('block');
         if (icon) icon.classList.remove('rotate-180');
+        header.setAttribute('aria-expanded', 'false');
     }
 };
 

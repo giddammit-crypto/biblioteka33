@@ -1,0 +1,227 @@
+:root {
+    --vl-primary: #0b7930;
+    --vl-primary-hover: #096328;
+    --vl-text: #1e293b;
+    --vl-gray: #64748b;
+    --vl-light: #f8fafc;
+    --vl-border: #e2e8f0;
+}
+
+.vl-settings-wrap {
+    max-width: 1100px;
+    margin-top: 30px;
+    color: var(--vl-text);
+}
+
+.vl-admin-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+}
+
+.vl-header-card {
+    padding: 24px 32px;
+    margin-bottom: 30px;
+    border-bottom: 4px solid var(--vl-primary);
+}
+
+.vl-flex-between { display: flex; justify-content: space-between; align-items: center; }
+.vl-flex-center { display: flex; align-items: center; }
+.gap-20 { gap: 20px; }
+
+.vl-icon-box {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vl-header-card h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+.vl-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    color: #059669;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.vl-layout-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 30px;
+}
+
+.vl-sidebar-nav {
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px;
+    position: sticky;
+    top: 50px;
+}
+
+.vl-nav-item {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 14px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--vl-gray);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+}
+
+.vl-nav-item:hover {
+    background: var(--vl-light);
+    color: var(--vl-text);
+}
+
+.vl-nav-item.active {
+    background: #f0fdf4;
+    color: var(--vl-primary);
+    box-shadow: inset 4px 0 0 var(--vl-primary);
+}
+
+.vl-main-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    min-height: 600px;
+}
+
+.vl-tab-pane { display: none; }
+.vl-tab-pane.active { display: block; animation: vlFadeIn 0.4s ease; }
+
+@keyframes vlFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.vl-section-header {
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--vl-light);
+}
+
+.vl-section-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--vl-text);
+}
+
+.vl-section-header p {
+    margin: 10px 0 0;
+    color: var(--vl-gray);
+    font-size: 15px;
+}
+
+.vl-form-footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid var(--vl-border);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Form Overrides */
+.vl-main-content table.form-table th {
+    width: 250px;
+    padding: 25px 10px 25px 0;
+    font-weight: 700;
+    color: #334155;
+}
+
+.vl-main-content input[type="text"],
+.vl-main-content input[type="password"],
+.vl-main-content textarea,
+.vl-main-content select {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid var(--vl-border);
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: var(--vl-light);
+}
+
+.vl-main-content input:focus, .vl-main-content textarea:focus {
+    border-color: var(--vl-primary);
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(11, 121, 48, 0.1);
+}
+
+.vl-main-content .submit input {
+    background: var(--vl-primary) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 32px !important;
+    font-weight: 700 !important;
+    transition: all 0.3s !important;
+}
+
+.vl-main-content .submit input:hover {
+    background: var(--vl-primary-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 121, 48, 0.3);
+}
+
+.vl-btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    transition: all 0.2s;
+    border: 1px solid var(--vl-border);
+}
+
+.vl-btn-secondary:hover {
+    background: #e2e8f0;
+    color: var(--vl-text);
+}
+
+/* Stats */
+.vl-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.vl-stat-card {
+    background: var(--vl-light);
+    padding: 30px;
+    border-radius: 16px;
+    border: 1.5px solid var(--vl-border);
+}
+
+.vl-stat-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--vl-gray);
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.vl-stat-value {
+    display: block;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--vl-primary);
+}

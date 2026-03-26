@@ -3,19 +3,21 @@
  * Important Information Section
  */
 
-if (!get_theme_mod('show_important_section', true)) {
+$mods = get_theme_mods() ?: [];
+
+if (!($mods['show_important_section'] ?? true)) {
     return;
 }
 
-$title = get_theme_mod('important_title', __('Важная информация', 'city-library'));
-$text = get_theme_mod('important_text', __('Внимание! В связи с санитарным днем библиотека работает по измененному графику.', 'city-library'));
-$btn_text = get_theme_mod('important_btn_text', __('Подробнее', 'city-library'));
-$btn_link = get_theme_mod('important_btn_link', '#');
+$title = $mods['important_title'] ?? __('Важная информация', 'city-library');
+$text = $mods['important_text'] ?? __('Внимание! В связи с санитарным днем библиотека работает по измененному графику.', 'city-library');
+$btn_text = $mods['important_btn_text'] ?? __('Подробнее', 'city-library');
+$btn_link = $mods['important_btn_link'] ?? '#';
 // $bg_color is unused now as we enforce standardized style
-$inter_block_text = get_theme_mod('important_inter_block_text', '');
+$inter_block_text = $mods['important_inter_block_text'] ?? '';
 
-$link_radius = get_theme_mod('important_link_radius', 'medium');
-$link_style = get_theme_mod('important_link_style', 'default');
+$link_radius = $mods['important_link_radius'] ?? 'medium';
+$link_style = $mods['important_link_style'] ?? 'default';
 
 // Link Image Styles
 $link_radius_class = 'rounded-2xl'; // medium
@@ -28,10 +30,10 @@ if ($link_style === 'shadow') $link_style_class = 'shadow-xl hover:shadow-2xl ho
 if ($link_style === 'border') $link_style_class = 'border-2 border-slate-200 hover:border-primary shadow-sm';
 if ($link_style === 'grayscale') $link_style_class = 'grayscale hover:grayscale-0 shadow-md';
 
-$image_orientation = get_theme_mod('important_links_image_orientation', 'square');
+$image_orientation = $mods['important_links_image_orientation'] ?? 'square';
 $aspect_class = ($image_orientation === 'horizontal') ? 'aspect-video' : 'aspect-square';
 
-$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 w-full h-full $aspect_class $link_radius_class $link_style_class";
+$link_wrapper_class = "block group relative overflow-hidden transition-all duration-300 w-full h-full $aspect_class $link_radius_class $link_style_class important-section-link";
 ?>
 
 <section class="py-16 bg-white <?php echo city_library_get_animation_class(); ?>">
@@ -49,7 +51,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                 <!-- Icon (Changed from Red to Primary/Standard) -->
                 <div class="shrink-0">
                     <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
-                        <span class="material-symbols-outlined text-4xl text-primary animate-pulse">warning</span>
+                        <span class="material-symbols-outlined text-4xl text-primary animate-pulse" aria-hidden="true">warning</span>
                     </div>
                 </div>
 
@@ -66,7 +68,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                 <div class="relative z-10 shrink-0 mt-6 md:mt-0">
                     <a href="<?php echo esc_url($btn_link); ?>" class="important-btn inline-flex items-center justify-center px-10 py-4 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
                         <?php echo esc_html($btn_text); ?>
-                        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                        <span class="material-symbols-outlined ml-2" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>
@@ -86,7 +88,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
         <?php
         $links_present = false;
         for ($i = 1; $i <= 8; $i++) {
-            if (get_theme_mod("important_link_image_$i")) {
+            if (!empty($mods["important_link_image_$i"])) {
                 $links_present = true;
                 break;
             }
@@ -96,8 +98,8 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
             <div class="swiper important-links-slider w-full px-4 lg:px-0">
                 <div class="swiper-wrapper flex lg:grid lg:grid-cols-8 lg:gap-6">
                     <?php for ($i = 1; $i <= 8; $i++) :
-                        $img = get_theme_mod("important_link_image_$i");
-                        $url = get_theme_mod("important_link_url_$i", '#');
+                        $img = $mods["important_link_image_$i"] ?? '';
+                        $url = $mods["important_link_url_$i"] ?? '#';
                         if (!$img) continue;
                     ?>
                         <div class="swiper-slide h-auto flex flex-col">

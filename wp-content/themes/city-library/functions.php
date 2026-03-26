@@ -14,9 +14,6 @@ require_once get_template_directory() . '/inc/hero-meta-box.php';
 // Include Presentation Embed Shortcode
 require_once get_template_directory() . '/inc/presentation-embed.php';
 
-// Include Virtual Librarian AI
-require_once get_template_directory() . '/inc/virtual-librarian.php';
-
 function city_library_setup() {
     // Make theme available for translation.
     load_theme_textdomain('city-library', get_template_directory() . '/languages');
@@ -67,6 +64,12 @@ function city_library_setup() {
 
     // Enqueue editor styles.
     add_editor_style('css/editor-style.css');
+
+    // Add support for wide alignment.
+    add_theme_support('align-wide');
+
+    // Add support for responsive embeds.
+    add_theme_support('responsive-embeds');
 }
 add_action('after_setup_theme', 'city_library_setup');
 
@@ -116,76 +119,8 @@ function city_library_scripts() {
     // Custom JS files
     wp_enqueue_script('city-library-view-toggle', get_template_directory_uri() . '/js/view-toggle.js', array('jquery'), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-sidebar', get_template_directory_uri() . '/js/sidebar.js', array(), wp_get_theme()->get('Version'), true);
-    wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-accessibility', get_template_directory_uri() . '/js/accessibility.js', array(), wp_get_theme()->get('Version'), true);
 
-    // Voice Control Enqueue
-    $enable_voice = get_theme_mod('enable_voice_control', false);
-    $voice_test_mode = get_theme_mod('voice_control_test_mode', true);
-
-    // We now always enqueue the script if voice is globally enabled, so the JS can check for #voicetest and cookies
-    if ($enable_voice) {
-        // Enqueue marked.js for voice control markdown parsing
-        if (!wp_script_is('marked-js', 'enqueued')) {
-            wp_enqueue_script('marked-js', 'https://cdn.jsdelivr.net/npm/marked/marked.min.js', array(), null, true);
-        }
-
-        wp_enqueue_script('city-library-voice', get_template_directory_uri() . '/js/voice-control.js', array('jquery', 'marked-js'), wp_get_theme()->get('Version'), true);
-
-        $custom_commands = array();
-        for ($i = 1; $i <= 20; $i++) {
-            $phrases = get_theme_mod("voice_cmd_phrases_$i", '');
-            $url = get_theme_mod("voice_cmd_url_$i", '');
-            if (!empty(trim($phrases)) && !empty(trim($url))) {
-                $phrases_array = array_filter(array_map('trim', explode(',', strtolower($phrases))));
-                if (!empty($phrases_array)) {
-                    $custom_commands[] = array(
-                        'phrases' => array_values($phrases_array),
-                        'url' => esc_url($url)
-                    );
-                }
-            }
-        }
-
-        // Prepare branch addresses for Maps
-        $branch_keys = array('cgb', 'cdb', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16');
-        $branch_addresses = array();
-        foreach ($branch_keys as $key) {
-             $default = '';
-             if ($key === 'cgb') $default = 'г. Владимир, Суздальский пр-кт, д. 2';
-             elseif ($key === 'cdb') $default = 'г. Владимир, ул. Белоконской, д. 10-а';
-             elseif ($key === '1') $default = 'г. Владимир, пр-кт Строителей, д. 23';
-             elseif ($key === '2') $default = 'г. Владимир, пр-кт Ленина, д. 12';
-             elseif ($key === '3') $default = 'г. Владимир, ул. Добросельская, д. 2-в';
-             elseif ($key === '4') $default = 'г. Владимир, ул. Комиссарова, д. 69';
-             elseif ($key === '5') $default = 'г. Владимир, пр-кт Суздальский, д. 2';
-             elseif ($key === '6') $default = 'г. Владимир, ул. Мира, д. 37';
-             elseif ($key === '7') $default = 'г. Владимир, ул. Добросельская, д. 189-б';
-             elseif ($key === '8') $default = 'г. Владимир, ул. Диктора Левитана, д. 36';
-             elseif ($key === '9') $default = 'г. Владимир, ул. Горького, д. 85';
-             elseif ($key === '10') $default = 'г. Владимир, ул. Егорова, д. 10';
-             elseif ($key === '11') $default = 'г. Владимир, мкр. Юрьевец, ул. Институтский городок, д. 4';
-             elseif ($key === '13') $default = 'г. Владимир, мкр. Юрьевец, ул. Ноябрьская, д. 2-а';
-             elseif ($key === '14') $default = 'г. Владимир, мкр. Энергетик, ул. Энергетиков, д. 12';
-             elseif ($key === '15') $default = 'г. Владимир, мкр. Энергетик, ул. Совхозная, д. 11';
-             elseif ($key === '16') $default = 'г. Владимир, мкр. Коммунар, ул. Песочная, д. 2-а';
-
-             $branch_addresses[$key] = get_theme_mod("branch_address_$key", $default);
-        }
-
-        wp_localize_script('city-library-voice', 'cl_voice_control', array(
-            'enabled' => true,
-            'test_mode' => $voice_test_mode,
-            'is_logged_in' => is_user_logged_in(),
-            'home_url' => home_url(),
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'ai_nonce' => wp_create_nonce('ai_chat_nonce'),
-            'voice_pitch' => get_theme_mod('voice_pitch', '1.0'),
-            'voice_rate' => get_theme_mod('voice_rate', '1.05'),
-            'custom_commands' => $custom_commands,
-            'branch_addresses' => $branch_addresses
-        ));
-    }
     wp_enqueue_script('city-library-modal-popup', get_template_directory_uri() . '/js/modal-popup.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-menu', get_template_directory_uri() . '/js/mobile-menu.js', array(), wp_get_theme()->get('Version'), true);
     wp_enqueue_script('city-library-mobile-sliders', get_template_directory_uri() . '/js/mobile-sliders.js', array('swiper-js'), wp_get_theme()->get('Version'), true);
@@ -217,12 +152,16 @@ function city_library_scripts() {
     // Scroll Animations
     wp_enqueue_script('city-library-scroll-animations', get_template_directory_uri() . '/js/scroll-animations.js', array(), wp_get_theme()->get('Version'), true);
 
+    // Back to Top
+    wp_enqueue_script('city-library-back-to-top', get_template_directory_uri() . '/js/back-to-top.js', array(), wp_get_theme()->get('Version'), true);
+
     if (is_single()) {
         wp_enqueue_script('city-library-reading-progress', get_template_directory_uri() . '/js/reading-progress.js', array(), wp_get_theme()->get('Version'), true);
     }
 
     wp_localize_script('city-library-view-toggle', 'ajax_params', array(
-        'ajax_url' => admin_url('admin-ajax.php')
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('view_toggle_nonce')
     ));
 
     // Prepare Renewal Button Settings for JS
@@ -265,31 +204,6 @@ function city_library_get_branches_list() {
     }
     return $branches;
 }
-
-/**
- * AJAX Handler for Voice Test Feedback
- */
-function city_library_voice_feedback() {
-    check_ajax_referer('ai_chat_nonce', 'nonce');
-
-    $rating = intval($_POST['rating']);
-    $feedback = sanitize_textarea_field($_POST['feedback']);
-
-    $to = 'xxoleg6@yandex.ru';
-    $subject = 'Отчет о тестировании Голосового Ассистента (Оценка: ' . $rating . '/5)';
-    $message = "Оценка: $rating из 5\n\nОтзыв/Ошибки:\n$feedback";
-    $headers = array('Content-Type: text/plain; charset=UTF-8');
-
-    // Attempt to send email
-    wp_mail($to, $subject, $message, $headers);
-
-    // We clear the cookie by setting expiration to the past
-    setcookie('cl_voice_test_active', '', time() - 3600, '/');
-
-    wp_send_json_success(array('message' => 'Спасибо! Ваш отзыв отправлен.'));
-}
-add_action('wp_ajax_city_library_voice_feedback', 'city_library_voice_feedback');
-add_action('wp_ajax_nopriv_city_library_voice_feedback', 'city_library_voice_feedback');
 
 /**
  * AJAX Handler for Book Renewal
@@ -779,14 +693,14 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет шрифта (текст)', 'city-library'), 'section' => 'mobile_menu_section',
     )));
 
-    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('mobile_menu_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('mobile_menu_font_family', array(
         'label' => __('Шрифт меню', 'city-library'),
         'section' => 'mobile_menu_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
         ),
@@ -896,14 +810,14 @@ function city_library_customize_register($wp_customize) {
         'label' => __('Цвет текста шапки', 'city-library'), 'section' => 'header_section',
     )));
 
-     $wp_customize->add_setting('header_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+     $wp_customize->add_setting('header_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('header_font_family', array(
         'label' => __('Шрифт шапки', 'city-library'),
         'section' => 'header_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
         ),
@@ -1011,8 +925,14 @@ function city_library_customize_register($wp_customize) {
     $wp_customize->add_setting('footer_copyright', array('default' => '© 2024 Центральная городская библиотека. Все права защищены.', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('footer_copyright', array('label' => __('Copyright Text', 'city-library'), 'section' => 'footer_section', 'type' => 'text'));
 
+    $wp_customize->add_setting('footer_show_privacy', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_privacy', array('label' => __('Показать Политику конфиденциальности', 'city-library'), 'section' => 'footer_section', 'type' => 'checkbox'));
+
     $wp_customize->add_setting('footer_privacy_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_privacy_link', array('label' => __('Privacy Policy Link', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
+
+    $wp_customize->add_setting('footer_show_sitemap', array('default' => true, 'sanitize_callback' => 'wp_validate_boolean'));
+    $wp_customize->add_control('footer_show_sitemap', array('label' => __('Показать Карту сайта', 'city-library'), 'section' => 'footer_section', 'type' => 'checkbox'));
 
     $wp_customize->add_setting('footer_sitemap_link', array('default' => '#', 'sanitize_callback' => 'esc_url_raw'));
     $wp_customize->add_control('footer_sitemap_link', array('label' => __('Sitemap Link', 'city-library'), 'section' => 'footer_section', 'type' => 'url'));
@@ -1235,15 +1155,15 @@ function city_library_customize_register($wp_customize) {
         'title' => __('Typography', 'city-library'),
         'priority' => 20,
     ));
-    $wp_customize->add_setting('heading_font', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('heading_font', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('heading_font', array(
         'label' => __('Heading Font', 'city-library'),
         'section' => 'typography_section',
         'type' => 'select',
         'choices' => array(
+            'Montserrat' => 'Montserrat (Geometric)',
             'Inter' => 'Inter (Modern)',
             'Playfair Display' => 'Playfair Display (Journal)',
-            'Montserrat' => 'Montserrat (Geometric)',
             'Merriweather' => 'Merriweather (Serif)',
         ),
     ));
@@ -1326,14 +1246,14 @@ function city_library_customize_register($wp_customize) {
         ),
     ));
 
-    $wp_customize->add_setting('afisha_font_family', array('default' => 'Inter', 'sanitize_callback' => 'sanitize_text_field'));
+    $wp_customize->add_setting('afisha_font_family', array('default' => 'Montserrat', 'sanitize_callback' => 'sanitize_text_field'));
     $wp_customize->add_control('afisha_font_family', array(
         'label' => __('Шрифт заголовка афиши', 'city-library'),
         'section' => 'afisha_section',
         'type' => 'select',
         'choices' => array(
-            'Inter' => 'Inter',
             'Montserrat' => 'Montserrat',
+            'Inter' => 'Inter',
             'Playfair Display' => 'Playfair Display',
             'Merriweather' => 'Merriweather',
             'Cinzel' => 'Cinzel',
@@ -1692,9 +1612,9 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
             $output .= '<div class="flex items-center justify-between w-full">';
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
             // Mobile Toggle Button (Visible on mobile, hidden on desktop hover)
-            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
+            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300" aria-hidden="true">expand_more</span></button>';
             // Desktop Arrow (Visual only, handled by group-hover/menuitem)
-            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
+            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300" aria-hidden="true">expand_more</span>';
             $output .= '</div>';
         } else {
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
@@ -1795,6 +1715,7 @@ function city_library_sanitize_html($html) {
  * AJAX handler for post view toggle.
  */
 function load_posts_by_view() {
+    check_ajax_referer('view_toggle_nonce', 'nonce');
     $view = sanitize_text_field($_POST['view']);
     $template_part = ($view === 'list') ? 'template-parts/content-post-card-list' : 'template-parts/content-post-card';
 
@@ -1822,7 +1743,7 @@ add_action('wp_ajax_nopriv_load_posts_by_view', 'load_posts_by_view');
 * Add custom script to head to configure TailwindCSS
 */
 function city_library_tailwind_config() {
-    $heading_font = get_theme_mod('heading_font', 'Inter');
+    $heading_font = get_theme_mod('heading_font', 'Montserrat');
     $body_font = get_theme_mod('body_font', 'Montserrat');
     ?>
     <script>
@@ -1884,7 +1805,7 @@ function city_library_dynamic_styles() {
     $mob_menu_icon = get_theme_mod('mobile_menu_icon_color', '#64748b');
     $mob_menu_active = get_theme_mod('mobile_menu_active_color', '#0b7930');
     $mob_menu_font_color = get_theme_mod('mobile_menu_font_color', '#64748b');
-    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Inter');
+    $mob_menu_font = get_theme_mod('mobile_menu_font_family', 'Montserrat');
     ?>
     <style type="text/css">
         :root {
@@ -2007,7 +1928,7 @@ function city_library_dynamic_styles() {
             color: <?php echo esc_attr(get_theme_mod('header_text_color', '#1A3C34')); ?> !important;
         }
         #masthead {
-             font-family: "<?php echo esc_js(get_theme_mod('header_font_family', 'Inter')); ?>", sans-serif !important;
+             font-family: "<?php echo esc_js(get_theme_mod('header_font_family', 'Montserrat')); ?>", sans-serif !important;
         }
 
         /* Hero Primary Button */
@@ -2049,7 +1970,7 @@ function city_library_dynamic_styles() {
 
         /* Afisha Font */
         .afisha-custom-title {
-            font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Inter')); ?>", sans-serif !important;
+            font-family: "<?php echo esc_js(get_theme_mod('afisha_font_family', 'Montserrat')); ?>", sans-serif !important;
         }
 
         /* Pagination Styling */
@@ -2177,39 +2098,3 @@ function city_library_schema_json_ld() {
     }
 }
 add_action('wp_head', 'city_library_schema_json_ld');
-
-/**
- * AJAX handler for Voice Control: "Все библиотеки" Custom Map Fetch
- */
-function city_library_get_map_shortcode() {
-    check_ajax_referer('ai_chat_nonce', 'nonce');
-
-    // We assume there's a custom template part or a known structure that renders the Yandex map.
-
-    ob_start();
-    // Render the `branches-map` template part
-    get_template_part('template-parts/branches-map');
-
-    $html = ob_get_clean();
-
-    // Fallback if template part doesn't exist
-    if (empty(trim($html))) {
-        $html = '<div class="p-8 text-center text-slate-500 bg-slate-50 rounded-2xl">
-            <span class="material-symbols-rounded text-4xl mb-2 text-slate-400">map</span>
-            <p>Карта со всеми филиалами загружается...</p>
-            <p class="text-sm mt-2">Пожалуйста, перейдите в раздел "Контакты" для просмотра.</p>
-        </div>';
-    }
-
-    wp_send_json_success(['html' => $html]);
-}
-add_action('wp_ajax_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
-add_action('wp_ajax_nopriv_city_library_get_map_shortcode', 'city_library_get_map_shortcode');
-
-// Enqueue Chat Theme CSS
-function city_library_enqueue_chat_themes() {
-    if (get_theme_mod('enable_ai_librarian', false)) {
-        wp_enqueue_style('ai-chat-themes', get_template_directory_uri() . '/css/ai-chat-themes.css', array(), wp_get_theme()->get('Version'));
-    }
-}
-add_action('wp_enqueue_scripts', 'city_library_enqueue_chat_themes', 20);
