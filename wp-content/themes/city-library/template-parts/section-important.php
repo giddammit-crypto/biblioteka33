@@ -49,7 +49,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                 <!-- Icon (Changed from Red to Primary/Standard) -->
                 <div class="shrink-0">
                     <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100">
-                        <span class="material-symbols-outlined text-4xl text-primary animate-pulse">warning</span>
+                        <span class="material-symbols-outlined text-4xl text-primary animate-pulse" aria-hidden="true">warning</span>
                     </div>
                 </div>
 
@@ -66,7 +66,7 @@ $link_wrapper_class = "block group relative overflow-hidden transition-all durat
                 <div class="relative z-10 shrink-0 mt-6 md:mt-0">
                     <a href="<?php echo esc_url($btn_link); ?>" class="important-btn inline-flex items-center justify-center px-10 py-4 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
                         <?php echo esc_html($btn_text); ?>
-                        <span class="material-symbols-outlined ml-2">arrow_forward</span>
+                        <span class="material-symbols-outlined ml-2" aria-hidden="true">arrow_forward</span>
                     </a>
                 </div>
             <?php endif; ?>
