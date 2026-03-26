@@ -232,49 +232,6 @@ class VL_Settings_API {
                 </div>
             </div>
 
-            <style>
-                :root { --vl-primary: #0b7930; --vl-primary-hover: #096328; --vl-text: #1e293b; --vl-gray: #64748b; --vl-bg: #f1f5f9; }
-                .vl-settings-wrap { color: var(--vl-text); }
-                .vl-header-card { background: #fff; border-radius: 16px; padding: 24px 32px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 30px; }
-                .vl-flex-between { display: flex; justify-content: space-between; align-items: center; }
-                .vl-flex-center { display: flex; align-items: center; }
-                .gap-20 { gap: 20px; }
-                .vl-icon-box { width: 64px; height: 64px; background: var(--vl-primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; }
-                .vl-icon-box .dashicons { font-size: 32px; width: 32px; height: 32px; }
-                .vl-header-card h1 { margin: 0; font-size: 28px; font-weight: 900; color: var(--vl-text); }
-                .vl-subtitle { margin: 4px 0 0; color: var(--vl-gray); font-size: 15px; }
-                .vl-status-online { color: #10b981; font-weight: 700; }
-
-                .vl-layout-grid { display: grid; grid-template-columns: 240px 1fr; gap: 30px; align-items: start; }
-                .vl-sidebar-nav { background: #fff; border-radius: 16px; padding: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-                .vl-nav-item { width: 100%; text-align: left; background: none; border: none; padding: 12px 16px; border-radius: 10px; cursor: pointer; color: var(--vl-gray); font-weight: 600; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-size: 14px; }
-                .vl-nav-item:hover { background: #f8fafc; color: var(--vl-text); }
-                .vl-nav-item.active { background: #ecfdf5; color: var(--vl-primary); }
-                .vl-nav-divider { height: 1px; background: #f1f5f9; margin: 8px 0; }
-
-                .vl-main-content { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); min-height: 500px; }
-                .vl-tab-pane { display: none; animation: fadeIn 0.3s ease; }
-                .vl-tab-pane.active { display: block; }
-                @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-                .vl-section-header { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #f8fafc; }
-                .vl-section-header h2 { margin: 0; font-size: 20px; font-weight: 800; }
-                .vl-section-header p { margin: 8px 0 0; color: var(--vl-gray); font-size: 14px; }
-
-                .vl-form-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #f1f5f9; }
-                .vl-btn-secondary { background: #f1f5f9; color: var(--vl-text); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
-
-                /* Overriding WP Defaults */
-                .vl-main-content table.form-table th { width: 220px; padding: 20px 10px 20px 0; font-weight: 600; color: #475569; }
-                .vl-main-content input[type="text"], .vl-main-content textarea, .vl-main-content select { width: 100%; border-radius: 10px; border: 1.5px solid #e2e8f0; padding: 10px 16px; font-size: 14px; transition: border-color 0.2s; }
-                .vl-main-content input[type="text"]:focus { border-color: var(--vl-primary); outline: none; box-shadow: 0 0 0 3px rgba(11,121,48,0.1); }
-                .vl-main-content .submit { margin: 0; }
-
-                .vl-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-                .vl-stat-card { background: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; }
-                .vl-stat-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vl-gray); font-weight: 700; margin-bottom: 8px; }
-                .vl-stat-value { display: block; font-size: 18px; font-weight: 800; color: var(--vl-primary); }
-            </style>
 
             <script>
                 function switchTab(evt, tabName) {
@@ -315,4 +272,4 @@ class VL_Settings_API {
     }
 }
 
-new VL_Settings_API();
+// Instantiation is now handled in virtual-librarian.php

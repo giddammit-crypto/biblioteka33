@@ -30,7 +30,20 @@ require_once VL_PLUGIN_DIR . 'includes/voice-engine.php';
  * Initialize the plugin
  */
 function vl_init_plugin() {
+    // Core logic
     $plugin = new Virtual_Librarian();
     $plugin->init();
+
+    // AJAX handlers
+    if (class_exists('VL_AJAX_Handler')) {
+        $ajax = new VL_AJAX_Handler();
+        $ajax->init();
+    }
+
+    // Admin Settings API
+    if (is_admin() && class_exists('VL_Settings_API')) {
+        $settings = new VL_Settings_API();
+        $settings->init();
+    }
 }
 add_action('plugins_loaded', 'vl_init_plugin');

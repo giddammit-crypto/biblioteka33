@@ -8,16 +8,37 @@ if (!defined('ABSPATH')) exit;
 class VL_AJAX_Handler {
 
     public function init() {
+        // Chat
         add_action('wp_ajax_vl_ai_chat', array($this, 'handle_chat'));
         add_action('wp_ajax_nopriv_vl_ai_chat', array($this, 'handle_chat'));
+
+        // Knowledge Base
         add_action('wp_ajax_vl_sync_kb', array($this, 'handle_sync_kb'));
+
+        // Document Exports
         add_action('wp_ajax_vl_ai_docx', array($this, 'handle_docx'));
+        add_action('wp_ajax_nopriv_vl_ai_docx', array($this, 'handle_docx'));
         add_action('wp_ajax_vl_ai_email', array($this, 'handle_email'));
+        add_action('wp_ajax_nopriv_vl_ai_email', array($this, 'handle_email'));
+
+        // Drafts
         add_action('wp_ajax_vl_ai_compile_draft', array($this, 'handle_compile_draft'));
+        add_action('wp_ajax_nopriv_vl_ai_compile_draft', array($this, 'handle_compile_draft'));
         add_action('wp_ajax_vl_ai_draft', array($this, 'handle_draft'));
+
+        // Uploads
         add_action('wp_ajax_vl_ai_upload', array($this, 'handle_upload'));
+        add_action('wp_ajax_nopriv_vl_ai_upload', array($this, 'handle_upload'));
+
+        // Legacy Action Name compatibility
+        add_action('wp_ajax_city_library_ai_upload', array($this, 'handle_upload'));
+        add_action('wp_ajax_nopriv_city_library_ai_upload', array($this, 'handle_upload'));
+
+        // Voice Feedback & Map
         add_action('wp_ajax_vl_voice_feedback', array($this, 'handle_voice_feedback'));
+        add_action('wp_ajax_nopriv_vl_voice_feedback', array($this, 'handle_voice_feedback'));
         add_action('wp_ajax_vl_get_map_shortcode', array($this, 'handle_get_map'));
+        add_action('wp_ajax_nopriv_vl_get_map_shortcode', array($this, 'handle_get_map'));
     }
 
     public function handle_chat() {
@@ -27,20 +48,20 @@ class VL_AJAX_Handler {
         $model = get_option('vl_ai_model', 'google/gemini-2.0-flash-001');
         $fallback_model = get_option('vl_ai_model_fallback', 'openai/gpt-4o-mini');
 
-        $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
-        $user_name = isset($_POST['user_name']) ? sanitize_text_field($_POST['user_name']) : 'Пользователь';
+        $user_message = isset($_POST['message']) ? sanitize_text_field(wp_unslash($_POST['message'])) : '';
+        $user_name = isset($_POST['user_name']) ? sanitize_text_field(wp_unslash($_POST['user_name'])) : 'Пользователь';
         $is_logged_in = isset($_POST['is_logged_in']) && $_POST['is_logged_in'] === 'true';
-        $image_data = isset($_POST['image_data']) ? $_POST['image_data'] : '';
-        $pdf_images = isset($_POST['pdf_images']) ? json_decode(stripslashes($_POST['pdf_images']), true) : array();
-        $history = isset($_POST['history']) ? json_decode(stripslashes($_POST['history']), true) : array();
+        $image_data = isset($_POST['image_data']) ? wp_unslash($_POST['image_data']) : '';
+        $pdf_images = isset($_POST['pdf_images']) ? json_decode(wp_unslash($_POST['pdf_images']), true) : array();
+        $history = isset($_POST['history']) ? json_decode(wp_unslash($_POST['history']), true) : array();
         $persistent_context = isset($_POST['persistent_context']) ? sanitize_textarea_field($_POST['persistent_context']) : '';
 
         if (empty($user_message) && empty($image_data) && empty($pdf_images)) {
-            wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'));
+            wp_send_json_error(array('reply' => 'Пожалуйста, введите сообщение.'), 200);
         }
 
         if (empty($api_key)) {
-            wp_send_json_error(array('reply' => 'Извините, библиотекарь временно недоступен (API ключ не настроен).'));
+            wp_send_json_error(array('reply' => 'Извините, библиотекарь временно недоступен (API ключ не настроен).'), 200);
         }
 
         $clean_msg = trim(mb_strtolower($user_message));
@@ -82,14 +103,21 @@ class VL_AJAX_Handler {
         }
 
         // 3. Build Context
-        $persona = get_option('vl_ai_persona_prompt', 'Ты Виртуальный библиотекарь. Пиши только на русском.');
+        $system_base = get_option('vl_ai_persona_prompt', 'Ты — Главный библиограф-технолог. Умный, вежливый, профессиональный. Пиши строго на русском языке.');
+        $extra_prompt = get_option('vl_ai_persona_prompt_extra', '');
+
+        $persona = $system_base . "\n" . $extra_prompt;
+        $persona .= "\n\nТЕКУЩАЯ ДАТА: " . date('d.m.Y H:i');
+        $persona .= "\nСАЙТ БИБЛИОТЕКИ: https://biblioteka33.ru";
+        $persona .= "\nГРУППА ВК: https://vk.com/vladcgb";
+
         if (!empty($persistent_context)) $persona .= "\n\nИНСТРУКЦИИ ИЗ ФАЙЛОВ:\n" . $persistent_context;
         if (!empty($internal_search_context)) $persona .= $internal_search_context;
 
         // Knowledge Base from Sync
         $kb = get_option('vl_ai_knowledge', array());
         if (!empty($kb)) {
-            $persona .= "\n\nБАЗА ДАННЫХ ФИЛИАЛОВ:\n" . wp_json_encode($kb, JSON_UNESCAPED_UNICODE);
+            $persona .= "\n\nБАЗА ДАННЫХ ФИЛИАЛОВ И РАСПИСАНИЕ:\n" . wp_json_encode($kb, JSON_UNESCAPED_UNICODE);
         }
 
         $messages = array(array("role" => "system", "content" => $persona));
@@ -126,13 +154,13 @@ class VL_AJAX_Handler {
             $response = wp_remote_post('https://openrouter.ai/api/v1/chat/completions', $args);
         }
 
-        if (is_wp_error($response)) wp_send_json_error(array('reply' => 'Сервер ИИ недоступен.'));
+        if (is_wp_error($response)) wp_send_json_error(array('reply' => 'Сервер ИИ недоступен.'), 200);
 
         $data = json_decode(wp_remote_retrieve_body($response), true);
         if (isset($data['choices'][0]['message']['content'])) {
             wp_send_json_success(array('reply' => $data['choices'][0]['message']['content']));
         } else {
-            wp_send_json_error(array('reply' => 'Ошибка обработки ответа ИИ.'));
+            wp_send_json_error(array('reply' => 'Ошибка обработки ответа ИИ.'), 200);
         }
     }
 
@@ -222,4 +250,4 @@ class VL_AJAX_Handler {
     }
 }
 
-new VL_AJAX_Handler();
+// Instantiation is now handled in virtual-librarian.php

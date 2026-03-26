@@ -116,17 +116,17 @@ class Virtual_Librarian {
         $knowledge = array();
         $addresses = array();
 
-        // Pattern for branches (approximate based on memory of the site structure)
-        // Usually it's <h3>Branch Name</h3> followed by <p>Address...</p>
-        preg_match_all('/<h3[^>]*>(.*?)<\/h3>(.*?)<hr/s', $html, $matches, PREG_SET_ORDER);
+        // Unified pattern for branches: either <h3> or <strong> followed by address/phone info
+        preg_match_all('/<(h3|strong)[^>]*>(.*?)<\/(h3|strong)>(.*?)<hr/s', $html, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
-            $name = trim(strip_tags($match[1]));
-            $content = $match[2];
+            $name = trim(strip_tags($match[2]));
+            $content = $match[4];
 
             $branch_info = array('name' => $name);
 
-            if (preg_match('/Адрес:\s*(.*?)(?:<br|<\/p)/i', $content, $addr)) {
+            // Detailed patterns to capture address, phone, schedule
+            if (preg_match('/Адрес:\s*(.*?)(?:<br|<\/p|&nbsp;)/i', $content, $addr)) {
                 $branch_info['address'] = trim(strip_tags($addr[1]));
                 $addresses[] = $branch_info['address'];
             }
