@@ -104,6 +104,47 @@ class Virtual_Librarian {
     }
 
     public function sync_knowledge_base() {
-        // [Logic for scraping biblioteka33.ru/?p=19379 as in theme]
+        $url = 'https://biblioteka33.ru/?p=19379';
+        $response = wp_remote_get($url, array('timeout' => 30));
+
+        if (is_wp_error($response)) return;
+
+        $html = wp_remote_retrieve_body($response);
+        if (empty($html)) return;
+
+        // Extract structured data using regex
+        $knowledge = array();
+        $addresses = array();
+
+        // Pattern for branches (approximate based on memory of the site structure)
+        // Usually it's <h3>Branch Name</h3> followed by <p>Address...</p>
+        preg_match_all('/<h3[^>]*>(.*?)<\/h3>(.*?)<hr/s', $html, $matches, PREG_SET_ORDER);
+
+        foreach ($matches as $match) {
+            $name = trim(strip_tags($match[1]));
+            $content = $match[2];
+
+            $branch_info = array('name' => $name);
+
+            if (preg_match('/Адрес:\s*(.*?)(?:<br|<\/p)/i', $content, $addr)) {
+                $branch_info['address'] = trim(strip_tags($addr[1]));
+                $addresses[] = $branch_info['address'];
+            }
+            if (preg_match('/Телефон:\s*(.*?)(?:<br|<\/p)/i', $content, $phone)) {
+                $branch_info['phone'] = trim(strip_tags($phone[1]));
+            }
+            if (preg_match('/Режим работы:\s*(.*?)(?:<br|<\/p)/i', $content, $hours)) {
+                $branch_info['hours'] = trim(strip_tags($hours[1]));
+            }
+            if (preg_match('/href="(https:\/\/vk\.com\/.*?)"/i', $content, $vk)) {
+                $branch_info['vk'] = $vk[1];
+            }
+
+            $knowledge[] = $branch_info;
+        }
+
+        update_option('vl_ai_knowledge', $knowledge);
+        update_option('vl_ai_extracted_addresses', $addresses);
+        update_option('vl_ai_knowledge_last_sync', current_time('mysql'));
     }
 }

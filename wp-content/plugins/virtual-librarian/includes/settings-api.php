@@ -10,15 +10,23 @@ class VL_Settings_API {
     public function init() {
         add_action('admin_menu', array($this, 'add_settings_page'));
         add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
+    }
+
+    public function enqueue_admin_assets($hook) {
+        if ($hook !== 'toplevel_page_virtual-librarian-settings') return;
+        wp_enqueue_style('vl-admin-settings', VL_PLUGIN_URL . 'assets/css/admin-settings.css', array(), VL_VERSION);
     }
 
     public function add_settings_page() {
-        add_options_page(
+        add_menu_page(
             'Virtual Librarian Settings',
-            'Виртуальный библиотекарь',
+            'ИИ Библиотекарь',
             'manage_options',
             'virtual-librarian-settings',
-            array($this, 'render_settings_page')
+            array($this, 'render_settings_page'),
+            'dashicons-book-alt',
+            25
         );
     }
 
@@ -46,42 +54,238 @@ class VL_Settings_API {
             register_setting('vl_settings_group', "vl_voice_cmd_url_$i");
         }
 
-        // Sections
-        add_settings_section('vl_core_section', 'Основные настройки ИИ', null, 'virtual-librarian-settings');
-        add_settings_section('vl_ui_section', 'Настройки интерфейса', null, 'virtual-librarian-settings');
-        add_settings_section('vl_voice_section', 'Голосовой ассистент', null, 'virtual-librarian-settings');
-        add_settings_section('vl_branches_section', 'Геолокация филиалов', null, 'virtual-librarian-settings');
+        // Sections mapped to tabs
+        add_settings_section('vl_core_section', 'Основные настройки ИИ', null, 'virtual-librarian-settings-core');
+        add_settings_section('vl_ui_section', 'Настройки интерфейса', null, 'virtual-librarian-settings-ui');
+        add_settings_section('vl_voice_section', 'Голосовой ассистент', null, 'virtual-librarian-settings-voice');
+        add_settings_section('vl_branches_section', 'Геолокация филиалов', null, 'virtual-librarian-settings-branches');
 
         // Fields: Core
-        add_settings_field('vl_enable_ai', 'Включить ИИ Чат', array($this, 'render_checkbox'), 'virtual-librarian-settings', 'vl_core_section', array('name' => 'vl_enable_ai'));
-        add_settings_field('vl_openrouter_api_key', 'OpenRouter API Key', array($this, 'render_text_field'), 'virtual-librarian-settings', 'vl_core_section', array('name' => 'vl_openrouter_api_key'));
-        add_settings_field('vl_ai_model', 'Основная модель', array($this, 'render_text_field'), 'virtual-librarian-settings', 'vl_core_section', array('name' => 'vl_ai_model', 'default' => 'google/gemini-2.0-flash-001'));
-        add_settings_field('vl_ai_persona_prompt', 'Системный промпт', array($this, 'render_textarea'), 'virtual-librarian-settings', 'vl_core_section', array('name' => 'vl_ai_persona_prompt'));
+        add_settings_field('vl_enable_ai', 'Включить ИИ Чат', array($this, 'render_checkbox'), 'virtual-librarian-settings-core', 'vl_core_section', array('name' => 'vl_enable_ai'));
+        add_settings_field('vl_openrouter_api_key', 'OpenRouter API Key', array($this, 'render_text_field'), 'virtual-librarian-settings-core', 'vl_core_section', array('name' => 'vl_openrouter_api_key'));
+        add_settings_field('vl_ai_model', 'Основная модель', array($this, 'render_text_field'), 'virtual-librarian-settings-core', 'vl_core_section', array('name' => 'vl_ai_model', 'default' => 'google/gemini-2.0-flash-001'));
+        add_settings_field('vl_ai_persona_prompt', 'Системный промпт', array($this, 'render_textarea'), 'virtual-librarian-settings-core', 'vl_core_section', array('name' => 'vl_ai_persona_prompt'));
 
         // Fields: UI
-        add_settings_field('vl_chat_theme', 'Тема чата', array($this, 'render_select_field'), 'virtual-librarian-settings', 'vl_ui_section', array(
+        add_settings_field('vl_chat_theme', 'Тема чата', array($this, 'render_select_field'), 'virtual-librarian-settings-ui', 'vl_ui_section', array(
             'name' => 'vl_chat_theme',
             'options' => array('default' => 'Библиотека', 'vk' => 'VK Style', 'tg' => 'Telegram', 'wa' => 'WhatsApp', 'mac' => 'macOS')
         ));
-        add_settings_field('vl_avatar_preset', 'Аватар', array($this, 'render_select_field'), 'virtual-librarian-settings', 'vl_ui_section', array(
+        add_settings_field('vl_avatar_preset', 'Аватар', array($this, 'render_select_field'), 'virtual-librarian-settings-ui', 'vl_ui_section', array(
             'name' => 'vl_avatar_preset',
             'options' => array('default' => 'Женщина-Библиотекарь', 'preset2' => 'Мужчина-Библиотекарь', 'preset3' => 'Робот', 'custom' => 'Свой URL')
         ));
 
         // Fields: Voice
-        add_settings_field('vl_enable_voice', 'Включить Голос', array($this, 'render_checkbox'), 'virtual-librarian-settings', 'vl_voice_section', array('name' => 'vl_enable_voice'));
-        add_settings_field('vl_voice_pitch', 'Тон (Pitch)', array($this, 'render_text_field'), 'virtual-librarian-settings', 'vl_voice_section', array('name' => 'vl_voice_pitch', 'default' => '1.0'));
+        add_settings_field('vl_enable_voice', 'Включить Голос', array($this, 'render_checkbox'), 'virtual-librarian-settings-voice', 'vl_voice_section', array('name' => 'vl_enable_voice'));
+        add_settings_field('vl_voice_pitch', 'Тон (Pitch)', array($this, 'render_text_field'), 'virtual-librarian-settings-voice', 'vl_voice_section', array('name' => 'vl_voice_pitch', 'default' => '1.0'));
+
+        // Fields: Branches
+        $branches = array(
+            'cgb' => 'ЦГБ (пр. Строителей, 16а)',
+            'cdb' => 'ЦДБ (ул. Б. Московская, 31)',
+        );
+        for ($i = 1; $i <= 16; $i++) {
+            if ($i == 12) continue; // Branch 12 is usually skipped in this library's numbering
+            $branches[$i] = "Филиал №$i";
+        }
+
+        foreach ($branches as $key => $name) {
+            add_settings_field(
+                "vl_branch_address_$key",
+                $name,
+                array($this, 'render_text_field'),
+                'virtual-librarian-settings-branches',
+                'vl_branches_section',
+                array('name' => "vl_branch_address_$key")
+            );
+        }
     }
 
     public function render_settings_page() {
         ?>
-        <div class="wrap">
-            <h1>Настройки Виртуального библиотекаря</h1>
-            <form action="options.php" method="POST">
-                <?php settings_fields('vl_settings_group'); ?>
-                <?php do_settings_sections('virtual-librarian-settings'); ?>
-                <?php submit_button(); ?>
-            </form>
+        <div class="wrap vl-settings-wrap">
+
+            <div class="vl-admin-card vl-header-card">
+                <div class="vl-flex-between">
+                    <div class="vl-flex-center gap-20">
+                        <div class="vl-icon-box">
+                            <img src="<?php echo VL_PLUGIN_URL . 'assets/images/logo.png'; ?>" alt="Logo" style="width: 64px; height: 64px; object-fit: contain;">
+                        </div>
+                        <div>
+                            <h1>Виртуальный библиотекарь</h1>
+                            <div class="vl-flex-center gap-10 mt-5">
+                                <span class="vl-status-badge">v<?php echo VL_VERSION; ?></span>
+                                <span class="vl-status-badge" style="background: #f0f9ff; color: #0369a1;">Stable</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vl-header-actions">
+                        <a href="<?php echo home_url(); ?>" target="_blank" class="vl-btn-secondary">🏠 Перейти на сайт</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vl-layout-grid">
+                <!-- Sidebar Nav -->
+                <div class="vl-sidebar-nav">
+                    <div class="vl-nav-inner">
+                        <button class="vl-nav-item active" onclick="switchTab(event, 'core')">
+                            <span class="dashicons dashicons-admin-generic"></span> Основные
+                        </button>
+                        <button class="vl-nav-item" onclick="switchTab(event, 'ui')">
+                            <span class="dashicons dashicons-admin-appearance"></span> Интерфейс
+                        </button>
+                        <button class="vl-nav-item" onclick="switchTab(event, 'voice')">
+                            <span class="dashicons dashicons-microphone"></span> Голос
+                        </button>
+                        <button class="vl-nav-item" onclick="switchTab(event, 'branches')">
+                            <span class="dashicons dashicons-location"></span> Филиалы
+                        </button>
+                        <div class="vl-nav-divider"></div>
+                        <button class="vl-nav-item" onclick="switchTab(event, 'system')">
+                            <span class="dashicons dashicons-performance"></span> Система
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="vl-main-content">
+                    <form action="options.php" method="POST">
+                        <?php settings_fields('vl_settings_group'); ?>
+
+                        <div id="tab-core" class="vl-tab-pane active">
+                            <div class="vl-section-header">
+                                <h2>Параметры ИИ</h2>
+                                <p>Настройте соединение с OpenRouter и системные промпты.</p>
+                            </div>
+                            <?php do_settings_sections('virtual-librarian-settings-core'); ?>
+                        </div>
+
+                        <div id="tab-ui" class="vl-tab-pane">
+                            <div class="vl-section-header">
+                                <h2>Визуальное оформление</h2>
+                                <p>Персонализируйте внешний вид чата и аватара.</p>
+                            </div>
+                            <?php do_settings_sections('virtual-librarian-settings-ui'); ?>
+                        </div>
+
+                        <div id="tab-voice" class="vl-tab-pane">
+                            <div class="vl-section-header">
+                                <h2>Голосовое управление</h2>
+                                <p>Настройка синтеза и распознавания речи.</p>
+                            </div>
+                            <?php do_settings_sections('virtual-librarian-settings-voice'); ?>
+                        </div>
+
+                        <div id="tab-branches" class="vl-tab-pane">
+                            <div class="vl-section-header">
+                                <h2>Филиалы и Геолокация</h2>
+                                <p>Адреса для автоматического построения маршрутов.</p>
+                            </div>
+                            <?php do_settings_sections('virtual-librarian-settings-branches'); ?>
+                        </div>
+
+                        <div id="tab-system" class="vl-tab-pane">
+                            <div class="vl-section-header">
+                                <h2>Системные данные</h2>
+                                <p>Отладка и состояние синхронизации.</p>
+                            </div>
+                            <div class="vl-stats-grid">
+                                <div class="vl-stat-card">
+                                    <span class="vl-stat-label">Последняя синхронизация</span>
+                                    <span class="vl-stat-value"><?php echo get_option('vl_ai_knowledge_last_sync', 'Никогда'); ?></span>
+                                </div>
+                                <div class="vl-stat-card">
+                                    <span class="vl-stat-label">Записей в базе знаний</span>
+                                    <span class="vl-stat-value"><?php echo count((array)get_option('vl_ai_knowledge', [])); ?></span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 30px;">
+                                <button type="button" id="vl-sync-now" class="vl-btn-secondary" style="cursor: pointer; border: 1px solid #e2e8f0;">📍 Запустить синхронизацию Базы Знаний</button>
+                                <p class="description" style="margin-top: 10px;">Принудительно сканирует сайт biblioteka33.ru для обновления данных о филиалах.</p>
+                            </div>
+
+                            <script>
+                                jQuery(document).ready(function($) {
+                                    $('#vl-sync-now').on('click', function() {
+                                        const btn = $(this);
+                                        btn.text('⌛ Синхронизация...').prop('disabled', true);
+                                        $.post(ajaxurl, { action: 'vl_sync_kb', _wpnonce: '<?php echo wp_create_nonce("vl_sync_nonce"); ?>' }, function(response) {
+                                            if (response.success) {
+                                                alert('Синхронизация успешно завершена!');
+                                                location.reload();
+                                            } else {
+                                                alert('Ошибка синхронизации: ' + response.data);
+                                                btn.text('📍 Запустить синхронизацию').prop('disabled', false);
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
+                        </div>
+
+                        <div class="vl-form-footer">
+                            <?php submit_button('Сохранить изменения', 'primary large'); ?>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <style>
+                :root { --vl-primary: #0b7930; --vl-primary-hover: #096328; --vl-text: #1e293b; --vl-gray: #64748b; --vl-bg: #f1f5f9; }
+                .vl-settings-wrap { color: var(--vl-text); }
+                .vl-header-card { background: #fff; border-radius: 16px; padding: 24px 32px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 30px; }
+                .vl-flex-between { display: flex; justify-content: space-between; align-items: center; }
+                .vl-flex-center { display: flex; align-items: center; }
+                .gap-20 { gap: 20px; }
+                .vl-icon-box { width: 64px; height: 64px; background: var(--vl-primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; }
+                .vl-icon-box .dashicons { font-size: 32px; width: 32px; height: 32px; }
+                .vl-header-card h1 { margin: 0; font-size: 28px; font-weight: 900; color: var(--vl-text); }
+                .vl-subtitle { margin: 4px 0 0; color: var(--vl-gray); font-size: 15px; }
+                .vl-status-online { color: #10b981; font-weight: 700; }
+
+                .vl-layout-grid { display: grid; grid-template-columns: 240px 1fr; gap: 30px; align-items: start; }
+                .vl-sidebar-nav { background: #fff; border-radius: 16px; padding: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+                .vl-nav-item { width: 100%; text-align: left; background: none; border: none; padding: 12px 16px; border-radius: 10px; cursor: pointer; color: var(--vl-gray); font-weight: 600; display: flex; align-items: center; gap: 12px; transition: all 0.2s; font-size: 14px; }
+                .vl-nav-item:hover { background: #f8fafc; color: var(--vl-text); }
+                .vl-nav-item.active { background: #ecfdf5; color: var(--vl-primary); }
+                .vl-nav-divider { height: 1px; background: #f1f5f9; margin: 8px 0; }
+
+                .vl-main-content { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); min-height: 500px; }
+                .vl-tab-pane { display: none; animation: fadeIn 0.3s ease; }
+                .vl-tab-pane.active { display: block; }
+                @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+                .vl-section-header { margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #f8fafc; }
+                .vl-section-header h2 { margin: 0; font-size: 20px; font-weight: 800; }
+                .vl-section-header p { margin: 8px 0 0; color: var(--vl-gray); font-size: 14px; }
+
+                .vl-form-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #f1f5f9; }
+                .vl-btn-secondary { background: #f1f5f9; color: var(--vl-text); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
+
+                /* Overriding WP Defaults */
+                .vl-main-content table.form-table th { width: 220px; padding: 20px 10px 20px 0; font-weight: 600; color: #475569; }
+                .vl-main-content input[type="text"], .vl-main-content textarea, .vl-main-content select { width: 100%; border-radius: 10px; border: 1.5px solid #e2e8f0; padding: 10px 16px; font-size: 14px; transition: border-color 0.2s; }
+                .vl-main-content input[type="text"]:focus { border-color: var(--vl-primary); outline: none; box-shadow: 0 0 0 3px rgba(11,121,48,0.1); }
+                .vl-main-content .submit { margin: 0; }
+
+                .vl-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+                .vl-stat-card { background: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; }
+                .vl-stat-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vl-gray); font-weight: 700; margin-bottom: 8px; }
+                .vl-stat-value { display: block; font-size: 18px; font-weight: 800; color: var(--vl-primary); }
+            </style>
+
+            <script>
+                function switchTab(evt, tabName) {
+                    const panes = document.querySelectorAll('.vl-tab-pane');
+                    const items = document.querySelectorAll('.vl-nav-item');
+                    panes.forEach(p => p.classList.remove('active'));
+                    items.forEach(i => i.classList.remove('active'));
+                    document.getElementById('tab-' + tabName).classList.add('active');
+                    evt.currentTarget.classList.add('active');
+                }
+            </script>
         </div>
         <?php
     }

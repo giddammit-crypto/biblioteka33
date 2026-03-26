@@ -10,6 +10,7 @@ class VL_AJAX_Handler {
     public function init() {
         add_action('wp_ajax_vl_ai_chat', array($this, 'handle_chat'));
         add_action('wp_ajax_nopriv_vl_ai_chat', array($this, 'handle_chat'));
+        add_action('wp_ajax_vl_sync_kb', array($this, 'handle_sync_kb'));
         add_action('wp_ajax_vl_ai_docx', array($this, 'handle_docx'));
         add_action('wp_ajax_vl_ai_email', array($this, 'handle_email'));
         add_action('wp_ajax_vl_ai_compile_draft', array($this, 'handle_compile_draft'));
@@ -44,7 +45,29 @@ class VL_AJAX_Handler {
 
         $clean_msg = trim(mb_strtolower($user_message));
 
-        // 1. Static Commands
+        // 1. Internal Site Search for AI Context
+        $internal_search_context = "";
+        if (!empty($user_message)) {
+            $search_query = new WP_Query(array(
+                's' => $user_message,
+                'posts_per_page' => 5,
+                'post_status' => 'publish',
+                'post_type' => array('post', 'page')
+            ));
+
+            if ($search_query->have_posts()) {
+                $internal_search_context = "\n\nДАННЫЕ С НАШЕГО САЙТА (РЕЗУЛЬТАТЫ ПОИСКА):\n";
+                while ($search_query->have_posts()) {
+                    $search_query->the_post();
+                    $internal_search_context .= " - Заголовок: " . get_the_title() . "\n";
+                    $internal_search_context .= "   Ссылка: " . get_permalink() . "\n";
+                    $internal_search_context .= "   Контент: " . wp_strip_all_tags(mb_substr(get_the_content(), 0, 500)) . "...\n\n";
+                }
+                wp_reset_postdata();
+            }
+        }
+
+        // 2. Static Commands
         if ($clean_msg === '/emoji') {
             $emoji_list = "📚 📖 📗 📘 📙 📓 📔 📒 📕 🕮 📜 📄 📃 📑 🔖 🏷️ ✍️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 ✏️ 📏 📐 🧮 🎓 🏫 🏛️ 🏢 🧑‍🎓 👩‍🎓 👨‍🎓 👨‍🏫 👩‍🏫 🧑‍🏫 💡 🧠 👁️ 🤓 🥸 🧐 🤯 🗂️ 📁 📂 🗄️ 📇 📋 📆 📅 ⌚ ⏳ ⌛ 🕰️ 🏆 🏅 🎖️ 🥇 🥈 🥉 🎭 🎨 🖼️ 🧵 🧶 🎼 🎵 🎶 🎤 🎧 📻 📺 📼 📸 📷 📹 📽️ 🎞️ 🎬 🧩 🎲 ♟️ 🎮 🧸 🪀 🪁 🎈 🪄 🔮 💻 🖥️ 🖨️ 🖱️ 🖲️ 💾 💽 💿 📀 📱 ☎️ 📞 📟 📠 ✉️ 📧 📨 📩 📤 📥 📦 📪 📭 📬 📮 📰 🗞️ 📢 📣 📯 🔔 🔕 🔍 🔎 🔬 🔭 📡 💡 🔦 🏮 🕯️";
             wp_send_json_success(array('reply' => "### 📚 Библиотечные и канцелярские эмодзи\n\n<div class=\"text-2xl mt-4 leading-loose tracking-widest break-words bg-slate-50 p-4 rounded-xl border border-slate-200\">" . $emoji_list . "</div>"));
@@ -58,9 +81,16 @@ class VL_AJAX_Handler {
             wp_send_json_success(array('reply' => $reply));
         }
 
-        // 2. Build Context
+        // 3. Build Context
         $persona = get_option('vl_ai_persona_prompt', 'Ты Виртуальный библиотекарь. Пиши только на русском.');
         if (!empty($persistent_context)) $persona .= "\n\nИНСТРУКЦИИ ИЗ ФАЙЛОВ:\n" . $persistent_context;
+        if (!empty($internal_search_context)) $persona .= $internal_search_context;
+
+        // Knowledge Base from Sync
+        $kb = get_option('vl_ai_knowledge', array());
+        if (!empty($kb)) {
+            $persona .= "\n\nБАЗА ДАННЫХ ФИЛИАЛОВ:\n" . wp_json_encode($kb, JSON_UNESCAPED_UNICODE);
+        }
 
         $messages = array(array("role" => "system", "content" => $persona));
 
@@ -135,16 +165,61 @@ class VL_AJAX_Handler {
 
     public function handle_upload() {
         check_ajax_referer('vl_chat_nonce', 'nonce');
-        $file = $_FILES['file']; $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (in_array($ext, ['jpg','jpeg','png','webp'])) {
-            wp_send_json_success(array('data_url' => 'data:image/'.$ext.';base64,'.base64_encode(file_get_contents($file['tmp_name'])), 'filename' => $file['name']));
+        $file = $_FILES['file'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            wp_send_json_success(array(
+                'data_url' => 'data:image/'.$ext.';base64,'.base64_encode(file_get_contents($file['tmp_name'])),
+                'filename' => $file['name']
+            ));
+        } elseif ($ext === 'docx') {
+            $text = $this->extract_docx_text($file['tmp_name']);
+            wp_send_json_success(array(
+                'text' => mb_substr($text, 0, 20000),
+                'filename' => $file['name']
+            ));
         } else {
-            wp_send_json_success(array('text' => mb_substr(file_get_contents($file['tmp_name']), 0, 15000), 'filename' => $file['name']));
+            wp_send_json_success(array(
+                'text' => mb_substr(file_get_contents($file['tmp_name']), 0, 20000),
+                'filename' => $file['name']
+            ));
         }
+    }
+
+    private function extract_docx_text($filename) {
+        $content = '';
+        if (!$filename || !file_exists($filename)) return '';
+
+        $zip = new ZipArchive();
+        if ($zip->open($filename) === true) {
+            if (($index = $zip->locateName('word/document.xml')) !== false) {
+                $data = $zip->getFromIndex($index);
+                $xml = new DOMDocument();
+                $xml->loadXML($data, LIBXML_NOENT | LIBXML_XINCLUDE | LIBXML_NOERROR | LIBXML_NOWARNING);
+                $content = $xml->saveXML();
+                $content = strip_tags($content);
+                $content = preg_replace('/<[^>]*>/', ' ', $content);
+                $content = str_replace(array("\r", "\n", "\t"), ' ', $content);
+                $content = preg_replace('/ {2,}/', ' ', $content);
+            }
+            $zip->close();
+        }
+        return $content;
     }
 
     public function handle_voice_feedback() { wp_send_json_success(); }
     public function handle_get_map() { wp_send_json_success(array('html' => '<div class="p-4">Карта загружается...</div>')); }
+
+    public function handle_sync_kb() {
+        check_ajax_referer('vl_sync_nonce', '_wpnonce');
+        if (!current_user_can('manage_options')) wp_send_json_error('Нет прав');
+
+        $vl = new Virtual_Librarian();
+        $vl->sync_knowledge_base();
+
+        wp_send_json_success();
+    }
 }
 
 new VL_AJAX_Handler();
