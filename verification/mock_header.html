@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        .hero-gradient {
+            background: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85));
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-slate-50 text-slate-900 transition-colors duration-300">
+<a class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:p-4 focus:bg-white focus:text-primary transition-all" href="#primary">Перейти к основному содержимому</a>
+
+<header id="masthead" class="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-slate-200 hover:bg-white transition-colors duration-300 group">
+    <div class="w-full px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <div class="flex items-center space-x-3 h-full py-2">
+                <!-- Mobile Hamburger Button -->
+                <button id="mobile-menu-btn" class="lg:landscape:hidden p-2 -ml-2 bg-white text-slate-800 hover:text-primary transition-all shadow-sm rounded-full border border-slate-200" aria-label="Открыть меню" aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="material-symbols-outlined text-3xl">menu</span>
+                </button>
+
+                <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white">menu_book</span>
+                </div>
+                <div class="hidden md:block">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-600">Центральная городская</p>
+                    <p class="text-xs font-display font-bold">Библиотека</p>
+                </div>
+            </div>
+
+            <nav class="hidden lg:landscape:flex items-center space-x-8">
+                 <!-- Menu items mock -->
+                 <a href="#" class="text-slate-900 font-medium hover:text-emerald-600">Главная</a>
+                 <a href="#" class="text-slate-900 font-medium hover:text-emerald-600">Новости</a>
+                 <a href="#" class="text-slate-900 font-medium hover:text-emerald-600">Афиша</a>
+            </nav>
+
+            <div class="flex items-center space-x-2">
+                <button id="search-toggle" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="Поиск" style="background-color: #ffffff !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors shadow-sm border border-slate-200" aria-label="Настройки доступности" style="background-color: #ffffff !important; color: #000000 !important;">
+                    <span class="material-symbols-outlined">visibility</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85)), url('https://images.unsplash.com/photo-1507842217121-9d59630c93e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
+    <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
+        <div class="inline-flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 animate-fade-in-up">
+            <span class="w-2 h-2 bg-emerald-600 rounded-full mr-3 animate-pulse"></span>
+            <span class="text-xs font-bold text-white uppercase tracking-widest">Добро пожаловать в мир знаний</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-white leading-tight animate-fade-in-up delay-100">
+            Твой мир, <span class="text-emerald-400 italic text-glow">Твоя</span> <br/>библиотека
+        </h1>
+
+        <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in-up delay-200">
+            Центральная городская библиотека — пространство для открытий, творчества и вдохновения. Мы объединяем традиции и современные технологии.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <a id="hero-primary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-emerald-600 hover:bg-yellow-600 text-slate-900 font-bold rounded-full transition-all flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20 text-center" href="#events">
+                <span class="material-symbols-outlined text-xl shrink-0">event</span>
+                <span class="whitespace-normal sm:whitespace-nowrap">АФИША МЕРОПРИЯТИЙ</span>
+                <span class="material-symbols-outlined shrink-0">arrow_forward</span>
+            </a>
+            <a id="hero-secondary-btn" class="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-bold rounded-full border border-white/30 transition-all flex items-center justify-center text-center" href="#about">
+                <span class="whitespace-normal sm:whitespace-nowrap">УЗНАТЬ БОЛЬШЕ</span>
+            </a>
+        </div>
+    </div>
+
+    <a href="#content-start" aria-label="Прокрутить вниз" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer">
+        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
+    </a>
+</section>
+<div id="content-start" class="scroll-mt-24 h-screen bg-white">
+    <!-- Dummy content to show scrolling effect -->
+    <div class="p-10">
+        <h2 class="text-3xl font-bold mb-4">Content Starts Here</h2>
+        <p>This is the content that should be visible after clicking the scroll indicator.</p>
+    </div>
+</div>
+</main>
+</body>
+</html>
