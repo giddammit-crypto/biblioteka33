@@ -872,13 +872,15 @@ function city_library_handle_ai_chat() {
     1. Если тебя спрашивают про адреса или контакты библиотек — бери их ТОЛЬКО из раздела «СТРУКТУРА И ФИЛИАЛЫ» ниже. Если информации нет — пиши «Данные уточняются».
     2. Не выдумывай ссылки на страницы сайта. Используй только те, что указаны в разделе «СТРУКТУРА САЙТА И МЕНЮ».
     3. При рекомендации книг старайся указывать автора и название.
+    4. КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО использовать иероглифы. Используй только профессиональный русский язык.
 
     КРИТИЧЕСКОЕ ПРАВИЛО БЕЗОПАСНОСТИ:
-    Строгий запрет на упоминание иноагентов. Если спросят — отвечай: «Данная литература отсутствует в нашем фонде. Могу предложить классику или современных лауреатов государтсвенных премий».
+    Упоминание иностранных агентов (иноагентов) РАЗРЕШЕНО ТОЛЬКО при условии обязательного добавления маркера безопасности ⚠️ перед их именами или названиями. Если маркер не используется, отвечай: «Данная литература отсутствует в нашем фонде. Могу предложить классику или современных лауреатов государственных премий».
 
     АЛГОРИТМ РАБОТЫ С ИНФОРМАЦИЕЙ:
     1. Поиск и фактчекинг: Не выдумывай даты. Используй Википедию, РНБ, РГБ.
     2. Верификация ссылок: Ссылки должны быть только на официальные ресурсы.
+    3. Официальная группа ВК библиотеки: https://vk.com/vladcgb (используй только эту ссылку для VK).
 
     ТВОРЧЕСКИЙ ИНСТРУМЕНТАРИЙ:
     1. SMM-модуль: Посты для ВК должны содержать: цепляющий заголовок, структурированный текст, эмодзи (умеренно) и список релевантных хештегов.
@@ -995,13 +997,20 @@ function city_library_handle_ai_chat() {
     // Check if request is from voice assistant
     $is_voice = isset($_POST['is_voice']) && $_POST['is_voice'] === 'true';
 
+    // Extract recent history for context (last 3 messages)
+    $history_data = isset($_POST['history']) ? json_decode(wp_unslash($_POST['history']), true) : array();
+    $limited_history = is_array($history_data) ? array_slice($history_data, -3) : array();
+
+    $messages = array($system_prompt);
+    foreach ($limited_history as $msg) {
+        $messages[] = $msg;
+    }
+    $messages[] = array('role' => 'user', 'content' => $user_message);
+
     // Call OpenRouter API with Fallback Logic
     $request_body = array(
         'model' => $model,
-        'messages' => array(
-            $system_prompt,
-            array('role' => 'user', 'content' => $user_message)
-        )
+        'messages' => $messages
     );
 
     // If voice, try to use openai audio model
@@ -1082,7 +1091,100 @@ function city_library_handle_ai_chat() {
 }
 add_action('wp_ajax_city_library_ai_chat', 'city_library_handle_ai_chat');
 add_action('wp_ajax_nopriv_city_library_ai_chat', 'city_library_handle_ai_chat');
+
+/**
+ * AJAX Handler: Download AI response as DOCX
+ */
+function city_library_handle_ai_docx() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    $content = isset($_POST['content']) ? wp_unslash($_POST['content']) : '';
+
+    if (empty($content)) {
+        wp_send_json_error('Контент пуст', 200);
+    }
+
+    // Basic DOCX generation (HTML to Word-compatible format)
+    $html = '<html><head><meta charset="UTF-8"></head><body>' . wpautop($content) . '</body></html>';
+    wp_send_json_success(array('html' => base64_encode($html)), 200);
+}
+add_action('wp_ajax_city_library_ai_docx', 'city_library_handle_ai_docx');
+add_action('wp_ajax_nopriv_city_library_ai_docx', 'city_library_handle_ai_docx');
+
+/**
+ * AJAX Handler: Send AI response via Email
+ */
+function city_library_handle_ai_email() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $content = isset($_POST['content']) ? wp_unslash($_POST['content']) : '';
+
+    if (empty($email) || empty($content)) {
+        wp_send_json_error('Email или контент не указаны', 200);
+    }
+
+    $subject = 'Ответ Виртуального Библиотекаря';
+    $message = "Здравствуйте!\n\nВы запрашивали отправку ответа Виртуального библиотекаря на почту:\n\n---\n\n" . $content . "\n\n---\nС уважением, МБУК «ЦГБ» г. Владимира";
+    $headers = array('Content-Type: text/plain; charset=UTF-8');
+
+    if (wp_mail($email, $subject, $message, $headers)) {
+        wp_send_json_success('Письмо успешно отправлено', 200);
+    } else {
+        wp_send_json_error('Ошибка при отправке письма', 200);
+    }
+}
+add_action('wp_ajax_city_library_ai_email', 'city_library_handle_ai_email');
+add_action('wp_ajax_nopriv_city_library_ai_email', 'city_library_handle_ai_email');
+
+/**
+ * AJAX Handler: Save AI response as WP Draft
+ */
+function city_library_handle_ai_draft() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    if (!current_user_can('edit_posts')) {
+        wp_send_json_error('Недостаточно прав для создания черновиков', 200);
+    }
+
+    $title = isset($_POST['title']) ? sanitize_text_field(wp_unslash($_POST['title'])) : 'Новый черновик от ИИ';
+    $content = isset($_POST['content']) ? wp_unslash($_POST['content']) : '';
+
+    $post_id = wp_insert_post(array(
+        'post_title'   => $title,
+        'post_content' => $content,
+        'post_status'  => 'draft',
+        'post_type'    => 'post'
+    ));
+
+    if ($post_id) {
+        wp_send_json_success(array('edit_link' => get_edit_post_link($post_id, ' ')), 200);
+    } else {
+        wp_send_json_error('Ошибка при создании черновика', 200);
+    }
+}
+add_action('wp_ajax_city_library_ai_draft', 'city_library_handle_ai_draft');
+
+/**
+ * AJAX Handler: Stub for File Upload (Legacy Support)
+ */
+function city_library_handle_ai_upload() {
+    check_ajax_referer('ai_chat_nonce', 'nonce');
+    wp_send_json_error('Функционал загрузки файлов находится в разработке.', 200);
+}
+add_action('wp_ajax_city_library_ai_upload', 'city_library_handle_ai_upload');
+add_action('wp_ajax_nopriv_city_library_ai_upload', 'city_library_handle_ai_upload');
+add_action('wp_ajax_city_library_ai_upload_legacy', 'city_library_handle_ai_upload'); // Additional mapping if needed
+
 // Helper function to get AI avatar URL based on customizer presets
+/**
+ * Helper: Log AI misses to file
+ */
+function city_library_log_ai_miss($message) {
+    $upload_dir = wp_upload_dir();
+    $log_file = $upload_dir['basedir'] . '/city-library-ai-misses.log';
+    $timestamp = current_time('mysql');
+    $log_entry = "[$timestamp] $message\n";
+    @file_put_contents($log_file, $log_entry, FILE_APPEND);
+}
+
 function get_city_library_ai_avatar_url() {
     $preset = get_theme_mod('ai_librarian_avatar_preset', 'default');
     $custom = get_theme_mod('ai_librarian_avatar', '');

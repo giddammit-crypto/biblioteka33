@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 overflow-x-hidden">
+<div class="w-full max-w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
     <div id="primary" class="w-full transition-all duration-300 max-w-6xl mx-auto">
 
         <?php
@@ -15,7 +15,7 @@
                 <div class="flex flex-col gap-8 relative z-10">
 
                     <header class="entry-header mb-6 text-center">
-                        <?php the_title('<h1 class="entry-title text-3xl md:text-5xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
+                        <?php the_title('<h1 class="entry-title text-3xl md:text-5xl font-bold font-display mb-4 text-slate-900 leading-snug break-words">', '</h1>'); ?>
                     </header>
 
                     <!-- Featured Image (Full Width for Pages if exists) -->
@@ -26,7 +26,7 @@
                     <?php endif; ?>
 
                     <!-- Content -->
-                    <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
+                    <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg mx-auto">
                         <?php
                         the_content();
 

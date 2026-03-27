@@ -290,7 +290,7 @@ if ($bar_style === 'text-only') {
     <div class="<?php echo esc_attr($grid_classes); ?>">
         <!-- Home -->
         <a href="<?php echo esc_url(home_url('/')); ?>" class="<?php echo esc_attr($item_classes); ?> mob-nav-item <?php echo is_front_page() ? 'active active-home' : ''; ?>">
-            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">home</span>
+            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>" aria-hidden="true">home</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Главная', 'city-library'); ?></span>
         </a>
 
@@ -304,7 +304,7 @@ if ($bar_style === 'text-only') {
         <div id="mob-nav-dynamic-slot" class="flex items-center justify-center relative w-full h-full">
             <!-- Fallback Events (Afisha) - Shown by default for guests -->
             <a href="#afisha" id="mobile-afisha-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item absolute inset-0 w-full">
-                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">calendar_month</span>
+                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>" aria-hidden="true">calendar_month</span>
                 <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Афиша', 'city-library'); ?></span>
             </a>
 
@@ -312,7 +312,7 @@ if ($bar_style === 'text-only') {
             <?php if ($enable_voice) : ?>
             <button id="mobile-voice-assistant-btn" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none group absolute inset-0 w-full hidden" aria-label="<?php esc_attr_e('Голосовой помощник', 'city-library'); ?>">
                 <div class="absolute inset-0 bg-cyan-400/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">mic</span>
+                <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>" aria-hidden="true">mic</span>
                 <span class="<?php echo esc_attr($text_classes); ?> font-extrabold"><?php _e('Ассистент', 'city-library'); ?></span>
             </button>
             <?php endif; ?>
@@ -320,13 +320,13 @@ if ($bar_style === 'text-only') {
 
         <!-- Search (Opens Modal) -->
         <button id="search-toggle-mobile" class="<?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
-            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">search</span>
+            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>" aria-hidden="true">search</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Поиск', 'city-library'); ?></span>
         </button>
 
         <!-- Menu (Opens Header Overlay) -->
         <button class="mobile-menu-toggle-btn <?php echo esc_attr($item_classes); ?> mob-nav-item focus:outline-none" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
-            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>">menu</span>
+            <span class="<?php echo esc_attr($icon_classes); ?> <?php echo esc_attr($icon_font_class); ?> <?php echo esc_attr($icon_base_class); ?>" aria-hidden="true">menu</span>
             <span class="<?php echo esc_attr($text_classes); ?>"><?php _e('Меню', 'city-library'); ?></span>
         </button>
     </div>
