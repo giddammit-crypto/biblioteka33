@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8 overflow-x-hidden">
+<div class="w-full lg:max-w-[80%] lg:mx-auto px-0 lg:px-8 py-4 md:py-8">
     <div id="primary" class="w-full transition-all duration-300">
 
         <?php
@@ -46,7 +46,7 @@
                                 </div>
                             <?php endif; ?>
 
-                            <?php the_title('<h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 leading-tight">', '</h1>'); ?>
+                            <?php the_title('<h1 class="entry-title text-3xl md:text-4xl font-bold font-display mb-4 text-slate-900 leading-snug break-words">', '</h1>'); ?>
 
                             <div class="entry-meta flex flex-wrap items-center gap-4 text-slate-500 text-xs font-medium border-b border-slate-100 pb-4 mb-6">
                                 <span class="flex items-center">
@@ -60,7 +60,7 @@
                             </div>
                         </header>
 
-                        <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words overflow-x-hidden prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
+                        <div class="entry-content prose prose-slate max-w-full md:max-w-none break-words prose-headings:font-display prose-headings:font-bold prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-xl prose-img:shadow-lg">
                             <?php
                             the_content();
 
