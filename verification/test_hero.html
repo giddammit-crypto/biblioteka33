@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Section Verification</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#0b7930",
+                        secondary: "#1A3C34",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background-image: linear-gradient(rgba(26, 60, 52, 0.7), rgba(26, 60, 52, 0.85));
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-background-light text-slate-900">
+
+<section class="relative h-screen flex items-center justify-center hero-gradient pt-20" style="background-color: #1a3c34;">
+    <div class="max-w-4xl mx-auto text-center px-4 space-y-8">
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">
+            Твой мир, <span class="text-primary italic text-glow">Твоя</span> <br/>библиотека
+        </h1>
+
+        <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto font-light leading-relaxed">
+            Центральная городская библиотека — пространство для открытий, творчества и вдохновения.
+        </p>
+    </div>
+
+    <!-- The Modified Scroll Indicator -->
+    <a href="#content-start" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 transition-all hover:bg-white/10" aria-label="Прокрутить к контенту">
+        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
+    </a>
+</section>
+
+<div id="content-start" class="scroll-mt-24 h-screen bg-white p-10">
+    <h2 class="text-3xl font-bold">Main Content Starts Here</h2>
+    <p>This section is the target of the scroll anchor.</p>
+</div>
+
+</body>
+</html>
