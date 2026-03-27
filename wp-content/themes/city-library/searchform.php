@@ -3,10 +3,15 @@
  * Custom Search Form
  */
 ?>
+<?php $unique_id = wp_unique_id('search-form-'); ?>
 <form role="search" method="get" class="relative group" action="<?php echo esc_url(home_url('/')); ?>">
+    <label for="<?php echo esc_attr($unique_id); ?>" class="sr-only">
+        <?php echo esc_html_x('Поиск по сайту', 'label', 'city-library'); ?>
+    </label>
     <div class="relative flex items-center">
-        <span class="absolute left-4 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined">search</span>
+        <span class="absolute left-4 text-slate-400 group-focus-within:text-primary transition-colors material-symbols-outlined" aria-hidden="true">search</span>
         <input type="search"
+               id="<?php echo esc_attr($unique_id); ?>"
                class="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-200 focus:border-primary rounded-full text-slate-800 placeholder-slate-400 outline-none transition-all shadow-inner"
                placeholder="<?php echo esc_attr_x('Поиск...', 'placeholder', 'city-library'); ?>"
                value="<?php echo get_search_query(); ?>"
@@ -14,7 +19,7 @@
                title="<?php echo esc_attr_x('Search for:', 'label', 'city-library'); ?>"
                aria-label="<?php echo esc_attr_x('Поиск', 'label', 'city-library'); ?>" />
         <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md" aria-label="<?php echo esc_attr_x('Найти', 'submit button', 'city-library'); ?>">
-            <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
+            <span class="material-symbols-outlined text-sm font-bold" aria-hidden="true">arrow_forward</span>
         </button>
     </div>
 </form>
