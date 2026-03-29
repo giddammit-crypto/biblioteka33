@@ -406,7 +406,7 @@ if ($bar_style === 'text-only') {
                 </h3>
             </div>
             <button type="button" class="voice-ai-answer-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                <span class="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
             </button>
         </div>
 
@@ -425,7 +425,7 @@ if ($bar_style === 'text-only') {
     <div class="flex items-center justify-between px-4 py-3 safe-area-top bg-white shadow-md z-10 shrink-0">
         <h3 id="voice-map-title" class="text-lg font-bold text-slate-900 truncate flex-1">Карта филиалов</h3>
         <button type="button" id="voice-map-close" class="p-2 -mr-2 text-slate-500 hover:text-slate-900 focus:outline-none" aria-label="Закрыть карту">
-            <span class="material-symbols-outlined text-2xl">close</span>
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
         </button>
     </div>
     <!-- Yandex Map iframe container -->
@@ -456,7 +456,7 @@ if ($bar_style === 'text-only') {
                 <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Доступные команды</p>
             </div>
             <button type="button" class="voice-modal-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
             </button>
         </div>
 

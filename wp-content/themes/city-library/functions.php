@@ -1692,9 +1692,9 @@ class City_Library_Walker_Nav_Menu extends Walker_Nav_Menu {
             $output .= '<div class="flex items-center justify-between w-full">';
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';
             // Mobile Toggle Button (Visible on mobile, hidden on desktop hover)
-            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300">expand_more</span></button>';
+            $output .= '<button class="submenu-toggle p-2 lg:hidden focus:outline-none" aria-expanded="false" aria-label="Toggle submenu"><span class="material-symbols-outlined text-lg transition-transform duration-300" aria-hidden="true">expand_more</span></button>';
             // Desktop Arrow (Visual only, handled by group-hover/menuitem)
-            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300">expand_more</span>';
+            $output .= '<span class="material-symbols-outlined text-lg hidden lg:block ml-1 group-hover/menuitem:rotate-180 transition-transform duration-300" aria-hidden="true">expand_more</span>';
             $output .= '</div>';
         } else {
             $output .= '<a href="' . esc_url($item->url) . '" class="' . esc_attr($link_classes) . '">' . esc_html($item->title) . '</a>';

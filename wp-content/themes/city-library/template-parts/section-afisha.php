@@ -107,10 +107,10 @@ $card_classes = $card_base_classes . ' ' . $card_extra_classes;
                     <!-- Enhanced Navigation Buttons (Top Right) -->
                     <div class="flex items-center justify-center xl:justify-end gap-4 shrink-0">
                         <button class="afisha-prev slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Предыдущий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_back</span>
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300" aria-hidden="true">arrow_back</span>
                         </button>
                         <button class="afisha-next slider-nav-btn group w-14 h-14 rounded-full border border-slate-200 transition-all duration-300 relative overflow-hidden flex items-center justify-center cursor-pointer shadow-md hover:shadow-xl hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-primary/20" aria-label="<?php _e('Следующий слайд', 'city-library'); ?>">
-                            <span class="material-symbols-outlined text-2xl transition-colors duration-300">arrow_forward</span>
+                            <span class="material-symbols-outlined text-2xl transition-colors duration-300" aria-hidden="true">arrow_forward</span>
                         </button>
                     </div>
                 </div>
