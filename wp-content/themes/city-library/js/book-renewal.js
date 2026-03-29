@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Онлайн сервис</p>
                 </div>
                 <button type="button" class="modal-close p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 group" aria-label="Закрыть">
-                    <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300">close</span>
+                    <span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300" aria-hidden="true">close</span>
                 </button>
             </div>
 
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Submit Button -->
                     <button type="submit" id="renewal-submit-btn" class="w-full py-4 bg-primary hover:bg-green-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 flex justify-center items-center gap-2 group mt-2">
                         <span class="uppercase tracking-widest text-xs md:text-sm">Отправить заявку</span>
-                        <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">send</span>
+                        <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform" aria-hidden="true">send</span>
                     </button>
 
                     <!-- Legal Text -->

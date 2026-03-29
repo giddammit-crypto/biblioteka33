@@ -69,8 +69,8 @@ $link_color = get_theme_mod('news_card_grid_link_color', '#0b7930');
 
         <!-- Footer / Link -->
         <div class="pt-4 lg:mt-auto border-t border-white/20 lg:border-slate-200 flex items-center justify-between pointer-events-auto relative z-20">
-            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:landscape:text-inherit drop-shadow-md lg:drop-shadow-none hover:text-yellow-400 lg:hover:text-primary/80 news-card-link" style="--link-color: <?php echo esc_attr($link_color); ?>;">
-                <?php _e('Читать полностью', 'city-library'); ?>
+            <a href="<?php the_permalink(); ?>" class="inline-flex items-center text-xs font-bold uppercase tracking-wide transition-colors relative z-10 hover:underline text-white lg:landscape:text-inherit drop-shadow-md lg:drop-shadow-none hover:text-yellow-400 lg:hover:text-primary/80 news-card-link" style="--link-color: <?php echo esc_attr($link_color); ?>;" aria-label="<?php echo esc_attr(sprintf(__('Читать полностью: %s', 'city-library'), get_the_title())); ?>">
+                <span aria-hidden="true"><?php _e('Читать полностью', 'city-library'); ?></span>
                 <span class="material-symbols-outlined ml-2 text-lg transform transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
             </a>
         </div>
