@@ -514,11 +514,11 @@ function city_library_render_ai_librarian() {
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="На весь экран">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="Закрыть чат">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
                     </button>
                 </div>
             </div>
@@ -561,10 +561,10 @@ function city_library_render_ai_librarian() {
         </div>
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden" aria-label="Открыть чат Виртуального библиотекаря">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
-            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10">support_agent</span>
-            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10">chat</span>
+            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10" aria-hidden="true">support_agent</span>
+            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10" aria-hidden="true">chat</span>
             <!-- Notification Dot -->
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse shadow-sm z-20"></span>
         </button>
