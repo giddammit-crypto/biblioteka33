@@ -294,8 +294,9 @@ if ($is_custom_hero || get_theme_mod('show_hero_section', true)) :
         </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <span class="material-symbols-outlined text-white text-3xl">expand_more</span>
-    </div>
+    <a href="#content-start" aria-label="<?php esc_attr_e('Прокрутить вниз', 'city-library'); ?>" class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-white/50 transition-all">
+        <span class="material-symbols-outlined text-white text-3xl" aria-hidden="true">expand_more</span>
+    </a>
 </section>
+<div id="content-start" class="scroll-mt-0 lg:scroll-mt-24"></div>
 <?php endif; ?>
