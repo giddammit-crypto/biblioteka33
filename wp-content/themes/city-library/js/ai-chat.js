@@ -184,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (isDrawCommand) {
-            addMessageToUI('bot', '<div class="flex items-center gap-2 text-slate-500 font-medium"><span class="material-symbols-outlined animate-spin text-primary">palette</span> Создаю изображение...</div>', typingId, false);
+            addMessageToUI('bot', '<div class="flex items-center gap-2 text-slate-500 font-medium"><span class="material-symbols-outlined animate-spin text-primary" aria-hidden="true">palette</span> Создаю изображение...</div>', typingId, false);
         } else {
-            addMessageToUI('bot', '<span class="flex gap-1 items-center"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span>', typingId, false);
+            addMessageToUI('bot', '<span class="flex gap-1 items-center" aria-hidden="true"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span></span><span class="sr-only">Библиотекарь печатает сообщение...</span>', typingId, false);
         }
 
         const contextHistory = chatHistory.slice(-6).map(m => ({
@@ -270,23 +270,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionButtons = `
                     <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100/50 justify-end flex-wrap">
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-copy-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">content_copy</span> Копировать
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">content_copy</span> Копировать
                         </button>
                         <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                            <span class="material-symbols-outlined text-[14px]">download</span> Скачать (TXT)
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">download</span> Скачать (TXT)
                         </a>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-pdf-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">picture_as_pdf</span> PDF
                         </button>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-docx-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">description</span> DOCX
                         </button>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-email-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">mail</span> На почту
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">mail</span> На почту
                         </button>
                         ${text.toLowerCase().includes('источники') && text.length > 500 ? `
                         <button class="text-xs text-slate-500 hover:text-primary transition-colors flex items-center gap-1 font-bold ai-save-draft-btn bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-200 ml-auto" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[16px]">note_add</span> Сохранить черновик в WP
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">note_add</span> Сохранить черновик в WP
                         </button>
                         ` : ''}
                     </div>
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rawText = this.getAttribute('data-text');
                 navigator.clipboard.writeText(rawText).then(() => {
                     const originalHTML = this.innerHTML;
-                    this.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span> Скопировано';
+                    this.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Скопировано';
                     this.classList.add('text-green-600');
                     setTimeout(() => {
                         this.innerHTML = originalHTML;
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
             docxBtn.addEventListener('click', function() {
                 const rawText = this.getAttribute('data-text');
                 const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> ...';
+                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
                 this.disabled = true;
 
                 jQuery.ajax({
@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userEmail = prompt("Введите ваш email адрес для отправки ответа:");
                 if (userEmail && userEmail.trim() !== '') {
                     const originalHTML = this.innerHTML;
-                    this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> ...';
+                    this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> ...';
                     this.disabled = true;
 
                     jQuery.ajax({
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         },
                         success: (response) => {
                             if (response.success) {
-                                this.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span> Отправлено';
+                                this.innerHTML = '<span class="material-symbols-outlined text-[14px]" aria-hidden="true">check</span> Отправлено';
                                 this.classList.add('text-green-600');
                                 setTimeout(() => {
                                     this.innerHTML = originalHTML;
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const postTitle = 'Черновик: ' + (rawText.split('\n')[0].replace(/#/g, '').trim() || 'Статья');
 
                 const originalHTML = this.innerHTML;
-                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">sync</span> Сохраняем...';
+                this.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin" aria-hidden="true">sync</span> Сохраняем...';
                 this.disabled = true;
 
                 jQuery.ajax({
@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     success: (response) => {
                         if (response.success) {
-                            this.innerHTML = `<a href="${response.data.edit_link}" target="_blank" class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">open_in_new</span> Редактировать</a>`;
+                            this.innerHTML = `<a href="${response.data.edit_link}" target="_blank" class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" aria-hidden="true">open_in_new</span> Редактировать</a>`;
                             this.classList.add('text-green-600', 'hover:text-green-700');
                             this.classList.remove('text-slate-500', 'hover:text-primary', 'bg-slate-100');
                         } else {
@@ -528,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 inputField.value = `[Файл прикреплен: ${file.name}] Проанализируй этот файл.`;
-                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1">attach_file</span> Вы прикрепили файл: ${file.name}. В данный момент полная интеграция парсинга в разработке, файл имитирован.</span>`, null, false);
+                addMessageToUI('bot', `<span class="text-slate-500 text-xs italic"><span class="material-symbols-outlined text-[14px] align-middle mr-1" aria-hidden="true">attach_file</span> Вы прикрепили файл: ${file.name}. В данный момент полная интеграция парсинга в разработке, файл имитирован.</span>`, null, false);
                 this.value = '';
             }
         });
