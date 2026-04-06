@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2024-05-24 - Decorative vs Functional Affordance
+**Learning:** Decorative animations like `animate-bounce` on downward-pointing arrows strongly imply interactivity. Leaving them as static elements frustrates user expectation.
+**Action:** Always wrap such "scroll indicators" in a `<button>` tag with a clear `aria-label` and `click` handler to fulfill the promise of the affordance.
