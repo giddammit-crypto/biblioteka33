@@ -5,3 +5,6 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+## 2026-04-13 - Modal Dialog Accessibility Pattern
+**Learning:** Custom modals in the city-library theme require explicit ARIA roles to be properly identified by screen readers, as they are custom-built rather than using native <dialog> elements.
+**Action:** When working on modals in this repository, always ensure the container has `role="dialog"`, `aria-modal="true"`, and `aria-labelledby="[id-of-title-heading]"`.
