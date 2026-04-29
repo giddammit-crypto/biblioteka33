@@ -270,23 +270,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 actionButtons = `
                     <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100/50 justify-end flex-wrap">
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-copy-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">content_copy</span> Копировать
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">content_copy</span> Копировать
                         </button>
                         <a href="data:text/plain;charset=utf-8,${encodedText}" download="Ответ_Виртуального_Библиотекаря.txt" class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium">
-                            <span class="material-symbols-outlined text-[14px]">download</span> Скачать (TXT)
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">download</span> Скачать (TXT)
                         </a>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-pdf-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">picture_as_pdf</span> PDF
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">picture_as_pdf</span> PDF
                         </button>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-docx-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">description</span> DOCX
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">description</span> DOCX
                         </button>
                         <button class="text-xs text-slate-400 hover:text-primary transition-colors flex items-center gap-1 font-medium ai-email-btn" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[14px]">mail</span> На почту
+                            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">mail</span> На почту
                         </button>
                         ${text.toLowerCase().includes('источники') && text.length > 500 ? `
                         <button class="text-xs text-slate-500 hover:text-primary transition-colors flex items-center gap-1 font-bold ai-save-draft-btn bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-200 ml-auto" data-text="${escapeHtml(text)}">
-                            <span class="material-symbols-outlined text-[16px]">note_add</span> Сохранить черновик в WP
+                            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">note_add</span> Сохранить черновик в WP
                         </button>
                         ` : ''}
                     </div>
