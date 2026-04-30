@@ -94,18 +94,18 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             <!-- Header Actions (Right Side) -->
             <div class="flex items-center space-x-2 shrink-0">
                 <!-- Search Button -->
-                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">search</span>
+                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" title="<?php esc_attr_e('Поиск', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
                 </button>
 
                 <!-- Accessibility Button -->
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">visibility</span>
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>" title="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                 </button>
 
                 <!-- Mobile Menu Toggle (Visible only on mobile) -->
-                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">menu</span>
+                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" title="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
                 </button>
             </div>
         </div>
@@ -138,15 +138,15 @@ if ($mob_menu_style === 'ios-blur') {
         <div class="flex justify-between items-center p-6 shrink-0 border-b border-slate-100/50">
             <div class="flex items-center space-x-3">
                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined">menu_open</span>
+                    <span class="material-symbols-outlined" aria-hidden="true">menu_open</span>
                </div>
                <div>
                    <span class="block text-sm font-bold font-display uppercase tracking-wider text-primary"><?php _e('Меню', 'city-library'); ?></span>
                    <span class="block text-[10px] text-slate-400 leading-none"><?php echo esc_html(get_theme_mod('header_subtitle', 'Навигация')); ?></span>
                </div>
             </div>
-            <button id="mobile-menu-close" class="group p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-full transition-all duration-300 transform hover:rotate-90 active:scale-95" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
-                <span class="material-symbols-outlined text-2xl">close</span>
+            <button id="mobile-menu-close" class="group p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-500 rounded-full transition-all duration-300 transform hover:rotate-90 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>" title="<?php esc_attr_e('Закрыть меню', 'city-library'); ?>">
+                <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
             </button>
         </div>
 
