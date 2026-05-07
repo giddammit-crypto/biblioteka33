@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2026-05-07 - Focus Ring Visibility
+**Learning:** Relying on basic `focus:` pseudo-classes for interactive elements like buttons creates sticky focus rings after mouse clicks, which feels unpolished.
+**Action:** Always default to Tailwind's `focus-visible:` for focus rings (`focus-visible:ring-2`) to ensure accessible keyboard navigation styling without negatively impacting mouse users. Reuse existing theme ring colors like `ring-primary/50` or `ring-primary/20`.
