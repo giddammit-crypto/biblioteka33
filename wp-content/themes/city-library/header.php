@@ -94,18 +94,18 @@ $menu_item_classes = 'menu-style-' . $menu_style;
             <!-- Header Actions (Right Side) -->
             <div class="flex items-center space-x-2 shrink-0">
                 <!-- Search Button -->
-                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">search</span>
+                <button id="search-toggle" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" aria-label="<?php esc_attr_e('Поиск', 'city-library'); ?>" title="<?php esc_attr_e('Поиск', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">search</span>
                 </button>
 
                 <!-- Accessibility Button -->
-                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">visibility</span>
+                <button id="accessibility-button" class="p-2 rounded-full transition-colors !bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" aria-label="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>" title="<?php esc_attr_e('Версия для слабовидящих', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                 </button>
 
                 <!-- Mobile Menu Toggle (Visible only on mobile) -->
-                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>">
-                    <span class="material-symbols-outlined">menu</span>
+                <button class="mobile-menu-toggle-btn lg:landscape:hidden p-2 rounded-full transition-colors bg-white hover:bg-slate-50 border border-slate-200 shadow-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" aria-label="<?php esc_attr_e('Меню', 'city-library'); ?>" title="<?php esc_attr_e('Меню', 'city-library'); ?>">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
                 </button>
             </div>
         </div>
