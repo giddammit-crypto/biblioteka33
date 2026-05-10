@@ -514,11 +514,11 @@ function city_library_render_ai_librarian() {
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">fullscreen</span>
+                    <button id="fullscreen-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="На весь экран" title="На весь экран">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">fullscreen</span>
                     </button>
-                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8">
-                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    <button id="close-ai-chat" class="text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all flex items-center justify-center w-8 h-8" aria-label="Закрыть чат" title="Закрыть чат">
+                        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
                     </button>
                 </div>
             </div>
@@ -539,32 +539,32 @@ function city_library_render_ai_librarian() {
             <!-- Quick Actions Bar -->
             <div class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide shrink-0 text-xs shadow-inner">
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/emoji">
-                    <span class="material-symbols-outlined text-[14px]">sentiment_satisfied</span>
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">sentiment_satisfied</span>
                     Смайлики
                 </button>
                 <button class="ai-quick-action-btn flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all shadow-sm" data-command="/stat">
-                    <span class="material-symbols-outlined text-[14px]">bar_chart</span>
+                    <span class="material-symbols-outlined text-[14px]" aria-hidden="true">bar_chart</span>
                     Статистика записей
                 </button>
             </div>
 
             <!-- Input Area -->
             <div class="p-3 bg-white border-t border-slate-100 flex gap-2 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] shrink-0 z-10 relative items-center">
-                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" title="Прикрепить файл (до 20МБ)">
-                    <span class="material-symbols-outlined text-[20px]">attach_file</span>
+                <button id="ai-chat-attachment" class="w-10 h-10 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full flex items-center justify-center transition-colors shrink-0" aria-label="Прикрепить файл" title="Прикрепить файл (до 20МБ)">
+                    <span class="material-symbols-outlined text-[20px]" aria-hidden="true">attach_file</span>
                 </button>
                 <input type="text" id="ai-chat-input" class="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-primary/50 focus:ring-2 focus:ring-primary/20 rounded-full text-sm px-5 py-3 transition-all duration-300" placeholder="Ваш запрос или /help...">
-                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group">
-                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300">send</span>
+                <button id="ai-chat-send" class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center hover:bg-yellow-500 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300 shrink-0 shadow-md group" aria-label="Отправить сообщение" title="Отправить сообщение">
+                    <span class="material-symbols-outlined text-xl ml-0.5 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">send</span>
                 </button>
             </div>
         </div>
 
         <!-- Toggle Button -->
-        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden">
+        <button id="ai-chat-toggle" class="w-16 h-16 bg-primary text-white rounded-full shadow-[0_8px_30px_rgba(11,121,48,0.4)] hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(11,121,48,0.5)] transition-all duration-300 flex items-center justify-center relative group overflow-hidden" aria-label="Открыть виртуального помощника" title="Открыть виртуального помощника">
             <span class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></span>
-            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10">support_agent</span>
-            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10">chat</span>
+            <span class="material-symbols-outlined text-[32px] group-hover:hidden relative z-10" aria-hidden="true">support_agent</span>
+            <span class="material-symbols-outlined text-[32px] hidden group-hover:block relative z-10" aria-hidden="true">chat</span>
             <!-- Notification Dot -->
             <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full animate-pulse shadow-sm z-20"></span>
         </button>
