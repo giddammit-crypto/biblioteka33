@@ -12,7 +12,7 @@
     <?php if ($show_sidebar) : ?>
     <div class="mb-6 px-4 lg:px-0">
          <button id="sidebar-toggle-btn" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow hover:bg-opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-            <span class="material-symbols-outlined">menu_open</span>
+            <span class="material-symbols-outlined" aria-hidden="true">menu_open</span>
             <span class="text-sm font-bold uppercase"><?php _e('Скрыть/Показать сайдбар', 'city-library'); ?></span>
         </button>
     </div>
