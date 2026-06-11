@@ -13,8 +13,8 @@
                name="s"
                title="<?php echo esc_attr_x('Search for:', 'label', 'city-library'); ?>"
                aria-label="<?php echo esc_attr_x('Поиск', 'label', 'city-library'); ?>" />
-        <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md" aria-label="<?php echo esc_attr_x('Найти', 'submit button', 'city-library'); ?>">
-            <span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
+        <button type="submit" class="absolute right-2 p-2 bg-primary text-white rounded-full hover:bg-primary/90 transition-colors shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" aria-label="<?php echo esc_attr_x('Найти', 'submit button', 'city-library'); ?>" title="<?php echo esc_attr_x('Найти', 'submit button', 'city-library'); ?>">
+            <span class="material-symbols-outlined text-sm font-bold" aria-hidden="true">arrow_forward</span>
         </button>
     </div>
 </form>
