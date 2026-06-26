@@ -5,3 +5,7 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+
+## 2024-06-26 - Custom Modal Semantics and Ligature Announcements
+**Learning:** Custom modal containers need explicit `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` linking to their heading to be announced properly as modals. Additionally, using `aria-label` on a close button containing a Material Symbol (ligature) will cause screen readers to announce both the localized label and the literal English ligature text (e.g., "close") unless the icon itself has `aria-hidden="true"`.
+**Action:** Always structure custom modals with full ARIA dialog semantics, and aggressively hide inner ligature icons from screen readers when the parent button already provides an accessible name.
