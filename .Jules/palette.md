@@ -5,3 +5,6 @@
 ## 2024-05-22 - Large Typography Overlap
 **Learning:** Using `leading-tight` on responsive display fonts (`text-3xl` to `text-6xl`) can cause vertical overlap when words wrap, especially with unknown custom fonts.
 **Action:** Default to `leading-snug` or `leading-normal` for dynamic headers and always include `break-words` or `pb-2` (padding-bottom) to accommodate descenders.
+## 2026-07-05 - Screen Reader Ligatures
+**Learning:** In a localized app, screen readers read the English ligature strings (e.g. 'search') of Material Symbols if they aren't hidden.
+**Action:** Always add aria-hidden="true" to span.material-symbols-outlined inside buttons that already have an aria-label.
